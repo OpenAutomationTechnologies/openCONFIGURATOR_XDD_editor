@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: %pluginName
+Bundle-SymbolicName: com.br_automation.buoat.xddeditor.edit;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-ClassPath: .
+Bundle-Activator: com.br_automation.buoat.xddeditor.XDD.provider.XDDEditPlugin$Implementation
+Bundle-Vendor: %providerName
+Bundle-Localization: plugin
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Export-Package: com.br_automation.buoat.xddeditor.XDD.custom,
+ com.br_automation.buoat.xddeditor.XDD.provider
+Require-Bundle: org.eclipse.core.runtime,
+ com.br_automation.buoat.xddeditor;visibility:=reexport,
+ org.eclipse.emf.edit;visibility:=reexport,
+ org.eclipse.emf.eef.runtime;bundle-version="1.1.1";visibility:=reexport
+Bundle-ActivationPolicy: lazy

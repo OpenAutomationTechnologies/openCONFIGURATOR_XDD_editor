@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+
+<!--
+-->
+
+<plugin>
+
+   <extension point="org.eclipse.ui.newWizards">
+      <category
+            id="org.eclipse.emf.ecore.Wizard.category.ID"
+            name="%_UI_Wizard_category">
+      </category>
+      <wizard
+            id="com.br_automation.buoat.xddeditor.XDD.custom.XDDCustomWizardID"
+            name="%_UI_XDDModelWizard_label"
+            class="com.br_automation.buoat.xddeditor.XDD.custom.CustomXDDWizard"
+            category="org.eclipse.emf.ecore.Wizard.category.ID"
+            icon="icons/full/obj16/XDDModelFile.gif"
+            project="false">
+         <description>%_UI_XDDModelWizard_description</description>
+         <selection class="org.eclipse.core.resources.IResource"/>
+      </wizard>
+   </extension>
+
+   <extension point="org.eclipse.ui.editors">
+      <editor
+            id="com.br_automation.buoat.xddeditor.XDD.presentation.XDDEditorID"
+            name="%_UI_XDDEditor_label"
+            icon="icons/full/obj16/XDDModelFile.gif"
+            extensions="xdd"
+            class="com.br_automation.buoat.xddeditor.XDD.presentation.XDDEditor"
+            contributorClass="com.br_automation.buoat.xddeditor.XDD.presentation.XDDActionBarContributor">
+      </editor>
+   </extension>
+   
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="*">
+         <newWizardShortcut
+               id="com.br_automation.buoat.xddeditor.XDD.custom.XDDCustomWizardID">
+         </newWizardShortcut>
+      </perspectiveExtension>
+   </extension>
+   
+   <extension
+         point="org.eclipse.ui.navigator.navigatorContent">
+      <commonWizard
+            type="new"
+            wizardId="com.br_automation.buoat.xddeditor.XDD.custom.XDDCustomWizardID">
+         <enablement></enablement>
+      </commonWizard>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views.properties.tabbed.propertyContributor">
+      <propertyContributor
+            contributorId="com.br_automation.buoat.xddeditor.properties">
+         <propertyCategory
+               category="XDD Properties">
+         </propertyCategory>
+      </propertyContributor>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views.properties.tabbed.propertyTabs">
+      <propertyTabs
+            contributorId="com.br_automation.buoat.xddeditor.properties">
+         <propertyTab
+               afterTab="advanced_propertytab"
+               category="XDD Properties"
+               id="basic_propertytab"
+               label="Basic">
+         </propertyTab>
+         <propertyTab
+               category="XDD Properties"
+               id="advanced_propertytab"
+               label="Advanced">
+         </propertyTab>
+      </propertyTabs>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views.properties.tabbed.propertySections">
+      <propertySections
+            contributorId="com.br_automation.buoat.xddeditor.properties">
+         <propertySection
+               class="org.eclipse.emf.eef.runtime.ui.properties.sections.EEFAdvancedPropertySection"
+               id="basic_section"
+               tab="basic_propertytab">
+            <input
+                  type="org.eclipse.emf.ecore.impl.EObjectImpl">
+            </input>
+            <input
+                  type="org.eclipse.emf.edit.provider.FeatureMapEntryWrapperItemProvider">
+            </input>
+         </propertySection>
+         <propertySection
+               class="com.br_automation.buoat.xddeditor.XDD.custom.AdvancedFeatureFlagsPropertySection"
+               enablesFor="1"
+               filter="com.br_automation.buoat.xddeditor.XDD.custom.Index1F82Filter"
+               id="advanced_section"
+               tab="advanced_propertytab">
+            <input
+                  type="com.br_automation.buoat.xddeditor.XDD.impl.TObjectImpl">
+            </input>
+         </propertySection>
+         <propertySection
+               class="com.br_automation.buoat.xddeditor.XDD.custom.AdvancedMappingObjectPropertySection"
+               enablesFor="1"
+               filter="com.br_automation.buoat.xddeditor.XDD.custom.MappingObjectsFilter"
+               id="advanced_section"
+               tab="advanced_propertytab">
+            <input
+                  type="com.br_automation.buoat.xddeditor.XDD.impl.TObjectImpl">
+            </input>
+         </propertySection>
+      </propertySections>
+   </extension>
+   
+
+</plugin>

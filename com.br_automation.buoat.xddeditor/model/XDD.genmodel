@@ -1,0 +1,1098 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/com.br_automation.buoat.xddeditor/src" modelPluginID="com.br_automation.buoat.xddeditor"
+    modelName="XDD" importerID="org.eclipse.emf.importer.ecore" complianceLevel="7.0"
+    copyrightFields="false">
+  <foreignModel>XDD.ecore</foreignModel>
+  <genPackages prefix="XDD" basePackage="com.br_automation.buoat.xddeditor" resource="XML"
+      disposableProviderFactory="true" literalsInterface="false" ecorePackage="XDD.ecore#/">
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="XDD.ecore#//AccessType">
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//AccessType/const"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//AccessType/read"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//AccessType/write"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//AccessType/readWrite"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//AccessType/readWriteInput"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//AccessType/readWriteOutput"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//AccessType/noAccess"/>
+    </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="XDD.ecore#//AccessType1">
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//AccessType1/const"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//AccessType1/read"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//AccessType1/write"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//AccessType1/readWrite"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//AccessType1/noAccess"/>
+    </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="XDD.ecore#//AccessTypeType">
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//AccessTypeType/readOnly"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//AccessTypeType/writeOnly"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//AccessTypeType/readWriteOutput"/>
+    </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="XDD.ecore#//DeviceClassType">
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//DeviceClassType/compact"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//DeviceClassType/modular"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//DeviceClassType/configurable"/>
+    </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="XDD.ecore#//IASInterfaceDataTypeMember0">
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//IASInterfaceDataTypeMember0/CSI"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//IASInterfaceDataTypeMember0/HCI"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//IASInterfaceDataTypeMember0/ISI"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//IASInterfaceDataTypeMember0/API"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//IASInterfaceDataTypeMember0/CMI"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//IASInterfaceDataTypeMember0/ESI"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//IASInterfaceDataTypeMember0/FSI"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//IASInterfaceDataTypeMember0/MTI"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//IASInterfaceDataTypeMember0/SEI"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//IASInterfaceDataTypeMember0/USI"/>
+    </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="XDD.ecore#//LEDcolorsType">
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//LEDcolorsType/monocolor"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//LEDcolorsType/bicolor"/>
+    </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="XDD.ecore#//LEDcolorType">
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//LEDcolorType/green"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//LEDcolorType/amber"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//LEDcolorType/red"/>
+    </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="XDD.ecore#//LEDtypeType">
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//LEDtypeType/IO"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//LEDtypeType/device"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//LEDtypeType/communication"/>
+    </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="XDD.ecore#//NodeTypeType">
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//NodeTypeType/MN"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//NodeTypeType/CN"/>
+    </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="XDD.ecore#//ProfileClassIDDataType">
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//ProfileClassIDDataType/AIP"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//ProfileClassIDDataType/Process"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//ProfileClassIDDataType/InformationExchange"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//ProfileClassIDDataType/Resource"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//ProfileClassIDDataType/Device"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//ProfileClassIDDataType/CommunicationNetwork"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//ProfileClassIDDataType/Equipment"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//ProfileClassIDDataType/Human"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//ProfileClassIDDataType/Material"/>
+    </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="XDD.ecore#//RangeType">
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//RangeType/international"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//RangeType/internal"/>
+    </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="XDD.ecore#//StateType">
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//StateType/on"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//StateType/off"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//StateType/flashing"/>
+    </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="XDD.ecore#//SupportType">
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//SupportType/mandatory"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//SupportType/optional"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//SupportType/conditional"/>
+    </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="XDD.ecore#//TObjectAccessType">
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//TObjectAccessType/ro"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//TObjectAccessType/wo"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//TObjectAccessType/rw"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//TObjectAccessType/const"/>
+    </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="XDD.ecore#//TObjectPDOMapping">
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//TObjectPDOMapping/no"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//TObjectPDOMapping/default"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//TObjectPDOMapping/optional"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//TObjectPDOMapping/TPDO"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//TObjectPDOMapping/RPDO"/>
+    </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="XDD.ecore#//VersionTypeType">
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//VersionTypeType/SW"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//VersionTypeType/FW"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//VersionTypeType/HW"/>
+    </genEnums>
+    <genDataTypes ecoreDataType="XDD.ecore#//AccessListType"/>
+    <genDataTypes ecoreDataType="XDD.ecore#//AccessTypeObject"/>
+    <genDataTypes ecoreDataType="XDD.ecore#//AccessTypeObject1"/>
+    <genDataTypes ecoreDataType="XDD.ecore#//AccessTypeTypeObject"/>
+    <genDataTypes ecoreDataType="XDD.ecore#//DeviceClassTypeObject"/>
+    <genDataTypes ecoreDataType="XDD.ecore#//IASInterfaceDataType"/>
+    <genDataTypes ecoreDataType="XDD.ecore#//IASInterfaceDataTypeMember0Object"/>
+    <genDataTypes ecoreDataType="XDD.ecore#//IASInterfaceDataTypeMember1"/>
+    <genDataTypes ecoreDataType="XDD.ecore#//LEDcolorsTypeObject"/>
+    <genDataTypes ecoreDataType="XDD.ecore#//LEDcolorTypeObject"/>
+    <genDataTypes ecoreDataType="XDD.ecore#//LEDtypeTypeObject"/>
+    <genDataTypes ecoreDataType="XDD.ecore#//NodeTypeTypeObject"/>
+    <genDataTypes ecoreDataType="XDD.ecore#//OffsetType"/>
+    <genDataTypes ecoreDataType="XDD.ecore#//ProfileClassIDDataTypeObject"/>
+    <genDataTypes ecoreDataType="XDD.ecore#//RangeTypeObject"/>
+    <genDataTypes ecoreDataType="XDD.ecore#//StateTypeObject"/>
+    <genDataTypes ecoreDataType="XDD.ecore#//SupportedLanguagesType"/>
+    <genDataTypes ecoreDataType="XDD.ecore#//SupportTypeObject"/>
+    <genDataTypes ecoreDataType="XDD.ecore#//TObjectAccessTypeObject"/>
+    <genDataTypes ecoreDataType="XDD.ecore#//TObjectPDOMappingObject"/>
+    <genDataTypes ecoreDataType="XDD.ecore#//VersionTypeTypeObject"/>
+    <genClasses ecoreClass="XDD.ecore#//AddInfoType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute XDD.ecore#//AddInfoType/group"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//AddInfoType/label"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//AddInfoType/description"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//AddInfoType/labelRef"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//AddInfoType/descriptionRef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//AddInfoType/value"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//AddInfoType/bitOffset"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//AddInfoType/len"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//AddInfoType/name"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//ArrayType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute XDD.ecore#//ArrayType/group"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//ArrayType/label"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//ArrayType/description"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//ArrayType/labelRef"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//ArrayType/descriptionRef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ArrayType/subrange"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ArrayType/bOOL"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ArrayType/bITSTRING"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ArrayType/bYTE"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ArrayType/cHAR"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ArrayType/wORD"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ArrayType/dWORD"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ArrayType/lWORD"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ArrayType/sINT"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ArrayType/iNT"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ArrayType/dINT"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ArrayType/lINT"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ArrayType/uSINT"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ArrayType/uINT"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ArrayType/uDINT"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ArrayType/uLINT"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ArrayType/rEAL"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ArrayType/lREAL"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ArrayType/sTRING"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ArrayType/wSTRING"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ArrayType/dataTypeIDRef"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ArrayType/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ArrayType/uniqueID"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//CategoryType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute XDD.ecore#//CategoryType/group"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//CategoryType/label"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//CategoryType/description"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//CategoryType/labelRef"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//CategoryType/descriptionRef"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//CharacteristicContentType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute XDD.ecore#//CharacteristicContentType/group"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//CharacteristicContentType/label"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//CharacteristicContentType/description"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//CharacteristicContentType/labelRef"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//CharacteristicContentType/descriptionRef"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//CharacteristicNameType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute XDD.ecore#//CharacteristicNameType/group"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//CharacteristicNameType/label"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//CharacteristicNameType/description"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//CharacteristicNameType/labelRef"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//CharacteristicNameType/descriptionRef"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//CharacteristicsListType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//CharacteristicsListType/category"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//CharacteristicsListType/characteristic"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//CharacteristicType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//CharacteristicType/characteristicName"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//CharacteristicType/characteristicContent"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//CompliantWithType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute XDD.ecore#//CompliantWithType/group"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//CompliantWithType/label"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//CompliantWithType/description"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//CompliantWithType/labelRef"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//CompliantWithType/descriptionRef"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//CompliantWithType/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//CompliantWithType/range"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//ConfigVarsType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ConfigVarsType/varDeclaration"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//ConnectionType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ConnectionType/description"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ConnectionType/destination"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ConnectionType/source"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//DataTypeListType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//DataTypeListType/defType"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//DerivedType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute XDD.ecore#//DerivedType/group"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//DerivedType/label"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//DerivedType/description"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//DerivedType/labelRef"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//DerivedType/descriptionRef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//DerivedType/count"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//DerivedType/bOOL"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//DerivedType/bITSTRING"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//DerivedType/bYTE"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//DerivedType/cHAR"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//DerivedType/wORD"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//DerivedType/dWORD"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//DerivedType/lWORD"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//DerivedType/sINT"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//DerivedType/iNT"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//DerivedType/dINT"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//DerivedType/lINT"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//DerivedType/uSINT"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//DerivedType/uINT"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//DerivedType/uDINT"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//DerivedType/uLINT"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//DerivedType/rEAL"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//DerivedType/lREAL"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//DerivedType/sTRING"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//DerivedType/wSTRING"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//DerivedType/dataTypeIDRef"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//DerivedType/description1"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//DerivedType/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//DerivedType/uniqueID"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//DescriptionRefType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//DescriptionRefType/value"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//DescriptionRefType/dictID"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//DescriptionRefType/textID"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//DescriptionType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//DescriptionType/value"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//DescriptionType/lang"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//DescriptionType/uRI"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//DictionaryType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//DictionaryType/file"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//DictionaryType/dictID"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//DictionaryType/lang"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//DocumentRoot">
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//DocumentRoot/mixed"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//DocumentRoot/xMLNSPrefixMap"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//DocumentRoot/xSISchemaLocation"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//DocumentRoot/iSO15745ProfileContainer"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//DynamicChannelsType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//DynamicChannelsType/dynamicChannel"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//EnumType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute XDD.ecore#//EnumType/group"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//EnumType/label"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//EnumType/description"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//EnumType/labelRef"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//EnumType/descriptionRef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//EnumType/enumValue"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//EnumType/bOOL"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//EnumType/bITSTRING"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//EnumType/bYTE"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//EnumType/cHAR"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//EnumType/wORD"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//EnumType/dWORD"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//EnumType/lWORD"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//EnumType/sINT"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//EnumType/iNT"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//EnumType/dINT"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//EnumType/lINT"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//EnumType/uSINT"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//EnumType/uINT"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//EnumType/uDINT"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//EnumType/uLINT"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//EnumType/rEAL"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//EnumType/lREAL"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//EnumType/sTRING"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//EnumType/wSTRING"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//EnumType/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//EnumType/size"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//EnumType/uniqueID"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//ErrorBitDataType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute XDD.ecore#//ErrorBitDataType/group"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//ErrorBitDataType/label"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//ErrorBitDataType/description"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//ErrorBitDataType/labelRef"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//ErrorBitDataType/descriptionRef"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ErrorBitDataType/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ErrorBitDataType/offset"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//ErrorConstantDataType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute XDD.ecore#//ErrorConstantDataType/group"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//ErrorConstantDataType/label"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//ErrorConstantDataType/description"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//ErrorConstantDataType/labelRef"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//ErrorConstantDataType/descriptionRef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ErrorConstantDataType/addInfo"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ErrorConstantDataType/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ErrorConstantDataType/value"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//ErrorListType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ErrorListType/error"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//FileType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//FileType/uRI"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//FunctionInstanceType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute XDD.ecore#//FunctionInstanceType/group"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//FunctionInstanceType/label"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//FunctionInstanceType/description"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//FunctionInstanceType/labelRef"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//FunctionInstanceType/descriptionRef"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//FunctionInstanceType/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//FunctionInstanceType/typeIDRef"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//FunctionInstanceType/uniqueID"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//FunctionTypeType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute XDD.ecore#//FunctionTypeType/group"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//FunctionTypeType/label"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//FunctionTypeType/description"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//FunctionTypeType/labelRef"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//FunctionTypeType/descriptionRef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//FunctionTypeType/versionInfo"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//FunctionTypeType/interfaceList"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//FunctionTypeType/functionInstanceList"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//FunctionTypeType/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//FunctionTypeType/package"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//FunctionTypeType/uniqueID"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//IdentityType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//IdentityType/vendorID"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//IdentityType/deviceFamily"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//IdentityType/productID"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//IdentityType/version"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//IdentityType/buildDate"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//IdentityType/specificationRevision"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//InputVarsType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//InputVarsType/varDeclaration"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//InstanceIDRefType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//InstanceIDRefType/uniqueIDRef"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//InstanceNameType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//InstanceNameType/value"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//InstanceNameType/readOnly"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//InterfaceListType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//InterfaceListType/inputVars"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//InterfaceListType/outputVars"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//InterfaceListType/configVars"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//ISO15745ProfileContainerType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ISO15745ProfileContainerType/iSO15745Profile"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//ISO15745ProfileType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ISO15745ProfileType/profileHeader"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ISO15745ProfileType/profileBody"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//ISO15745ReferenceDataType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ISO15745ReferenceDataType/iSO15745Part"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ISO15745ReferenceDataType/iSO15745Edition"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ISO15745ReferenceDataType/profileTechnology"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//LabelRefType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//LabelRefType/value"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//LabelRefType/dictID"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//LabelRefType/textID"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//LabelType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//LabelType/value"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//LabelType/lang"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//LEDListType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//LEDListType/lED"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//LEDListType/combinedState"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//LEDstateRefType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//LEDstateRefType/stateIDRef"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//LEDstateType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute XDD.ecore#//LEDstateType/group"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//LEDstateType/label"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//LEDstateType/description"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//LEDstateType/labelRef"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//LEDstateType/descriptionRef"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//LEDstateType/flashingPeriod"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//LEDstateType/impulsWidth"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//LEDstateType/lEDcolor"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//LEDstateType/numberOfImpulses"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//LEDstateType/state"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//LEDstateType/uniqueID"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//MaxValueType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute XDD.ecore#//MaxValueType/group"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//MaxValueType/label"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//MaxValueType/description"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//MaxValueType/labelRef"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//MaxValueType/descriptionRef"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//MaxValueType/multiplier"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//MaxValueType/offset"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//MaxValueType/value"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//MemberRefType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//MemberRefType/index"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//MemberRefType/uniqueIDRef"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//MinValueType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute XDD.ecore#//MinValueType/group"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//MinValueType/label"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//MinValueType/description"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//MinValueType/labelRef"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//MinValueType/descriptionRef"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//MinValueType/multiplier"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//MinValueType/offset"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//MinValueType/value"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//ObjectListType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ObjectListType/object"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ObjectListType/mandatoryObjects"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ObjectListType/manufacturerObjects"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ObjectListType/optionalObjects"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//OrderNumberType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//OrderNumberType/value"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//OrderNumberType/readOnly"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//OutputVarsType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//OutputVarsType/varDeclaration"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//ParameterRefType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ParameterRefType/uniqueIDRef"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//ParameterType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute XDD.ecore#//ParameterType/group"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//ParameterType/label"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//ParameterType/description"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//ParameterType/labelRef"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//ParameterType/descriptionRef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ParameterType/bOOL"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ParameterType/bITSTRING"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ParameterType/bYTE"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ParameterType/cHAR"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ParameterType/wORD"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ParameterType/dWORD"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ParameterType/lWORD"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ParameterType/sINT"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ParameterType/iNT"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ParameterType/dINT"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ParameterType/lINT"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ParameterType/uSINT"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ParameterType/uINT"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ParameterType/uDINT"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ParameterType/uLINT"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ParameterType/rEAL"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ParameterType/lREAL"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ParameterType/sTRING"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ParameterType/wSTRING"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ParameterType/dataTypeIDRef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ParameterType/variableRef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ParameterType/conditionalSupport"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ParameterType/denotation"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ParameterType/actualValue"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ParameterType/defaultValue"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ParameterType/substituteValue"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ParameterType/allowedValues"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ParameterType/unit"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ParameterType/property"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ParameterType/access"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ParameterType/accessList"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ParameterType/multiplier"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ParameterType/offset"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ParameterType/persistent"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ParameterType/support"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ParameterType/templateIDRef"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ParameterType/uniqueID"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//PictureType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute XDD.ecore#//PictureType/group"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//PictureType/label"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//PictureType/description"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//PictureType/labelRef"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//PictureType/descriptionRef"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//PictureType/number"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//PictureType/uRI"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//ProductFamilyType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ProductFamilyType/value"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ProductFamilyType/readOnly"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//ProductNameType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ProductNameType/value"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ProductNameType/readOnly"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//ProductTextType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute XDD.ecore#//ProductTextType/group"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//ProductTextType/label"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//ProductTextType/description"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//ProductTextType/labelRef"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//ProductTextType/descriptionRef"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ProductTextType/readOnly"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//ProfileBodyCommunicationNetworkPowerlink">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ProfileBodyCommunicationNetworkPowerlink/applicationLayers"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ProfileBodyCommunicationNetworkPowerlink/transportLayers"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ProfileBodyCommunicationNetworkPowerlink/networkManagement"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ProfileBodyCommunicationNetworkPowerlink/externalProfileHandle"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="XDD.ecore#//ProfileBodyDataType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ProfileBodyDataType/fileCreationDate"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ProfileBodyDataType/fileCreationTime"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ProfileBodyDataType/fileCreator"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ProfileBodyDataType/fileModificationDate"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ProfileBodyDataType/fileModificationTime"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ProfileBodyDataType/fileModifiedBy"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ProfileBodyDataType/fileName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ProfileBodyDataType/fileVersion"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ProfileBodyDataType/formatName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ProfileBodyDataType/formatVersion"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ProfileBodyDataType/supportedLanguages"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//ProfileBodyDevicePowerlink">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ProfileBodyDevicePowerlink/deviceIdentity"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ProfileBodyDevicePowerlink/deviceManager"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ProfileBodyDevicePowerlink/deviceFunction"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ProfileBodyDevicePowerlink/applicationProcess"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ProfileBodyDevicePowerlink/externalProfileHandle"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ProfileBodyDevicePowerlink/deviceClass"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//ProfileHandleDataType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ProfileHandleDataType/profileIdentification"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ProfileHandleDataType/profileRevision"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ProfileHandleDataType/profileLocation"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//ProfileHeaderDataType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ProfileHeaderDataType/profileIdentification"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ProfileHeaderDataType/profileRevision"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ProfileHeaderDataType/profileName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ProfileHeaderDataType/profileSource"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ProfileHeaderDataType/profileClassID"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ProfileHeaderDataType/profileDate"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ProfileHeaderDataType/additionalInformation"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ProfileHeaderDataType/iSO15745Reference"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ProfileHeaderDataType/iASInterfaceType"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//StandardComplianceListType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//StandardComplianceListType/compliantWith"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//StaticErrorBitFieldType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//StaticErrorBitFieldType/errorBit"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//StepType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute XDD.ecore#//StepType/group"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//StepType/label"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//StepType/description"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//StepType/labelRef"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//StepType/descriptionRef"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//StepType/multiplier"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//StepType/offset"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//StepType/value"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//StructType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute XDD.ecore#//StructType/group"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//StructType/label"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//StructType/description"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//StructType/labelRef"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//StructType/descriptionRef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//StructType/varDeclaration"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//StructType/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//StructType/uniqueID"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//SubObjectType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//SubObjectType/accessType"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//SubObjectType/actualValue"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//SubObjectType/dataType"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//SubObjectType/defaultValue"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//SubObjectType/denotation"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//SubObjectType/highLimit"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//SubObjectType/lowLimit"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//SubObjectType/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//SubObjectType/objectType"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//SubObjectType/objFlags"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//SubObjectType/pDOmapping"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//SubObjectType/subIndex"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//SubObjectType/uniqueIDRef"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//TAllowedValues">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TAllowedValues/value"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TAllowedValues/range"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TAllowedValues/templateIDRef"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//TAllowedValuesTemplate">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TAllowedValuesTemplate/value"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TAllowedValuesTemplate/range"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TAllowedValuesTemplate/uniqueID"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//TApplicationLayers">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TApplicationLayers/identity"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TApplicationLayers/dataTypeList"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TApplicationLayers/objectList"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TApplicationLayers/dynamicChannels"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TApplicationLayers/communicationEntityType"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TApplicationLayers/conformanceClass"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//TApplicationProcess">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TApplicationProcess/dataTypeList"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TApplicationProcess/functionTypeList"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TApplicationProcess/functionInstanceList"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TApplicationProcess/templateList"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TApplicationProcess/parameterList"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TApplicationProcess/parameterGroupList"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//TCapabilities">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TCapabilities/characteristicsList"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TCapabilities/standardComplianceList"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//TCNFeatures">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TCNFeatures/dLLCNFeatureMultiplex"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TCNFeatures/dLLCNPResChaining"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TCNFeatures/nMTCNSoC2PReq"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//TCombinedState">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute XDD.ecore#//TCombinedState/group"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//TCombinedState/label"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//TCombinedState/description"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//TCombinedState/labelRef"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//TCombinedState/descriptionRef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TCombinedState/lEDstateRef"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//TConditionalSupport">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TConditionalSupport/paramIDRef"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//TCount">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute XDD.ecore#//TCount/group"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//TCount/label"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//TCount/description"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//TCount/labelRef"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//TCount/descriptionRef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TCount/defaultValue"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TCount/allowedValues"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TCount/access"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TCount/uniqueID"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//TDataTypeIDRef">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TDataTypeIDRef/uniqueIDRef"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//TDataTypeList">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute XDD.ecore#//TDataTypeList/group"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//TDataTypeList/array"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//TDataTypeList/struct"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//TDataTypeList/enum"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//TDataTypeList/derived"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//TDataTypes">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TDataTypes/boolean"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TDataTypes/integer8"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TDataTypes/integer16"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TDataTypes/integer32"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TDataTypes/integer24"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TDataTypes/integer40"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TDataTypes/integer48"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TDataTypes/integer56"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TDataTypes/integer64"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TDataTypes/unsigned8"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TDataTypes/unsigned16"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TDataTypes/unsigned32"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TDataTypes/unsigned24"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TDataTypes/unsigned40"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TDataTypes/unsigned48"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TDataTypes/unsigned56"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TDataTypes/unsigned64"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TDataTypes/real32"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TDataTypes/real64"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TDataTypes/visibleString"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TDataTypes/octetString"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TDataTypes/unicodeString"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TDataTypes/timeOfDay"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TDataTypes/timeDiff"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TDataTypes/domain"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TDataTypes/mACADDRESS"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TDataTypes/iPADDRESS"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TDataTypes/nETTIME"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TDataTypes/dataType"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//TDenotation">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute XDD.ecore#//TDenotation/group"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//TDenotation/label"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//TDenotation/description"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//TDenotation/labelRef"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//TDenotation/descriptionRef"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//TDeviceCommissioning">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TDeviceCommissioning/networkName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TDeviceCommissioning/nodeID"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TDeviceCommissioning/nodeName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TDeviceCommissioning/nodeType"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TDeviceCommissioning/usedNetworkInterface"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//TDeviceFamily">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute XDD.ecore#//TDeviceFamily/group"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//TDeviceFamily/label"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//TDeviceFamily/description"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//TDeviceFamily/labelRef"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//TDeviceFamily/descriptionRef"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TDeviceFamily/readOnly"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//TDeviceFunction">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TDeviceFunction/capabilities"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TDeviceFunction/picturesList"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TDeviceFunction/dictionaryList"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//TDeviceIdentity">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TDeviceIdentity/vendorName"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TDeviceIdentity/vendorID"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TDeviceIdentity/vendorText"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TDeviceIdentity/deviceFamily"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TDeviceIdentity/productFamily"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TDeviceIdentity/productName"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TDeviceIdentity/productID"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TDeviceIdentity/productText"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TDeviceIdentity/orderNumber"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TDeviceIdentity/version"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TDeviceIdentity/buildDate"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TDeviceIdentity/specificationRevision"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TDeviceIdentity/instanceName"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//TDeviceManager">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TDeviceManager/indicatorList"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//TDiagnostic">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute XDD.ecore#//TDiagnostic/group"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//TDiagnostic/errorList"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//TDiagnostic/staticErrorBitField"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//TDictionaryList">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TDictionaryList/dictionary"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//TDynamicChannel">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TDynamicChannel/accessType"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TDynamicChannel/addressOffset"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TDynamicChannel/bitAlignment"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TDynamicChannel/dataType"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TDynamicChannel/endIndex"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TDynamicChannel/maxNumber"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TDynamicChannel/startIndex"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//TEnumValue">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute XDD.ecore#//TEnumValue/group"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//TEnumValue/label"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//TEnumValue/description"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//TEnumValue/labelRef"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//TEnumValue/descriptionRef"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TEnumValue/value"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//TextEntryType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TextEntryType/value"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TextEntryType/textID"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//TextResourceType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TextResourceType/textEntry"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TextResourceType/lang"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//TFunctionInstanceList">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TFunctionInstanceList/functionInstance"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TFunctionInstanceList/connection"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//TFunctionTypeList">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TFunctionTypeList/functionType"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//TGeneralFeatures">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/cFMConfigManager"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/dLLErrBadPhysMode"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/dLLErrMacBuffer"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/dLLFeatureCN"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/dLLFeatureMN"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/nMTBootTimeNotActive"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/nMTCycleTimeGranularity"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/nMTCycleTimeMax"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/nMTCycleTimeMin"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/nMTEmergencyQueueSize"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/nMTErrorEntries"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/nMTFlushArpEntry"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/nMTMaxCNNodeID"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/nMTMaxCNNumber"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/nMTMaxHeartbeats"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/nMTMinRedCycleTime"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/nMTNetHostNameSet"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/nMTNodeIDByHW"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/nMTProductCode"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/nMTPublishActiveNodes"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/nMTPublishConfigNodes"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/nMTPublishEmergencyNew"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/nMTPublishNodeState"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/nMTPublishOperational"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/nMTPublishPreOp1"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/nMTPublishPreOp2"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/nMTPublishReadyToOp"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/nMTPublishStopped"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/nMTPublishTime"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/nMTRevisionNo"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/nWLForward"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/nWLICMPSupport"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/nWLIPSupport"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/pDOGranularity"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/pDOMaxDescrMem"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/pDORPDOChannelObjects"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/pDORPDOChannels"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/pDORPDOCycleDataLim"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/pDORPDOOverallObjects"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/pDOSelfReceipt"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/pDOTPDOChannelObjects"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/pDOTPDOCycleDataLim"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/pDOTPDOOverallObjects"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/pHYExtEPLPorts"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/pHYHubDelay"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/pHYHubIntegrated"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/pHYHubJitter"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/rT1RT1SecuritySupport"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/rT1RT1Support"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/rT2RT2Support"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/sDOClient"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/sDOCmdFileRead"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/sDOCmdFileWrite"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/sDOCmdLinkName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/sDOCmdReadAllByIndex"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/sDOCmdReadByName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/sDOCmdReadMultParam"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/sDOCmdWriteAllByIndex"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/sDOCmdWriteByName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/sDOCmdWriteMultParam"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/sDOMaxConnections"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/sDOMaxParallelConnections"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/sDOSeqLayerTxHistorySize"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/sDOServer"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//TIndicatorList">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TIndicatorList/lEDList"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//TLED">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute XDD.ecore#//TLED/group"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//TLED/label"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//TLED/description"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//TLED/labelRef"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//TLED/descriptionRef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TLED/lEDstate"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TLED/lEDcolors"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TLED/lEDtype"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//TMNFeatures">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TMNFeatures/dLLErrMNMultipleMN"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TMNFeatures/dLLMNFeatureMultiplex"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TMNFeatures/dLLMNFeaturePResTx"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TMNFeatures/dLLMNPResChaining"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TMNFeatures/nMTMNASnd2SoC"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TMNFeatures/nMTMNBasicEthernet"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TMNFeatures/nMTMNMultiplCycMax"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TMNFeatures/nMTMNPRes2PReq"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TMNFeatures/nMTMNPRes2PRes"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TMNFeatures/nMTMNPResRx2SoA"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TMNFeatures/nMTMNPResTx2SoA"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TMNFeatures/nMTMNSoA2ASndTx"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TMNFeatures/nMTMNSoC2PReq"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TMNFeatures/nMTNetTime"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TMNFeatures/nMTNetTimeIsRealTime"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TMNFeatures/nMTRelativeTime"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TMNFeatures/nMTSimpleBoot"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TMNFeatures/pDOTPDOChannels"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//TNetworkManagement">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TNetworkManagement/generalFeatures"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TNetworkManagement/mNFeatures"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TNetworkManagement/cNFeatures"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TNetworkManagement/deviceCommissioning"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TNetworkManagement/diagnostic"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//TObject">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TObject/subObject"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TObject/accessType"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TObject/actualValue"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TObject/dataType"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TObject/defaultValue"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TObject/denotation"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TObject/highLimit"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TObject/index"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TObject/lowLimit"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TObject/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TObject/objectType"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TObject/objFlags"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TObject/pDOmapping"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TObject/subNumber"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TObject/uniqueIDRef"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//TParameterGroup">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute XDD.ecore#//TParameterGroup/group"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//TParameterGroup/label"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//TParameterGroup/description"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//TParameterGroup/labelRef"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//TParameterGroup/descriptionRef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TParameterGroup/parameterGroup"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TParameterGroup/parameterRef"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TParameterGroup/kindOfAccess"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TParameterGroup/uniqueID"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//TParameterGroupList">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TParameterGroupList/parameterGroup"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//TParameterList">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TParameterList/parameter"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//TParameterTemplate">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TParameterTemplate/bOOL"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TParameterTemplate/bITSTRING"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TParameterTemplate/bYTE"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TParameterTemplate/cHAR"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TParameterTemplate/wORD"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TParameterTemplate/dWORD"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TParameterTemplate/lWORD"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TParameterTemplate/sINT"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TParameterTemplate/iNT"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TParameterTemplate/dINT"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TParameterTemplate/lINT"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TParameterTemplate/uSINT"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TParameterTemplate/uINT"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TParameterTemplate/uDINT"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TParameterTemplate/uLINT"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TParameterTemplate/rEAL"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TParameterTemplate/lREAL"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TParameterTemplate/sTRING"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TParameterTemplate/wSTRING"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TParameterTemplate/dataTypeIDRef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TParameterTemplate/conditionalSupport"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TParameterTemplate/actualValue"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TParameterTemplate/defaultValue"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TParameterTemplate/substituteValue"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TParameterTemplate/allowedValues"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TParameterTemplate/unit"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TParameterTemplate/property"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TParameterTemplate/access"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TParameterTemplate/accessList"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TParameterTemplate/multiplier"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TParameterTemplate/offset"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TParameterTemplate/persistent"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TParameterTemplate/support"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TParameterTemplate/templateIDRef"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TParameterTemplate/uniqueID"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//TPicturesList">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TPicturesList/picture"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//TProductID">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TProductID/value"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TProductID/readOnly"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//TProperty">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TProperty/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TProperty/value"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//TRange">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TRange/minValue"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TRange/maxValue"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TRange/step"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//TSpecificationRevision">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TSpecificationRevision/value"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TSpecificationRevision/readOnly"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//TSubrange">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TSubrange/lowerLimit"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TSubrange/upperLimit"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//TTemplateList">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TTemplateList/parameterTemplate"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TTemplateList/allowedValuesTemplate"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//TUnit">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute XDD.ecore#//TUnit/group"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//TUnit/label"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//TUnit/description"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//TUnit/labelRef"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//TUnit/descriptionRef"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TUnit/multiplier"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TUnit/unitURI"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//TValue">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute XDD.ecore#//TValue/group"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//TValue/label"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//TValue/description"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//TValue/labelRef"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//TValue/descriptionRef"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TValue/multiplier"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TValue/offset"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TValue/value"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//TVarDeclaration">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute XDD.ecore#//TVarDeclaration/group"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//TVarDeclaration/label"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//TVarDeclaration/description"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//TVarDeclaration/labelRef"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//TVarDeclaration/descriptionRef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TVarDeclaration/bOOL"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TVarDeclaration/bITSTRING"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TVarDeclaration/bYTE"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TVarDeclaration/cHAR"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TVarDeclaration/wORD"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TVarDeclaration/dWORD"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TVarDeclaration/lWORD"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TVarDeclaration/sINT"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TVarDeclaration/iNT"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TVarDeclaration/dINT"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TVarDeclaration/lINT"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TVarDeclaration/uSINT"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TVarDeclaration/uINT"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TVarDeclaration/uDINT"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TVarDeclaration/uLINT"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TVarDeclaration/rEAL"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TVarDeclaration/lREAL"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TVarDeclaration/sTRING"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TVarDeclaration/wSTRING"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TVarDeclaration/dataTypeIDRef"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TVarDeclaration/initialValue"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TVarDeclaration/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TVarDeclaration/size"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TVarDeclaration/uniqueID"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//TVariableRef">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TVariableRef/instanceIDRef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TVariableRef/variableIDRef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TVariableRef/memberRef"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TVariableRef/position"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//TVendorID">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TVendorID/value"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TVendorID/readOnly"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//TVersion">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TVersion/value"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TVersion/readOnly"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TVersion/versionType"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//ValueType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute XDD.ecore#//ValueType/group"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//ValueType/label"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//ValueType/description"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//ValueType/labelRef"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//ValueType/descriptionRef"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ValueType/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ValueType/value"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//VariableIDRefType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//VariableIDRefType/uniqueIDRef"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//VendorNameType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//VendorNameType/value"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//VendorNameType/readOnly"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//VendorTextType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute XDD.ecore#//VendorTextType/group"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//VendorTextType/label"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//VendorTextType/description"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//VendorTextType/labelRef"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//VendorTextType/descriptionRef"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//VendorTextType/readOnly"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//VersionInfoType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute XDD.ecore#//VersionInfoType/group"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//VersionInfoType/label"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//VersionInfoType/description"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//VersionInfoType/labelRef"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//VersionInfoType/descriptionRef"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//VersionInfoType/author"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//VersionInfoType/date"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//VersionInfoType/organization"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//VersionInfoType/version"/>
+    </genClasses>
+  </genPackages>
+</genmodel:GenModel>
