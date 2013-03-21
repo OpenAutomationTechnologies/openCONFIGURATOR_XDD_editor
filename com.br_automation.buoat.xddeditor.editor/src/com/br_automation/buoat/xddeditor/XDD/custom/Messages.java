@@ -9,14 +9,10 @@ public class Messages extends NLS {
     public static String AdvancedMappingObjectPropertySection_err_index_not_found;
     public static String AdvancedMappingObjectPropertySection_err_length;
     public static String AdvancedMappingObjectPropertySection_err_length_and_offset;
-    public static String AdvancedMappingObjectPropertySection_err_length_not_dividable_1;
-    public static String AdvancedMappingObjectPropertySection_err_length_not_dividable_2;
-    public static String AdvancedMappingObjectPropertySection_err_length_not_dividable_3;
+    public static String AdvancedMappingObjectPropertySection_err_length_not_dividable;
     public static String AdvancedMappingObjectPropertySection_err_mappingObject_not_found;
     public static String AdvancedMappingObjectPropertySection_err_offset;
-    public static String AdvancedMappingObjectPropertySection_err_offset_not_dividable_1;
-    public static String AdvancedMappingObjectPropertySection_err_offset_not_dividable_2;
-    public static String AdvancedMappingObjectPropertySection_err_offset_not_dividable_3;
+    public static String AdvancedMappingObjectPropertySection_err_offset_not_dividable;
     public static String AdvancedMappingObjectPropertySection_err_subobject_not_found;
     public static String AdvancedMappingObjectPropertySection_help_Index_combobox;
     public static String AdvancedMappingObjectPropertySection_help_subindex_combobox;

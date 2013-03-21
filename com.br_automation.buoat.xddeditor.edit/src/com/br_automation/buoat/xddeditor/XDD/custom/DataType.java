@@ -1,14 +1,14 @@
 package com.br_automation.buoat.xddeditor.XDD.custom;
 
-public enum EDataType {
+public enum DataType {
 
     BOOLEAN(8, "Boolean", 0x1),
     INTEGER8(8, "Integer8", 0x2),
     INTEGER16(16, "Integer16", 0x3),
     INTEGER32(32, "Integer32", 0x4),
-    UNSINGNED8(8, "Unsigned8", 0x5),
-    UNSINGNED16(16, "Unsigned16", 0x6),
-    UNSINGNED32(32, "Unsigned32", 0x7),
+    UNSIGNED8(8, "Unsigned8", 0x5),
+    UNSIGNED16(16, "Unsigned16", 0x6),
+    UNSIGNED32(32, "Unsigned32", 0x7),
     REAL32(32, "Real32", 0x8),
     INTEGER24(24, "Integer24", 0x10),
     REAL64(64, "Real64", 0x11),
@@ -16,47 +16,47 @@ public enum EDataType {
     INTEGER48(48, "Integer48", 0x13),
     INTEGER56(56, "Integer56", 0x14),
     INTEGER64(64, "Integer64", 0x15),
-    UNSINGNED24(24, "Unsigned24", 0x16),
-    UNSINGNED40(40, "Unsigned40", 0x18),
-    UNSINGNED48(48, "Unsigned48", 0x19),
-    UNSINGNED56(56, "Unsigned56", 0x1A),
-    UNSINGNED64(64, "Unsigned64", 0x1B),
-    NOTKNOW(0, "Notknown", 0xFFFF);
+    UNSIGNED24(24, "Unsigned24", 0x16),
+    UNSIGNED40(40, "Unsigned40", 0x18),
+    UNSIGNED48(48, "Unsigned48", 0x19),
+    UNSIGNED56(56, "Unsigned56", 0x1A),
+    UNSIGNED64(64, "Unsigned64", 0x1B),
+    UNKNOWN(0, "Unknown", 0xFFFF);
 
     private int bitSize;
     private String typeName;
     private int typeValue;
 
-    private EDataType(int size,
+    private DataType(int size,
         String typeName,
         int typeValue) {
-        bitSize = size;
+        this.bitSize = size;
         this.typeName = typeName;
         this.typeValue = typeValue;
     }
 
     public String toIntString() {
-        return Integer.toString(getBitSize());
+        return Integer.toString(this.getBitSize());
     }
 
     public int getBitSize() {
-        return bitSize;
+        return this.bitSize;
     }
 
     public String getTypeName() {
-        return typeName;
+        return this.typeName;
     }
 
     public int getTypeValue() {
-        return typeValue;
+        return this.typeValue;
     }
 
-    public static EDataType fromInt(int value) {
-        for (EDataType dataType : EDataType.values())
+    public static DataType fromInt(int value) {
+        for (DataType dataType : DataType.values())
             if (dataType.getTypeValue() == value)
                 return dataType;
 
-        return NOTKNOW;
+        return UNKNOWN;
     }
 
 }

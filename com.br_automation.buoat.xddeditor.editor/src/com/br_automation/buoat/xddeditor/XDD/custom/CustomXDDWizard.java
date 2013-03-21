@@ -61,7 +61,9 @@ public class CustomXDDWizard extends XDDModelWizard {
         newFileCreationPage.setDescription(XDDEditorPlugin.INSTANCE
             .getString("_UI_XDDModelWizard_description"));
         newFileCreationPage.setFileName(XDDEditorPlugin.INSTANCE
-            .getString("_UI_XDDEditorFilenameDefaultBase") + "." + XDDModelWizard.FILE_EXTENSIONS.get(0));
+            .getString("_UI_XDDEditorFilenameDefaultBase")
+            + "."
+            + XDDModelWizard.FILE_EXTENSIONS.get(0));
         addPage(newFileCreationPage);
 
         // Try and get the resource selection to determine a current directory for the file dialog.
@@ -101,8 +103,7 @@ public class CustomXDDWizard extends XDDModelWizard {
         wizardTemplatePage = new WizardTemplatePage("wizardTemplatePage");
         addPage(wizardTemplatePage);
 
-        wizardConfigurationPage1 = new WizardConfigurationPage1("wizardConfigurationPage1",
-            this);
+        wizardConfigurationPage1 = new WizardConfigurationPage1("wizardConfigurationPage1", this);
         addPage(wizardConfigurationPage1);
 
     }
