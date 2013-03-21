@@ -113,6 +113,15 @@
                   type="com.br_automation.buoat.xddeditor.XDD.impl.TObjectImpl">
             </input>
          </propertySection>
+         <propertySection
+               class="com.br_automation.buoat.xddeditor.XDD.custom.AdvancedDeviceTypePropertySection"
+               filter="com.br_automation.buoat.xddeditor.XDD.custom.Index1000Filter"
+               id="advanced_section"
+               tab="advanced_propertytab">
+            <input
+                  type="com.br_automation.buoat.xddeditor.XDD.impl.TObjectImpl">
+            </input>
+         </propertySection>
       </propertySections>
    </extension>
    
