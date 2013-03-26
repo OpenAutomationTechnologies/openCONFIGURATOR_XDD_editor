@@ -110,7 +110,7 @@
                id="advanced_section"
                tab="advanced_propertytab">
             <input
-                  type="com.br_automation.buoat.xddeditor.XDD.impl.TObjectImpl">
+                  type="com.br_automation.buoat.xddeditor.XDD.impl.SubObjectTypeImpl">
             </input>
          </propertySection>
          <propertySection
@@ -120,6 +120,15 @@
                tab="advanced_propertytab">
             <input
                   type="com.br_automation.buoat.xddeditor.XDD.impl.TObjectImpl">
+            </input>
+         </propertySection>
+         <propertySection
+               class="com.br_automation.buoat.xddeditor.XDD.custom.AdvancedStoreParamPropertySection"
+               filter="com.br_automation.buoat.xddeditor.XDD.custom.StoreParamObjectsFilter"
+               id="advanced_section"
+               tab="advanced_propertytab">
+            <input
+                  type="com.br_automation.buoat.xddeditor.XDD.impl.SubObjectTypeImpl">
             </input>
          </propertySection>
       </propertySections>
