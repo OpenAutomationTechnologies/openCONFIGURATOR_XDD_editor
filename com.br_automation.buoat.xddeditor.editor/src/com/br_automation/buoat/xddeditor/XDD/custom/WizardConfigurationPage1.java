@@ -19,6 +19,32 @@ import org.eclipse.wb.swt.SWTResourceManager;
 //Advanced configurationPage for a new XDD Model
 public class WizardConfigurationPage1 extends WizardPage {
 
+    CustomXDDWizard Mainwizard;
+
+    private Button btnCnMultiplexFeature;
+
+    private Button btnResponseChaining;
+    //Metadata
+    private Text txtCreator;
+    private Text txtDeviceName;
+
+    private Text txtFileVersion;
+    private Text txtFirmwareVersionNr;
+    private Text txtHardwareVersNr;
+    private Text txtNMTBootTimeNotActive;
+    //Feature-Settings
+    private Text txtNMTCNSoC2PReq;
+    private Text txtNMTCycleTimeMax;
+
+    private Text txtNMTCycleTimeMin;
+    private Text txtNMTErrorEntries;
+    private Text txtProductID;
+    private Text txtProductName;
+    private Text txtSoftwareVersNr;
+    private Text txtVendorID;
+    //Product/Vendor variables
+    private Text txtVendorName;
+
     /**
      * Create the wizard.
      * 
@@ -27,144 +53,15 @@ public class WizardConfigurationPage1 extends WizardPage {
     public WizardConfigurationPage1(String pageID,
         CustomXDDWizard wizard) {
         super(pageID);
-        setTitle("Advanced Configuration Page");
-        setDescription("Type in the data for a new XDD Model");
-        Mainwizard = wizard;
-        Mainwizard.wizardTemplatePage.setPageComplete(true);
-        setPageComplete(true);
+        this.setTitle("Advanced Configuration Page");
+        this.setDescription("Type in the data for a new XDD Model");
+        this.Mainwizard = wizard;
+        this.Mainwizard.wizardTemplatePage.setPageComplete(true);
+        this.setPageComplete(true);
 
     }
-
-    CustomXDDWizard Mainwizard;
-
-    //Metadata
-    private Text txtCreator;
-    private Text txtDeviceName;
-    private Text txtFileVersion;
-
-    //Product/Vendor variables
-    private Text txtVendorName;
-    private Text txtVendorID;
-    private Text txtProductName;
-    private Text txtHardwareVersNr;
-    private Text txtSoftwareVersNr;
-    private Text txtProductID;
-
-    //Feature-Settings
-    private Text txtNMTCNSoC2PReq;
-    private Text txtNMTBootTimeNotActive;
-    private Text txtNMTCycleTimeMax;
-    private Text txtNMTCycleTimeMin;
-    private Text txtNMTErrorEntries;
-    private Button btnResponseChaining;
-    private Button btnCnMultiplexFeature;
-    private Text txtFirmwareVersionNr;
 
     //Metadata getters
-
-    public XMLGregorianCalendar getCreationTimeXML() {
-        return XDDUtilities.getXMLTime();
-    }
-
-    public XMLGregorianCalendar getCreationDateXML() {
-        return XDDUtilities.getXMLDate();
-    }
-
-    public String getFileNameString() {
-        return Mainwizard.newFileCreationPage.getFileName();
-    }
-
-    public String getCreatorString() {
-        return txtCreator.getText();
-    }
-
-    public String getDeviceNameString() {
-        return txtDeviceName.getText();
-    }
-
-    public String getFileVersionString() {
-        return txtFileVersion.getText();
-    }
-
-    //Vendor/Product getters
-
-    public String getVendorNameString() {
-        return txtVendorName.getText();
-    }
-
-    public String getVendorIDString() {
-        return txtVendorID.getText();
-    }
-
-    public String getProductNameString() {
-        return txtProductName.getText();
-    }
-
-    public String getHardwareversString() {
-        return txtHardwareVersNr.getText();
-    }
-
-    public String getSoftwareversString() {
-        return txtSoftwareVersNr.getText();
-    }
-
-    public String getProductIDString() {
-        return txtProductID.getText();
-    }
-
-    public String getFirmwareversString() {
-        return txtFirmwareVersionNr.getText();
-    }
-
-    //Feature getters
-
-    public boolean getResponseChaining() {
-        return btnResponseChaining.getSelection();
-    }
-
-    public boolean getCnMultiplexFeature() {
-        return btnCnMultiplexFeature.getSelection();
-    }
-
-    public int getNMTCNSoC2PReq() {
-        if (!txtNMTCNSoC2PReq.getText().isEmpty()) {
-            int value = Integer.parseInt(txtNMTCNSoC2PReq.getText());
-            return value;
-        } else
-            return 0;
-    }
-
-    public int getNMTBootTimeNotActive() {
-        if (!txtNMTBootTimeNotActive.getText().isEmpty()) {
-            int value = Integer.parseInt(txtNMTBootTimeNotActive.getText());
-            return value;
-        } else
-            return 0;
-    }
-
-    public int getNMTCycleTimeMax() {
-        if (!txtNMTCycleTimeMax.getText().isEmpty()) {
-            int value = Integer.parseInt(txtNMTCycleTimeMax.getText());
-            return value;
-        } else
-            return 0;
-    }
-
-    public int getNMTCycleTimeMin() {
-        if (!txtNMTCycleTimeMin.getText().isEmpty()) {
-            int value = Integer.parseInt(txtNMTCycleTimeMin.getText());
-            return value;
-        } else
-            return 0;
-    }
-
-    public int getNMTErrorEntries() {
-        if (!txtNMTErrorEntries.getText().isEmpty()) {
-            int value = Integer.parseInt(txtNMTErrorEntries.getText());
-            return value;
-        } else
-            return 0;
-    }
 
     /**
      * Create contents of the wizard.
@@ -175,7 +72,7 @@ public class WizardConfigurationPage1 extends WizardPage {
     public void createControl(Composite parent) {
         Composite container = new Composite(parent, SWT.NULL);
 
-        setControl(container);
+        this.setControl(container);
 
         SimpleDateFormat creationDate = new SimpleDateFormat("yyyy-MM-dd");
         String creationDateStr = creationDate.format(new Date());
@@ -192,22 +89,22 @@ public class WizardConfigurationPage1 extends WizardPage {
         lblDeviceName.setBounds(10, 91, 82, 15);
         lblDeviceName.setText("Device Name:");
 
-        txtDeviceName = new Text(grpMetadata, SWT.BORDER);
-        txtDeviceName.setBounds(98, 88, 101, 21);
-        txtDeviceName.addSelectionListener(new SelectionAdapter() {
+        this.txtDeviceName = new Text(grpMetadata, SWT.BORDER);
+        this.txtDeviceName.setBounds(98, 88, 101, 21);
+        this.txtDeviceName.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                if (txtDeviceName.getText().isEmpty())
-                    setPageComplete(false);
+                if (WizardConfigurationPage1.this.txtDeviceName.getText().isEmpty())
+                    WizardConfigurationPage1.this.setPageComplete(false);
                 else
-                    setPageComplete(true);
+                    WizardConfigurationPage1.this.setPageComplete(true);
             }
         });
-        txtDeviceName.setText("New_Device");
+        this.txtDeviceName.setText("New_Device");
 
-        txtCreator = new Text(grpMetadata, SWT.BORDER);
-        txtCreator.setBounds(98, 64, 101, 21);
-        txtCreator.setText(System.getProperty("user.name"));
+        this.txtCreator = new Text(grpMetadata, SWT.BORDER);
+        this.txtCreator.setBounds(98, 64, 101, 21);
+        this.txtCreator.setText(System.getProperty("user.name"));
 
         Label lblCreator = new Label(grpMetadata, SWT.NONE);
         lblCreator.setBounds(10, 67, 55, 15);
@@ -233,9 +130,9 @@ public class WizardConfigurationPage1 extends WizardPage {
         lblFileVersion.setBounds(10, 115, 82, 15);
         lblFileVersion.setText("File Version:");
 
-        txtFileVersion = new Text(grpMetadata, SWT.BORDER);
-        txtFileVersion.setText("1.00");
-        txtFileVersion.setBounds(98, 112, 101, 21);
+        this.txtFileVersion = new Text(grpMetadata, SWT.BORDER);
+        this.txtFileVersion.setText("1.00");
+        this.txtFileVersion.setBounds(98, 112, 101, 21);
 
         Group grpAda = new Group(container, SWT.NONE);
         grpAda.setText("Vendor / Product Information");
@@ -261,65 +158,65 @@ public class WizardConfigurationPage1 extends WizardPage {
         lblSoftwareVersionNr.setText("Software Version Nr:");
         lblSoftwareVersionNr.setBounds(10, 142, 118, 15);
 
-        txtVendorName = new Text(grpAda, SWT.BORDER);
-        txtVendorName.setText("Sample_Vendor");
-        txtVendorName.setBounds(128, 19, 143, 21);
+        this.txtVendorName = new Text(grpAda, SWT.BORDER);
+        this.txtVendorName.setText("Sample_Vendor");
+        this.txtVendorName.setBounds(128, 19, 143, 21);
 
-        txtVendorID = new Text(grpAda, SWT.BORDER);
-        txtVendorID.setText("0x00000000");
-        txtVendorID.setBounds(128, 43, 143, 21);
+        this.txtVendorID = new Text(grpAda, SWT.BORDER);
+        this.txtVendorID.setText("0x00000000");
+        this.txtVendorID.setBounds(128, 43, 143, 21);
 
-        txtProductName = new Text(grpAda, SWT.BORDER);
-        txtProductName.setText("Sample_Product_Name");
-        txtProductName.setBounds(128, 67, 143, 21);
+        this.txtProductName = new Text(grpAda, SWT.BORDER);
+        this.txtProductName.setText("Sample_Product_Name");
+        this.txtProductName.setBounds(128, 67, 143, 21);
 
-        txtHardwareVersNr = new Text(grpAda, SWT.BORDER);
-        txtHardwareVersNr.setText("1.00");
-        txtHardwareVersNr.setBounds(128, 115, 143, 21);
+        this.txtHardwareVersNr = new Text(grpAda, SWT.BORDER);
+        this.txtHardwareVersNr.setText("1.00");
+        this.txtHardwareVersNr.setBounds(128, 115, 143, 21);
 
-        txtSoftwareVersNr = new Text(grpAda, SWT.BORDER);
-        txtSoftwareVersNr.setText("1.00");
-        txtSoftwareVersNr.setBounds(128, 139, 143, 21);
+        this.txtSoftwareVersNr = new Text(grpAda, SWT.BORDER);
+        this.txtSoftwareVersNr.setText("1.00");
+        this.txtSoftwareVersNr.setBounds(128, 139, 143, 21);
 
         Label lblProductID = new Label(grpAda, SWT.NONE);
         lblProductID.setText("Product ID:");
         lblProductID.setBounds(10, 94, 118, 15);
 
-        txtProductID = new Text(grpAda, SWT.BORDER);
-        txtProductID.setText("EPSG-001");
-        txtProductID.setBounds(128, 91, 143, 21);
+        this.txtProductID = new Text(grpAda, SWT.BORDER);
+        this.txtProductID.setText("EPSG-001");
+        this.txtProductID.setBounds(128, 91, 143, 21);
 
         Label lblFirmwareVersionNr = new Label(grpAda, SWT.NONE);
         lblFirmwareVersionNr.setText("Firmware Version Nr:");
         lblFirmwareVersionNr.setBounds(10, 166, 118, 15);
 
-        txtFirmwareVersionNr = new Text(grpAda, SWT.BORDER);
-        txtFirmwareVersionNr.setText("1.00");
-        txtFirmwareVersionNr.setBounds(128, 163, 143, 21);
+        this.txtFirmwareVersionNr = new Text(grpAda, SWT.BORDER);
+        this.txtFirmwareVersionNr.setText("1.00");
+        this.txtFirmwareVersionNr.setBounds(128, 163, 143, 21);
 
         Group grpCnFeatures = new Group(container, SWT.NONE);
         grpCnFeatures.setText("CN Features");
         grpCnFeatures.setBounds(283, 215, 267, 107);
 
-        btnCnMultiplexFeature = new Button(grpCnFeatures, SWT.CHECK);
-        btnCnMultiplexFeature.setToolTipText("Enable / Disable Multiplex Feature");
-        btnCnMultiplexFeature.setBounds(10, 21, 146, 16);
-        btnCnMultiplexFeature.setText("DLLCNFeatureMultiplex");
+        this.btnCnMultiplexFeature = new Button(grpCnFeatures, SWT.CHECK);
+        this.btnCnMultiplexFeature.setToolTipText("Enable / Disable Multiplex Feature");
+        this.btnCnMultiplexFeature.setBounds(10, 21, 146, 16);
+        this.btnCnMultiplexFeature.setText("DLLCNFeatureMultiplex");
 
-        btnResponseChaining = new Button(grpCnFeatures, SWT.CHECK);
-        btnResponseChaining.setToolTipText("Enable / Disable Response Chaining");
-        btnResponseChaining.setBounds(10, 43, 146, 16);
-        btnResponseChaining.setText("DLLCNPResChaining");
+        this.btnResponseChaining = new Button(grpCnFeatures, SWT.CHECK);
+        this.btnResponseChaining.setToolTipText("Enable / Disable Response Chaining");
+        this.btnResponseChaining.setBounds(10, 43, 146, 16);
+        this.btnResponseChaining.setText("DLLCNPResChaining");
 
         Label lblSoc = new Label(grpCnFeatures, SWT.NONE);
         lblSoc.setToolTipText("Time for the CN to process SoC-Packets\r\n");
         lblSoc.setText("NMTCNSoC2PReq (ns):");
         lblSoc.setBounds(10, 65, 124, 15);
 
-        txtNMTCNSoC2PReq = new Text(grpCnFeatures, SWT.BORDER);
-        txtNMTCNSoC2PReq.setText("25");
-        txtNMTCNSoC2PReq.setToolTipText("Time for the CN to process SoC-Packets");
-        txtNMTCNSoC2PReq.setBounds(137, 62, 76, 21);
+        this.txtNMTCNSoC2PReq = new Text(grpCnFeatures, SWT.BORDER);
+        this.txtNMTCNSoC2PReq.setText("25");
+        this.txtNMTCNSoC2PReq.setToolTipText("Time for the CN to process SoC-Packets");
+        this.txtNMTCNSoC2PReq.setBounds(137, 62, 76, 21);
 
         Group grpGeneralFeatures = new Group(container, SWT.SHADOW_OUT);
         grpGeneralFeatures.setFont(SWTResourceManager.getFont("Segoe UI", 9, SWT.NORMAL));
@@ -344,22 +241,126 @@ public class WizardConfigurationPage1 extends WizardPage {
         lblNewLabel_3.setBounds(10, 86, 163, 15);
         lblNewLabel_3.setText("NMTErrorEntries (2-13):");
 
-        txtNMTBootTimeNotActive = new Text(grpGeneralFeatures, SWT.BORDER);
-        txtNMTBootTimeNotActive.setText("8000000");
-        txtNMTBootTimeNotActive.setBounds(179, 14, 76, 21);
+        this.txtNMTBootTimeNotActive = new Text(grpGeneralFeatures, SWT.BORDER);
+        this.txtNMTBootTimeNotActive.setText("8000000");
+        this.txtNMTBootTimeNotActive.setBounds(179, 14, 76, 21);
 
-        txtNMTCycleTimeMax = new Text(grpGeneralFeatures, SWT.BORDER);
-        txtNMTCycleTimeMax.setText("1000000");
-        txtNMTCycleTimeMax.setBounds(179, 36, 76, 21);
+        this.txtNMTCycleTimeMax = new Text(grpGeneralFeatures, SWT.BORDER);
+        this.txtNMTCycleTimeMax.setText("1000000");
+        this.txtNMTCycleTimeMax.setBounds(179, 36, 76, 21);
 
-        txtNMTCycleTimeMin = new Text(grpGeneralFeatures, SWT.BORDER);
-        txtNMTCycleTimeMin.setText("1000");
-        txtNMTCycleTimeMin.setBounds(179, 58, 76, 21);
+        this.txtNMTCycleTimeMin = new Text(grpGeneralFeatures, SWT.BORDER);
+        this.txtNMTCycleTimeMin.setText("1000");
+        this.txtNMTCycleTimeMin.setBounds(179, 58, 76, 21);
 
-        txtNMTErrorEntries = new Text(grpGeneralFeatures, SWT.BORDER);
-        txtNMTErrorEntries.setText("8");
-        txtNMTErrorEntries.setBounds(179, 80, 76, 21);
+        this.txtNMTErrorEntries = new Text(grpGeneralFeatures, SWT.BORDER);
+        this.txtNMTErrorEntries.setText("8");
+        this.txtNMTErrorEntries.setBounds(179, 80, 76, 21);
 
+    }
+
+    public boolean getCnMultiplexFeature() {
+        return this.btnCnMultiplexFeature.getSelection();
+    }
+
+    public XMLGregorianCalendar getCreationDateXML() {
+        return XDDUtilities.getXMLDate();
+    }
+
+    public XMLGregorianCalendar getCreationTimeXML() {
+        return XDDUtilities.getXMLTime();
+    }
+
+    public String getCreatorString() {
+        return this.txtCreator.getText();
+    }
+
+    public String getDeviceNameString() {
+        return this.txtDeviceName.getText();
+    }
+
+    //Vendor/Product getters
+
+    public String getFileNameString() {
+        return this.Mainwizard.getNewFileCreationPage().getFileName();
+    }
+
+    public String getFileVersionString() {
+        return this.txtFileVersion.getText();
+    }
+
+    public String getFirmwareversString() {
+        return this.txtFirmwareVersionNr.getText();
+    }
+
+    public String getHardwareversString() {
+        return this.txtHardwareVersNr.getText();
+    }
+
+    public int getNMTBootTimeNotActive() {
+        if (!this.txtNMTBootTimeNotActive.getText().isEmpty()) {
+            int value = Integer.parseInt(this.txtNMTBootTimeNotActive.getText());
+            return value;
+        } else
+            return 0;
+    }
+
+    public int getNMTCNSoC2PReq() {
+        if (!this.txtNMTCNSoC2PReq.getText().isEmpty()) {
+            int value = Integer.parseInt(this.txtNMTCNSoC2PReq.getText());
+            return value;
+        } else
+            return 0;
+    }
+
+    public int getNMTCycleTimeMax() {
+        if (!this.txtNMTCycleTimeMax.getText().isEmpty()) {
+            int value = Integer.parseInt(this.txtNMTCycleTimeMax.getText());
+            return value;
+        } else
+            return 0;
+    }
+
+    //Feature getters
+
+    public int getNMTCycleTimeMin() {
+        if (!this.txtNMTCycleTimeMin.getText().isEmpty()) {
+            int value = Integer.parseInt(this.txtNMTCycleTimeMin.getText());
+            return value;
+        } else
+            return 0;
+    }
+
+    public int getNMTErrorEntries() {
+        if (!this.txtNMTErrorEntries.getText().isEmpty()) {
+            int value = Integer.parseInt(this.txtNMTErrorEntries.getText());
+            return value;
+        } else
+            return 0;
+    }
+
+    public String getProductIDString() {
+        return this.txtProductID.getText();
+    }
+
+    public String getProductNameString() {
+        return this.txtProductName.getText();
+    }
+
+    public boolean getResponseChaining() {
+        return this.btnResponseChaining.getSelection();
+    }
+
+    public String getSoftwareversString() {
+        return this.txtSoftwareVersNr.getText();
+    }
+
+    public String getVendorIDString() {
+        return this.txtVendorID.getText();
+    }
+
+    public String getVendorNameString() {
+        return this.txtVendorName.getText();
     }
 
 }

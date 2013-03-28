@@ -27,6 +27,8 @@ public class StoreParamObjectsFilter implements IFilter {
                 result = new BigInteger(1, parentObject.getIndex()).intValue();
 
                 if (result == 0x1010) {
+                    if (toTest2.getSubIndex() == null || toTest2.getSubIndex().length == 0)
+                        return true;
                     int test = new BigInteger(toTest2.getSubIndex()).intValue();
                     if (test != 0)
                         return true;

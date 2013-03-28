@@ -68,7 +68,8 @@ public class AdvancedMappingObjectPropertySection extends AbstractPropertySectio
             if (!selection.isEmpty()) {
                 //choose the right object in the list...
                 object = AdvancedMappingObjectPropertySection.this.validTObjects.get(selection);
-
+                AdvancedMappingObjectPropertySection.this.subObjectItemProvider.setPropertyValue(
+                    AdvancedMappingObjectPropertySection.this.tsubObject, "defaultValue", "0x0");
                 //If Subobjects NOT empty...modify the Subindex-Combobox
                 if (!object.getSubObject().isEmpty()) {
                     //Get Subobjects & Enable Combobox

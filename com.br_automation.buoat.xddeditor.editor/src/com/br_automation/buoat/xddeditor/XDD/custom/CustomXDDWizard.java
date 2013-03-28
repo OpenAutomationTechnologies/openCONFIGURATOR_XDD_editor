@@ -32,46 +32,31 @@ import com.br_automation.buoat.xddeditor.XDD.presentation.XDDModelWizard;
 
 public class CustomXDDWizard extends XDDModelWizard {
 
-    //Instance of WizardTemplatePage to acces Options etc.
-    //private WizardTemplatePage wizardTemplatePage;
+    public WizardConfigurationPage1 wizardConfigurationPage1;
 
     public WizardTemplatePage wizardTemplatePage;
-    public WizardConfigurationPage1 wizardConfigurationPage1;
-    public XDDModelWizardNewFileCreationPage newFileCreationPage;
-
-    //createInitalModel method (modified) - calls the loader-Method of InitalModelLoad which differs between 4 cases:
-    //1.No default Template, 2.default template 3.default extended template 4.default static template
-    @Override
-    protected EObject createInitialModel() {
-        InitialModelLoader initialModelLoader = new InitialModelLoader();
-        DocumentRoot root = initialModelLoader
-            .loadXDD(wizardTemplatePage, wizardConfigurationPage1);
-        return root;
-    }
-
-    //addPages Method (modified) - adds custom pages (a.e WizardTemplatePage)
 
     @Override
     public void addPages() {
         // Create a page, set the title, and the initial model file name.
         //
-        newFileCreationPage = new XDDModelWizardNewFileCreationPage("WizPag1", selection);
-        newFileCreationPage
-            .setTitle(XDDEditorPlugin.INSTANCE.getString("_UI_XDDModelWizard_label"));
-        newFileCreationPage.setDescription(XDDEditorPlugin.INSTANCE
+        this.newFileCreationPage = new XDDModelWizardNewFileCreationPage("WizPag1", this.selection);
+        this.newFileCreationPage.setTitle(XDDEditorPlugin.INSTANCE
+            .getString("_UI_XDDModelWizard_label"));
+        this.newFileCreationPage.setDescription(XDDEditorPlugin.INSTANCE
             .getString("_UI_XDDModelWizard_description"));
-        newFileCreationPage.setFileName(XDDEditorPlugin.INSTANCE
+        this.newFileCreationPage.setFileName(XDDEditorPlugin.INSTANCE
             .getString("_UI_XDDEditorFilenameDefaultBase")
             + "."
             + XDDModelWizard.FILE_EXTENSIONS.get(0));
-        addPage(newFileCreationPage);
+        this.addPage(this.newFileCreationPage);
 
         // Try and get the resource selection to determine a current directory for the file dialog.
         //
-        if (selection != null && !selection.isEmpty()) {
+        if (this.selection != null && !this.selection.isEmpty()) {
             // Get the resource...
             //
-            Object selectedElement = selection.iterator().next();
+            Object selectedElement = this.selection.iterator().next();
             if (selectedElement instanceof IResource) {
                 // Get the resource parent, if its a file.
                 IResource selectedResource = (IResource) selectedElement;
@@ -82,7 +67,7 @@ public class CustomXDDWizard extends XDDModelWizard {
                 if (selectedResource instanceof IFolder || selectedResource instanceof IProject) {
                     // Set this for the container.
                     //
-                    newFileCreationPage.setContainerFullPath(selectedResource.getFullPath());
+                    this.newFileCreationPage.setContainerFullPath(selectedResource.getFullPath());
 
                     // Make up a unique new name here.
                     String defaultModelBaseFilename = XDDEditorPlugin.INSTANCE
@@ -93,27 +78,36 @@ public class CustomXDDWizard extends XDDModelWizard {
                     for (int i = 1; ((IContainer) selectedResource).findMember(modelFilename) != null; ++i)
                         modelFilename = defaultModelBaseFilename + i + "."
                             + defaultModelFilenameExtension;
-                    newFileCreationPage.setFileName(modelFilename);
+                    this.newFileCreationPage.setFileName(modelFilename);
                 }
             }
         }
 
         //----------Changes of addPages method start here--------------\\
         //Hinzufügen der eigenen Page
-        wizardTemplatePage = new WizardTemplatePage("wizardTemplatePage");
-        addPage(wizardTemplatePage);
+        this.wizardTemplatePage = new WizardTemplatePage("wizardTemplatePage");
+        this.addPage(this.wizardTemplatePage);
 
-        wizardConfigurationPage1 = new WizardConfigurationPage1("wizardConfigurationPage1", this);
-        addPage(wizardConfigurationPage1);
+        this.wizardConfigurationPage1 = new WizardConfigurationPage1("wizardConfigurationPage1",
+            this);
+        this.addPage(this.wizardConfigurationPage1);
 
     }
+
+    //Instance of WizardTemplatePage to acces Options etc.
+    //private WizardTemplatePage wizardTemplatePage;
+    public XDDModelWizardNewFileCreationPage getNewFileCreationPage() {
+        return this.newFileCreationPage;
+    }
+
+    //addPages Method (modified) - adds custom pages (a.e WizardTemplatePage)
 
     @Override
     public boolean performFinish() {
         try {
             // Remember the file.
             //
-            final IFile modelFile = newFileCreationPage.getModelFile();
+            final IFile modelFile = this.newFileCreationPage.getModelFile();
 
             // Do the work within an operation.
             //
@@ -136,7 +130,7 @@ public class CustomXDDWizard extends XDDModelWizard {
 
                         // Add the initial model object to the contents.
                         //
-                        EObject rootObject = createInitialModel();
+                        EObject rootObject = CustomXDDWizard.this.createInitialModel();
                         if (rootObject != null)
                             resource.getContents().add(rootObject);
 
@@ -153,16 +147,16 @@ public class CustomXDDWizard extends XDDModelWizard {
                 }
             };
 
-            getContainer().run(false, false, operation);
+            this.getContainer().run(false, false, operation);
 
             // Select the new file resource in the current view.
             //
-            IWorkbenchWindow workbenchWindow = workbench.getActiveWorkbenchWindow();
+            IWorkbenchWindow workbenchWindow = this.workbench.getActiveWorkbenchWindow();
             IWorkbenchPage page = workbenchWindow.getActivePage();
             final IWorkbenchPart activePart = page.getActivePart();
             if (activePart instanceof ISetSelectionTarget) {
                 final ISelection targetSelection = new StructuredSelection(modelFile);
-                getShell().getDisplay().asyncExec(new Runnable() {
+                this.getShell().getDisplay().asyncExec(new Runnable() {
                     @Override
                     public void run() {
                         ((ISetSelectionTarget) activePart).selectReveal(targetSelection);
@@ -173,7 +167,7 @@ public class CustomXDDWizard extends XDDModelWizard {
             // Open an editor on the new file.
             //
             try {
-                page.openEditor(new FileEditorInput(modelFile), workbench.getEditorRegistry()
+                page.openEditor(new FileEditorInput(modelFile), this.workbench.getEditorRegistry()
                     .getDefaultEditor(modelFile.getFullPath().toString()).getId());
             } catch (PartInitException exception) {
                 MessageDialog.openError(
@@ -188,5 +182,15 @@ public class CustomXDDWizard extends XDDModelWizard {
             XDDEditorPlugin.INSTANCE.log(exception);
             return false;
         }
+    }
+
+    //createInitalModel method (modified) - calls the loader-Method of InitalModelLoad which differs between 4 cases:
+    //1.No default Template, 2.default template 3.default extended template 4.default static template
+    @Override
+    protected EObject createInitialModel() {
+        InitialModelLoader initialModelLoader = new InitialModelLoader();
+        DocumentRoot root = initialModelLoader.loadXDD(
+            this.wizardTemplatePage, this.wizardConfigurationPage1);
+        return root;
     }
 }

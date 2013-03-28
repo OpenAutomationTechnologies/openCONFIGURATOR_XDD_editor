@@ -38,11 +38,11 @@ public class TObjectComposite extends Composite {
             if (TObjectComposite.this.stautsTObject) {
                 TObjectComposite.this.tobjectitemProvider.setPropertyValue(
                     TObjectComposite.this.tobject, "index",
-                    HexBin.decode(TObjectComposite.this.txtIndex.getText()));
+                    HexBin.decode("0" + TObjectComposite.this.txtIndex.getText()));
             } else {
                 TObjectComposite.this.subObjectItemProvicer.setPropertyValue(
                     TObjectComposite.this.subobject, "subIndex",
-                    HexBin.decode(TObjectComposite.this.txtIndex.getText()));
+                    HexBin.decode("0" + TObjectComposite.this.txtIndex.getText()));
             }
         }
     };
@@ -175,7 +175,8 @@ public class TObjectComposite extends Composite {
                 String result = Integer.toHexString(new BigInteger(1, this.tobject.getIndex())
                     .intValue());
                 this.txtIndex.setText(result);
-            }
+            } else
+                this.txtIndex.setText("");
             if (this.tobject.getName() != null)
                 this.txtName.setText(this.tobject.getName());
             int i = 0;
@@ -198,7 +199,8 @@ public class TObjectComposite extends Composite {
                     "%02x", (new BigInteger(1, this.subobject.getSubIndex())).intValue())
                     .toUpperCase();
                 this.txtIndex.setText(result);
-            }
+            } else
+                this.txtIndex.setText("");
             if (this.subobject.getName() != null)
                 this.txtName.setText(this.subobject.getName());
 
