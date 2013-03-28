@@ -9,7 +9,7 @@ import com.br_automation.buoat.xddeditor.XDD.TObject;
 
 /**
  * @author Joris Lückenga
- * @since 25.3.2013
+ * @since 25.03.2013
  * @brief Filters for SubobjectTypes of Index 1010 and Subindex &gt; 1
  */
 public class StoreParamObjectsFilter implements IFilter {

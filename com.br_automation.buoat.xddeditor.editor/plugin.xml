@@ -73,7 +73,22 @@
          </propertyTab>
          <propertyTab
                category="XDD Properties"
-               id="advanced_propertytab"
+               id="advanced_propertytab_featureFlags"
+               label="Advanced">
+         </propertyTab>
+         <propertyTab
+               category="XDD Properties"
+               id="advanced_propertytab_MappingObjects"
+               label="Advanced">
+         </propertyTab>
+         <propertyTab
+               category="XDD Properties"
+               id="advanced_propertytab_DeviceType"
+               label="Advanced">
+         </propertyTab>
+         <propertyTab
+               category="XDD Properties"
+               id="advanced_propertytab_StoreParam"
                label="Advanced">
          </propertyTab>
       </propertyTabs>
@@ -97,8 +112,8 @@
                class="com.br_automation.buoat.xddeditor.XDD.custom.AdvancedFeatureFlagsPropertySection"
                enablesFor="1"
                filter="com.br_automation.buoat.xddeditor.XDD.custom.Index1F82Filter"
-               id="advanced_section"
-               tab="advanced_propertytab">
+               id="advanced_section_featureFlags"
+               tab="advanced_propertytab_featureFlags">
             <input
                   type="com.br_automation.buoat.xddeditor.XDD.impl.TObjectImpl">
             </input>
@@ -107,8 +122,8 @@
                class="com.br_automation.buoat.xddeditor.XDD.custom.AdvancedMappingObjectPropertySection"
                enablesFor="1"
                filter="com.br_automation.buoat.xddeditor.XDD.custom.MappingObjectsFilter"
-               id="advanced_section"
-               tab="advanced_propertytab">
+               id="advanced_section_MappingObjects"
+               tab="advanced_propertytab_MappingObjects">
             <input
                   type="com.br_automation.buoat.xddeditor.XDD.impl.SubObjectTypeImpl">
             </input>
@@ -116,8 +131,8 @@
          <propertySection
                class="com.br_automation.buoat.xddeditor.XDD.custom.AdvancedDeviceTypePropertySection"
                filter="com.br_automation.buoat.xddeditor.XDD.custom.Index1000Filter"
-               id="advanced_section"
-               tab="advanced_propertytab">
+               id="advanced_section_DeviceType"
+               tab="advanced_propertytab_DeviceType">
             <input
                   type="com.br_automation.buoat.xddeditor.XDD.impl.TObjectImpl">
             </input>
@@ -125,8 +140,8 @@
          <propertySection
                class="com.br_automation.buoat.xddeditor.XDD.custom.AdvancedStoreParamPropertySection"
                filter="com.br_automation.buoat.xddeditor.XDD.custom.StoreParamObjectsFilter"
-               id="advanced_section"
-               tab="advanced_propertytab">
+               id="advanced_section_StoreParam"
+               tab="advanced_propertytab_StoreParam">
             <input
                   type="com.br_automation.buoat.xddeditor.XDD.impl.SubObjectTypeImpl">
             </input>
