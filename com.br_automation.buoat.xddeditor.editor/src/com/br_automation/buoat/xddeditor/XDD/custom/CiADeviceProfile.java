@@ -1,5 +1,11 @@
 package com.br_automation.buoat.xddeditor.XDD.custom;
 
+/**
+ * @author Joris Lückenga
+ * @since 19.3.2013
+ * @brief DeviceProfiles of CanOpen Objects (Neede for Index 1000 / DeviceType
+ *        Object )
+ */
 public enum CiADeviceProfile {
 
     CIA401(401, "CiA 401", "Generic I/O Modules"),
@@ -24,29 +30,37 @@ public enum CiADeviceProfile {
     CIA425(425, "CiA 425", "Medical Diagnostic Add-on Modules"),
     CIA445(445, "CiA 445", "RFID Devices");
 
+    private String profileDescription;
+    private String profileName;
     private int value;
 
-    public int getValue() {
-        return value;
-    }
-
-    public String getProfileName() {
-        return profileName;
+    /**
+     * @brief CiADevice Enum Constructor
+     * @param value
+     *            value of the Profile e.g 401,402 etc.
+     * @param profileName
+     *            Name of Profile e.g CiA 401
+     * @param profileDescription
+     *            Description of Profile e.g "Battery Charger"
+     */
+    private CiADeviceProfile(int value,
+        String profileName,
+        String profileDescription) {
+        this.value = value;
+        this.profileName = profileName;
+        this.profileDescription = profileDescription;
     }
 
     public String getProfileDescription() {
-        return profileDescription;
+        return this.profileDescription;
     }
 
-    private String profileName;
-    private String profileDescription;
+    public String getProfileName() {
+        return this.profileName;
+    }
 
-    private CiADeviceProfile(int _value,
-        String _profileName,
-        String _profileDescription) {
-        value = _value;
-        profileName = _profileName;
-        profileDescription = _profileDescription;
+    public int getValue() {
+        return this.value;
     }
 
 }

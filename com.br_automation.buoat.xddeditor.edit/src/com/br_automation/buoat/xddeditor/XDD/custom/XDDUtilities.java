@@ -6,6 +6,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -29,15 +30,24 @@ import com.br_automation.buoat.xddeditor.XDD.TCNFeatures;
 import com.br_automation.buoat.xddeditor.XDD.TObject;
 import com.br_automation.buoat.xddeditor.XDD.TObjectPDOMapping;
 
-public class XDDUtilities {
-
+/**
+ * @author Joris Lückenga
+ * @brief PropertySection for DeviceType Object (index 0x1000)
+ * @since 21.3.2013
+ * */
+public final class XDDUtilities {
+    /**
+     * 
+     * @author David Puffer
+     * @brief VerifyListener for Hex-Text fields
+     */
     public static class RegexVerifyListener implements VerifyListener {
 
         public static final String PATTERN_DEC = "\\d*";
         public static final String PATTERN_HEX = "[A-Fa-f0-9]*";
-        protected List<Character> excludedChars = null;
-        protected String pattern = null;
-        protected boolean toUpper = false;
+        private List<Character> excludedChars;
+        private String pattern;
+        private boolean toUpper;
 
         /**
          * @param pattern
@@ -60,6 +70,9 @@ public class XDDUtilities {
             this.toUpper = toUpper;
         }
 
+        /**
+         * 
+         */
         protected RegexVerifyListener() {
         }
 
@@ -71,7 +84,7 @@ public class XDDUtilities {
             return this.pattern;
         }
 
-        public boolean getToUpper() {
+        public boolean isToUpper() {
             return this.toUpper;
         }
 
@@ -85,15 +98,23 @@ public class XDDUtilities {
             }
         }
 
-    }// RegexVerifyListener
+    } // RegexVerifyListener
 
     private static String creator;
-    private static Color grey;
-    private static Color red;
 
-    private static Color white;
+    /**
+     * @brief private Constructor becaus Utilityclass uses Static methods and
+     *        should not be instantiated
+     */
+    private XDDUtilities() {
+    }
 
-    //Function to update the Username an Modification Date when saving
+    /**
+     * @brief Function to update the Username an Modification Date when saving
+     * 
+     * @param root
+     *            Object of actual document
+     */
     public static void addSaveModifications(DocumentRoot root) {
         ISO15745ProfileType profile1 = root.getISO15745ProfileContainer().getISO15745Profile()
             .get(0);
@@ -112,18 +133,38 @@ public class XDDUtilities {
         }
         body2.setFileModificationDate(XDDUtilities.getXMLDate());
         body2.setFileModificationTime(XDDUtilities.getXMLTime());
-    }//addSaveModifications
+    } //addSaveModifications
 
+    /**
+     * @brief gets the size of the DataType
+     * @param bs
+     *            bytearray of the object
+     * @return Stringvalue of the bytearray
+     */
     public static String getDataTypeSize(byte[] bs) {
         int value = new BigInteger(1, bs).intValue();
         return DataType.fromInt(value).toIntString();
-    }//getDataTypeSize
+    } //getDataTypeSize
 
+    /**
+     * @brief returns the specified color
+     * @param device
+     *            , the actual window/device used
+     * @return the specified color
+     */
     public static Color getGrey(Device device) {
         return new Color(device, 240, 240, 240);
     }
 
-    public static HashMap<String, TObject> getMappingObjects(DocumentRoot root,
+    /**
+     * @brief returns the possible mappable objects
+     * @param root
+     *            element to iterate through
+     * @param mappingTypes
+     *            an array of valid ENUMs of MappingType
+     * @return a HashMap with valid Objects that are mappable
+     */
+    public static Map<String, TObject> getMappingObjects(DocumentRoot root,
         Set<TObjectPDOMapping> mappingTypes) {
         List<EObject> tObjects = root.getISO15745ProfileContainer().getISO15745Profile().get(1)
             .getProfileBody().eContents().get(0).eContents().get(2).eContents();
@@ -134,27 +175,47 @@ public class XDDUtilities {
             if ((testObject.getSubObject().isEmpty() && mappingTypes.contains(testObject
                 .getPDOmapping()))
                 || !(XDDUtilities.getMappingSubObjects(testObject, mappingTypes).isEmpty()))
-                if (testObject.getName() != null && testObject.getIndex() != null)
+                if (testObject.getName() != null && testObject.getIndex() != null) // NOPMD by lueckengaj on 29.03.13 11:19
                     validObjects.put(testObject.getName(), testObject);
         }
         return validObjects;
-    }//getMappingObjects
+    } //getMappingObjects
 
-    public static HashMap<String, SubObjectType> getMappingSubObjects(TObject tObject,
+    /**
+     * @brief gets the valid subobjecttypes of a tObject
+     * @param tObject
+     *            with subojects to iterate through
+     * @param mappingType
+     *            wich is valid
+     * @return the hashMap of Subobjects with matching mapping
+     */
+    public static Map<String, SubObjectType> getMappingSubObjects(TObject tObject,
         Set<TObjectPDOMapping> mappingType) {
-        HashMap<String, SubObjectType> subobjectsList = new HashMap<String, SubObjectType>();
+        Map<String, SubObjectType> subobjectsList = new HashMap<String, SubObjectType>();
 
         for (SubObjectType subObject : tObject.getSubObject())
             if (mappingType.contains(subObject.getPDOmapping()) && subObject.getSubIndex() != null
                 && subObject.getDataType() != null)
                 subobjectsList.put(subObject.getName(), subObject);
         return subobjectsList;
-    }//getMappingSubObjects
+    } //getMappingSubObjects
 
+    /**
+     * @brief returns the specified color
+     * @param device
+     *            , the actual window/device used
+     * @return the specified color
+     */
     public static Color getRed(Device device) {
         return new Color(device, 255, 0, 0);
     }
 
+    /**
+     * @brief gets the valid Mapping depending on parent tobject
+     * @param mappingType
+     *            of the tobject
+     * @return the set of valid mapping
+     */
     public static Set<TObjectPDOMapping> getValidMappingTypes(TObjectPDOMapping mappingType) {
         Set<TObjectPDOMapping> mappingTypes = new HashSet<TObjectPDOMapping>();
 
@@ -168,17 +229,27 @@ public class XDDUtilities {
                 mappingTypes.add(TObjectPDOMapping.TPDO);
                 mappingTypes.add(TObjectPDOMapping.DEFAULT);
                 mappingTypes.add(TObjectPDOMapping.OPTIONAL);
+                break;
             default:
                 break;
         }
         return mappingTypes;
-    }//getValidMappingTypes
+    } //getValidMappingTypes
 
+    /**
+     * @brief returns the specified color
+     * @param device
+     *            , the actual window/device used
+     * @return the specified color
+     */
     public static Color getWhite(Device device) {
         return new Color(device, 255, 255, 255);
     }
 
-    //TODO:Documentation?
+    /**
+     * @brief gets the acutal Date in XML-Format
+     * @return actual Date in XML-Format
+     */
     public static XMLGregorianCalendar getXMLDate() {
         GregorianCalendar cal = new GregorianCalendar();
         XMLGregorianCalendar sample = null;
@@ -186,16 +257,20 @@ public class XDDUtilities {
         try {
             sample = DatatypeFactory.newInstance().newXMLGregorianCalendar(cal);
             result = DatatypeFactory.newInstance().newXMLGregorianCalendar();
+            result.clear();
+            result.setMonth(sample.getMonth());
+            result.setYear(sample.getYear());
+            result.setDay(sample.getDay());
+            return result;
         } catch (DatatypeConfigurationException e1) {
-            e1.printStackTrace();
+            return null;
         }
-        result.clear();
-        result.setMonth(sample.getMonth());
-        result.setYear(sample.getYear());
-        result.setDay(sample.getDay());
-        return result;
-    }//getXMLDate
+    } //getXMLDate
 
+    /**
+     * @brief gets the actual Time in XML-Format
+     * @return actual Time in XML-Format
+     */
     public static XMLGregorianCalendar getXMLTime() {
         GregorianCalendar cal = new GregorianCalendar();
         XMLGregorianCalendar sample = null;
@@ -203,37 +278,55 @@ public class XDDUtilities {
         try {
             sample = DatatypeFactory.newInstance().newXMLGregorianCalendar(cal);
             result = DatatypeFactory.newInstance().newXMLGregorianCalendar();
+            result.setMinute(sample.getMinute());
+            result.setHour(sample.getHour());
+            result.setSecond(sample.getSecond());
+            result.setTimezone(sample.getTimezone());
+            return result;
         } catch (DatatypeConfigurationException e1) {
-            e1.printStackTrace();
+            return null;
         }
-        result.setMinute(sample.getMinute());
-        result.setHour(sample.getHour());
-        result.setSecond(sample.getSecond());
-        result.setTimezone(sample.getTimezone());
-        return result;
-    }//getXMLTime
+    } //getXMLTime
 
+    /**
+     * @brief checks if the parentIndex should use TPDO or RPDO mapping
+     * @param tobject
+     *            /parentobject
+     * @return the right mappingtype for the index
+     */
     public static boolean isRPDO(TObject tobject) {
         int value = new BigInteger(1, tobject.getIndex()).intValue();
         if (value >= 0x1600 && value <= 0x16FF)
             return true;
-        else
-            return false;
-    }//isRPDO
+        return false;
+    } //isRPDO
 
+    /**
+     * @brief parses Integer from a String, is needed to check if it works for
+     *        If-statement
+     * @param data
+     *            of the string
+     * @return Integer or null if exception is thrown
+     */
     public static Integer parseInt(String data) {
         try {
             return Integer.parseInt(data);
         } catch (NumberFormatException nfe) {
             return null;
         }
-    }//parseInt
+    } //parseInt
 
     public static void setCreator(String string) {
         XDDUtilities.creator = string;
     }
 
-    //Sets the MultiplexFeature for TObject and TCNFeatures
+    /**
+     * @brief Sets the MultiplexFeature for TObject and TCNFeatures
+     * @param status
+     *            of the multiplexfeature
+     * @param documentRoot
+     *            of the opened Resource
+     */
     //TODO:implement generic lookup!?
     public static void setMultiplexFeature(boolean status, DocumentRoot documentRoot) {
         //TODO Überprüfen auf Null (Muss auch ohne Template verwendbar sein)
@@ -258,5 +351,5 @@ public class XDDUtilities {
                 else
                     tObject.setDefaultValue("0x"
                         + Long.toHexString((Long.decode(tObject.getDefaultValue()) & ~512)));
-    }//setMultiplexFeature
-}// XDDUtilities
+    } //setMultiplexFeature
+} // XDDUtilities

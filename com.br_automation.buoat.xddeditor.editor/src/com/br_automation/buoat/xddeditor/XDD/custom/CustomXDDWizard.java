@@ -30,16 +30,19 @@ import com.br_automation.buoat.xddeditor.XDD.DocumentRoot;
 import com.br_automation.buoat.xddeditor.XDD.presentation.XDDEditorPlugin;
 import com.br_automation.buoat.xddeditor.XDD.presentation.XDDModelWizard;
 
+/**
+ * @author Joris Lückenga
+ * @since 19.3.2013
+ * @brief Modified XDD Wizard extended from generated Wizard
+ */
 public class CustomXDDWizard extends XDDModelWizard {
 
-    public WizardConfigurationPage1 wizardConfigurationPage1;
-
-    public WizardTemplatePage wizardTemplatePage;
+    private WizardConfigurationPage1 wizardConfigurationPage1;
+    private WizardTemplatePage wizardTemplatePage;
 
     @Override
     public void addPages() {
         // Create a page, set the title, and the initial model file name.
-        //
         this.newFileCreationPage = new XDDModelWizardNewFileCreationPage("WizPag1", this.selection);
         this.newFileCreationPage.setTitle(XDDEditorPlugin.INSTANCE
             .getString("_UI_XDDModelWizard_label"));
@@ -52,10 +55,8 @@ public class CustomXDDWizard extends XDDModelWizard {
         this.addPage(this.newFileCreationPage);
 
         // Try and get the resource selection to determine a current directory for the file dialog.
-        //
         if (this.selection != null && !this.selection.isEmpty()) {
             // Get the resource...
-            //
             Object selectedElement = this.selection.iterator().next();
             if (selectedElement instanceof IResource) {
                 // Get the resource parent, if its a file.
@@ -66,9 +67,7 @@ public class CustomXDDWizard extends XDDModelWizard {
                 // This gives us a directory...
                 if (selectedResource instanceof IFolder || selectedResource instanceof IProject) {
                     // Set this for the container.
-                    //
                     this.newFileCreationPage.setContainerFullPath(selectedResource.getFullPath());
-
                     // Make up a unique new name here.
                     String defaultModelBaseFilename = XDDEditorPlugin.INSTANCE
                         .getString("_UI_XDDEditorFilenameDefaultBase");
@@ -100,8 +99,11 @@ public class CustomXDDWizard extends XDDModelWizard {
         return this.newFileCreationPage;
     }
 
-    //addPages Method (modified) - adds custom pages (a.e WizardTemplatePage)
+    public WizardTemplatePage getWizardTemplatePage() {
+        return this.wizardTemplatePage;
+    }
 
+    //addPages Method (modified) - adds custom pages (a.e WizardTemplatePage)
     @Override
     public boolean performFinish() {
         try {
@@ -110,32 +112,26 @@ public class CustomXDDWizard extends XDDModelWizard {
             final IFile modelFile = this.newFileCreationPage.getModelFile();
 
             // Do the work within an operation.
-            //
             WorkspaceModifyOperation operation = new WorkspaceModifyOperation() {
                 @Override
                 protected void execute(IProgressMonitor progressMonitor) {
                     try {
                         // Create a resource set
-                        //
                         ResourceSet resourceSet = new ResourceSetImpl();
 
                         // Get the URI of the model file.
-                        //
                         URI fileURI = URI.createPlatformResourceURI(modelFile.getFullPath()
                             .toString(), true);
 
                         // Create a resource for this file.
-                        //
                         Resource resource = resourceSet.createResource(fileURI);
 
                         // Add the initial model object to the contents.
-                        //
                         EObject rootObject = CustomXDDWizard.this.createInitialModel();
                         if (rootObject != null)
                             resource.getContents().add(rootObject);
 
                         // Save the contents of the resource to the file system.
-                        //
                         Map<Object, Object> options = new HashMap<Object, Object>();
                         options.put(XMLResource.OPTION_ENCODING, "UTF-8");
                         resource.save(options);
@@ -150,22 +146,20 @@ public class CustomXDDWizard extends XDDModelWizard {
             this.getContainer().run(false, false, operation);
 
             // Select the new file resource in the current view.
-            //
             IWorkbenchWindow workbenchWindow = this.workbench.getActiveWorkbenchWindow();
             IWorkbenchPage page = workbenchWindow.getActivePage();
             final IWorkbenchPart activePart = page.getActivePart();
             if (activePart instanceof ISetSelectionTarget) {
                 final ISelection targetSelection = new StructuredSelection(modelFile);
-                this.getShell().getDisplay().asyncExec(new Runnable() {
-                    @Override
-                    public void run() {
-                        ((ISetSelectionTarget) activePart).selectReveal(targetSelection);
-                    }
-                });
+                this.getShell().getDisplay().asyncExec(new Runnable() { // NOPMD by lueckengaj on 29.03.13 11:26
+                        @Override
+                        public void run() {
+                            ((ISetSelectionTarget) activePart).selectReveal(targetSelection);
+                        }
+                    });
             }
 
             // Open an editor on the new file.
-            //
             try {
                 page.openEditor(new FileEditorInput(modelFile), this.workbench.getEditorRegistry()
                     .getDefaultEditor(modelFile.getFullPath().toString()).getId());
@@ -176,7 +170,6 @@ public class CustomXDDWizard extends XDDModelWizard {
                     exception.getMessage());
                 return false;
             }
-
             return true;
         } catch (Exception exception) {
             XDDEditorPlugin.INSTANCE.log(exception);

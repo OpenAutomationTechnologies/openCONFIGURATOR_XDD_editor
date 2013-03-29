@@ -12,7 +12,6 @@ import com.br_automation.buoat.xddeditor.XDD.TObject;
  * @since 19.3.2013
  * */
 public class Index1F82Filter implements IFilter {
-
     @Override
     public boolean select(Object toTest) {
         if (toTest instanceof TObject) {
@@ -27,5 +26,4 @@ public class Index1F82Filter implements IFilter {
         }
         return false;
     } //select
-
 } //Index1F82Filter

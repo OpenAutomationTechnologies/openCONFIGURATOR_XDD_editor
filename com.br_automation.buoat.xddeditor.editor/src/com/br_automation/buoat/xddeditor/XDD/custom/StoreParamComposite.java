@@ -39,13 +39,12 @@ public class StoreParamComposite extends Composite {
         int style) {
         super(parent, style);
         this.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
-
         Group grpStorageParameters = new Group(this, SWT.NONE);
         grpStorageParameters.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
         grpStorageParameters.setText("Storage capability");
         grpStorageParameters.setBounds(10, 0, 270, 89);
-
         this.btnAutoSave = new Button(grpStorageParameters, SWT.RADIO);
+
         this.btnAutoSave.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent event) {
@@ -97,7 +96,6 @@ public class StoreParamComposite extends Composite {
             this.subobject, "defaultValue",
             ("0x" + String.format(String.format("%08x", settedValue))));
         this.lblsubObjectDefaultValue.setText(this.subobject.getDefaultValue());
-
     }
 
     /**

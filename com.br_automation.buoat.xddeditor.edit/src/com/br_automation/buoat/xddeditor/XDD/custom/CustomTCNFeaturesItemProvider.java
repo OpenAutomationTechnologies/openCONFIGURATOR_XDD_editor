@@ -8,14 +8,26 @@ import com.br_automation.buoat.xddeditor.XDD.DocumentRoot;
 import com.br_automation.buoat.xddeditor.XDD.TCNFeatures;
 import com.br_automation.buoat.xddeditor.XDD.provider.TCNFeaturesItemProvider;
 
+/**
+ * @author Joris Lückenga
+ * @since 19.3.2013
+ * @brief extended class from TCNFeaturesItemProvider to enable Modification in
+ *        TObject (FeatureFlag) an TCNFeatures at the same time
+ */
 public class CustomTCNFeaturesItemProvider extends TCNFeaturesItemProvider {
-
+    /**
+     * @brief CustomTCNFeaturesItemProvider constructor
+     * @param adapterFactory
+     */
     public CustomTCNFeaturesItemProvider(AdapterFactory adapterFactory) {
         super(adapterFactory);
     }
 
-    //Override because this Event is fired when selections are made
-    // TODO: Find out whether this is the correct way to do it.
+    /**
+     * TODO: Find out whether this is the correct way to do it.
+     * 
+     * @return returns the Object that was edited
+     */
     @Override
     public Object getEditableValue(Object object) {
         XDDUtilities.setMultiplexFeature(
@@ -23,5 +35,4 @@ public class CustomTCNFeaturesItemProvider extends TCNFeaturesItemProvider {
             (DocumentRoot) EcoreUtil.getRootContainer((EObject) object));
         return object;
     }
-
-}// CustomTCNFeaturesItemProvider
+} // CustomTCNFeaturesItemProvider

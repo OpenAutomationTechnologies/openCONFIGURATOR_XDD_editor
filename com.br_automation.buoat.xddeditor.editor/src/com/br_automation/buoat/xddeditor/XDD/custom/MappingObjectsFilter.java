@@ -19,7 +19,6 @@ public class MappingObjectsFilter implements IFilter {
     public boolean select(Object toTest) {
 
         if (toTest instanceof SubObjectType) {
-
             SubObjectType toTest2 = (SubObjectType) toTest;
             TObject parentObject = (TObject) toTest2.eContainer();
             int result;

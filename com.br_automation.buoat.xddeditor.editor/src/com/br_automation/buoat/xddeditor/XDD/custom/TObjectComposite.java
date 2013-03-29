@@ -37,12 +37,12 @@ public class TObjectComposite extends Composite {
 
             if (TObjectComposite.this.stautsTObject) {
                 TObjectComposite.this.tobjectitemProvider.setPropertyValue(
-                    TObjectComposite.this.tobject, "index",
-                    HexBin.decode("0" + TObjectComposite.this.txtIndex.getText()));
+                    TObjectComposite.this.tobject, "index", //$NON-NLS-1$
+                    HexBin.decode("0" + TObjectComposite.this.txtIndex.getText())); //$NON-NLS-1$
             } else {
                 TObjectComposite.this.subObjectItemProvicer.setPropertyValue(
-                    TObjectComposite.this.subobject, "subIndex",
-                    HexBin.decode("0" + TObjectComposite.this.txtIndex.getText()));
+                    TObjectComposite.this.subobject, "subIndex", //$NON-NLS-1$
+                    HexBin.decode("0" + TObjectComposite.this.txtIndex.getText())); //$NON-NLS-1$
             }
         }
     };
@@ -56,10 +56,10 @@ public class TObjectComposite extends Composite {
         public void focusLost(FocusEvent event) {
             if (TObjectComposite.this.stautsTObject)
                 TObjectComposite.this.tobjectitemProvider.setPropertyValue(
-                    TObjectComposite.this.tobject, "name", TObjectComposite.this.txtName.getText());
+                    TObjectComposite.this.tobject, "name", TObjectComposite.this.txtName.getText()); //$NON-NLS-1$
             else
                 TObjectComposite.this.subObjectItemProvicer.setPropertyValue(
-                    TObjectComposite.this.subobject, "name",
+                    TObjectComposite.this.subobject, "name", //$NON-NLS-1$
                     TObjectComposite.this.txtName.getText());
         }
     };
@@ -70,33 +70,29 @@ public class TObjectComposite extends Composite {
         public void modifyText(ModifyEvent event) {
             String selectionStr = TObjectComposite.this.cmbObjectType.getText();
             short selection;
-            if (selectionStr.contentEquals("7 - VAR"))
+            if (selectionStr.contentEquals("7 - VAR")) //$NON-NLS-1$
                 selection = 7;
-            else if (selectionStr.contentEquals("8 - ARRAY"))
+            else if (selectionStr.contentEquals("8 - ARRAY")) //$NON-NLS-1$
                 selection = 8;
-            else if (selectionStr.contentEquals("9 - RECORD"))
+            else if (selectionStr.contentEquals("9 - RECORD")) //$NON-NLS-1$
                 selection = 9;
             else
                 selection = 0;
 
             if (TObjectComposite.this.stautsTObject && selection != 0)
                 TObjectComposite.this.tobjectitemProvider.setPropertyValue(
-                    TObjectComposite.this.tobject, "objectType", selection);
+                    TObjectComposite.this.tobject, "objectType", selection); //$NON-NLS-1$
             else if (selection != 0)
                 TObjectComposite.this.subObjectItemProvicer.setPropertyValue(
-                    TObjectComposite.this.subobject, "objectType", selection);
-
+                    TObjectComposite.this.subobject, "objectType", selection); //$NON-NLS-1$
         }
     };
 
     private boolean stautsTObject;
-
     private SubObjectType subobject;
-
     private final SubObjectTypeItemProvider subObjectItemProvicer;
     private TObject tobject;
     private final TObjectItemProvider tobjectitemProvider;
-
     private final Text txtIndex;
     private final Text txtName;
 
@@ -120,19 +116,19 @@ public class TObjectComposite extends Composite {
 
         Group grpMandatory = new Group(this, SWT.NONE);
         grpMandatory.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
-        grpMandatory.setText("Mandatory Data");
+        grpMandatory.setText("Mandatory Data"); //$NON-NLS-1$
         grpMandatory.setBounds(10, 0, 271, 112);
 
         Label lblName = new Label(grpMandatory, SWT.NONE);
         lblName.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
         this.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
         lblName.setBounds(10, 22, 55, 15);
-        lblName.setText("Name:");
+        lblName.setText("Name:"); //$NON-NLS-1$
 
         this.lblindex = new Label(grpMandatory, SWT.NONE);
         this.lblindex.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
         this.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
-        this.lblindex.setText("Index:");
+        this.lblindex.setText("Index:"); //$NON-NLS-1$
         this.lblindex.setBounds(10, 80, 55, 15);
 
         this.txtName = new Text(grpMandatory, SWT.BORDER);
@@ -143,19 +139,18 @@ public class TObjectComposite extends Composite {
         this.txtIndex.setTextLimit(4);
 
         this.cmbObjectType = new Combo(grpMandatory, SWT.NONE);
-        this.cmbObjectType.setItems(new String[] { "7 - VAR", "8 - ARRAY", "9 - RECORD" });
+        this.cmbObjectType.setItems(new String[] { "7 - VAR", "8 - ARRAY", "9 - RECORD" }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         this.cmbObjectType.setBounds(83, 45, 183, 23);
 
         Label lblObjectType = new Label(grpMandatory, SWT.NONE);
         lblObjectType.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
         lblObjectType.setBounds(10, 48, 67, 15);
-        lblObjectType.setText("Object Type:");
+        lblObjectType.setText("Object Type:"); //$NON-NLS-1$
 
         Label lblH = new Label(grpMandatory, SWT.NONE);
         lblH.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
         lblH.setBounds(144, 80, 7, 15);
-        lblH.setText("h");
-
+        lblH.setText("h"); //$NON-NLS-1$
     }
 
     /**
@@ -167,16 +162,17 @@ public class TObjectComposite extends Composite {
     public void setObject(final EObject object) {
         this.removeListeners();
         if (object instanceof TObject) {
+            this.stautsTObject = true;
             this.txtIndex.setTextLimit(4);
-            this.lblindex.setText("Index:");
+            this.lblindex.setText("Index:"); //$NON-NLS-1$
             this.tobject = (TObject) object;
 
             if (this.tobject.getIndex() != null) {
-                String result = Integer.toHexString(new BigInteger(1, this.tobject.getIndex())
-                    .intValue());
+                String result = Integer.toHexString(
+                    new BigInteger(1, this.tobject.getIndex()).intValue()).toUpperCase();
                 this.txtIndex.setText(result);
             } else
-                this.txtIndex.setText("");
+                this.txtIndex.setText(""); //$NON-NLS-1$
             if (this.tobject.getName() != null)
                 this.txtName.setText(this.tobject.getName());
             int i = 0;
@@ -185,22 +181,23 @@ public class TObjectComposite extends Composite {
                     this.cmbObjectType.select(i);
                     break;
                 } else
-                    this.cmbObjectType.setText("Type not found!");
+                    this.cmbObjectType.setText(Messages.tObjectComposite_type_not_found);
                 i++;
             }
 
         } else {
+            this.stautsTObject = false;
             this.txtIndex.setTextLimit(2);
             this.subobject = (SubObjectType) object;
-            this.lblindex.setText("Subindex:");
+            this.lblindex.setText("Subindex:"); //$NON-NLS-1$
 
             if (this.subobject.getSubIndex() != null) {
                 String result = String.format(
-                    "%02x", (new BigInteger(1, this.subobject.getSubIndex())).intValue())
+                    "%02x", (new BigInteger(1, this.subobject.getSubIndex())).intValue()) //$NON-NLS-1$
                     .toUpperCase();
                 this.txtIndex.setText(result);
             } else
-                this.txtIndex.setText("");
+                this.txtIndex.setText(""); //$NON-NLS-1$
             if (this.subobject.getName() != null)
                 this.txtName.setText(this.subobject.getName());
 
@@ -210,7 +207,7 @@ public class TObjectComposite extends Composite {
                     this.cmbObjectType.select(i);
                     break;
                 } else {
-                    this.cmbObjectType.setText("Type not found!");
+                    this.cmbObjectType.setText(Messages.tObjectComposite_type_not_found);
                 }
                 i++;
             }
@@ -232,7 +229,6 @@ public class TObjectComposite extends Composite {
         this.txtIndex.addFocusListener(this.indexFocusListener);
         this.txtIndex.addVerifyListener(this.indexVerifyListener);
         this.cmbObjectType.addModifyListener(this.objectTypeListener);
-
     }
 
     /**

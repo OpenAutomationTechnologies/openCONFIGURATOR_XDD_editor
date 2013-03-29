@@ -38,5 +38,4 @@ public class StoreParamObjectsFilter implements IFilter {
         }
         return false;
     }
-
 }

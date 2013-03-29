@@ -27,18 +27,18 @@ public class AdvancedStoreParamPropertySection extends AbstractPropertySection {
     private CLabel lblDefaultvalValue;
 
     private CLabel lblIndexValue;
-    private TObjectComposite mandatory;
     private StoreParamComposite storeparam;
-
     private SubObjectTypeItemProvider subObjectItemProvider;
+
+    private TObjectComposite tObjectComposite;
 
     @Override
     public void createControls(Composite parent, TabbedPropertySheetPage aTabbedPropertySheetPage) {
         super.createControls(parent, aTabbedPropertySheetPage);
 
         Composite composite = this.getWidgetFactory().createFlatFormComposite(parent);
-        FormData data;
         this.subObjectItemProvider = new SubObjectTypeItemProvider(this.getAdapterFactory());
+        FormData data;
 
         //Index Label (from Parent!)
         CLabel lblIndex = this.getWidgetFactory().createCLabel(composite, "Index:"); //$NON-NLS-1$
@@ -58,7 +58,7 @@ public class AdvancedStoreParamPropertySection extends AbstractPropertySection {
 
         //lblDefaultValueValue Label (Actual value)
         this.lblDefaultvalValue = this.getWidgetFactory().createCLabel(
-            composite, Messages.AdvancedMappingObjectPropertySection_No_Value_Set);
+            composite, Messages.advancedMappingObjectPropertySection_No_Value_Set);
         data = new FormData();
         data.top = new FormAttachment(this.lblIndexValue, -5);
         data.left = new FormAttachment(0, AbstractPropertySection.STANDARD_LABEL_WIDTH + 20);
@@ -67,22 +67,22 @@ public class AdvancedStoreParamPropertySection extends AbstractPropertySection {
 
         //lblDefaultvalue
         CLabel lblDefaultValue = this.getWidgetFactory().createCLabel(
-            composite, Messages.AdvancedMappingObjectPropertySection_lbl_Default_Value);
+            composite, Messages.advancedMappingObjectPropertySection_lbl_Default_Value);
         data = new FormData();
         data.top = new FormAttachment(lblIndex, -5);
         data.left = new FormAttachment(0, 10);
         lblDefaultValue.setLayoutData(data);
 
-        this.mandatory = new TObjectComposite(composite, 0, this.getAdapterFactory());
+        //TObjectComposite
+        this.tObjectComposite = new TObjectComposite(composite, 0, this.getAdapterFactory());
         data = new FormData();
         data.top = new FormAttachment(lblDefaultValue, 0);
-        this.mandatory.setLayoutData(data);
+        this.tObjectComposite.setLayoutData(data);
 
         this.storeparam = new StoreParamComposite(composite, 0);
         data = new FormData();
-        data.top = new FormAttachment(this.mandatory, 0);
+        data.top = new FormAttachment(this.tObjectComposite, 0);
         this.storeparam.setLayoutData(data);
-
     } //createControls
 
     /**
@@ -103,11 +103,9 @@ public class AdvancedStoreParamPropertySection extends AbstractPropertySection {
         Object input = ((IStructuredSelection) selection).getFirstElement();
         subObject = (SubObjectType) input;
         tobject = (TObject) subObject.eContainer();
-        this.mandatory.setObject(subObject);
+        this.tObjectComposite.setObject(subObject);
         this.lblIndexValue.setText("0x1010 (" + tobject.getName() + ")");
         this.storeparam
             .setSubObject(subObject, this.subObjectItemProvider, this.lblDefaultvalValue);
-
     }
-
 } //AdvancedStoreParamPropertySection
