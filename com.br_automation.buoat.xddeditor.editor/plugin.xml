@@ -91,6 +91,11 @@
                id="advanced_propertytab_StoreParam"
                label="Advanced">
          </propertyTab>
+         <propertyTab
+               category="XDD Properties"
+               id="advanced_propertytab_StartUp"
+               label="Advanced">
+         </propertyTab>
       </propertyTabs>
    </extension>
    <extension
@@ -144,6 +149,15 @@
                tab="advanced_propertytab_StoreParam">
             <input
                   type="com.br_automation.buoat.xddeditor.XDD.impl.SubObjectTypeImpl">
+            </input>
+         </propertySection>
+         <propertySection
+               class="com.br_automation.buoat.xddeditor.XDD.custom.AdvancedStartUpPropertySection"
+               filter="com.br_automation.buoat.xddeditor.XDD.custom.Index1F80Filter"
+               id="advanced_section_StartUp"
+               tab="advanced_propertytab_StartUp">
+            <input
+                  type="com.br_automation.buoat.xddeditor.XDD.impl.TObjectImpl">
             </input>
          </propertySection>
       </propertySections>

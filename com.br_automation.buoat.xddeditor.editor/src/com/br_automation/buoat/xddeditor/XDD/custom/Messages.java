@@ -25,6 +25,43 @@ public final class Messages extends NLS {
     public static String advancedMappingObjectPropertySection_No_Value_Set;// NOPMD by lueckengaj on 29.03.13 12:53
     public static String advancedMappingObjectPropertySection_Set_Length;// NOPMD by lueckengaj on 29.03.13 12:53
     public static String advancedMappingObjectPropertySection_Set_Subindex;// NOPMD by lueckengaj on 29.03.13 12:53
+    public static String advancedStartUpPropertySection_btn_appDecide_ReadyState; // NOPMD by lueckengaj on 02.04.13 14:34
+    public static String advancedStartUpPropertySection_btn_AppDecideChangeToPreOp; // NOPMD by lueckengaj on 02.04.13 14:34
+    public static String advancedStartUpPropertySection_btn_applicationCNStart; // NOPMD by lueckengaj on 02.04.13 14:34
+    public static String advancedStartUpPropertySection_btn_ChangeNotActiveToBaiscEthernet; // NOPMD by lueckengaj on 02.04.13 14:40
+    public static String advancedStartUpPropertySection_btn_checkCNConfig; // NOPMD by lueckengaj on 02.04.13 14:40
+    public static String advancedStartUpPropertySection_btn_checkSWVersion; // NOPMD by lueckengaj on 02.04.13 14:40
+    public static String advancedStartUpPropertySection_btn_dealStopNodeWithBroadcast; // NOPMD by lueckengaj on 02.04.13 14:40
+    public static String advancedStartUpPropertySection_btn_enterPreOp2ByApplication; // NOPMD by lueckengaj on 02.04.13 14:40
+    public static String advancedStartUpPropertySection_btn_NoAutoNMTOperational;// NOPMD by lueckengaj on 02.04.13 14:40
+    public static String advancedStartUpPropertySection_btn_resetNodeWithBroadcast;// NOPMD by lueckengaj on 02.04.13 14:40
+    public static String advancedStartUpPropertySection_btn_startBroadcastCN;// NOPMD by lueckengaj on 02.04.13 14:40
+    public static String advancedStartUpPropertySection_btn_VerifyAllCNIds;// NOPMD by lueckengaj on 02.04.13 14:40
+    public static String advancedStartUpPropertySection_Error_corruptDefaultValue;// NOPMD by lueckengaj on 02.04.13 14:40
+    public static String advancedStartUpPropertySection_tooltip_disabled_allowCNstartup;// NOPMD by lueckengaj on 02.04.13 14:40
+    public static String advancedStartUpPropertySection_tooltip_disabled_autoChangeToPreOp;// NOPMD by lueckengaj on 02.04.13 14:40
+    public static String advancedStartUpPropertySection_tooltip_disabled_autoNMTOperational;// NOPMD by lueckengaj on 02.04.13 14:40
+    public static String advancedStartUpPropertySection_tooltip_disabled_dealCNaccordingBit4;// NOPMD by lueckengaj on 02.04.13 14:40
+    public static String advancedStartUpPropertySection_tooltip_disabled_doNotCheckConfig;// NOPMD by lueckengaj on 02.04.13 14:40
+    public static String advancedStartUpPropertySection_tooltip_disabled_doNotCheckSW;// NOPMD by lueckengaj on 02.04.13 14:40
+    public static String advancedStartUpPropertySection_tooltip_disabled_enterPreOperational2;// NOPMD by lueckengaj on 02.04.13 14:40
+    public static String advancedStartUpPropertySection_tooltip_disabled_individualOnError;// NOPMD by lueckengaj on 02.04.13 14:40
+    public static String advancedStartUpPropertySection_tooltip_disabled_LimitVerifyAllCNIds;// NOPMD by lueckengaj on 02.04.13 14:40
+    public static String advancedStartUpPropertySection_tooltip_disabled_notActiveBasicEthState;// NOPMD by lueckengaj on 02.04.13 14:40
+    public static String advancedStartUpPropertySection_tooltip_disabled_setReadyToOperate;// NOPMD by lueckengaj on 02.04.13 14:40
+    public static String advancedStartUpPropertySection_tooltip_disabled_startexplicitCN;// NOPMD by lueckengaj on 02.04.13 14:40
+    public static String advancedStartUpPropertySection_tooltip_enabled_AppDecideChangeToPreOp;// NOPMD by lueckengaj on 02.04.13 14:40
+    public static String advancedStartUpPropertySection_tooltip_enabled_appDecideReadyState;// NOPMD by lueckengaj on 02.04.13 14:40
+    public static String advancedStartUpPropertySection_tooltip_enabled_applicationCNStart;// NOPMD by lueckengaj on 02.04.13 14:40
+    public static String advancedStartUpPropertySection_tooltip_enabled_ChangeNotActiveToBasicEthernet;// NOPMD by lueckengaj on 02.04.13 14:40
+    public static String advancedStartUpPropertySection_tooltip_enabled_CheckSWVersion;// NOPMD by lueckengaj on 02.04.13 14:40
+    public static String advancedStartUpPropertySection_tooltip_enabled_dealStopNodeWithBroadcast;// NOPMD by lueckengaj on 02.04.13 14:40
+    public static String advancedStartUpPropertySection_tooltip_enabled_doCheckConfig;// NOPMD by lueckengaj on 02.04.13 14:40
+    public static String advancedStartUpPropertySection_tooltip_enabled_enterPreOp2ByApplication;// NOPMD by lueckengaj on 02.04.13 14:40
+    public static String advancedStartUpPropertySection_tooltip_enabled_noAutoNMTOperational;// NOPMD by lueckengaj on 02.04.13 14:40
+    public static String advancedStartUpPropertySection_tooltip_enabled_resetNodeWithBoradcast;// NOPMD by lueckengaj on 02.04.13 14:40
+    public static String advancedStartUpPropertySection_tooltip_enabled_startBroadcastCN;// NOPMD by lueckengaj on 02.04.13 14:40
+    public static String advancedStartUpPropertySection_tooltip_enabled_VerifyAllCNIds;// NOPMD by lueckengaj on 02.04.13 14:40
     public static String tObjectComposite_type_not_found;// NOPMD by lueckengaj on 29.03.13 12:53
     public static String wizardConfigurationPage1_adv_conf_page_title;// NOPMD by lueckengaj on 29.03.13 12:53
     public static String wizardConfigurationPage1_creation_date_lbl;// NOPMD by lueckengaj on 29.03.13 12:53
@@ -48,9 +85,6 @@ public final class Messages extends NLS {
     public static String wizardConfigurationPage1_verndor_id_lbl;// NOPMD by lueckengaj on 29.03.13 12:53
     public static String wizardConfigurationPage1_verndor_name_lbl;// NOPMD by lueckengaj on 29.03.13 12:53
     private static final String BUNDLE_NAME = "com.br_automation.buoat.xddeditor.XDD.custom.messages"; //$NON-NLS-1$ 
-
-    private Messages() {
-    }
 
     static {
         // initialize resource bundle
