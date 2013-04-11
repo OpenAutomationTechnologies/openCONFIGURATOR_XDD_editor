@@ -615,11 +615,16 @@ public class TObjectImpl extends EObjectImpl implements TObject {
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
      * 
-     * @generated
+     * @generated NOT
      */
     public void setIndex(byte[] newIndex) {
         byte[] oldIndex = index;
-        index = newIndex;
+        // j.l.: Checks whether the newIndex is not empty to avoid invalid index-values in the Object.
+        // Is also needed for a functioning validation.
+        // BEGIN
+        if (newIndex.length > 0)
+            index = newIndex;
+        //END
         if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, XDDPackage.TOBJECT__INDEX,
                 oldIndex, index));
@@ -659,11 +664,16 @@ public class TObjectImpl extends EObjectImpl implements TObject {
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
      * 
-     * @generated
+     * @generated NOT
      */
     public void setName(String newName) {
         String oldName = name;
-        name = newName;
+        // j.l.: Checks whether the newName is an empty String to avoid ""-value as Object-name.
+        //  Needed for a functioning validation.
+        // BEGIN
+        if (!newName.contentEquals(""))
+            name = newName;
+        // END
         if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, XDDPackage.TOBJECT__NAME,
                 oldName, name));
@@ -681,13 +691,20 @@ public class TObjectImpl extends EObjectImpl implements TObject {
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
      * 
-     * @generated
+     * @generated NOT
      */
     public void setObjectType(short newObjectType) {
         short oldObjectType = objectType;
-        objectType = newObjectType;
+        // j.l.: Checks whether the newObjectType is 0 to avoid invalid ObjectTypes set in the Object.
+        // If newObjectType is 0 or smaller, the unset-method is called, to get a functioning validation.
+        // BEGIN
+        if (newObjectType > 0) {
+            objectTypeESet = true;
+            objectType = newObjectType;
+        } else
+            unsetObjectType();
+        //END
         boolean oldObjectTypeESet = objectTypeESet;
-        objectTypeESet = true;
         if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, XDDPackage.TOBJECT__OBJECT_TYPE,
                 oldObjectType, objectType, !oldObjectTypeESet));
