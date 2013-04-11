@@ -1,4 +1,9 @@
-package com.br_automation.buoat.xddeditor.XDD.custom;
+/**
+ * @since 21.3.2013
+ * @author Joris Lückenga, Bernecker + Rainer Industrie Elektronik Ges.m.b.H.
+ */
+
+package com.br_automation.buoat.xddeditor.XDD.custom.propertypages;
 
 import java.util.Arrays;
 
@@ -22,13 +27,20 @@ import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 import com.br_automation.buoat.xddeditor.XDD.TObject;
+import com.br_automation.buoat.xddeditor.XDD.custom.CiADeviceProfile;
+import com.br_automation.buoat.xddeditor.XDD.custom.Messages;
+import com.br_automation.buoat.xddeditor.XDD.custom.XDDUtilities;
 import com.br_automation.buoat.xddeditor.XDD.custom.XDDUtilities.RegexVerifyListener;
 import com.br_automation.buoat.xddeditor.XDD.provider.TObjectItemProvider;
 
 /**
+ * @brief PropertySection for DeviceType Object with index 0x1000.
+ * 
+ *        Contains different controls for the DeviceType object like a combo-box
+ *        with several DeviceProfiles and an additional-info textbox. Generates
+ *        default values for the user.
+ * 
  * @author Joris Lückenga
- * @brief PropertySection for DeviceType Object (index 0x1000)
- * @since 21.3.2013
  * */
 public class AdvancedDeviceTypePropertySection extends AbstractPropertySection {
 
@@ -49,7 +61,7 @@ public class AdvancedDeviceTypePropertySection extends AbstractPropertySection {
             Character.valueOf((char) 0x7f), Character.valueOf((char) 0x8)), true);
 
     private long additionalInfoValue;
-    private CCombo combDeviceProfileNr;
+    private CCombo cmbDeviceProfileNr;
     private CLabel lblDefaultValueValue;
     private CLabel lblError;
     private long maskLSB;
@@ -59,7 +71,7 @@ public class AdvancedDeviceTypePropertySection extends AbstractPropertySection {
         public void modifyText(ModifyEvent e) {
             AdvancedDeviceTypePropertySection.this.lblError.setText(""); //$NON-NLS-1$
             AdvancedDeviceTypePropertySection.this.profileValue = Long
-                .parseLong(AdvancedDeviceTypePropertySection.this.combDeviceProfileNr.getText()
+                .parseLong(AdvancedDeviceTypePropertySection.this.cmbDeviceProfileNr.getText()
                     .substring(4, 7));
             AdvancedDeviceTypePropertySection.this.setDefaultValue();
         }
@@ -77,8 +89,8 @@ public class AdvancedDeviceTypePropertySection extends AbstractPropertySection {
         Composite composite = super.getWidgetFactory().createFlatFormComposite(parent);
         FormData data;
         this.tObjectProvider = new TObjectItemProvider(this.getAdapterFactory());
-        this.maskLSB = 65535;
-        this.maskMSB = Long.parseLong("4294901760"); //$NON-NLS-1$
+        this.maskLSB = 0xFFFF;
+        this.maskMSB = 0xFFFF0000; //$NON-NLS-1$
 
         this.tObjectComposite = new TObjectComposite(composite, 0, this.getAdapterFactory());
         data = new FormData();
@@ -120,20 +132,20 @@ public class AdvancedDeviceTypePropertySection extends AbstractPropertySection {
 
         //----Combobox
 
-        this.combDeviceProfileNr = this.getWidgetFactory().createCCombo(composite);
+        this.cmbDeviceProfileNr = this.getWidgetFactory().createCCombo(composite);
         data = new FormData();
         for (CiADeviceProfile profile : CiADeviceProfile.values())
-            this.combDeviceProfileNr.add(profile.getProfileName() + " - " //$NON-NLS-1$
+            this.cmbDeviceProfileNr.add(profile.getProfileName() + " - " //$NON-NLS-1$
                 + profile.getProfileDescription());
         data.top = new FormAttachment(this.lblDefaultValueValue, 0);
         data.left = new FormAttachment(0, AbstractPropertySection.STANDARD_LABEL_WIDTH + 10);
         data.right = new FormAttachment(40, 0);
-        this.combDeviceProfileNr.setLayoutData(data);
-        this.combDeviceProfileNr.addModifyListener(this.profileListener);
+        this.cmbDeviceProfileNr.setLayoutData(data);
+        this.cmbDeviceProfileNr.addModifyListener(this.profileListener);
 
         this.txtAdditionalInfo = this.getWidgetFactory().createText(composite, ""); //$NON-NLS-1$
         data = new FormData();
-        data.top = new FormAttachment(this.combDeviceProfileNr, 5);
+        data.top = new FormAttachment(this.cmbDeviceProfileNr, 5);
         data.left = new FormAttachment(0, AbstractPropertySection.STANDARD_LABEL_WIDTH + 10);
         data.right = new FormAttachment(15, 0);
         this.txtAdditionalInfo.setLayoutData(data);
@@ -142,15 +154,14 @@ public class AdvancedDeviceTypePropertySection extends AbstractPropertySection {
 
         CLabel hex = this.getWidgetFactory().createCLabel(composite, "h"); //$NON-NLS-1$
         data = new FormData();
-        data.top = new FormAttachment(this.combDeviceProfileNr, 5);
+        data.top = new FormAttachment(this.cmbDeviceProfileNr, 5);
         data.left = new FormAttachment(this.txtAdditionalInfo, -5);
         hex.setLayoutData(data);
 
     } //createControls
 
     /**
-     * @brief Gets the current AdapterFactory, used to get ItemProviders
-     * @return AdapterFactory for ItemProviders
+     * @return The default AdapterFactory.
      * */
     public AdapterFactory getAdapterFactory() {
         if (this.adapterFactory == null)
@@ -158,9 +169,11 @@ public class AdvancedDeviceTypePropertySection extends AbstractPropertySection {
         return this.adapterFactory;
     }
 
+    /**
+     * @see AbstractPropertySection#setInput(IWorkbenchPart, ISelection)
+     */
     @Override
     public void setInput(IWorkbenchPart part, ISelection selection) {
-
         super.setInput(part, selection);
         Object input = ((IStructuredSelection) selection).getFirstElement();
         this.tobject = (TObject) input;
@@ -177,9 +190,9 @@ public class AdvancedDeviceTypePropertySection extends AbstractPropertySection {
         this.txtAdditionalInfo.addVerifyListener(this.additionalInfoListener);
 
         int i = 0;
-        for (String profile : this.combDeviceProfileNr.getItems()) {
+        for (String profile : this.cmbDeviceProfileNr.getItems()) {
             if (profile.contains(Long.toString(this.profileValue))) {
-                this.combDeviceProfileNr.select(i);
+                this.cmbDeviceProfileNr.select(i);
                 this.lblError.setText(""); //$NON-NLS-1$
                 break;
             } else {
@@ -192,14 +205,13 @@ public class AdvancedDeviceTypePropertySection extends AbstractPropertySection {
     } //setInput
 
     /**
-     * @brief Sets the new Defaultvalue to the Object (based on setted values in
-     *        class)
+     * @brief Sets the new Defaultvalue to the Object based on made selections.
      * */
     private void setDefaultValue() {
         Long newDefaultValue = (this.additionalInfoValue) + this.profileValue;
         this.tObjectProvider.setPropertyValue(this.tobject, "defaultValue", "0x" //$NON-NLS-1$ //$NON-NLS-2$
             + String.format("%08x", newDefaultValue).toUpperCase()); //$NON-NLS-1$
         this.lblDefaultValueValue.setText(this.tobject.getDefaultValue());
-
     }
+
 } //AdvancedDeviceTypePropertySection

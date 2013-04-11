@@ -1,3 +1,8 @@
+/**
+ * @since 19.3.2013
+ * @author Joris Lückenga, Bernecker + Rainer Industrie Elektronik Ges.m.b.H.
+ */
+
 package com.br_automation.buoat.xddeditor.XDD.custom;
 
 import java.util.HashMap;
@@ -31,15 +36,22 @@ import com.br_automation.buoat.xddeditor.XDD.presentation.XDDEditorPlugin;
 import com.br_automation.buoat.xddeditor.XDD.presentation.XDDModelWizard;
 
 /**
+ * @brief Modified/Overridden XDDWizard extended from generated Wizard.
+ * 
+ *        Modifications for methods addPages(), performFinis() and
+ *        creatInitialModel() as well as getters for WizardPages to extend the
+ *        design and functions of the wizard.
+ * 
  * @author Joris Lückenga
- * @since 19.3.2013
- * @brief Modified XDD Wizard extended from generated Wizard
- */
+ * */
 public class CustomXDDWizard extends XDDModelWizard {
 
     private WizardConfigurationPage1 wizardConfigurationPage1;
     private WizardTemplatePage wizardTemplatePage;
 
+    /**
+     * @see XDDModelWizard#addPages()
+     */
     @Override
     public void addPages() {
         // Create a page, set the title, and the initial model file name.
@@ -83,7 +95,7 @@ public class CustomXDDWizard extends XDDModelWizard {
         }
 
         //----------Changes of addPages method start here--------------\\
-        //Hinzufügen der eigenen Page
+        //Add own pages instead of generated ones.
         this.wizardTemplatePage = new WizardTemplatePage("wizardTemplatePage");
         this.addPage(this.wizardTemplatePage);
 
@@ -93,22 +105,26 @@ public class CustomXDDWizard extends XDDModelWizard {
 
     }
 
-    //Instance of WizardTemplatePage to acces Options etc.
-    //private WizardTemplatePage wizardTemplatePage;
+    /**
+     * @return Instance of XDDModelWizardNewFileCreationPage.
+     */
     public XDDModelWizardNewFileCreationPage getNewFileCreationPage() {
         return this.newFileCreationPage;
     }
 
+    /**
+     * @return The WizardTemplatePage instance.
+     */
     public WizardTemplatePage getWizardTemplatePage() {
         return this.wizardTemplatePage;
     }
 
-    //addPages Method (modified) - adds custom pages (a.e WizardTemplatePage)
+    /**
+     * @see XDDModelWizard#performFinish()
+     */
     @Override
     public boolean performFinish() {
         try {
-            // Remember the file.
-            //
             final IFile modelFile = this.newFileCreationPage.getModelFile();
 
             // Do the work within an operation.
@@ -177,13 +193,15 @@ public class CustomXDDWizard extends XDDModelWizard {
         }
     }
 
-    //createInitalModel method (modified) - calls the loader-Method of InitalModelLoad which differs between 4 cases:
-    //1.No default Template, 2.default template 3.default extended template 4.default static template
+    /**
+     * @brief Instantiates the initalModelLoader and creates a new XDD Model.
+     * @see XDDModelWizard#createInitialModel
+     */
     @Override
     protected EObject createInitialModel() {
-        InitialModelLoader initialModelLoader = new InitialModelLoader();
-        DocumentRoot root = initialModelLoader.loadXDD(
+        DocumentRoot root = InitialModelLoader.loadXDD(
             this.wizardTemplatePage, this.wizardConfigurationPage1);
         return root;
     }
-}
+
+} //XDDModelWizard

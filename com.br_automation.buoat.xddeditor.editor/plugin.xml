@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
-
-<!--
--->
-
 <plugin>
 
    <extension point="org.eclipse.ui.newWizards">
@@ -114,9 +110,9 @@
             </input>
          </propertySection>
          <propertySection
-               class="com.br_automation.buoat.xddeditor.XDD.custom.AdvancedFeatureFlagsPropertySection"
+               class="com.br_automation.buoat.xddeditor.XDD.custom.propertypages.AdvancedFeatureFlagsPropertySection"
                enablesFor="1"
-               filter="com.br_automation.buoat.xddeditor.XDD.custom.Index1F82Filter"
+               filter="com.br_automation.buoat.xddeditor.XDD.custom.propertypages.filters.Index1F82Filter"
                id="advanced_section_featureFlags"
                tab="advanced_propertytab_featureFlags">
             <input
@@ -124,9 +120,9 @@
             </input>
          </propertySection>
          <propertySection
-               class="com.br_automation.buoat.xddeditor.XDD.custom.AdvancedMappingObjectPropertySection"
+               class="com.br_automation.buoat.xddeditor.XDD.custom.propertypages.AdvancedMappingObjectPropertySection"
                enablesFor="1"
-               filter="com.br_automation.buoat.xddeditor.XDD.custom.MappingObjectsFilter"
+               filter="com.br_automation.buoat.xddeditor.XDD.custom.propertypages.filters.MappingSubobjectsFilter"
                id="advanced_section_MappingObjects"
                tab="advanced_propertytab_MappingObjects">
             <input
@@ -134,8 +130,8 @@
             </input>
          </propertySection>
          <propertySection
-               class="com.br_automation.buoat.xddeditor.XDD.custom.AdvancedDeviceTypePropertySection"
-               filter="com.br_automation.buoat.xddeditor.XDD.custom.Index1000Filter"
+               class="com.br_automation.buoat.xddeditor.XDD.custom.propertypages.AdvancedDeviceTypePropertySection"
+               filter="com.br_automation.buoat.xddeditor.XDD.custom.propertypages.filters.Index1000Filter"
                id="advanced_section_DeviceType"
                tab="advanced_propertytab_DeviceType">
             <input
@@ -143,8 +139,8 @@
             </input>
          </propertySection>
          <propertySection
-               class="com.br_automation.buoat.xddeditor.XDD.custom.AdvancedStoreParamPropertySection"
-               filter="com.br_automation.buoat.xddeditor.XDD.custom.StoreParamObjectsFilter"
+               class="com.br_automation.buoat.xddeditor.XDD.custom.propertypages.AdvancedStoreParamPropertySection"
+               filter="com.br_automation.buoat.xddeditor.XDD.custom.propertypages.filters.StoreParamSubobjectsFilter"
                id="advanced_section_StoreParam"
                tab="advanced_propertytab_StoreParam">
             <input
@@ -152,8 +148,8 @@
             </input>
          </propertySection>
          <propertySection
-               class="com.br_automation.buoat.xddeditor.XDD.custom.AdvancedStartUpPropertySection"
-               filter="com.br_automation.buoat.xddeditor.XDD.custom.Index1F80Filter"
+               class="com.br_automation.buoat.xddeditor.XDD.custom.propertypages.AdvancedStartUpPropertySection"
+               filter="com.br_automation.buoat.xddeditor.XDD.custom.propertypages.filters.Index1F80Filter"
                id="advanced_section_StartUp"
                tab="advanced_propertytab_StartUp">
             <input

@@ -1,4 +1,9 @@
-package com.br_automation.buoat.xddeditor.XDD.custom;
+/**
+ * @since 21.3.2013
+ * @author Joris Lückenga, Bernecker + Rainer Industrie Elektronik Ges.m.b.H.
+ */
+
+package com.br_automation.buoat.xddeditor.XDD.custom.propertypages;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,17 +29,23 @@ import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 import com.br_automation.buoat.xddeditor.XDD.TObject;
+import com.br_automation.buoat.xddeditor.XDD.custom.Messages;
+import com.br_automation.buoat.xddeditor.XDD.custom.XDDUtilities;
 import com.br_automation.buoat.xddeditor.XDD.provider.TObjectItemProvider;
 
 /**
+ * @brief PropertySection for StartUp object with index 0x1F80.
+ * 
+ *        Shows checkboxes for StartUpObject and calculates a default value
+ *        based on user selection.
+ * 
  * @author Joris Lückenga
- * @brief PropertySection for StartUp Object (index 0x1000)
- * @since 21.3.2013
  * */
 public class AdvancedStartUpPropertySection extends AbstractPropertySection {
 
     private AdapterFactory adapterFactory;
-    private final Map<Button, Integer> buttonMap = new HashMap<Button, Integer>();
+    private final Map<Button, Integer> buttonMap = new HashMap<Button, Integer>(13);
+    private int defaultValue;
     private CLabel lblDefaultValueValue;
     private CLabel lblError;
 
@@ -42,26 +53,24 @@ public class AdvancedStartUpPropertySection extends AbstractPropertySection {
 
         @Override
         public void widgetSelected(SelectionEvent e) {
-            Set<Entry<Button, Integer>> buttonSet = AdvancedStartUpPropertySection.this.buttonMap
-                .entrySet();
-            int btnValue = 0;
-            int newDefaultValue = 0;
-            String defaultValue;
-            for (Entry<Button, Integer> entry : buttonSet) {
-                btnValue = entry.getValue();
-                if (entry.getKey().getSelection())
-                    newDefaultValue = newDefaultValue | (1 << btnValue);
-                else
-                    newDefaultValue = newDefaultValue & ~(1 << btnValue);
-            }
+            String strDefaultValue;
+            if (((Button) e.getSource()).getSelection())
+                AdvancedStartUpPropertySection.this.defaultValue = AdvancedStartUpPropertySection.this.defaultValue
+                    | (1 << AdvancedStartUpPropertySection.this.buttonMap.get(e.getSource())
+                        .intValue());
+            else
+                AdvancedStartUpPropertySection.this.defaultValue = AdvancedStartUpPropertySection.this.defaultValue
+                    & ~(1 << AdvancedStartUpPropertySection.this.buttonMap.get(e.getSource())
+                        .intValue());
 
-            defaultValue = "0x" + Integer.toHexString(newDefaultValue).toUpperCase(); //$NON-NLS-1$
+            strDefaultValue = "0x" + Integer.toHexString(AdvancedStartUpPropertySection.this.defaultValue).toUpperCase(); //$NON-NLS-1$
             AdvancedStartUpPropertySection.this.tObjectProvider.setPropertyValue(
-                AdvancedStartUpPropertySection.this.tobject, "defaultValue", defaultValue); //$NON-NLS-1$
-            AdvancedStartUpPropertySection.this.lblDefaultValueValue.setText(defaultValue);
+                AdvancedStartUpPropertySection.this.tobject, "defaultValue", strDefaultValue); //$NON-NLS-1$
+            AdvancedStartUpPropertySection.this.lblDefaultValueValue.setText(strDefaultValue);
 
         }
     }; //SelectionListener
+
     private TObject tobject;
     private TObjectComposite tObjectComposite;
 
@@ -183,8 +192,8 @@ public class AdvancedStartUpPropertySection extends AbstractPropertySection {
             .setToolTipText(Messages.advancedStartUpPropertySection_tooltip_disabled_setReadyToOperate
                 + Messages.advancedStartUpPropertySection_tooltip_enabled_appDecideReadyState);
         data = new FormData();
-        data.top = new FormAttachment(btnNMTPreOperational2, -5);
-        data.left = new FormAttachment(0, 7);
+        data.top = new FormAttachment(lblDefaultValue, 0);
+        data.left = new FormAttachment(btnStartCNsMode, 120);
         btnMSReadyToOperate.setLayoutData(data);
         btnMSReadyToOperate.addSelectionListener(this.selectionListener);
         this.buttonMap.put(btnMSReadyToOperate, 8);
@@ -197,7 +206,7 @@ public class AdvancedStartUpPropertySection extends AbstractPropertySection {
                 + Messages.advancedStartUpPropertySection_tooltip_enabled_VerifyAllCNIds);
         data = new FormData();
         data.top = new FormAttachment(btnMSReadyToOperate, -5);
-        data.left = new FormAttachment(0, 7);
+        data.left = new FormAttachment(btnStartCNsMode, 120);
         btnCompleteCNIdCheck.setLayoutData(data);
         btnCompleteCNIdCheck.addSelectionListener(this.selectionListener);
         this.buttonMap.put(btnCompleteCNIdCheck, 9);
@@ -209,7 +218,7 @@ public class AdvancedStartUpPropertySection extends AbstractPropertySection {
             .setToolTipText(Messages.advancedStartUpPropertySection_tooltip_disabled_doNotCheckSW
                 + Messages.advancedStartUpPropertySection_tooltip_enabled_CheckSWVersion);
         data = new FormData();
-        data.top = new FormAttachment(lblDefaultValue, 0);
+        data.top = new FormAttachment(btnCompleteCNIdCheck, -5);
         data.left = new FormAttachment(btnStartCNsMode, 120);
         btnCheckSWVersion.setLayoutData(data);
         btnCheckSWVersion.addSelectionListener(this.selectionListener);
@@ -223,7 +232,7 @@ public class AdvancedStartUpPropertySection extends AbstractPropertySection {
                 + Messages.advancedStartUpPropertySection_tooltip_enabled_doCheckConfig);
         data = new FormData();
         data.top = new FormAttachment(btnCheckSWVersion, -5);
-        data.left = new FormAttachment(btnCheckSWVersion, -150);
+        data.left = new FormAttachment(btnStartCNsMode, 120);
         btnCheckConfig.setLayoutData(data);
         btnCheckConfig.addSelectionListener(this.selectionListener);
         this.buttonMap.put(btnCheckConfig, 11);
@@ -237,7 +246,7 @@ public class AdvancedStartUpPropertySection extends AbstractPropertySection {
                 + Messages.advancedStartUpPropertySection_tooltip_enabled_AppDecideChangeToPreOp);
         data = new FormData();
         data.top = new FormAttachment(btnCheckConfig, -5);
-        data.left = new FormAttachment(btnCheckSWVersion, -150);
+        data.left = new FormAttachment(btnStartCNsMode, 120);
         btnReturnOperational1.setLayoutData(data);
         btnReturnOperational1.addSelectionListener(this.selectionListener);
         this.buttonMap.put(btnReturnOperational1, 12);
@@ -251,7 +260,7 @@ public class AdvancedStartUpPropertySection extends AbstractPropertySection {
                 + Messages.advancedStartUpPropertySection_tooltip_enabled_ChangeNotActiveToBasicEthernet);
         data = new FormData();
         data.top = new FormAttachment(btnReturnOperational1, -5);
-        data.left = new FormAttachment(btnCheckSWVersion, -150);
+        data.left = new FormAttachment(btnStartCNsMode, 120);
         btnChangeToBasicEth.setLayoutData(data);
         btnChangeToBasicEth.addSelectionListener(this.selectionListener);
         this.buttonMap.put(btnChangeToBasicEth, 13);
@@ -269,8 +278,7 @@ public class AdvancedStartUpPropertySection extends AbstractPropertySection {
     } //createControls
 
     /**
-     * @brief Gets the current AdapterFactory, used to get ItemProviders
-     * @return AdapterFactory for ItemProviders
+     * @return AdapterFactory for ItemProviders.
      * */
     public AdapterFactory getAdapterFactory() {
         if (this.adapterFactory == null)
@@ -278,6 +286,9 @@ public class AdvancedStartUpPropertySection extends AbstractPropertySection {
         return this.adapterFactory;
     }
 
+    /**
+     * @see AbstractPropertySection#setInput(IWorkbenchPart, ISelection)
+     */
     @Override
     public void setInput(IWorkbenchPart part, ISelection selection) {
 
@@ -308,4 +319,5 @@ public class AdvancedStartUpPropertySection extends AbstractPropertySection {
             this.lblError
                 .setText(Messages.advancedStartUpPropertySection_Error_corruptDefaultValue);
     } //setInput
+
 } //AdvancedStartUpPropertySection

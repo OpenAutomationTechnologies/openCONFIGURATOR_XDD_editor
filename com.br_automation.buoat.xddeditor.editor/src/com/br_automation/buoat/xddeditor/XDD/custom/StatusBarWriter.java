@@ -1,3 +1,8 @@
+/**
+ * @since 19.3.2013
+ * @author Joris Lückenga, Bernecker + Rainer Industrie Elektronik Ges.m.b.H.
+ */
+
 package com.br_automation.buoat.xddeditor.XDD.custom;
 
 import org.eclipse.jface.action.IStatusLineManager;
@@ -12,28 +17,26 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 
 /**
+ * @brief Class to support writing to Eclipse status bar.
+ * 
  * @author Joris Lückenga
- * @brief Writes to the Status Bar of Eclipse-Workbench This class is not used
- *        yet
- * @since 19.3.2013
  * */
 public class StatusBarWriter {
     /**
-     * @brief Method to write a message to the status bar
+     * @brief Method to write a message to the Eclipse status bar.
      * @param message
-     *            that should be written to statusbar (black)
-     * @param error
-     *            that should be written to statusbar (red)
+     *            Default message that should be written to statusbar (black).
+     * @param isError
+     *            Error message that should be written to statusbar (red).
      */
-    public static void writeToStatus(final String message, final boolean error) {
+    public static void writeToStatus(final String message, final boolean isError) {
         final Display display = Display.getDefault();
 
         display.syncExec(new Runnable() { // NOPMD by lueckengaj on 29.03.13 13:35
-                /*
-                * (non-Javadoc)
-                *
-                * @see java.lang.Runnable#run()
-                */
+
+                /**
+                 * @see java.lang.Runnable#run()
+                 */
                 @Override
                 public void run() {
 
@@ -50,11 +53,12 @@ public class StatusBarWriter {
                     IStatusLineManager statusLineManager = actionBars.getStatusLineManager();
                     if (statusLineManager == null)
                         return;
-                    if (error)
+                    if (isError)
                         statusLineManager.setErrorMessage(message);
                     else
                         statusLineManager.setMessage(message);
                 }
             });
     } //WriteToStatus
+
 } //StatusBarWriter

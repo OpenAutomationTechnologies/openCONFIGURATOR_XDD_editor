@@ -1,11 +1,21 @@
+/**
+ * @since 19.3.2013
+ * @author Joris Lückenga, Bernecker + Rainer Industrie Elektronik Ges.m.b.H.
+ */
+
 package com.br_automation.buoat.xddeditor.XDD.custom;
 
 /**
+ * @brief Values of XDD datatypes acc. to EPSG DS 301 v1.1.0.
+ * 
+ *        This enum is used to get the names, representation value and bit
+ *        length from different datatypes used in XDD files according to the
+ *        POWERLINK Communication Profile Specification.
+ * 
  * @author Joris Lückenga
- * @since 19.3.2013
- * @brief Datatypes & Sizes for MappingObjects
  */
 public enum DataType {
+
     BOOLEAN(8, "Boolean", 0x1),
     INTEGER16(16, "Integer16", 0x3),
     INTEGER24(24, "Integer24", 0x10),
@@ -32,14 +42,12 @@ public enum DataType {
     private int typeValue;
 
     /**
-     * @brief constructor of DataType
      * @param size
-     *            Size of specified DataType e.g 64,32 etc.
+     *            Size in bits of specified DataType e.g 64,32 etc.
      * @param typeName
-     *            If its Unsinged, Integer etc.
+     *            Name of the DataType.
      * @param typeValue
-     *            value stands for a specified type -> 0x5 -> Unsigned8 with
-     *            size 8
+     *            Integer-Representation of the type. See EPSG DS 301 v1.1.0.
      */
     private DataType(int size,
         String typeName,
@@ -50,11 +58,13 @@ public enum DataType {
     }
 
     /**
-     * @brief Checks whether the value matchtes to a dataType or not
+     * @brief Convert integer to DataType.
      * @param value
-     *            of the datatype
-     * @return if DataType is know, it is returned, else the unknown Datatype is
-     *         returned
+     *            Integer representation of the dataType acc. to EPSG DS 301
+     *            v1.1.0.
+     * @return An instance of DataType if <code>value</code> matches an
+     *         Integer-Representation of a DataType specified in EPSG DS 301
+     *         v1.1.0, UNKNOWN otherwise.
      */
     public static DataType fromInt(int value) {
         for (DataType dataType : DataType.values())
@@ -74,14 +84,6 @@ public enum DataType {
 
     public int getTypeValue() {
         return this.typeValue;
-    }
-
-    /**
-     * @brief turns Integer into String
-     * @return returns the string from the Integer
-     */
-    public String toIntString() {
-        return Integer.toString(this.getBitSize());
     }
 
 } //DataType

@@ -1,9 +1,19 @@
+/**
+ * @since 19.3.2013
+ * @author Joris Lückenga, Bernecker + Rainer Industrie Elektronik Ges.m.b.H.
+ */
+
 package com.br_automation.buoat.xddeditor.XDD.custom;
 
 import org.eclipse.osgi.util.NLS;
 
-//Default-Language Strings for Help-, Error-, Labeltexts etc.
-public final class Messages extends NLS {
+/**
+ * @brief Default-Language Strings for Help, Error texts etc. used for
+ *        externalization.
+ * 
+ * @author Joris Lückenga
+ */
+public final class Messages extends NLS { // NOPMD by lueckengaj on 08.04.13 14:52 - no constructor needed in this help-class
     public static String advancedDeviceTypePropertySection_CiA_Profile_not_found; // NOPMD by lueckengaj on 29.03.13 12:53
     public static String advancedMappingObjectPropertySection_err_defaultvalue_not_decodable; // NOPMD by lueckengaj on 29.03.13 11:28
     public static String advancedMappingObjectPropertySection_err_index_not_found; // NOPMD by lueckengaj on 29.03.13 11:28
@@ -90,4 +100,5 @@ public final class Messages extends NLS {
         // initialize resource bundle
         NLS.initializeMessages(Messages.BUNDLE_NAME, Messages.class);
     }
-}
+
+} //Messages

@@ -1,4 +1,9 @@
-package com.br_automation.buoat.xddeditor.XDD.custom;
+/**
+ * @since 21.3.2013
+ * @author Joris Lückenga, Bernecker + Rainer Industrie Elektronik Ges.m.b.H.
+ */
+
+package com.br_automation.buoat.xddeditor.XDD.custom.propertypages;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,13 +31,17 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 import com.br_automation.buoat.xddeditor.XDD.DocumentRoot;
 import com.br_automation.buoat.xddeditor.XDD.TObject;
+import com.br_automation.buoat.xddeditor.XDD.custom.XDDUtilities;
 import com.br_automation.buoat.xddeditor.XDD.impl.TObjectImpl;
 import com.br_automation.buoat.xddeditor.XDD.provider.TObjectItemProvider;
 
 /**
+ * @brief FeatureFlags-Section for Object index 0x1F82.
+ * 
+ *        Contains different checkbox-buttons for the FeatureFlags object.
+ *        Generates default value for the user based on selection.
+ * 
  * @author Joris Lückenga
- * @brief FeatureFlags-Section for Object index 0x1F82
- * @since 21.3.2013
  * */
 public class AdvancedFeatureFlagsPropertySection extends AbstractPropertySection {
 
@@ -94,7 +103,8 @@ public class AdvancedFeatureFlagsPropertySection extends AbstractPropertySection
         this.tobjectComposite.setLayoutData(data);
 
         //lblDefaultValue Label
-        this.lblDefaultValueValue = this.getWidgetFactory().createCLabel(composite, "     bla    "); //$NON-NLS-1$
+        this.lblDefaultValueValue = this.getWidgetFactory().createCLabel(
+            composite, "      Not found!     "); //$NON-NLS-1$
         data = new FormData();
         data.top = new FormAttachment(this.tobjectComposite, -5);
         this.lblDefaultValueValue.setLayoutData(data);
@@ -261,8 +271,7 @@ public class AdvancedFeatureFlagsPropertySection extends AbstractPropertySection
     } //CreateControls
 
     /**
-     * @brief Gets the current AdapterFactory, used to get ItemProviders
-     * @return AdapterFactory for ItemProviders
+     * @return AdapterFactory for ItemProviders.
      * */
     public AdapterFactory getAdapterFactory() {
         if (this.adapterFactory == null)
@@ -270,7 +279,9 @@ public class AdvancedFeatureFlagsPropertySection extends AbstractPropertySection
         return this.adapterFactory;
     }
 
-    //Sets the current input of the workbench and calculates the selected Checkbox-Buttons
+    /**
+     * @see AbstractPropertySection#setInput(IWorkbenchPart, ISelection)
+     */
     @Override
     public void setInput(IWorkbenchPart part, ISelection selection) {
         super.setInput(part, selection);
@@ -281,7 +292,7 @@ public class AdvancedFeatureFlagsPropertySection extends AbstractPropertySection
         if (this.tobject.getDefaultValue() != null)
             this.lblDefaultValueValue.setText(this.tobject.getDefaultValue());
 
-        if (this.tobject.getIndex() != null) {
+        if (this.tobject.getIndex() != null && this.tobject.getDefaultValue() != null) {
             int defaultValue = Integer.decode(this.tobject.getDefaultValue());
             Set<Entry<Button, Integer>> buttonSet = this.buttonMap.entrySet();
             int btnValue = 0;
@@ -292,4 +303,5 @@ public class AdvancedFeatureFlagsPropertySection extends AbstractPropertySection
             }
         }
     } //setInput
+
 } //AdvancedTObjectPropertySection

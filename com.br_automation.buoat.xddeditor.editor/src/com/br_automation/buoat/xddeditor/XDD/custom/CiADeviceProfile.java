@@ -1,11 +1,15 @@
+/**
+ * @since 19.3.2013
+ * @author Joris Lückenga, Bernecker + Rainer Industrie Elektronik Ges.m.b.H.
+ */
+
 package com.br_automation.buoat.xddeditor.XDD.custom;
 
 /**
+ * @brief Representation of CANopen device-profiles.
+ * 
  * @author Joris Lückenga
- * @since 19.3.2013
- * @brief DeviceProfiles of CanOpen Objects (Neede for Index 1000 / DeviceType
- *        Object )
- */
+ * */
 public enum CiADeviceProfile {
 
     CIA401(401, "CiA 401", "Generic I/O Modules"),
@@ -35,13 +39,12 @@ public enum CiADeviceProfile {
     private int value;
 
     /**
-     * @brief CiADevice Enum Constructor
      * @param value
-     *            value of the Profile e.g 401,402 etc.
+     *            Value of the Profile e.g 401,402 etc.
      * @param profileName
-     *            Name of Profile e.g CiA 401
+     *            Name of Profile e.g CiA 401.
      * @param profileDescription
-     *            Description of Profile e.g "Battery Charger"
+     *            Description of Profile e.g "Battery Charger".
      */
     private CiADeviceProfile(int value,
         String profileName,
@@ -63,4 +66,4 @@ public enum CiADeviceProfile {
         return this.value;
     }
 
-}
+} //CiADeviceProfile

@@ -1,3 +1,8 @@
+/**
+ * @since 19.3.2013
+ * @author Joris Lückenga, Bernecker + Rainer Industrie Elektronik Ges.m.b.H.
+ */
+
 package com.br_automation.buoat.xddeditor.XDD.custom;
 
 import java.text.SimpleDateFormat;
@@ -17,9 +22,12 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.wb.swt.SWTResourceManager;
 
 /**
- * @briefAdvanced configurationPage for a new XDD Model
+ * @brief Advanced configurationPage for a new XDD Model.
+ * 
+ *        Provides different controls to set options and data in the
+ *        "AdvancedWizard"-page.
+ * 
  * @author Joris Lückenga
- * @since 19.3.2013
  */
 public class WizardConfigurationPage1 extends WizardPage {
 
@@ -47,11 +55,10 @@ public class WizardConfigurationPage1 extends WizardPage {
     private Text txtVendorName;
 
     /**
-     * @brief Constructor of WizardConf.Page1
      * @param pageID
-     *            ID of the page
+     *            ID of the page.
      * @param wizard
-     *            the parent-wizard
+     *            the parent-wizard.
      */
     public WizardConfigurationPage1(String pageID,
         CustomXDDWizard wizard) {
@@ -66,10 +73,7 @@ public class WizardConfigurationPage1 extends WizardPage {
     //Metadata getters
 
     /**
-     * Create contents of the wizard.
-     * 
-     * @param parent
-     *            composite
+     * @see WizardPage#createControl(Composite)
      */
     @Override
     public void createControl(Composite parent) {
@@ -271,11 +275,11 @@ public class WizardConfigurationPage1 extends WizardPage {
     }
 
     public String getCreatorString() {
-        return this.txtCreator.getText();
+        return this.txtCreator.getText().trim();
     }
 
     public String getDeviceNameString() {
-        return this.txtDeviceName.getText();
+        return this.txtDeviceName.getText().trim();
     }
 
     public String getFileNameString() {
@@ -285,71 +289,61 @@ public class WizardConfigurationPage1 extends WizardPage {
     //Vendor/Product getters
 
     public String getFileVersionString() {
-        return this.txtFileVersion.getText();
+        return this.txtFileVersion.getText().trim();
     }
 
     public String getFirmwareversString() {
-        return this.txtFirmwareVersionNr.getText();
+        return this.txtFirmwareVersionNr.getText().trim();
     }
 
     public String getHardwareversString() {
-        return this.txtHardwareVersNr.getText();
+        return this.txtHardwareVersNr.getText().trim();
     }
 
     /**
-     * @brief gets the BootTime from Textfield
-     * @return returns the BootTime as int-Value
+     * @return The NMTBootTimeNotActive time setted in the wizard as
+     *         integer-value.
      */
-    public int getNMTBootTimeNotActive() {
-        if (!this.txtNMTBootTimeNotActive.getText().isEmpty()) {
+    public Integer getNMTBootTimeNotActive() {
+        if (!this.txtNMTBootTimeNotActive.getText().isEmpty())
             return Integer.parseInt(this.txtNMTBootTimeNotActive.getText());
-        } else
-            return 0;
+        return null;
     }
 
     /**
-     * @brief gets the SoC2PReqTime from Textfield
-     * @return returns the SoC2PReq Time as int-Value
+     * @return The NMTCNSoC2PReq time setted in the wizard as integer-value.
      */
-    public int getNMTCNSoC2PReq() {
-        if (!this.txtNMTCNSoC2PReq.getText().isEmpty()) {
+    public Integer getNMTCNSoC2PReq() {
+        if (!this.txtNMTCNSoC2PReq.getText().isEmpty())
             return Integer.parseInt(this.txtNMTCNSoC2PReq.getText());
-        } else
-            return 0;
+        return null;
     }
 
     /**
-     * @brief gets the NMTCycle Time from Textfield
-     * @return returns the NMTCycle Time as int-Value
+     * @return The NMTCycleTimeMax setted in the wizard as integer-value.
      */
-    public int getNMTCycleTimeMax() {
-        if (!this.txtNMTCycleTimeMax.getText().isEmpty()) {
+    public Integer getNMTCycleTimeMax() {
+        if (!this.txtNMTCycleTimeMax.getText().isEmpty())
             return Integer.parseInt(this.txtNMTCycleTimeMax.getText());
-        } else
-            return 0;
+        return null;
     }
 
     /**
-     * @brief gets the CycleTimeMin from Textfield
-     * @return returns the CycleTimeMin Time as int-Value
+     * @return The CycleTimeMin setted in the wizard as integer-value.
      */
-    public int getNMTCycleTimeMin() {
-        if (!this.txtNMTCycleTimeMin.getText().isEmpty()) {
+    public Integer getNMTCycleTimeMin() {
+        if (!this.txtNMTCycleTimeMin.getText().isEmpty())
             return Integer.parseInt(this.txtNMTCycleTimeMin.getText());
-
-        } else
-            return 0;
+        return null;
     }
 
     /**
-     * @brief gets the ErrorEntries from Textfield
-     * @return returns the ErrorEntries as int-Value
+     * @return The ErrorEntries setted in the wizard as integer-value.
      */
-    public int getNMTErrorEntries() {
-        if (!this.txtNMTErrorEntries.getText().isEmpty()) {
+    public Integer getNMTErrorEntries() {
+        if (!this.txtNMTErrorEntries.getText().isEmpty())
             return Integer.parseInt(this.txtNMTErrorEntries.getText());
-        } else
-            return 0;
+        return null;
     }
 
     public String getProductIDString() {
@@ -379,4 +373,5 @@ public class WizardConfigurationPage1 extends WizardPage {
     public boolean isResponseChaining() {
         return this.btnResponseChaining.getSelection();
     }
+
 } //WizardConfigurationPage1
