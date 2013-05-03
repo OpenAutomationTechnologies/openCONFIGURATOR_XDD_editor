@@ -36,7 +36,7 @@ public class CustomTCNFeaturesItemProvider extends TCNFeaturesItemProvider {
     //  TODO: Find out whether this is the correct way to do it.
     @Override
     public Object getEditableValue(Object object) {
-        XDDUtilities.setMultiplexFeature(
+        XDDUtilities.setMultiplexFeatureProperties(
             ((TCNFeatures) object).isDLLCNFeatureMultiplex(),
             (DocumentRoot) EcoreUtil.getRootContainer((EObject) object));
         return object;

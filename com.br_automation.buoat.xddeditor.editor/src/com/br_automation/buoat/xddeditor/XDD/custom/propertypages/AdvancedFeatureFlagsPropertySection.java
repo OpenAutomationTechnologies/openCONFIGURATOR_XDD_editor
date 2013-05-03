@@ -74,7 +74,7 @@ public class AdvancedFeatureFlagsPropertySection extends AbstractPropertySection
                 AdvancedFeatureFlagsPropertySection.this.tObjectProvider.setPropertyValue(
                     AdvancedFeatureFlagsPropertySection.this.tobject, "defaultValue", defaultValue); //$NON-NLS-1$
                 AdvancedFeatureFlagsPropertySection.this.lblDefaultValueValue.setText(defaultValue);
-                XDDUtilities.setMultiplexFeature(
+                XDDUtilities.setMultiplexFeatureProperties(
                     AdvancedFeatureFlagsPropertySection.this.btnMultiplexedAccess.getSelection(),
                     (DocumentRoot) EcoreUtil
                         .getRootContainer(AdvancedFeatureFlagsPropertySection.this.tobject));

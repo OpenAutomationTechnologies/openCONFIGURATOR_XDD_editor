@@ -199,7 +199,7 @@ public class CustomXDDWizard extends XDDModelWizard {
      */
     @Override
     protected EObject createInitialModel() {
-        DocumentRoot root = InitialModelLoader.loadXDD(
+        DocumentRoot root = ModelLoader.loadXDD(
             this.wizardTemplatePage, this.wizardConfigurationPage1);
         return root;
     }

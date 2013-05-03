@@ -19,6 +19,9 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import org.eclipse.emf.common.util.ECollections;
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.events.VerifyListener;
@@ -34,6 +37,7 @@ import com.br_automation.buoat.xddeditor.XDD.TApplicationLayers;
 import com.br_automation.buoat.xddeditor.XDD.TCNFeatures;
 import com.br_automation.buoat.xddeditor.XDD.TObject;
 import com.br_automation.buoat.xddeditor.XDD.TObjectPDOMapping;
+import com.br_automation.buoat.xddeditor.XDD.impl.ObjectListTypeImpl;
 
 /**
  * @brief Static utility-methods for XDD-File/resource manipulation and
@@ -139,6 +143,61 @@ public final class XDDUtilities {
     } //addSaveModifications
 
     /**
+     * @brief Adds Objects and Subobjects to the current TObjects,if
+     *        Sub-/TObjects with the same Subindex/Index do not exist already.
+     * @param currentObjectList
+     *            List where Objects should be added to
+     * @param objectsToAdd
+     *            List of Objects to check if they already exist,if not, they
+     *            are added.
+     * */
+    public static void addTObjects(EList<TObject> currentObjectList, List<TObject> objectsToAdd) {
+
+        Map<Integer, TObject> currentObjectMap = new HashMap<Integer, TObject>(
+            currentObjectList.size());
+
+        //Create Map of current Objectlist
+        for (TObject currentObject : currentObjectList)
+            currentObjectMap
+                .put(new BigInteger(currentObject.getIndex()).intValue(), currentObject); // NOPMD by lueckengaj on 18.04.13 09:23
+
+        //Iterate thorugh all objects that should be changed
+        for (TObject currentObjectToAdd : objectsToAdd) {
+            //Get current index as integer-value
+            int currentObjectToAddIndex = new BigInteger(currentObjectToAdd.getIndex()).intValue(); // NOPMD by lueckengaj on 18.04.13 09:22
+            //Check if the object already exists
+            if (currentObjectMap.containsKey(currentObjectToAddIndex)) {
+
+                //get the subobject-list of the Tobject with matching index,and put it into a hash-map
+                EList<SubObjectType> currentSubObjects = currentObjectMap.get(
+                    currentObjectToAddIndex).getSubObject();
+                List<SubObjectType> missingSubObjects = new ArrayList<SubObjectType>();
+                Map<Integer, SubObjectType> currentSubObjectMap = new HashMap<Integer, SubObjectType>();
+                for (SubObjectType currentSubObject : currentSubObjects)
+                    currentSubObjectMap
+                        .put(
+                            new BigInteger(currentSubObject.getSubIndex()).intValue(),
+                            currentSubObject);
+                //get Objects to add
+                List<SubObjectType> addableSubObjects = currentObjectToAdd.getSubObject();
+                //Find objects which do not already exist
+                for (SubObjectType addableSubObject : addableSubObjects) {
+                    if (!currentSubObjectMap.containsKey(new BigInteger(addableSubObject
+                        .getSubIndex()).intValue()))
+                        missingSubObjects.add(addableSubObject);
+                }
+                //add & sort them after iterating
+                currentSubObjects.addAll(missingSubObjects);
+                ECollections.sort(currentSubObjects, new SubObjectComparator()); // NOPMD by lueckengaj on 18.04.13 09:26
+
+            } else { //if not found -> add TObject 
+                currentObjectList.add(currentObjectToAdd);
+            }
+        }
+        ECollections.sort(currentObjectList, new TObjectComparator());
+    }
+
+    /**
      * @brief Finds matching DataType based on given byte array.
      * @param bs
      *            Byte array of the datatype field in TObject or SubObjectType.
@@ -214,6 +273,32 @@ public final class XDDUtilities {
      */
     public static Color getRed(Device device) {
         return new Color(device, 255, 0, 0);
+    }
+
+    /**
+     * @brief Gets the list of existing TObjects from the specified
+     *        root-element.
+     * @param root
+     *            The Instance of DocumentRoot in which should be searched for a
+     *            TObject-list.
+     * @return An <code>EList</code> of <code>TObject</code> elements found in
+     *         root.
+     */
+    public static EList<TObject> getTObjectList(DocumentRoot root) {
+        TreeIterator<EObject> iterator = root.eAllContents(); //Iterator through whole Resource
+        Object currentObject;
+        EList<TObject> resourceTObjects = null;
+
+        //Iterate through resource and get current TOBjectlist
+        while (iterator.hasNext()) {
+            currentObject = iterator.next();
+            if (currentObject instanceof ObjectListTypeImpl) { //get the current TOBjectlist
+                resourceTObjects = ((ObjectListTypeImpl) currentObject).getObject();
+                break;
+            }
+
+        }
+        return resourceTObjects;
     }
 
     /**
@@ -307,19 +392,16 @@ public final class XDDUtilities {
      *         <code>false</code> otherwise.
      */
     public static boolean isRPDO(TObject tobject) {
-        int value = new BigInteger(1, tobject.getIndex()).intValue();
-        return (value >= ObjectDictionaryEntry.PDO_RXMAPPPARAM_MIN && value <= ObjectDictionaryEntry.PDO_RXMAPPPARAM_MIN);
+        int index = new BigInteger(1, tobject.getIndex()).intValue();
+        return (index >= ObjectDictionaryEntry.PDO_RXMAPPPARAM_MIN && index <= ObjectDictionaryEntry.PDO_RXMAPPPARAM_MIN);
     }
 
     /**
-     * @brief Parses integer from a String to use the method in an if-statement.
-     * 
-     *        This method is used for an if-statement, to avoid unnecessary
-     *        exception-throws and check for a null value.
+     * @brief Parses integer from a String.
      * 
      * @param data
-     *            String containing the data.
-     * @return Integer or null if exception is thrown.
+     *            String to parse.
+     * @return The parsed Integer or <code>null</code> if not not an Integer.
      */
     public static Integer parseInt(String data) {
         try {
@@ -340,14 +422,15 @@ public final class XDDUtilities {
     }
 
     /**
-     * @brief Enable MultiplexFeature for TObject and TCNFeatures.
+     * @brief Set MultiplexFeature for TObject and TCNFeatures.Does not add
+     *        required Objects
      * @param status
      *            <code>True</code> if Multiplexing shall be enabled,
      *            <code>false</code> otherwise.
      * @param documentRoot
      *            Root of XDD-Document for which to enable Multiplexing.
      */
-    public static void setMultiplexFeature(boolean status, DocumentRoot documentRoot) {
+    public static void setMultiplexFeatureProperties(boolean status, DocumentRoot documentRoot) {
         //TODO:implement generic lookup!?
         //TODO Überprüfen auf Null (Muss auch ohne Template verwendbar sein)
         ISO15745ProfileType profile = documentRoot.getISO15745ProfileContainer()

@@ -32,9 +32,11 @@ import org.eclipse.wb.swt.SWTResourceManager;
 public class WizardConfigurationPage1 extends WizardPage {
 
     private Button btnCnMultiplexFeature;
+    private Button btnNWLIPSupport;
     private Button btnResponseChaining;
 
     private CustomXDDWizard mainwizard;
+
     //Metadata
     private Text txtCreator;
     private Text txtDeviceName;
@@ -70,8 +72,6 @@ public class WizardConfigurationPage1 extends WizardPage {
         this.setPageComplete(true);
     }
 
-    //Metadata getters
-
     /**
      * @see WizardPage#createControl(Composite)
      */
@@ -88,7 +88,7 @@ public class WizardConfigurationPage1 extends WizardPage {
 
         Group grpMetadata = new Group(container, SWT.NONE);
         grpMetadata.setText(Messages.wizardConfigurationPage1_metadata_lbl);
-        grpMetadata.setBounds(10, 10, 267, 199);
+        grpMetadata.setBounds(10, 10, 267, 156);
 
         Label lblDeviceName = new Label(grpMetadata, SWT.NONE);
         lblDeviceName.setBounds(10, 91, 82, 15);
@@ -145,10 +145,10 @@ public class WizardConfigurationPage1 extends WizardPage {
 
         Label lblVendorName = new Label(grpAda, SWT.NONE);
         lblVendorName.setBounds(10, 22, 91, 15);
-        lblVendorName.setText(Messages.wizardConfigurationPage1_verndor_name_lbl);
+        lblVendorName.setText(Messages.wizardConfigurationPage1_vendor_name_lbl);
 
         Label lblVendorId = new Label(grpAda, SWT.NONE);
-        lblVendorId.setText(Messages.wizardConfigurationPage1_verndor_id_lbl);
+        lblVendorId.setText(Messages.wizardConfigurationPage1_vendor_id_lbl);
         lblVendorId.setBounds(10, 46, 73, 15);
 
         Label lblProductName = new Label(grpAda, SWT.NONE);
@@ -201,36 +201,36 @@ public class WizardConfigurationPage1 extends WizardPage {
 
         Group grpCnFeatures = new Group(container, SWT.NONE);
         grpCnFeatures.setText("CN Features"); //$NON-NLS-1$
-        grpCnFeatures.setBounds(283, 215, 267, 107);
+        grpCnFeatures.setBounds(283, 215, 267, 90);
 
         this.btnCnMultiplexFeature = new Button(grpCnFeatures, SWT.CHECK);
         this.btnCnMultiplexFeature
             .setToolTipText(Messages.wizardConfigurationPage1_multiplex_feature_tooltip);
-        this.btnCnMultiplexFeature.setBounds(10, 21, 146, 16);
+        this.btnCnMultiplexFeature.setBounds(10, 20, 146, 16);
         this.btnCnMultiplexFeature.setText("DLLCNFeatureMultiplex"); //$NON-NLS-1$
 
         this.btnResponseChaining = new Button(grpCnFeatures, SWT.CHECK);
         this.btnResponseChaining
             .setToolTipText(Messages.wizardConfigurationPage1_Response_chaining_tooltip);
-        this.btnResponseChaining.setBounds(10, 43, 146, 16);
+        this.btnResponseChaining.setBounds(10, 38, 146, 16);
         this.btnResponseChaining.setText("DLLCNPResChaining"); //$NON-NLS-1$
 
         Label lblSoc = new Label(grpCnFeatures, SWT.NONE);
         lblSoc.setToolTipText(Messages.wizardConfigurationPage1_Time_for_cn_to_process_Soc_tooltip);
         lblSoc.setText("NMTCNSoC2PReq (ns):"); //$NON-NLS-1$
-        lblSoc.setBounds(10, 65, 124, 15);
+        lblSoc.setBounds(10, 60, 124, 15);
 
         this.txtNMTCNSoC2PReq = new Text(grpCnFeatures, SWT.BORDER);
         this.txtNMTCNSoC2PReq.setText("25"); //$NON-NLS-1$
         this.txtNMTCNSoC2PReq
             .setToolTipText(Messages.wizardConfigurationPage1_time_for_CN_tro_process_SoC_tooltip);
-        this.txtNMTCNSoC2PReq.setBounds(137, 62, 76, 21);
+        this.txtNMTCNSoC2PReq.setBounds(140, 57, 76, 21);
 
         Group grpGeneralFeatures = new Group(container, SWT.SHADOW_OUT);
         grpGeneralFeatures.setFont(SWTResourceManager.getFont("Segoe UI", 9, SWT.NORMAL)); //$NON-NLS-1$
         grpGeneralFeatures.setBackground(SWTResourceManager.getColor(SWT.COLOR_WIDGET_BACKGROUND));
         grpGeneralFeatures.setText(Messages.wizardConfigurationPage1_general_features);
-        grpGeneralFeatures.setBounds(10, 215, 267, 107);
+        grpGeneralFeatures.setBounds(10, 172, 267, 133);
 
         Label lblNmtboottimenotactive = new Label(grpGeneralFeatures, SWT.NONE);
         lblNmtboottimenotactive.setBounds(10, 20, 163, 15);
@@ -264,7 +264,15 @@ public class WizardConfigurationPage1 extends WizardPage {
         this.txtNMTErrorEntries = new Text(grpGeneralFeatures, SWT.BORDER);
         this.txtNMTErrorEntries.setText("8"); //$NON-NLS-1$
         this.txtNMTErrorEntries.setBounds(179, 80, 76, 21);
+
+        this.btnNWLIPSupport = new Button(grpGeneralFeatures, SWT.CHECK);
+        this.btnNWLIPSupport.setBounds(10, 107, 146, 16);
+        this.btnNWLIPSupport
+            .setToolTipText(Messages.wizardConfigurationPage1_EnableDisableIPSupport); //$NON-NLS-1$
+        this.btnNWLIPSupport.setText("NWLIPSupport");
     } //createControl
+
+    //Metadata getters
 
     public XMLGregorianCalendar getCreationDateXML() {
         return XDDUtilities.getXMLDate();
@@ -286,11 +294,11 @@ public class WizardConfigurationPage1 extends WizardPage {
         return this.mainwizard.getNewFileCreationPage().getFileName();
     }
 
-    //Vendor/Product getters
-
     public String getFileVersionString() {
         return this.txtFileVersion.getText().trim();
     }
+
+    //Vendor/Product getters
 
     public String getFirmwareversString() {
         return this.txtFirmwareVersionNr.getText().trim();
@@ -368,6 +376,10 @@ public class WizardConfigurationPage1 extends WizardPage {
 
     public boolean isCnMultiplexFeature() {
         return this.btnCnMultiplexFeature.getSelection();
+    }
+
+    public boolean isNWLIPSupport() {
+        return this.btnNWLIPSupport.getSelection();
     }
 
     public boolean isResponseChaining() {
