@@ -151,7 +151,7 @@ public class CustomXDDWizard extends XDDModelWizard {
                         Map<Object, Object> options = new HashMap<Object, Object>();
                         options.put(XMLResource.OPTION_ENCODING, "UTF-8");
                         resource.save(options);
-                    } catch (Exception exception) {
+                    } catch (Exception exception) { //Code was copied from generated class
                         XDDEditorPlugin.INSTANCE.log(exception);
                     } finally {
                         progressMonitor.done();
@@ -187,7 +187,7 @@ public class CustomXDDWizard extends XDDModelWizard {
                 return false;
             }
             return true;
-        } catch (Exception exception) {
+        } catch (Exception exception) { //Code was copied from generated class
             XDDEditorPlugin.INSTANCE.log(exception);
             return false;
         }

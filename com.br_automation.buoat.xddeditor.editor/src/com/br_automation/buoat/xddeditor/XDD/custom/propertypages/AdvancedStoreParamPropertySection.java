@@ -17,6 +17,7 @@ import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbenchPart;
@@ -27,6 +28,7 @@ import org.eclipse.wb.swt.SWTResourceManager;
 import com.br_automation.buoat.xddeditor.XDD.SubObjectType;
 import com.br_automation.buoat.xddeditor.XDD.TObject;
 import com.br_automation.buoat.xddeditor.XDD.custom.Messages;
+import com.br_automation.buoat.xddeditor.XDD.custom.XDDUtilities;
 import com.br_automation.buoat.xddeditor.XDD.provider.SubObjectTypeItemProvider;
 
 /**
@@ -71,7 +73,7 @@ public class AdvancedStoreParamPropertySection extends AbstractPropertySection {
             this.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
             Group grpStorageParameters = new Group(this, SWT.NONE);
             grpStorageParameters.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
-            grpStorageParameters.setText("Storage capability");
+            grpStorageParameters.setText(Messages.AdvancedStoreParamPropertySection_0);
             grpStorageParameters.setBounds(10, 0, 270, 89);
             this.btnAutoSave = new Button(grpStorageParameters, SWT.RADIO);
 
@@ -83,7 +85,7 @@ public class AdvancedStoreParamPropertySection extends AbstractPropertySection {
             });
             this.btnAutoSave.setGrayed(true);
             this.btnAutoSave.setBounds(10, 20, 224, 16);
-            this.btnAutoSave.setText("Device saves parameters autonomously");
+            this.btnAutoSave.setText(Messages.AdvancedStoreParamPropertySection_descr_saveAuto);
             this.btnAutoSave.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 
             this.btnCmdSave = new Button(grpStorageParameters, SWT.RADIO);
@@ -94,7 +96,7 @@ public class AdvancedStoreParamPropertySection extends AbstractPropertySection {
                 }
             });
             this.btnCmdSave.setBounds(10, 42, 224, 16);
-            this.btnCmdSave.setText("Device saves parameters on command");
+            this.btnCmdSave.setText(Messages.AdvancedStoreParamPropertySection_descr_saveOnCommand);
             this.btnCmdSave.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 
             this.btnNoSave = new Button(grpStorageParameters, SWT.RADIO);
@@ -105,14 +107,20 @@ public class AdvancedStoreParamPropertySection extends AbstractPropertySection {
                 }
             });
             this.btnNoSave.setBounds(10, 64, 224, 16);
-            this.btnNoSave.setText("Device does not support saves");
+            this.btnNoSave.setText(Messages.AdvancedStoreParamPropertySection_descr_noSaveSupport);
             this.btnNoSave.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 
             this.lblError = new Label(this, SWT.NONE);
             this.lblError.setForeground(SWTResourceManager.getColor(SWT.COLOR_RED));
             this.lblError.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
             this.lblError.setBounds(20, 95, 260, 15);
-            this.lblError.setText("Error! The default value seems to be incorrect");
+            this.lblError.setText(Messages.general_error_defaultValueInvalid);
+        }
+
+        //Not used
+        @Override
+        protected void checkSubclass() {
+            // Disable the check that prevents subclassing of SWT components
         }
 
         /**
@@ -120,11 +128,12 @@ public class AdvancedStoreParamPropertySection extends AbstractPropertySection {
          * @param settedValue
          *            Is generated depending on selected radio-button.
          */
-        public void setDefaultValue(int settedValue) {
+        private void setDefaultValue(int settedValue) {
+            AdvancedStoreParamPropertySection.this.lblDefaultvalValue.setForeground(XDDUtilities
+                .getBlack(Display.getCurrent()));
             this.lblError.setVisible(false);
-            this.subobjectItemProvider.setPropertyValue(
-                this.subobject, "defaultValue",
-                ("0x" + String.format(String.format("%08x", settedValue))));
+            this.subobjectItemProvider.setPropertyValue(this.subobject, "defaultValue", //$NON-NLS-1$
+                ("0x" + String.format(String.format("%08x", settedValue)))); //$NON-NLS-1$ //$NON-NLS-2$
             this.lblsubObjectDefaultValue.setText(this.subobject.getDefaultValue());
         }
 
@@ -138,49 +147,49 @@ public class AdvancedStoreParamPropertySection extends AbstractPropertySection {
          *            The label displaying the actual default value in the
          *            PropertySection.
          */
-        public void setSubObject(final SubObjectType subobjecttype,
+        private void setSubObject(final SubObjectType subobjecttype,
             final SubObjectTypeItemProvider provider,
             final CLabel lblDefaultValue) {
             this.subobject = subobjecttype;
             this.lblError.setVisible(false);
             this.subobjectItemProvider = provider;
             this.lblsubObjectDefaultValue = lblDefaultValue;
-            int setting;
-            if (this.subobject.getDefaultValue() != null
-                && !this.subobject.getDefaultValue().contentEquals("")) {
-                setting = Integer.decode(this.subobject.getDefaultValue()); //Get 2 LSB
-                this.lblsubObjectDefaultValue.setText(this.subobject.getDefaultValue());
-            } else
-                setting = 0;
+            int storageType;
+            try {
+                if (this.subobject.getDefaultValue() != null
+                    && !this.subobject.getDefaultValue().isEmpty()) {
 
-            switch (setting) {
-                case 2:
-                    this.btnAutoSave.setSelection(true);
-                    this.btnCmdSave.setSelection(false);
-                    this.btnNoSave.setSelection(false);
-                    break;
-                case 1:
-                    this.btnCmdSave.setSelection(true);
-                    this.btnNoSave.setSelection(false);
-                    this.btnAutoSave.setSelection(false);
-                    break;
-                case 0:
-                    this.btnNoSave.setSelection(true);
-                    this.btnCmdSave.setSelection(false);
-                    this.btnAutoSave.setSelection(false);
-                    break;
-                default:
-                    this.lblError.setVisible(true);
-                    this.btnNoSave.setSelection(false);
-                    this.btnCmdSave.setSelection(false);
-                    this.btnAutoSave.setSelection(false);
+                    storageType = Integer.decode(this.subobject.getDefaultValue()); //Get 2 LSB
+                    this.lblsubObjectDefaultValue.setText(this.subobject.getDefaultValue());
+                } else
+                    storageType = 0;
+
+                switch (storageType) {
+                    case 2:
+                        this.btnAutoSave.setSelection(true);
+                        this.btnCmdSave.setSelection(false);
+                        this.btnNoSave.setSelection(false);
+                        break;
+                    case 1:
+                        this.btnCmdSave.setSelection(true);
+                        this.btnNoSave.setSelection(false);
+                        this.btnAutoSave.setSelection(false);
+                        break;
+                    case 0:
+                        this.btnNoSave.setSelection(true);
+                        this.btnCmdSave.setSelection(false);
+                        this.btnAutoSave.setSelection(false);
+                        break;
+                    default:
+                        this.lblError.setVisible(true);
+                        this.btnNoSave.setSelection(false);
+                        this.btnCmdSave.setSelection(false);
+                        this.btnAutoSave.setSelection(false);
+                }
+            } catch (NumberFormatException e) {
+                lblDefaultValue.setText(Messages.general_error_defaultValueInvalid);
+                lblDefaultValue.setForeground(XDDUtilities.getRed(Display.getCurrent()));
             }
-        }
-
-        //Not used
-        @Override
-        protected void checkSubclass() {
-            // Disable the check that prevents subclassing of SWT components
         }
     }
 
@@ -214,7 +223,7 @@ public class AdvancedStoreParamPropertySection extends AbstractPropertySection {
         data.right = new FormAttachment(80, 0);
         data.top = new FormAttachment(0, -5);
         this.lblIndexValue.setLayoutData(data);
-        this.lblIndexValue.setText("1010 (NTM_StoreParam)");
+        this.lblIndexValue.setText("1010 (NTM_StoreParam)"); //$NON-NLS-1$
 
         //lblDefaultValueValue Label (Actual value)
         this.lblDefaultvalValue = this.getWidgetFactory().createCLabel(
@@ -266,7 +275,7 @@ public class AdvancedStoreParamPropertySection extends AbstractPropertySection {
         subObject = (SubObjectType) input;
         tobject = (TObject) subObject.eContainer();
         this.tObjectComposite.setObject(subObject);
-        this.lblIndexValue.setText("0x1010 (" + tobject.getName() + ")");
+        this.lblIndexValue.setText("0x1010 (" + tobject.getName() + ")"); //$NON-NLS-1$ //$NON-NLS-2$
         this.storeparam
             .setSubObject(subObject, this.subObjectItemProvider, this.lblDefaultvalValue);
     }

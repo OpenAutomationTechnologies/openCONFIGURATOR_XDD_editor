@@ -15,7 +15,22 @@ import org.eclipse.osgi.util.NLS;
  */
 public final class Messages extends NLS { // NOPMD by lueckengaj on 08.04.13 14:52 - no constructor needed in this help-class
     public static String advancedDeviceTypePropertySection_CiA_Profile_not_found; // NOPMD by lueckengaj on 29.03.13 12:53
-    public static String advancedMappingObjectPropertySection_err_defaultvalue_not_decodable; // NOPMD by lueckengaj on 29.03.13 11:28
+    public static String advancedFeatureFlagsPropertySection_btnConfigurationManager_tooltip;
+    public static String advancedFeatureFlagsPropertySection_btnDynamicPDOMapping_tooltip;
+    public static String advancedFeatureFlagsPropertySection_btnExtendedNMTStateCommands_tooltip;
+    public static String advancedFeatureFlagsPropertySection_btnIsochronous_tooltip;
+    public static String advancedFeatureFlagsPropertySection_btnMNBasicEthernetMode_tooltip;
+    public static String advancedFeatureFlagsPropertySection_btnMultiplexedAccess_tooltip;
+    public static String advancedFeatureFlagsPropertySection_btnNMTInfoServices_tooltip;
+    public static String advancedFeatureFlagsPropertySection_btnNMTServicebyUDPIP_tooltip;
+    public static String advancedFeatureFlagsPropertySection_btnNodeIDsetupbySW_tooltip;
+    public static String advancedFeatureFlagsPropertySection_btnRoutingType1Support_tooltip;
+    public static String advancedFeatureFlagsPropertySection_btnRoutingType2Support_tooltip;
+    public static String advancedFeatureFlagsPropertySection_btnSDObyASnd_tooltip;
+    public static String advancedFeatureFlagsPropertySection_btnSDObyPDO_tooltip;
+    public static String advancedFeatureFlagsPropertySection_btnSDObyUDPIP_tooltip;
+    public static String advancedFeatureFlagsPropertySection_btnSDOReadWriteAllbyIndex_tooltip;
+    public static String advancedFeatureFlagsPropertySection_btnSDOSDOReadWriteMultipleParameterbyIndex_tooltip;
     public static String advancedMappingObjectPropertySection_err_index_not_found; // NOPMD by lueckengaj on 29.03.13 11:28
     public static String advancedMappingObjectPropertySection_err_length; // NOPMD by lueckengaj on 29.03.13 12:53
     public static String advancedMappingObjectPropertySection_err_length_and_offset; // NOPMD by lueckengaj on 29.03.13 12:53
@@ -47,31 +62,23 @@ public final class Messages extends NLS { // NOPMD by lueckengaj on 08.04.13 14:
     public static String advancedStartUpPropertySection_btn_resetNodeWithBroadcast; // NOPMD by lueckengaj on 02.04.13 14:40
     public static String advancedStartUpPropertySection_btn_startBroadcastCN; // NOPMD by lueckengaj on 02.04.13 14:40
     public static String advancedStartUpPropertySection_btn_VerifyAllCNIds; // NOPMD by lueckengaj on 02.04.13 14:40
-    public static String advancedStartUpPropertySection_Error_corruptDefaultValue; // NOPMD by lueckengaj on 02.04.13 14:40
-    public static String advancedStartUpPropertySection_tooltip_disabled_allowCNstartup; // NOPMD by lueckengaj on 02.04.13 14:40
-    public static String advancedStartUpPropertySection_tooltip_disabled_autoChangeToPreOp; // NOPMD by lueckengaj on 02.04.13 14:40
-    public static String advancedStartUpPropertySection_tooltip_disabled_autoNMTOperational; // NOPMD by lueckengaj on 02.04.13 14:40
-    public static String advancedStartUpPropertySection_tooltip_disabled_dealCNaccordingBit4; // NOPMD by lueckengaj on 02.04.13 14:40
-    public static String advancedStartUpPropertySection_tooltip_disabled_doNotCheckConfig; // NOPMD by lueckengaj on 02.04.13 14:40
-    public static String advancedStartUpPropertySection_tooltip_disabled_doNotCheckSW; // NOPMD by lueckengaj on 02.04.13 14:40
-    public static String advancedStartUpPropertySection_tooltip_disabled_enterPreOperational2; // NOPMD by lueckengaj on 02.04.13 14:40
-    public static String advancedStartUpPropertySection_tooltip_disabled_individualOnError; // NOPMD by lueckengaj on 02.04.13 14:40
-    public static String advancedStartUpPropertySection_tooltip_disabled_LimitVerifyAllCNIds; // NOPMD by lueckengaj on 02.04.13 14:40
-    public static String advancedStartUpPropertySection_tooltip_disabled_notActiveBasicEthState; // NOPMD by lueckengaj on 02.04.13 14:40
-    public static String advancedStartUpPropertySection_tooltip_disabled_setReadyToOperate; // NOPMD by lueckengaj on 02.04.13 14:40
-    public static String advancedStartUpPropertySection_tooltip_disabled_startexplicitCN; // NOPMD by lueckengaj on 02.04.13 14:40
-    public static String advancedStartUpPropertySection_tooltip_enabled_AppDecideChangeToPreOp; // NOPMD by lueckengaj on 02.04.13 14:40
-    public static String advancedStartUpPropertySection_tooltip_enabled_appDecideReadyState; // NOPMD by lueckengaj on 02.04.13 14:40
-    public static String advancedStartUpPropertySection_tooltip_enabled_applicationCNStart; // NOPMD by lueckengaj on 02.04.13 14:40
-    public static String advancedStartUpPropertySection_tooltip_enabled_ChangeNotActiveToBasicEthernet; // NOPMD by lueckengaj on 02.04.13 14:40
-    public static String advancedStartUpPropertySection_tooltip_enabled_CheckSWVersion; // NOPMD by lueckengaj on 02.04.13 14:40
-    public static String advancedStartUpPropertySection_tooltip_enabled_dealStopNodeWithBroadcast; // NOPMD by lueckengaj on 02.04.13 14:40
-    public static String advancedStartUpPropertySection_tooltip_enabled_doCheckConfig; // NOPMD by lueckengaj on 02.04.13 14:40
-    public static String advancedStartUpPropertySection_tooltip_enabled_enterPreOp2ByApplication; // NOPMD by lueckengaj on 02.04.13 14:40
-    public static String advancedStartUpPropertySection_tooltip_enabled_noAutoNMTOperational; // NOPMD by lueckengaj on 02.04.13 14:40
-    public static String advancedStartUpPropertySection_tooltip_enabled_resetNodeWithBoradcast; // NOPMD by lueckengaj on 02.04.13 14:40
-    public static String advancedStartUpPropertySection_tooltip_enabled_startBroadcastCN; // NOPMD by lueckengaj on 02.04.13 14:40
-    public static String advancedStartUpPropertySection_tooltip_enabled_VerifyAllCNIds; // NOPMD by lueckengaj on 02.04.13 14:40
+    public static String advancedStartUpPropertySection_tooltip_allowCNstartup; // NOPMD by lueckengaj on 02.04.13 14:40
+    public static String advancedStartUpPropertySection_tooltip_autoChangeToPreOp; // NOPMD by lueckengaj on 02.04.13 14:40
+    public static String advancedStartUpPropertySection_tooltip_autoNMTOperational; // NOPMD by lueckengaj on 02.04.13 14:40
+    public static String advancedStartUpPropertySection_tooltip_dealCNaccordingBit4; // NOPMD by lueckengaj on 02.04.13 14:40
+    public static String advancedStartUpPropertySection_tooltip_doNotCheckConfig; // NOPMD by lueckengaj on 02.04.13 14:40
+    public static String advancedStartUpPropertySection_tooltip_doNotCheckSW; // NOPMD by lueckengaj on 02.04.13 14:40
+    public static String advancedStartUpPropertySection_tooltip_enterPreOperational2; // NOPMD by lueckengaj on 02.04.13 14:40
+    public static String advancedStartUpPropertySection_tooltip_individualOnError; // NOPMD by lueckengaj on 02.04.13 14:40
+    public static String advancedStartUpPropertySection_tooltip_LimitVerifyAllCNIds; // NOPMD by lueckengaj on 02.04.13 14:40
+    public static String advancedStartUpPropertySection_tooltip_notActiveBasicEthState; // NOPMD by lueckengaj on 02.04.13 14:40
+    public static String advancedStartUpPropertySection_tooltip_setReadyToOperate; // NOPMD by lueckengaj on 02.04.13 14:40
+    public static String advancedStartUpPropertySection_tooltip_startexplicitCN; // NOPMD by lueckengaj on 02.04.13 14:40
+    public static String AdvancedStoreParamPropertySection_0;
+    public static String AdvancedStoreParamPropertySection_descr_noSaveSupport;
+    public static String AdvancedStoreParamPropertySection_descr_saveAuto;
+    public static String AdvancedStoreParamPropertySection_descr_saveOnCommand;
+    public static String general_error_defaultValueInvalid;
     public static String tObjectComposite_type_not_found; // NOPMD by lueckengaj on 29.03.13 12:53
     public static String wizardConfigurationPage1_adv_conf_page_title; // NOPMD by lueckengaj on 29.03.13 12:53
     public static String wizardConfigurationPage1_creation_date_lbl; // NOPMD by lueckengaj on 29.03.13 12:53

@@ -55,27 +55,32 @@ import com.br_automation.buoat.xddeditor.XDD.provider.SubObjectTypeItemProvider;
 public class AdvancedMappingObjectPropertySection extends AbstractPropertySection {
 
     protected static final int MAX_OFFSET_VALUE = 1489;
+    private static final long MASK_INDEX_VALUE = 0xFFFF;
+    private static final long MASK_LENGTH_VALUE = 0xFFFF000000000000L;
+    private static final long MASK_OFFSET_VALUE = 0xFFFF00000000L;
+    private static final long MASK_SUBINDEX_VALUE = 0xFF0000;
+
     private AdapterFactory adapterFactory;
+
     private CCombo cmbIndex;
     private CCombo cmbSubindex;
     private long defaultValue;
-
     private final Device device = Display.getCurrent();
-
     //Shows mappable subobjects, sets Lengthfield,triggers new defaultvalue-calculation
     private final SelectionAdapter indexListener = new SelectionAdapter() {
 
         @Override
         public void widgetSelected(SelectionEvent e) {
-            String selection = AdvancedMappingObjectPropertySection.this.cmbIndex
-                .getItem(AdvancedMappingObjectPropertySection.this.cmbIndex.getSelectionIndex());
+            CCombo cmbSelected = ((CCombo) e.getSource());
+            String indexSelection = cmbSelected.getText();
             TObject object;
             AdvancedMappingObjectPropertySection.this.setError(0);
             String dataTypeSize;
+            AdvancedMappingObjectPropertySection.this.cmbSubindex.removeAll();
 
-            if (!selection.isEmpty()) {
-                //choose the right object in the list...
-                object = AdvancedMappingObjectPropertySection.this.validTObjects.get(selection);
+            if (!indexSelection.isEmpty()) {
+                //choose the object selected
+                object = (TObject) cmbSelected.getData(indexSelection);
                 AdvancedMappingObjectPropertySection.this.subObjectItemProvider.setPropertyValue(
                     AdvancedMappingObjectPropertySection.this.tsubObject, "defaultValue", "0x0");
                 //If Subobjects NOT empty...modify the Subindex-Combobox
@@ -88,13 +93,15 @@ public class AdvancedMappingObjectPropertySection extends AbstractPropertySectio
                     AdvancedMappingObjectPropertySection.this.cmbSubindex
                         .setBackground(XDDUtilities
                             .getWhite(AdvancedMappingObjectPropertySection.this.device));
-                    AdvancedMappingObjectPropertySection.this.cmbSubindex.removeAll();
 
                     //Fill Comobobox
-                    Set<Entry<String, SubObjectType>> subobjectSet = AdvancedMappingObjectPropertySection.this.validSubObjectTypes
-                        .entrySet();
-                    for (Entry<String, SubObjectType> entry : subobjectSet)
-                        AdvancedMappingObjectPropertySection.this.cmbSubindex.add(entry.getKey());
+                    for (Entry<Integer, SubObjectType> entry : AdvancedMappingObjectPropertySection.this.validSubObjectTypes
+                        .entrySet()) {
+                        AdvancedMappingObjectPropertySection.this.cmbSubindex.add(entry.getValue()
+                            .getName());
+                        AdvancedMappingObjectPropertySection.this.cmbSubindex.setData(entry
+                            .getValue().getName(), entry.getValue());
+                    }
 
                     //Set Text-Instructions
                     AdvancedMappingObjectPropertySection.this.txtLength
@@ -105,7 +112,6 @@ public class AdvancedMappingObjectPropertySection extends AbstractPropertySectio
                         .addSelectionListener(AdvancedMappingObjectPropertySection.this.subIndexListener);
                 } else {
                     AdvancedMappingObjectPropertySection.this.cmbSubindex.setEnabled(false);
-                    AdvancedMappingObjectPropertySection.this.cmbSubindex.removeAll();
                     AdvancedMappingObjectPropertySection.this.cmbSubindex
                         .setBackground(XDDUtilities
                             .getGrey(AdvancedMappingObjectPropertySection.this.device));
@@ -135,13 +141,14 @@ public class AdvancedMappingObjectPropertySection extends AbstractPropertySectio
             } //If selection is not empty!
         } //widgetSelected
     }; //SelectionAdapter
-    private long indexValue;
+
+    private int indexValue;
+
     private CLabel lblDefaultValue;
+
     private CLabel lblDefaultValueValue;
     private CLabel lblError;
-
     private CLabel lblIndexValue;
-
     //When length-Texbox looses focus -> Check values,calculate & set the new defaultvalues
     private final FocusAdapter lengthListener = new FocusAdapter() {
         //On lost focus -> check entered Value and set it / show error
@@ -160,10 +167,6 @@ public class AdvancedMappingObjectPropertySection extends AbstractPropertySectio
         } //focusLost
     };
     private long lengthValue;
-    private long maskIndexValue;
-    private long maskLengthValue;
-    private long maskOffsetValue;
-    private long maskSubindexValue;
     //When Offset-Texbox looses focus -> Check values,calculate & set the new defaultvalues
     private final FocusAdapter offsetListener = new FocusAdapter() {
         @Override
@@ -179,6 +182,7 @@ public class AdvancedMappingObjectPropertySection extends AbstractPropertySectio
                 AdvancedMappingObjectPropertySection.this.txtOffset.forceFocus();
                 AdvancedMappingObjectPropertySection.this.txtOffset.selectAll();
                 AdvancedMappingObjectPropertySection.this.setError(3);
+
             }
         } //focusLost
     }; //FocusAdapter
@@ -195,8 +199,8 @@ public class AdvancedMappingObjectPropertySection extends AbstractPropertySectio
                 .getItem(AdvancedMappingObjectPropertySection.this.cmbSubindex.getSelectionIndex());
             //If selection is made...
             if (!selection.isEmpty()) {
-                SubObjectType subobject = AdvancedMappingObjectPropertySection.this.validSubObjectTypes
-                    .get(selection);
+                SubObjectType subobject = (SubObjectType) AdvancedMappingObjectPropertySection.this.cmbSubindex
+                    .getData(selection);
 
                 String lengthResultString;
                 //Check if Empty DataType exists...
@@ -240,9 +244,9 @@ public class AdvancedMappingObjectPropertySection extends AbstractPropertySectio
     private SubObjectType tsubObject;
     private Text txtLength;
     private Text txtOffset;
-    private Map<String, SubObjectType> validSubObjectTypes;
+    private Map<Integer, SubObjectType> validSubObjectTypes;
     private Set<TObjectPDOMapping> validTObjectMapping;
-    private Map<String, TObject> validTObjects;
+    private Map<Integer, TObject> validTObjects;
 
     //Creates the Checkbox-Buttons and Labels as well as slection listeners for each component
     @Override
@@ -252,10 +256,6 @@ public class AdvancedMappingObjectPropertySection extends AbstractPropertySectio
         Composite composite = super.getWidgetFactory().createFlatFormComposite(parent);
         FormData data;
         this.subObjectItemProvider = new SubObjectTypeItemProvider(this.getAdapterFactory());
-        this.maskIndexValue = 0xFFFF;
-        this.maskSubindexValue = 0xFF0000;
-        this.maskOffsetValue = 0xFFFF00000000L;
-        this.maskLengthValue = 0xFFFF000000000000L;
         //STANDARD LABEL:
 
         //Index Label (from Parent!)
@@ -416,17 +416,18 @@ public class AdvancedMappingObjectPropertySection extends AbstractPropertySectio
                     .toUpperCase() + " (Object Mapping - TPDO)"); //$NON-NLS-1$
         }
 
-        this.validTObjects = XDDUtilities.getMappingObjects(
-            (DocumentRoot) EcoreUtil.getRootContainer((EObject) tobject), this.validTObjectMapping);
-
         this.cmbIndex.removeAll();
         this.cmbSubindex.removeAll();
         this.txtLength.setText(""); //$NON-NLS-1$
-        this.txtOffset.setText(""); //$NON-NLS-1$
-        Set<Entry<String, TObject>> validObjectSet = this.validTObjects.entrySet();
+        this.txtOffset.setText("0"); //$NON-NLS-1$
+        this.validTObjects = XDDUtilities.getMappingObjects(
+            (DocumentRoot) EcoreUtil.getRootContainer((EObject) tobject), this.validTObjectMapping);
 
-        for (Entry<String, TObject> entry : validObjectSet)
-            this.cmbIndex.add(entry.getKey());
+        for (Entry<Integer, TObject> entry : this.validTObjects.entrySet()) {
+            this.cmbIndex.setData(entry.getValue().getName(), entry.getValue());
+            this.cmbIndex.add(entry.getValue().getName());
+        }
+
         if (this.cmbIndex.getItemCount() > 0)
             this.cmbIndex.addSelectionListener(this.indexListener);
 
@@ -435,7 +436,7 @@ public class AdvancedMappingObjectPropertySection extends AbstractPropertySectio
                 this.lblDefaultValueValue.setText(this.tsubObject.getDefaultValue());
                 this.defaultValue = Long.decode(this.tsubObject.getDefaultValue());
                 if (this.defaultValue != 0)
-                    this.parseDefaultParameters(this.defaultValue);
+                    this.parseDefaultParameter(this.defaultValue);
             } catch (NumberFormatException e) {
                 this.setError(9);
             }
@@ -447,55 +448,42 @@ public class AdvancedMappingObjectPropertySection extends AbstractPropertySectio
      * @param currentValue
      *            The current default value of subobject.
      */
-    private void parseDefaultParameters(long currentValue) {
+    private void parseDefaultParameter(long currentValue) {
 
         //Extract Index,Subindex,Offset & Length from defaultvalue of tsubObject
-        this.lengthValue = (currentValue & this.maskLengthValue) >> 48;
-        this.offsetValue = (currentValue & this.maskOffsetValue) >> 32;
-        this.subindexValue = (currentValue & this.maskSubindexValue) >> 16;
-        this.indexValue = currentValue & this.maskIndexValue;
-        long compareTo;
+        this.lengthValue = (currentValue & AdvancedMappingObjectPropertySection.MASK_LENGTH_VALUE) >> 48;
+        this.offsetValue = (currentValue & AdvancedMappingObjectPropertySection.MASK_OFFSET_VALUE) >> 32;
+        this.subindexValue = (currentValue & AdvancedMappingObjectPropertySection.MASK_SUBINDEX_VALUE) >> 16;
+        this.indexValue = (int) (currentValue & AdvancedMappingObjectPropertySection.MASK_INDEX_VALUE);
         boolean subObjectset = false;
         boolean tObjectset = false;
         TObject selectedObject = null;
-        int j = 0;
-        int i = 0;
+        SubObjectType selectedSubObject = null;
 
         if (this.indexValue != 0) { //If IndexValue is set...find the index
-            Set<Entry<String, TObject>> tObjectSet = this.validTObjects.entrySet();
-            for (Entry<String, TObject> entry : tObjectSet) { //iterate through Objects
-                compareTo = new BigInteger(1, entry.getValue().getIndex()).intValue(); // NOPMD by lueckengaj on 29.03.13 11:24
-                if (compareTo == this.indexValue) {
-                    this.cmbIndex.select(i);
-                    selectedObject = entry.getValue();
-                    this.setError(0);
-                    tObjectset = true;
-                    this.validSubObjectTypes = XDDUtilities.getMappingSubObjects(
-                        selectedObject, this.validTObjectMapping);
-                    break;
-                }
-                this.setError(2);
-                i++;
-            } //Index-for
-
-            if (selectedObject != null && tObjectset && !this.validSubObjectTypes.isEmpty()) { //If there are valid Subobjects
+            selectedObject = this.validTObjects.get(this.indexValue);
+            if (selectedObject != null) {
+                this.cmbIndex.select(this.cmbIndex.indexOf(selectedObject.getName()));
+                this.setError(0);
+                tObjectset = true;
                 this.validSubObjectTypes = XDDUtilities.getMappingSubObjects(
                     selectedObject, this.validTObjectMapping);
-                Set<Entry<String, SubObjectType>> validSubObjecSet = this.validSubObjectTypes
-                    .entrySet();
-                for (Entry<String, SubObjectType> entry : validSubObjecSet) {
+            } else {
+                this.setError(2);
+            }
 
-                    compareTo = new BigInteger(1, entry.getValue().getSubIndex()).intValue(); // NOPMD by lueckengaj on 29.03.13 11:24
-                    this.cmbSubindex.add(entry.getKey());
-
-                    if (compareTo == this.subindexValue) {
-                        this.cmbSubindex.select(j);
-                        this.cmbSubindex.setEnabled(true);
-                        this.cmbSubindex.setBackground(XDDUtilities.getGrey(this.device));
-                        subObjectset = true;
-                    }
-                    j++;
+            if (selectedObject != null && tObjectset && !this.validSubObjectTypes.isEmpty()) { //If there are valid Subobjects
+                for (Entry<Integer, SubObjectType> entry : this.validSubObjectTypes.entrySet()) {
+                    this.cmbSubindex.add(entry.getValue().getName());
+                    this.cmbSubindex.setData(entry.getValue().getName(), entry.getValue());
                 }
+                if ((selectedSubObject = this.validSubObjectTypes.get((int) this.subindexValue)) != null) {
+                    this.cmbSubindex.select(this.cmbSubindex.indexOf(selectedSubObject.getName()));
+                    this.cmbSubindex.setEnabled(true);
+                    this.cmbSubindex.setBackground(XDDUtilities.getWhite(this.device));
+                    subObjectset = true;
+                }
+
             } else { //if not...
                 this.cmbSubindex.setEnabled(false);
                 this.cmbSubindex.setBackground(XDDUtilities.getGrey(this.device));
@@ -580,8 +568,7 @@ public class AdvancedMappingObjectPropertySection extends AbstractPropertySectio
                     this.lengthValue, (this.lengthValue % 8)));
                 break;
             case 9:
-                this.lblError
-                    .setText(Messages.advancedMappingObjectPropertySection_err_defaultvalue_not_decodable);
+                this.lblError.setText(Messages.general_error_defaultValueInvalid);
                 break;
             default:
                 break;
@@ -596,10 +583,10 @@ public class AdvancedMappingObjectPropertySection extends AbstractPropertySectio
             | (this.offsetValue << 32) | (this.lengthValue << 48);
         String newValue = String.format("%016x", newSubObjectValue).toUpperCase(); //$NON-NLS-1$
         newValue = "0x" + newValue; //$NON-NLS-1$
-        if (!this.tsubObject.getDefaultValue().contentEquals(newValue)) {
-            this.subObjectItemProvider.setPropertyValue(this.tsubObject, "defaultValue", newValue); //$NON-NLS-1$
-            this.lblDefaultValueValue.setText(newValue);
-        }
+        this.lblError.setText("");
+        this.subObjectItemProvider.setPropertyValue(this.tsubObject, "defaultValue", newValue); //$NON-NLS-1$
+        this.lblDefaultValueValue.setText(newValue);
+
     } //setDefaultValue
 
 } //AdvancedMappingObjectPropertySection

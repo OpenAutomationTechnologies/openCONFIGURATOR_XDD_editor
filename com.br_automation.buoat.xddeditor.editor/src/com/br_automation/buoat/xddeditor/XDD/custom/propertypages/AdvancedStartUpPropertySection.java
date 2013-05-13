@@ -54,6 +54,12 @@ public class AdvancedStartUpPropertySection extends AbstractPropertySection {
         @Override
         public void widgetSelected(SelectionEvent e) {
             String strDefaultValue;
+            try {
+                AdvancedStartUpPropertySection.this.defaultValue = Integer
+                    .decode(AdvancedStartUpPropertySection.this.tobject.getDefaultValue());
+            } catch (NumberFormatException f) {
+                AdvancedStartUpPropertySection.this.defaultValue = 0;
+            }
             if (((Button) e.getSource()).getSelection())
                 AdvancedStartUpPropertySection.this.defaultValue = AdvancedStartUpPropertySection.this.defaultValue
                     | (1 << AdvancedStartUpPropertySection.this.buttonMap.get(e.getSource())
@@ -108,8 +114,7 @@ public class AdvancedStartUpPropertySection extends AbstractPropertySection {
         Button btnStartCNsMode = this.getWidgetFactory().createButton(
             composite, Messages.advancedStartUpPropertySection_btn_startBroadcastCN, SWT.CHECK);
         btnStartCNsMode
-            .setToolTipText(Messages.advancedStartUpPropertySection_tooltip_disabled_startexplicitCN
-                + Messages.advancedStartUpPropertySection_tooltip_enabled_startBroadcastCN);
+            .setToolTipText(Messages.advancedStartUpPropertySection_tooltip_startexplicitCN);
         data = new FormData();
         data.top = new FormAttachment(lblDefaultValue, 0);
         data.left = new FormAttachment(0, 7);
@@ -121,8 +126,7 @@ public class AdvancedStartUpPropertySection extends AbstractPropertySection {
         Button btnAutoOperationalState = this.getWidgetFactory().createButton(
             composite, Messages.advancedStartUpPropertySection_btn_NoAutoNMTOperational, SWT.CHECK);
         btnAutoOperationalState
-            .setToolTipText(Messages.advancedStartUpPropertySection_tooltip_disabled_autoNMTOperational
-                + Messages.advancedStartUpPropertySection_tooltip_enabled_noAutoNMTOperational);
+            .setToolTipText(Messages.advancedStartUpPropertySection_tooltip_autoNMTOperational);
         data = new FormData();
         data.top = new FormAttachment(btnStartCNsMode, -5);
         data.left = new FormAttachment(0, 7);
@@ -134,8 +138,7 @@ public class AdvancedStartUpPropertySection extends AbstractPropertySection {
         Button btnNMTStartNode = this.getWidgetFactory().createButton(
             composite, Messages.advancedStartUpPropertySection_btn_applicationCNStart, SWT.CHECK);
         btnNMTStartNode
-            .setToolTipText(Messages.advancedStartUpPropertySection_tooltip_disabled_allowCNstartup
-                + Messages.advancedStartUpPropertySection_tooltip_enabled_applicationCNStart);
+            .setToolTipText(Messages.advancedStartUpPropertySection_tooltip_allowCNstartup);
         data = new FormData();
         data.top = new FormAttachment(btnAutoOperationalState, -5);
         data.left = new FormAttachment(0, 7);
@@ -148,8 +151,7 @@ public class AdvancedStartUpPropertySection extends AbstractPropertySection {
             composite, Messages.advancedStartUpPropertySection_btn_resetNodeWithBroadcast,
             SWT.CHECK);
         btnNMTResetNode
-            .setToolTipText(Messages.advancedStartUpPropertySection_tooltip_disabled_individualOnError
-                + Messages.advancedStartUpPropertySection_tooltip_enabled_resetNodeWithBoradcast);
+            .setToolTipText(Messages.advancedStartUpPropertySection_tooltip_individualOnError);
         data = new FormData();
         data.top = new FormAttachment(btnNMTStartNode, -5);
         data.left = new FormAttachment(0, 7);
@@ -162,8 +164,7 @@ public class AdvancedStartUpPropertySection extends AbstractPropertySection {
             composite, Messages.advancedStartUpPropertySection_btn_dealStopNodeWithBroadcast,
             SWT.CHECK);
         btnNMTStopNode
-            .setToolTipText(Messages.advancedStartUpPropertySection_tooltip_disabled_dealCNaccordingBit4
-                + Messages.advancedStartUpPropertySection_tooltip_enabled_dealStopNodeWithBroadcast);
+            .setToolTipText(Messages.advancedStartUpPropertySection_tooltip_dealCNaccordingBit4);
         data = new FormData();
         data.top = new FormAttachment(btnNMTResetNode, -5);
         data.left = new FormAttachment(0, 7);
@@ -176,8 +177,7 @@ public class AdvancedStartUpPropertySection extends AbstractPropertySection {
             composite, Messages.advancedStartUpPropertySection_btn_enterPreOp2ByApplication,
             SWT.CHECK);
         btnNMTPreOperational2
-            .setToolTipText(Messages.advancedStartUpPropertySection_tooltip_disabled_enterPreOperational2
-                + Messages.advancedStartUpPropertySection_tooltip_enabled_enterPreOp2ByApplication);
+            .setToolTipText(Messages.advancedStartUpPropertySection_tooltip_enterPreOperational2);
         data = new FormData();
         data.top = new FormAttachment(btnNMTStopNode, -5);
         data.left = new FormAttachment(0, 7);
@@ -189,8 +189,7 @@ public class AdvancedStartUpPropertySection extends AbstractPropertySection {
         Button btnMSReadyToOperate = this.getWidgetFactory().createButton(
             composite, Messages.advancedStartUpPropertySection_btn_appDecide_ReadyState, SWT.CHECK);
         btnMSReadyToOperate
-            .setToolTipText(Messages.advancedStartUpPropertySection_tooltip_disabled_setReadyToOperate
-                + Messages.advancedStartUpPropertySection_tooltip_enabled_appDecideReadyState);
+            .setToolTipText(Messages.advancedStartUpPropertySection_tooltip_setReadyToOperate);
         data = new FormData();
         data.top = new FormAttachment(lblDefaultValue, 0);
         data.left = new FormAttachment(btnStartCNsMode, 120);
@@ -202,8 +201,7 @@ public class AdvancedStartUpPropertySection extends AbstractPropertySection {
         Button btnCompleteCNIdCheck = this.getWidgetFactory().createButton(
             composite, Messages.advancedStartUpPropertySection_btn_VerifyAllCNIds, SWT.CHECK);
         btnCompleteCNIdCheck
-            .setToolTipText(Messages.advancedStartUpPropertySection_tooltip_disabled_LimitVerifyAllCNIds
-                + Messages.advancedStartUpPropertySection_tooltip_enabled_VerifyAllCNIds);
+            .setToolTipText(Messages.advancedStartUpPropertySection_tooltip_LimitVerifyAllCNIds);
         data = new FormData();
         data.top = new FormAttachment(btnMSReadyToOperate, -5);
         data.left = new FormAttachment(btnStartCNsMode, 120);
@@ -215,8 +213,7 @@ public class AdvancedStartUpPropertySection extends AbstractPropertySection {
         Button btnCheckSWVersion = this.getWidgetFactory().createButton(
             composite, Messages.advancedStartUpPropertySection_btn_checkSWVersion, SWT.CHECK);
         btnCheckSWVersion
-            .setToolTipText(Messages.advancedStartUpPropertySection_tooltip_disabled_doNotCheckSW
-                + Messages.advancedStartUpPropertySection_tooltip_enabled_CheckSWVersion);
+            .setToolTipText(Messages.advancedStartUpPropertySection_tooltip_doNotCheckSW);
         data = new FormData();
         data.top = new FormAttachment(btnCompleteCNIdCheck, -5);
         data.left = new FormAttachment(btnStartCNsMode, 120);
@@ -228,8 +225,7 @@ public class AdvancedStartUpPropertySection extends AbstractPropertySection {
         Button btnCheckConfig = this.getWidgetFactory().createButton(
             composite, Messages.advancedStartUpPropertySection_btn_checkCNConfig, SWT.CHECK);
         btnCheckConfig
-            .setToolTipText(Messages.advancedStartUpPropertySection_tooltip_disabled_doNotCheckConfig
-                + Messages.advancedStartUpPropertySection_tooltip_enabled_doCheckConfig);
+            .setToolTipText(Messages.advancedStartUpPropertySection_tooltip_doNotCheckConfig);
         data = new FormData();
         data.top = new FormAttachment(btnCheckSWVersion, -5);
         data.left = new FormAttachment(btnStartCNsMode, 120);
@@ -242,8 +238,7 @@ public class AdvancedStartUpPropertySection extends AbstractPropertySection {
             composite, Messages.advancedStartUpPropertySection_btn_AppDecideChangeToPreOp,
             SWT.CHECK);
         btnReturnOperational1
-            .setToolTipText(Messages.advancedStartUpPropertySection_tooltip_disabled_autoChangeToPreOp
-                + Messages.advancedStartUpPropertySection_tooltip_enabled_AppDecideChangeToPreOp);
+            .setToolTipText(Messages.advancedStartUpPropertySection_tooltip_autoChangeToPreOp);
         data = new FormData();
         data.top = new FormAttachment(btnCheckConfig, -5);
         data.left = new FormAttachment(btnStartCNsMode, 120);
@@ -256,8 +251,7 @@ public class AdvancedStartUpPropertySection extends AbstractPropertySection {
             composite, Messages.advancedStartUpPropertySection_btn_ChangeNotActiveToBaiscEthernet,
             SWT.CHECK);
         btnChangeToBasicEth
-            .setToolTipText(Messages.advancedStartUpPropertySection_tooltip_disabled_notActiveBasicEthState
-                + Messages.advancedStartUpPropertySection_tooltip_enabled_ChangeNotActiveToBasicEthernet);
+            .setToolTipText(Messages.advancedStartUpPropertySection_tooltip_notActiveBasicEthState);
         data = new FormData();
         data.top = new FormAttachment(btnReturnOperational1, -5);
         data.left = new FormAttachment(btnStartCNsMode, 120);
@@ -270,7 +264,7 @@ public class AdvancedStartUpPropertySection extends AbstractPropertySection {
         this.lblError = this.getWidgetFactory().createCLabel(
             composite, "                                                  "); //$NON-NLS-1$
         data = new FormData();
-        data.top = new FormAttachment(btnCompleteCNIdCheck, 0);
+        data.top = new FormAttachment(btnNMTPreOperational2, 0);
         data.left = new FormAttachment(0, 7);
         this.lblError.setLayoutData(data);
         this.lblError.setForeground(XDDUtilities.getRed(Display.getCurrent()));
@@ -299,25 +293,33 @@ public class AdvancedStartUpPropertySection extends AbstractPropertySection {
 
         this.tObjectComposite.setObject(this.tobject);
         this.lblDefaultValueValue.setText(this.tobject.getDefaultValue());
-
+        Set<Entry<Button, Integer>> buttonSet = this.buttonMap.entrySet();
         int defaultValue = 0;
+        try {
+            if (this.tobject.getDefaultValue() != null
+                && this.tobject.getDefaultValue().length() > 0) {
 
-        if (this.tobject.getDefaultValue() != null) {
-            defaultValue = Integer.decode(this.tobject.getDefaultValue());
-            Set<Entry<Button, Integer>> buttonSet = this.buttonMap.entrySet();
-            int btnValue = 0;
-            for (Entry<Button, Integer> entry : buttonSet) {
-                btnValue = entry.getValue().intValue();
-                if ((defaultValue & (1 << btnValue)) != 0) //Check if Bit of Button is set
-                    entry.getKey().setSelection(true); //if yes, set the selection to true
-                else
+                defaultValue = Integer.decode(this.tobject.getDefaultValue());
+
+                for (Entry<Button, Integer> entry : buttonSet) {
+                    int btnValue = entry.getValue().intValue();
+                    if ((defaultValue & (1 << btnValue)) != 0) //Check if Bit of Button is set
+                        entry.getKey().setSelection(true); //if yes, set the selection to true
+                    else
+                        entry.getKey().setSelection(false);
+                }
+            }
+            if (defaultValue != 0 && (defaultValue > 0x3FDE || ((defaultValue & (1 << 5)) != 0))
+                || (defaultValue & (1 << 0)) != 0) {
+                this.lblError
+                    .setText(Messages.general_error_defaultValueInvalid);
+                for (Entry<Button, Integer> entry : buttonSet)
                     entry.getKey().setSelection(false);
             }
-        }
-        if (defaultValue != 0 && (defaultValue > 0x3FDE || ((defaultValue & (1 << 5)) != 0))
-            || (defaultValue & (1 << 0)) != 0)
+        } catch (NumberFormatException e) {
             this.lblError
-                .setText(Messages.advancedStartUpPropertySection_Error_corruptDefaultValue);
+                .setText(Messages.general_error_defaultValueInvalid);
+        }
     } //setInput
 
 } //AdvancedStartUpPropertySection

@@ -70,9 +70,10 @@ public class AdvancedDeviceTypePropertySection extends AbstractPropertySection {
         @Override
         public void modifyText(ModifyEvent e) {
             AdvancedDeviceTypePropertySection.this.lblError.setText(""); //$NON-NLS-1$
-            AdvancedDeviceTypePropertySection.this.profileValue = Long
-                .parseLong(AdvancedDeviceTypePropertySection.this.cmbDeviceProfileNr.getText()
-                    .substring(4, 7));
+            if (!AdvancedDeviceTypePropertySection.this.cmbDeviceProfileNr.getText().isEmpty())
+                AdvancedDeviceTypePropertySection.this.profileValue = Long
+                    .parseLong(AdvancedDeviceTypePropertySection.this.cmbDeviceProfileNr.getText()
+                        .substring(4, 7));
             AdvancedDeviceTypePropertySection.this.setDefaultValue();
         }
     };
@@ -134,9 +135,11 @@ public class AdvancedDeviceTypePropertySection extends AbstractPropertySection {
 
         this.cmbDeviceProfileNr = this.getWidgetFactory().createCCombo(composite);
         data = new FormData();
-        for (CiADeviceProfile profile : CiADeviceProfile.values())
-            this.cmbDeviceProfileNr.add(profile.getProfileName() + " - " //$NON-NLS-1$
-                + profile.getProfileDescription());
+        for (CiADeviceProfile profile : CiADeviceProfile.values()) {
+            String profileText = profile.getProfileName() + " - " + profile.getProfileDescription(); //$NON-NLS-1$
+            this.cmbDeviceProfileNr.add(profileText);
+            this.cmbDeviceProfileNr.setData(Integer.toString(profile.getValue()), profileText);
+        }
         data.top = new FormAttachment(this.lblDefaultValueValue, 0);
         data.left = new FormAttachment(0, AbstractPropertySection.STANDARD_LABEL_WIDTH + 10);
         data.right = new FormAttachment(40, 0);
@@ -180,25 +183,35 @@ public class AdvancedDeviceTypePropertySection extends AbstractPropertySection {
         this.lblError.setText(""); //$NON-NLS-1$
 
         this.tObjectComposite.setObject(this.tobject);
-        this.lblDefaultValueValue.setText(this.tobject.getDefaultValue());
 
-        this.profileValue = Long.decode(this.tobject.getDefaultValue()) & this.maskLSB; //get 16 LSB
-        this.additionalInfoValue = Long.decode(this.tobject.getDefaultValue()) & this.maskMSB; // get 16 MSB
+        if (this.tobject.getDefaultValue() != null && this.tobject.getDefaultValue().length() > 0) {
+            try {
+                this.lblDefaultValueValue.setText(this.tobject.getDefaultValue());
+                this.profileValue = Long.decode(this.tobject.getDefaultValue()) & this.maskLSB; //get 16 LSB
+                this.additionalInfoValue = Long.decode(this.tobject.getDefaultValue())
+                    & this.maskMSB;
 
-        this.txtAdditionalInfo.setText(String.format("%04x", this.additionalInfoValue) //$NON-NLS-1$
-            .toUpperCase());
-        this.txtAdditionalInfo.addVerifyListener(this.additionalInfoListener);
+                this.txtAdditionalInfo.setText(String.format("%04x", this.additionalInfoValue) //$NON-NLS-1$
+                    .toUpperCase());
+                this.txtAdditionalInfo.addVerifyListener(this.additionalInfoListener);
 
-        int i = 0;
-        for (String profile : this.cmbDeviceProfileNr.getItems()) {
-            if (profile.contains(Long.toString(this.profileValue))) {
-                this.cmbDeviceProfileNr.select(i);
-                this.lblError.setText(""); //$NON-NLS-1$
-                break;
-            } else {
-                i++;
+                String selectedProfileString = null;
+                selectedProfileString = (String) this.cmbDeviceProfileNr.getData(Long
+                    .toString(this.profileValue));
+                if (selectedProfileString != null) {
+                    this.cmbDeviceProfileNr.select(this.cmbDeviceProfileNr
+                        .indexOf(selectedProfileString));
+                    this.lblError.setText(""); //$NON-NLS-1$
+                } else if (this.profileValue != 0) {
+                    this.cmbDeviceProfileNr.setText(""); //$NON-NLS-1$
+                    this.lblError
+                        .setText(Messages.advancedDeviceTypePropertySection_CiA_Profile_not_found);
+                    this.lblError.setForeground(XDDUtilities.getRed(Display.getCurrent()));
+                }
+
+            } catch (NumberFormatException e) {
                 this.lblError
-                    .setText(Messages.advancedDeviceTypePropertySection_CiA_Profile_not_found);
+                    .setText(Messages.general_error_defaultValueInvalid);
                 this.lblError.setForeground(XDDUtilities.getRed(Display.getCurrent()));
             }
         }

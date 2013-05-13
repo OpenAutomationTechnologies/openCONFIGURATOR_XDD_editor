@@ -37,6 +37,7 @@ import com.br_automation.buoat.xddeditor.XDD.TObject;
 import com.br_automation.buoat.xddeditor.XDD.TVersion;
 import com.br_automation.buoat.xddeditor.XDD.VersionTypeType;
 import com.br_automation.buoat.xddeditor.XDD.XDDFactory;
+import com.br_automation.buoat.xddeditor.XDD.XDDPackage;
 import com.br_automation.buoat.xddeditor.XDD.util.XDDResourceFactoryImpl;
 
 /**
@@ -179,7 +180,13 @@ public class ModelLoader {
             List<TObject> TObjectsToAdd = ModelLoader.getTObjectFromResource(
                 "ipSupportTemplate", iPSupportObjects);
             //Get Current Objects of the Resource
-            EList<TObject> resourceObjects = XDDUtilities.getTObjectList(root);
+            List<ObjectListType> objectList = XDDUtilities.findEObjects(
+                root, XDDPackage.eINSTANCE.getObjectListType());
+            EList<TObject> resourceObjects;
+            if (!objectList.isEmpty())
+                resourceObjects = objectList.get(0).getObject();
+            else
+                return;
             //Set Objects to Resource
             XDDUtilities.addTObjects(resourceObjects, TObjectsToAdd);
         }
@@ -244,7 +251,13 @@ public class ModelLoader {
             List<TObject> TObjectsToAdd = ModelLoader.getTObjectFromResource(
                 "multiplexFeatureTemplate", multiplexFeatureObjects);
             //Get Current Objects of the Resource
-            EList<TObject> resourceObjects = XDDUtilities.getTObjectList(root);
+            List<ObjectListType> objectList = XDDUtilities.findEObjects(
+                root, XDDPackage.eINSTANCE.getObjectListType());
+            EList<TObject> resourceObjects;
+            if (!objectList.isEmpty())
+                resourceObjects = objectList.get(0).getObject();
+            else
+                return;
             //Set Objects to Resource
             XDDUtilities.addTObjects(resourceObjects, TObjectsToAdd);
         }

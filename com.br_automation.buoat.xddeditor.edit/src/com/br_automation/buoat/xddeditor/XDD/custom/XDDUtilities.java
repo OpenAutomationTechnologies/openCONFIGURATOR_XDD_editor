@@ -21,23 +21,33 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.eclipse.emf.common.util.ECollections;
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.common.util.TreeIterator;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.query.conditions.eobjects.EObjectCondition;
+import org.eclipse.emf.query.conditions.eobjects.EObjectTypeRelationCondition;
+import org.eclipse.emf.query.statements.FROM;
+import org.eclipse.emf.query.statements.IQueryResult;
+import org.eclipse.emf.query.statements.SELECT;
+import org.eclipse.emf.query.statements.WHERE;
 import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Device;
+import org.eclipse.swt.widgets.Display;
 
 import com.br_automation.buoat.xddeditor.XDD.DocumentRoot;
 import com.br_automation.buoat.xddeditor.XDD.ISO15745ProfileType;
 import com.br_automation.buoat.xddeditor.XDD.ObjectListType;
-import com.br_automation.buoat.xddeditor.XDD.ProfileBodyDataType;
+import com.br_automation.buoat.xddeditor.XDD.ProfileBodyCommunicationNetworkPowerlink;
+import com.br_automation.buoat.xddeditor.XDD.ProfileBodyDevicePowerlink;
 import com.br_automation.buoat.xddeditor.XDD.SubObjectType;
 import com.br_automation.buoat.xddeditor.XDD.TApplicationLayers;
 import com.br_automation.buoat.xddeditor.XDD.TCNFeatures;
+import com.br_automation.buoat.xddeditor.XDD.TGeneralFeatures;
 import com.br_automation.buoat.xddeditor.XDD.TObject;
 import com.br_automation.buoat.xddeditor.XDD.TObjectPDOMapping;
-import com.br_automation.buoat.xddeditor.XDD.impl.ObjectListTypeImpl;
+import com.br_automation.buoat.xddeditor.XDD.XDDPackage;
+import com.br_automation.buoat.xddeditor.XDD.impl.TCNFeaturesImpl;
 
 /**
  * @brief Static utility-methods for XDD-File/resource manipulation and
@@ -116,19 +126,29 @@ public final class XDDUtilities {
     }
 
     /**
-     * @brief Function to set username to "modified by" field,modification date
-     *        and time on save.
+     * @brief Set attributes of an XDD's ProfileBody-Element.
+     * 
+     *        Sets fileModificatioDate and -Time to the current time and date,
+     *        as well as fileModifiedBy. fileModifiedBy will be set to the
+     *        username set by XDDUtilities#setCreator(String) if not
+     *        <code>null</code>, system property <code>user.name</code>
+     *        otherwise.
      * 
      * @param root
      *            Root object of the current document.
      */
     public static void addSaveModifications(DocumentRoot root) {
-        ISO15745ProfileType profile1 = root.getISO15745ProfileContainer().getISO15745Profile()
-            .get(0);
-        ISO15745ProfileType profile2 = root.getISO15745ProfileContainer().getISO15745Profile()
-            .get(1);
-        ProfileBodyDataType body1 = profile1.getProfileBody();
-        ProfileBodyDataType body2 = profile2.getProfileBody();
+
+        List<ProfileBodyCommunicationNetworkPowerlink> foundCommunicationBodys = XDDUtilities
+            .findEObjects(root, XDDPackage.eINSTANCE.getProfileBodyCommunicationNetworkPowerlink());
+        List<ProfileBodyDevicePowerlink> foundDeviceBodys = XDDUtilities.findEObjects(
+            root, XDDPackage.eINSTANCE.getProfileBodyDevicePowerlink());
+        if (foundCommunicationBodys.size() == 0 || foundDeviceBodys.size() == 0)
+            return;
+
+        ProfileBodyCommunicationNetworkPowerlink body1 = foundCommunicationBodys.get(0);
+        ProfileBodyDevicePowerlink body2 = foundDeviceBodys.get(0);
+
         body1.setFileModificationDate(XDDUtilities.getXMLDate());
         body1.setFileModificationTime(XDDUtilities.getXMLTime());
         if (XDDUtilities.creator == null) {
@@ -140,6 +160,7 @@ public final class XDDUtilities {
         }
         body2.setFileModificationDate(XDDUtilities.getXMLDate());
         body2.setFileModificationTime(XDDUtilities.getXMLTime());
+
     } //addSaveModifications
 
     /**
@@ -148,8 +169,7 @@ public final class XDDUtilities {
      * @param currentObjectList
      *            List where Objects should be added to
      * @param objectsToAdd
-     *            List of Objects to check if they already exist,if not, they
-     *            are added.
+     *            List of objects to add. Existing objects will be skipped.
      * */
     public static void addTObjects(EList<TObject> currentObjectList, List<TObject> objectsToAdd) {
 
@@ -198,6 +218,44 @@ public final class XDDUtilities {
     }
 
     /**
+     * @brief @brief Finds and returns all instances of the specified
+     *        <code>eclass</code> in <code>documentRoot</code>.
+     * 
+     *        The eclass parameter can be given by using XDDPackage.eINSTACE.get
+     *        <code>InstanceName</code>();
+     * 
+     * @param root
+     *            the current resource.
+     * @param eClass
+     * @return An array of instances found in the specified Resource or
+     *         <code>null</code>.
+     * 
+     */
+    @SuppressWarnings("unchecked")
+    public static <T extends EObject> List<T> findEObjects(DocumentRoot root, EClass eClass) {
+        EObjectCondition condition = new EObjectTypeRelationCondition(eClass);
+        SELECT statement = new SELECT(new FROM(root.eContents()), new WHERE(condition));
+        IQueryResult results = statement.execute();
+
+        EObject[] foundObjects = results.toArray(new EObject[] {});
+        List<T> foundObjectsList = new ArrayList<T>();
+        for (EObject object : foundObjects)
+            foundObjectsList.add((T) object);
+
+        return foundObjectsList;
+    }
+
+    /**
+     * @brief Creates an instance of org.eclipse.swt.graphics.Color black.
+     * @param device
+     *            Is the instance of window/display used.
+     * @return An instance of the color black.
+     */
+    public static Color getBlack(Display device) {
+        return new Color(device, 0, 0, 0);
+    }
+
+    /**
      * @brief Finds matching DataType based on given byte array.
      * @param bs
      *            Byte array of the datatype field in TObject or SubObjectType.
@@ -227,11 +285,10 @@ public final class XDDUtilities {
      *            An array of valid ENUMs of MappingType.
      * @return A HashMap<String, TObject> with Objects that are mappable.
      */
-    public static Map<String, TObject> getMappingObjects(DocumentRoot root,
+    public static Map<Integer, TObject> getMappingObjects(DocumentRoot root,
         Set<TObjectPDOMapping> mappingTypes) {
-        List<EObject> tObjects = root.getISO15745ProfileContainer().getISO15745Profile().get(1)
-            .getProfileBody().eContents().get(0).eContents().get(2).eContents();
-        HashMap<String, TObject> validObjects = new HashMap<String, TObject>();
+        List<TObject> tObjects = XDDUtilities.getTObjectList(root);
+        HashMap<Integer, TObject> validObjects = new HashMap<Integer, TObject>();
 
         for (EObject object : tObjects) {
             TObject testObject = (TObject) object;
@@ -239,7 +296,7 @@ public final class XDDUtilities {
                 .getPDOmapping()))
                 || !(XDDUtilities.getMappingSubObjects(testObject, mappingTypes).isEmpty()))
                 if (testObject.getName() != null && testObject.getIndex() != null) // NOPMD by lueckengaj on 29.03.13 11:19
-                    validObjects.put(testObject.getName(), testObject);
+                    validObjects.put(new BigInteger(testObject.getIndex()).intValue(), testObject);
         }
         return validObjects;
     }
@@ -254,14 +311,14 @@ public final class XDDUtilities {
      *            An array of valid ENUMs of MappingType.
      * @return A HashMap<String, SubObjectType> with Objects that are mappable.
      */
-    public static Map<String, SubObjectType> getMappingSubObjects(TObject tObject,
+    public static Map<Integer, SubObjectType> getMappingSubObjects(TObject tObject,
         Set<TObjectPDOMapping> mappingType) {
-        Map<String, SubObjectType> subobjectsList = new HashMap<String, SubObjectType>();
+        Map<Integer, SubObjectType> subobjectsList = new HashMap<Integer, SubObjectType>();
 
         for (SubObjectType subObject : tObject.getSubObject())
             if (mappingType.contains(subObject.getPDOmapping()) && subObject.getSubIndex() != null
                 && subObject.getDataType() != null)
-                subobjectsList.put(subObject.getName(), subObject);
+                subobjectsList.put(new BigInteger(subObject.getSubIndex()).intValue(), subObject);
         return subobjectsList;
     }
 
@@ -276,29 +333,15 @@ public final class XDDUtilities {
     }
 
     /**
-     * @brief Gets the list of existing TObjects from the specified
-     *        root-element.
+     * @brief Get the list of existing TObjects from the specified root-element.
      * @param root
-     *            The Instance of DocumentRoot in which should be searched for a
-     *            TObject-list.
+     *            The instance of DocumentRoot which should be searched for the
+     *            ObjectList.
      * @return An <code>EList</code> of <code>TObject</code> elements found in
-     *         root.
+     *         <code>root</code>
      */
-    public static EList<TObject> getTObjectList(DocumentRoot root) {
-        TreeIterator<EObject> iterator = root.eAllContents(); //Iterator through whole Resource
-        Object currentObject;
-        EList<TObject> resourceTObjects = null;
-
-        //Iterate through resource and get current TOBjectlist
-        while (iterator.hasNext()) {
-            currentObject = iterator.next();
-            if (currentObject instanceof ObjectListTypeImpl) { //get the current TOBjectlist
-                resourceTObjects = ((ObjectListTypeImpl) currentObject).getObject();
-                break;
-            }
-
-        }
-        return resourceTObjects;
+    public static List<TObject> getTObjectList(DocumentRoot root) {
+        return XDDUtilities.findEObjects(root, XDDPackage.eINSTANCE.getTObject());
     }
 
     /**
@@ -422,7 +465,81 @@ public final class XDDUtilities {
     }
 
     /**
-     * @brief Set MultiplexFeature for TObject and TCNFeatures.Does not add
+     * @brief Sets the Specified Bit for Object 1F82 and CN- or
+     *        Generalfeatures.Does not add required Objects.<br>
+     * 
+     *        bit = 9 for Multiplex Feature.<br>
+     *        bit = 16 for Multiple ASnd.<br>
+     *        bit = 18 for PResponse Chaining.<br>
+     * 
+     * @param status
+     *            <code>True</code> if Multiplexing shall be enabled,
+     *            <code>false</code> otherwise.
+     * @param documentRoot
+     *            Root of XDD-Document for which to enable Multiplexing.
+     * @param bitOffset
+     *            Sets the Bit in the default Value
+     */
+    public static void setFeatureFlagProperties(boolean status,
+        int bitOffset,
+        DocumentRoot documentRoot) {
+
+        List<TObject> tObjects = XDDUtilities.getTObjectList(documentRoot);
+        List<TGeneralFeatures> foundTGeneralFeatures = XDDUtilities.findEObjects(
+            documentRoot, XDDPackage.eINSTANCE.getTGeneralFeatures());
+        List<TCNFeaturesImpl> foundTCNFeatures = XDDUtilities.findEObjects(
+            documentRoot, XDDPackage.eINSTANCE.getTCNFeatures());
+
+        if (tObjects.isEmpty() || foundTCNFeatures.isEmpty() || foundTGeneralFeatures.isEmpty())
+            return;
+
+        TCNFeatures cnFeatures = foundTCNFeatures.get(0);
+        TGeneralFeatures generalFeatures = (TGeneralFeatures) foundTGeneralFeatures.get(0);
+
+        //SyncSelection
+        switch (bitOffset) {
+            case 9:
+                cnFeatures.setDLLCNFeatureMultiplex(status);
+                break;
+            case 18:
+                cnFeatures.setDLLCNPResChaining(status);
+                break;
+            default:
+                break;
+        }
+
+        for (TObject tObject : tObjects)
+            if (ObjectDictionaryEntry.NMT_FEATUREFLAGS_U32 == new BigInteger(tObject.getIndex())
+                .intValue())
+                if (status)
+                    tObject
+                        .setDefaultValue("0x"
+                            + Long.toHexString((Long.decode(tObject.getDefaultValue()) | (1 << bitOffset))));
+                else
+                    tObject
+                        .setDefaultValue("0x"
+                            + Long.toHexString((Long.decode(tObject.getDefaultValue()) & ~(1 << bitOffset))));
+
+    }//setFeatureFlagProperties
+
+    /**
+     * @brief Sets the IP-Support property to CNFeatures object based on
+     *        status-value.
+     * @param status
+     *            <code>True</code> to enable IP-Support, <code>false</code>
+     *            otherwise.
+     * @param root
+     *            The instance of DocumentRoot the feature has to be set or
+     *            unset.
+     */
+    public static void setIPSupportProperties(DocumentRoot root, boolean status) {
+        List<TGeneralFeatures> tgeneralFeatures = XDDUtilities.findEObjects(
+            root, XDDPackage.eINSTANCE.getTGeneralFeatures());
+        tgeneralFeatures.get(0).setNWLIPSupport(status);
+    }
+
+    /**
+     * @brief Set Multiplex-Feature for TObject and TCNFeatures.Does not add
      *        required Objects
      * @param status
      *            <code>True</code> if Multiplexing shall be enabled,
@@ -431,29 +548,31 @@ public final class XDDUtilities {
      *            Root of XDD-Document for which to enable Multiplexing.
      */
     public static void setMultiplexFeatureProperties(boolean status, DocumentRoot documentRoot) {
-        //TODO:implement generic lookup!?
-        //TODO Überprüfen auf Null (Muss auch ohne Template verwendbar sein)
-        ISO15745ProfileType profile = documentRoot.getISO15745ProfileContainer()
-            .getISO15745Profile().get(1);
-        TCNFeatures features = (TCNFeatures) profile.getProfileBody().eContents().get(2)
-            .eContents().get(1);
+        try {
+            ISO15745ProfileType profile = documentRoot.getISO15745ProfileContainer()
+                .getISO15745Profile().get(1);
+            TCNFeatures features = (TCNFeatures) profile.getProfileBody().eContents().get(2)
+                .eContents().get(1);
 
-        //Setzen von CNFeature
-        features.setDLLCNFeatureMultiplex(status);
+            //Setzen von CNFeature
+            features.setDLLCNFeatureMultiplex(status);
 
-        TApplicationLayers applicationLayers = (TApplicationLayers) profile.getProfileBody()
-            .eContents().get(0);
-        ObjectListType listType = applicationLayers.getObjectList();
-        List<TObject> objects = listType.getObject();
+            TApplicationLayers applicationLayers = (TApplicationLayers) profile.getProfileBody()
+                .eContents().get(0);
+            ObjectListType listType = applicationLayers.getObjectList();
+            List<TObject> objects = listType.getObject();
 
-        for (TObject tObject : objects)
-            if (tObject.getName().contentEquals("NMT_FeatureFlags_U32"))
-                if (status)
-                    tObject.setDefaultValue("0x"
-                        + Long.toHexString((Long.decode(tObject.getDefaultValue()) | 512)));
-                else
-                    tObject.setDefaultValue("0x"
-                        + Long.toHexString((Long.decode(tObject.getDefaultValue()) & ~512)));
+            for (TObject tObject : objects)
+                if (tObject.getName().contentEquals("NMT_FeatureFlags_U32"))
+                    if (status)
+                        tObject.setDefaultValue("0x"
+                            + Long.toHexString((Long.decode(tObject.getDefaultValue()) | 512)));
+                    else
+                        tObject.setDefaultValue("0x"
+                            + Long.toHexString((Long.decode(tObject.getDefaultValue()) & ~512)));
+        } catch (Exception e) {
+            //Do nothing, object was not found.
+        }
     } //setMultiplexFeature
 
 } // XDDUtilities

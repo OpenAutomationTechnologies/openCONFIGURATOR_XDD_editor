@@ -16,12 +16,7 @@ import com.br_automation.buoat.xddeditor.XDD.provider.TCNFeaturesItemProvider;
 /**
  * @brief Custom ItemProvider to set/unset Multiplexing-Feature in object 0x1F82
  *        correspondingly.
- * 
- *        This extended class uses the setMultiplexFeature-Method in XDDUtilites
- *        to set or unset the multiplex feature. To achieve this, an override of
- *        the getEditableValue-Method (which is triggered when the property is
- *        selected/changed) is needed.
- * 
+
  * @author Joris Lückenga
  */
 public class CustomTCNFeaturesItemProvider extends TCNFeaturesItemProvider {
