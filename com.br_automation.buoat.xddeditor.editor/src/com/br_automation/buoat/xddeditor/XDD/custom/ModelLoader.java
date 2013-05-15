@@ -156,11 +156,12 @@ public class ModelLoader {
     } //loadXDD
 
     /**
-     * @brief Sets required IP-support objects to DocumentRoot if status is
-     *        <code>true</code>.
+     * @brief Add/Remove objects required for IP-Support.
+     * 
      * @param status
-     *            <code>True</code> if required objects should be added. A
-     *            <code>false</code> value is not considered yet.
+     *            <code>True</code> to add objects, <code>false</code>
+     *            otherwise. <code>False</code> is not implemented yet.
+     * 
      * @param root
      *            The DocumentRoot where IP-support objects should be set.
      */
@@ -176,8 +177,7 @@ public class ModelLoader {
             i++;
         }
         if (status) {
-            //Get Needed Objects for IP Support
-            List<TObject> TObjectsToAdd = ModelLoader.getTObjectFromResource(
+            List<TObject> objectsToAdd = ModelLoader.getTObjectFromResource(
                 "ipSupportTemplate", iPSupportObjects);
             //Get Current Objects of the Resource
             List<ObjectListType> objectList = XDDUtilities.findEObjects(
@@ -188,7 +188,7 @@ public class ModelLoader {
             else
                 return;
             //Set Objects to Resource
-            XDDUtilities.addTObjects(resourceObjects, TObjectsToAdd);
+            XDDUtilities.addTObjects(resourceObjects, objectsToAdd);
         }
 
         /*Only for this commit*/
@@ -204,33 +204,56 @@ public class ModelLoader {
     }
 
     /**
-     * @brief Sets required multiplex-feature objects to DocumentRoot if status
-     *        is <code>true</code>
+     * @brief Add/Remove objects required for Multi-ASnd
      * 
      * @param status
-     *            <code>True</code> if required objects should be added. A
-     *            <code>false</code> value is not considered yet.
+     *            <code>True</code> to add objects, <code>false</code>
+     *            otherwise. <code>False</code> is not implemented yet.
      * @param root
-     *            The DocumentRoot where multiplex-feature objects should be
+     *            The DocumentRoot where Multi-ASnd objects should be set.
+     */
+    public static void setMultipleASndObjects(boolean status, DocumentRoot root) {
+
+        List<Integer> multipleASndObjects = new ArrayList<Integer>();
+        multipleASndObjects.add(ObjectDictionaryEntry.NMT_MNCYCLETIMING_REC);
+        multipleASndObjects.add(ObjectDictionaryEntry.NMT_NODEASSIGNMENT_AU32);
+        multipleASndObjects.add(ObjectDictionaryEntry.NMT_FEATUREFLAGS_U32);
+
+        if (status) {
+            List<TObject> objectsToAdd = ModelLoader.getTObjectFromResource(
+                "MultiASndTemplate", multipleASndObjects);
+            //Get Current Objects of the Resource
+            EList<TObject> resourceObjects = XDDUtilities.getTObjectList(root);
+            //Set Objects to Resource
+            XDDUtilities.addTObjects(resourceObjects, objectsToAdd);
+            //SET Properties in FeatureFlags & TCNFeatures/GeneralFeatures
+            XDDUtilities.setFeatureFlag(status, 16, root);
+        }
+    }
+
+    /**
+     * @brief Add/Remove objects required for Multiplexing-feature
+     * 
+     * @param status
+     *            <code>True</code> to add objects, <code>false</code>
+     *            otherwise. <code>False</code> is not implemented yet.
+     * @param root
+     *            The DocumentRoot where Multiplexing-feature objects should be
      *            set.
      */
     public static void setMultiplexFeatureObjects(boolean status, DocumentRoot root) {
-        //TODO:implement generic lookup!?
-        //TODO Überprüfen auf Null (Muss auch ohne Template verwendbar sein)
-        ISO15745ProfileType profile = root.getISO15745ProfileContainer().getISO15745Profile()
-            .get(1);
-        TCNFeatures features = (TCNFeatures) profile.getProfileBody().eContents().get(2)
-            .eContents().get(1);
+        List<TCNFeatures> tCNfeaturesList = XDDUtilities.findEObjects(
+            root, XDDPackage.eINSTANCE.getTCNFeatures());
+        List<ObjectListType> objectsList = XDDUtilities.findEObjects(
+            root, XDDPackage.eINSTANCE.getObjectListType());
 
-        //Setzen von CNFeature
-        features.setDLLCNFeatureMultiplex(status);
+        if (objectsList.size() == 0 || tCNfeaturesList.size() == 0)
+            return;
 
-        TApplicationLayers applicationLayers = (TApplicationLayers) profile.getProfileBody()
-            .eContents().get(0);
-        ObjectListType listType = applicationLayers.getObjectList();
-        List<TObject> objects = listType.getObject();
+        TCNFeatures cnFeatures = tCNfeaturesList.get(0);
+        cnFeatures.setDLLCNFeatureMultiplex(status);
+        EList<TObject> objects = objectsList.get(0).getObject();
 
-        //TODO auf Index ändern
         for (TObject tObject : objects)
             if (ObjectDictionaryEntry.NMT_FEATUREFLAGS_U32 == new BigInteger(tObject.getIndex()) // NOPMD by lueckengaj on 18.04.13 09:23
                 .intValue())
@@ -245,23 +268,45 @@ public class ModelLoader {
         multiplexFeatureObjects.add(ObjectDictionaryEntry.NMT_ISOCHSLOTASSIGN_AU8);
         multiplexFeatureObjects.add(ObjectDictionaryEntry.NMT_MULTIPLCYCLEASSIGN_AU8);
         multiplexFeatureObjects.add(ObjectDictionaryEntry.NMT_CYCLETIMING_REC);
+        multiplexFeatureObjects.add(ObjectDictionaryEntry.NMT_FEATUREFLAGS_U32);
 
         if (status) {
             //Get Needed Objects for Multiplex Support
-            List<TObject> TObjectsToAdd = ModelLoader.getTObjectFromResource(
+            List<TObject> objectsToAdd = ModelLoader.getTObjectFromResource(
                 "multiplexFeatureTemplate", multiplexFeatureObjects);
-            //Get Current Objects of the Resource
-            List<ObjectListType> objectList = XDDUtilities.findEObjects(
-                root, XDDPackage.eINSTANCE.getObjectListType());
-            EList<TObject> resourceObjects;
-            if (!objectList.isEmpty())
-                resourceObjects = objectList.get(0).getObject();
-            else
-                return;
             //Set Objects to Resource
-            XDDUtilities.addTObjects(resourceObjects, TObjectsToAdd);
+            XDDUtilities.addTObjects(objectsList.get(0).getObject(), objectsToAdd);
         }
 
+    }
+
+    /**
+     * @brief Add/Remove objects required for PRes-Chaining feature
+     * 
+     * @param status
+     *            <code>True</code> to add objects, <code>false</code>
+     *            otherwise. <code>False</code> is not implemented yet.
+     * @param root
+     *            The DocumentRoot where PRes-Chaining objects should be set.
+     */
+    public static void setPRespChainingObjects(boolean status, DocumentRoot root) {
+
+        List<Integer> prespChainingObjects = new ArrayList<Integer>();
+        prespChainingObjects.add(ObjectDictionaryEntry.NMT_RELATIVELATENCYDIFF_AU32);
+        prespChainingObjects.add(ObjectDictionaryEntry.NMT_CYCLETIMING_REC);
+        prespChainingObjects.add(ObjectDictionaryEntry.NMT_NODEASSIGNMENT_AU32);
+        prespChainingObjects.add(ObjectDictionaryEntry.NMT_FEATUREFLAGS_U32);
+
+        if (status) {
+            List<TObject> objectsToAdd = ModelLoader.getTObjectFromResource(
+                "PrespChainingTemplate", prespChainingObjects);
+            //Get Current Objects of the Resource
+            EList<TObject> resourceObjects = XDDUtilities.getTObjectList(root);
+            //Set Objects to Resource
+            XDDUtilities.addTObjects(resourceObjects, objectsToAdd);
+            //Set Properties in FeatureFlags, TCN- / General Features
+            XDDUtilities.setFeatureFlag(status, 18, root);
+        }
     }
 
     /**
@@ -405,6 +450,12 @@ public class ModelLoader {
         if (wizardConfigurationPage1.isNWLIPSupport())
             ModelLoader.setIPSupportObjects(true, root);
 
+        if (wizardConfigurationPage1.isResponseChaining())
+            ModelLoader.setPRespChainingObjects(true, root);
+
+        if (wizardConfigurationPage1.isMultipleASnd())
+            ModelLoader.setPRespChainingObjects(true, root);
+
         return root;
     }
 
@@ -424,5 +475,4 @@ public class ModelLoader {
         profile.setProfileHeader(XDDFactory.eINSTANCE.createProfileHeaderDataType());
         return root;
     }
-
 } //InitialModelLoader

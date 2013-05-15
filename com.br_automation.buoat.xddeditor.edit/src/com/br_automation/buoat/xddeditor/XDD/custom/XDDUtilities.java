@@ -340,8 +340,10 @@ public final class XDDUtilities {
      * @return An <code>EList</code> of <code>TObject</code> elements found in
      *         <code>root</code>
      */
-    public static List<TObject> getTObjectList(DocumentRoot root) {
-        return XDDUtilities.findEObjects(root, XDDPackage.eINSTANCE.getTObject());
+    public static EList<TObject> getTObjectList(DocumentRoot root) {
+        ObjectListType objectList = (ObjectListType) (XDDUtilities.findEObjects(
+            root, XDDPackage.eINSTANCE.getObjectListType())).get(0);
+        return objectList.getObject();
     }
 
     /**
@@ -480,7 +482,7 @@ public final class XDDUtilities {
      * @param bitOffset
      *            Sets the Bit in the default Value
      */
-    public static void setFeatureFlagProperties(boolean status,
+    public static void setFeatureFlag(boolean status,
         int bitOffset,
         DocumentRoot documentRoot) {
 

@@ -73,7 +73,7 @@ public class AdvancedStoreParamPropertySection extends AbstractPropertySection {
             this.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
             Group grpStorageParameters = new Group(this, SWT.NONE);
             grpStorageParameters.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
-            grpStorageParameters.setText(Messages.AdvancedStoreParamPropertySection_0);
+            grpStorageParameters.setText(Messages.advancedStoreParamPropertySection_0);
             grpStorageParameters.setBounds(10, 0, 270, 89);
             this.btnAutoSave = new Button(grpStorageParameters, SWT.RADIO);
 
@@ -85,7 +85,7 @@ public class AdvancedStoreParamPropertySection extends AbstractPropertySection {
             });
             this.btnAutoSave.setGrayed(true);
             this.btnAutoSave.setBounds(10, 20, 224, 16);
-            this.btnAutoSave.setText(Messages.AdvancedStoreParamPropertySection_descr_saveAuto);
+            this.btnAutoSave.setText(Messages.advancedStoreParamPropertySection_descr_saveAuto);
             this.btnAutoSave.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 
             this.btnCmdSave = new Button(grpStorageParameters, SWT.RADIO);
@@ -96,7 +96,7 @@ public class AdvancedStoreParamPropertySection extends AbstractPropertySection {
                 }
             });
             this.btnCmdSave.setBounds(10, 42, 224, 16);
-            this.btnCmdSave.setText(Messages.AdvancedStoreParamPropertySection_descr_saveOnCommand);
+            this.btnCmdSave.setText(Messages.advancedStoreParamPropertySection_descr_saveOnCommand);
             this.btnCmdSave.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 
             this.btnNoSave = new Button(grpStorageParameters, SWT.RADIO);
@@ -107,7 +107,7 @@ public class AdvancedStoreParamPropertySection extends AbstractPropertySection {
                 }
             });
             this.btnNoSave.setBounds(10, 64, 224, 16);
-            this.btnNoSave.setText(Messages.AdvancedStoreParamPropertySection_descr_noSaveSupport);
+            this.btnNoSave.setText(Messages.advancedStoreParamPropertySection_descr_noSaveSupport);
             this.btnNoSave.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 
             this.lblError = new Label(this, SWT.NONE);

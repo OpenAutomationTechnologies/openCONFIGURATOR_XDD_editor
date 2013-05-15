@@ -25,6 +25,7 @@ import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
@@ -50,36 +51,46 @@ public class AdvancedFeatureFlagsPropertySection extends AbstractPropertySection
     private Button btnMultiplexedAccess;
     private final Map<Button, Integer> buttonMap = new HashMap<Button, Integer>();
     private CLabel lblDefaultValueValue;
+    private CLabel lblError;
 
     //Set the correct Bits if a Button is selected (with MultiplexFeature-Check)
     private final SelectionListener selectionListener = new SelectionAdapter() {
 
         @Override
         public void widgetSelected(SelectionEvent e) {
-            Set<Entry<Button, Integer>> buttonSet = AdvancedFeatureFlagsPropertySection.this.buttonMap
-                .entrySet();
-            int btnValue = 0;
-            int newDefaultValue = 0;
-            String defaultValue;
-            for (Entry<Button, Integer> entry : buttonSet) {
-                btnValue = entry.getValue();
-                if (entry.getKey().getSelection())
-                    newDefaultValue = newDefaultValue | (1 << btnValue);
-                else
-                    newDefaultValue = newDefaultValue & ~(1 << btnValue);
-            }
+            try {
+                long currentValue = Long.decode(AdvancedFeatureFlagsPropertySection.this.tobject
+                    .getDefaultValue());
+                if ((currentValue & (1 << 17)) != 0 || currentValue >= 0x80000)
+                    throw new NumberFormatException(); //Throw format exception if wrong bit is set or too long!
 
-            defaultValue = "0x" + Integer.toHexString(newDefaultValue); //$NON-NLS-1$
-            if (!AdvancedFeatureFlagsPropertySection.this.tobject.getDefaultValue().contentEquals(
-                defaultValue)) {
-                AdvancedFeatureFlagsPropertySection.this.tObjectProvider.setPropertyValue(
-                    AdvancedFeatureFlagsPropertySection.this.tobject, "defaultValue", defaultValue); //$NON-NLS-1$
-                AdvancedFeatureFlagsPropertySection.this.lblDefaultValueValue.setText(defaultValue);
-                XDDUtilities.setMultiplexFeatureProperties(
-                    AdvancedFeatureFlagsPropertySection.this.btnMultiplexedAccess.getSelection(),
-                    (DocumentRoot) EcoreUtil
-                        .getRootContainer(AdvancedFeatureFlagsPropertySection.this.tobject));
+                //CHECK FOR INVALID BITS!
+            } catch (NumberFormatException e2) {
+                // Generate a valid default-value by using selected checkboxes, 
+                //if user had entered an invalid value but wants to continue...
+                AdvancedFeatureFlagsPropertySection.this.tobject.setDefaultValue("0"); //$NON-NLS-1$
+                Set<Entry<Button, Integer>> buttonSet = AdvancedFeatureFlagsPropertySection.this.buttonMap
+                    .entrySet();
+
+                long newDefaultValue = 0;
+                for (Entry<Button, Integer> entry : buttonSet) {
+                    int bitOffset = entry.getValue();
+                    if (entry.getKey().getSelection()) {
+                        newDefaultValue = newDefaultValue | (1 << bitOffset);
+                    } else
+                        newDefaultValue = newDefaultValue & ~(1 << bitOffset);
+                }
+                AdvancedFeatureFlagsPropertySection.this.tobject.setDefaultValue("0x" //$NON-NLS-1$
+                    + Long.toHexString(newDefaultValue));
             }
+            AdvancedFeatureFlagsPropertySection.this.lblError.setText(""); //$NON-NLS-1$
+            Button currentButton = (Button) e.getSource();
+            int bitOffset = AdvancedFeatureFlagsPropertySection.this.buttonMap.get(currentButton);
+            XDDUtilities.setFeatureFlag(
+                currentButton.getSelection(), bitOffset, (DocumentRoot) EcoreUtil
+                    .getRootContainer(AdvancedFeatureFlagsPropertySection.this.tobject));
+            AdvancedFeatureFlagsPropertySection.this.lblDefaultValueValue
+                .setText(AdvancedFeatureFlagsPropertySection.this.tobject.getDefaultValue());
         }
     }; //SelectionListener
 
@@ -214,6 +225,16 @@ public class AdvancedFeatureFlagsPropertySection extends AbstractPropertySection
         btnNMTServicebyUDPIP.addSelectionListener(this.selectionListener);
         this.buttonMap.put(btnNMTServicebyUDPIP, Integer.valueOf(7));
 
+        Button btnMultipleASnd = this.getWidgetFactory().createButton(
+            composite, "Multi-ASnd Support", SWT.CHECK); //$NON-NLS-1$
+        btnMultipleASnd
+            .setToolTipText(Messages.advancedFeatureFlagsPropertySection_tooltip_multipleASnd);
+        data = new FormData();
+        data.top = new FormAttachment(btnNMTServicebyUDPIP, -5);
+        btnMultipleASnd.setLayoutData(data);
+        btnMultipleASnd.addSelectionListener(this.selectionListener);
+        this.buttonMap.put(btnMultipleASnd, Integer.valueOf(16));
+
         //--------------------------NEXT SECTION
 
         //btnConfigurationManager
@@ -312,7 +333,23 @@ public class AdvancedFeatureFlagsPropertySection extends AbstractPropertySection
         btnSDOSDOReadWriteMultipleParameterbyIndex.addSelectionListener(this.selectionListener);
         this.buttonMap.put(btnSDOSDOReadWriteMultipleParameterbyIndex, Integer.valueOf(15));
 
-    } //CreateControls
+        //btnPResChaining
+        Button btnPResChaining = this.getWidgetFactory().createButton(
+            composite, "PResponse Chaining Support", SWT.CHECK); //$NON-NLS-1$
+        btnPResChaining
+            .setToolTipText(Messages.advancedFeatureFlagsPropertySection_tooltip_presChaining);
+        data = new FormData();
+        data.top = new FormAttachment(btnSDOSDOReadWriteMultipleParameterbyIndex, -5);
+        data.left = new FormAttachment(btnIsochronous, 80);
+        btnPResChaining.setLayoutData(data);
+        btnPResChaining.addSelectionListener(this.selectionListener);
+        this.buttonMap.put(btnPResChaining, Integer.valueOf(18));
+
+        this.lblError = this.getWidgetFactory().createCLabel(composite, ""); //$NON-NLS-1$
+        data = new FormData();
+        data.top = new FormAttachment(btnPResChaining, 0);
+        this.lblError.setLayoutData(data);
+    } //createControls
 
     /**
      * @return AdapterFactory for ItemProviders.
@@ -333,18 +370,31 @@ public class AdvancedFeatureFlagsPropertySection extends AbstractPropertySection
         Assert.isTrue(input instanceof TObjectImpl);
         this.tobject = (TObject) input;
         this.tobjectComposite.setObject(this.tobject);
+        this.lblError.setText(""); //$NON-NLS-1$
         if (this.tobject.getDefaultValue() != null)
+
             this.lblDefaultValueValue.setText(this.tobject.getDefaultValue());
 
         if (this.tobject.getIndex() != null && this.tobject.getDefaultValue() != null) {
-            int defaultValue = Integer.decode(this.tobject.getDefaultValue());
-            Set<Entry<Button, Integer>> buttonSet = this.buttonMap.entrySet();
-            int btnValue = 0;
-            for (Entry<Button, Integer> entry : buttonSet) {
-                btnValue = entry.getValue().intValue();
-                if ((defaultValue & (1 << btnValue)) != 0) //Check if Bit of Button is set
-                    entry.getKey().setSelection(true); //if yes, set the selection to true
+            try {
+                long defaultValue = Integer.decode(this.tobject.getDefaultValue());
+                if ((defaultValue & (1 << 17)) != 0 || defaultValue >= 0x80000)
+                    throw new NumberFormatException(); //Also throw this exception when a wrong bit is set or too long value!
+
+                Set<Entry<Button, Integer>> buttonSet = this.buttonMap.entrySet();
+                for (Entry<Button, Integer> entry : buttonSet) {
+                    int bitOffset = entry.getValue().intValue();
+                    if ((defaultValue & (1 << bitOffset)) != 0) //Check if bit of button is set
+                        entry.getKey().setSelection(true); //if yes, set the selection to true
+                    else
+                        entry.getKey().setSelection(false);
+                }
+            } catch (NumberFormatException e) {
+                //Set error-text
+                this.lblError.setText(Messages.general_error_defaultValueInvalid);
+                this.lblError.setForeground(XDDUtilities.getRed(Display.getCurrent()));
             }
+
         }
     } //setInput
 

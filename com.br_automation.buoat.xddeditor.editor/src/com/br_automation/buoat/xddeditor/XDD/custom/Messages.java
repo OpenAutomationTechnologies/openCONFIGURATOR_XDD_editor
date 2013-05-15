@@ -74,10 +74,12 @@ public final class Messages extends NLS { // NOPMD by lueckengaj on 08.04.13 14:
     public static String advancedStartUpPropertySection_tooltip_notActiveBasicEthState; // NOPMD by lueckengaj on 02.04.13 14:40
     public static String advancedStartUpPropertySection_tooltip_setReadyToOperate; // NOPMD by lueckengaj on 02.04.13 14:40
     public static String advancedStartUpPropertySection_tooltip_startexplicitCN; // NOPMD by lueckengaj on 02.04.13 14:40
-    public static String AdvancedStoreParamPropertySection_0;
-    public static String AdvancedStoreParamPropertySection_descr_noSaveSupport;
-    public static String AdvancedStoreParamPropertySection_descr_saveAuto;
-    public static String AdvancedStoreParamPropertySection_descr_saveOnCommand;
+    public static String advancedFeatureFlagsPropertySection_tooltip_multipleASnd;
+    public static String advancedFeatureFlagsPropertySection_tooltip_presChaining;
+    public static String advancedStoreParamPropertySection_0;
+    public static String advancedStoreParamPropertySection_descr_noSaveSupport;
+    public static String advancedStoreParamPropertySection_descr_saveAuto;
+    public static String advancedStoreParamPropertySection_descr_saveOnCommand;
     public static String general_error_defaultValueInvalid;
     public static String tObjectComposite_type_not_found; // NOPMD by lueckengaj on 29.03.13 12:53
     public static String wizardConfigurationPage1_adv_conf_page_title; // NOPMD by lueckengaj on 29.03.13 12:53
@@ -103,6 +105,7 @@ public final class Messages extends NLS { // NOPMD by lueckengaj on 08.04.13 14:
     public static String wizardConfigurationPage1_vendor_name_lbl; // NOPMD by lueckengaj on 29.03.13 12:53
     public static String wizardConfigurationPage1_vendor_prod_info_lbl; // NOPMD by lueckengaj on 29.03.13 12:53
     private static final String BUNDLE_NAME = "com.br_automation.buoat.xddeditor.XDD.custom.messages"; //$NON-NLS-1$ 
+    public static String wizardConfigurationPage1_btnMultiASnd_text;
 
     static {
         // initialize resource bundle

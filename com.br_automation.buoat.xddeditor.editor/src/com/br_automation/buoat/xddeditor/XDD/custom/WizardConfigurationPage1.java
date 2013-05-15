@@ -32,9 +32,9 @@ import org.eclipse.wb.swt.SWTResourceManager;
 public class WizardConfigurationPage1 extends WizardPage {
 
     private Button btnCnMultiplexFeature;
+    private Button btnMultipleASnd;
     private Button btnNWLIPSupport;
     private Button btnResponseChaining;
-
     private CustomXDDWizard mainwizard;
 
     //Metadata
@@ -201,36 +201,36 @@ public class WizardConfigurationPage1 extends WizardPage {
 
         Group grpCnFeatures = new Group(container, SWT.NONE);
         grpCnFeatures.setText("CN Features"); //$NON-NLS-1$
-        grpCnFeatures.setBounds(283, 215, 267, 90);
+        grpCnFeatures.setBounds(283, 215, 267, 113);
 
         this.btnCnMultiplexFeature = new Button(grpCnFeatures, SWT.CHECK);
         this.btnCnMultiplexFeature
             .setToolTipText(Messages.wizardConfigurationPage1_multiplex_feature_tooltip);
-        this.btnCnMultiplexFeature.setBounds(10, 20, 146, 16);
+        this.btnCnMultiplexFeature.setBounds(10, 32, 146, 16);
         this.btnCnMultiplexFeature.setText("DLLCNFeatureMultiplex"); //$NON-NLS-1$
 
         this.btnResponseChaining = new Button(grpCnFeatures, SWT.CHECK);
         this.btnResponseChaining
             .setToolTipText(Messages.wizardConfigurationPage1_Response_chaining_tooltip);
-        this.btnResponseChaining.setBounds(10, 38, 146, 16);
+        this.btnResponseChaining.setBounds(10, 50, 146, 16);
         this.btnResponseChaining.setText("DLLCNPResChaining"); //$NON-NLS-1$
 
         Label lblSoc = new Label(grpCnFeatures, SWT.NONE);
         lblSoc.setToolTipText(Messages.wizardConfigurationPage1_Time_for_cn_to_process_Soc_tooltip);
         lblSoc.setText("NMTCNSoC2PReq (ns):"); //$NON-NLS-1$
-        lblSoc.setBounds(10, 60, 124, 15);
+        lblSoc.setBounds(10, 72, 124, 15);
 
         this.txtNMTCNSoC2PReq = new Text(grpCnFeatures, SWT.BORDER);
         this.txtNMTCNSoC2PReq.setText("25"); //$NON-NLS-1$
         this.txtNMTCNSoC2PReq
             .setToolTipText(Messages.wizardConfigurationPage1_time_for_CN_tro_process_SoC_tooltip);
-        this.txtNMTCNSoC2PReq.setBounds(140, 57, 76, 21);
+        this.txtNMTCNSoC2PReq.setBounds(140, 69, 76, 21);
 
         Group grpGeneralFeatures = new Group(container, SWT.SHADOW_OUT);
         grpGeneralFeatures.setFont(SWTResourceManager.getFont("Segoe UI", 9, SWT.NORMAL)); //$NON-NLS-1$
         grpGeneralFeatures.setBackground(SWTResourceManager.getColor(SWT.COLOR_WIDGET_BACKGROUND));
         grpGeneralFeatures.setText(Messages.wizardConfigurationPage1_general_features);
-        grpGeneralFeatures.setBounds(10, 172, 267, 133);
+        grpGeneralFeatures.setBounds(10, 172, 267, 156);
 
         Label lblNmtboottimenotactive = new Label(grpGeneralFeatures, SWT.NONE);
         lblNmtboottimenotactive.setBounds(10, 20, 163, 15);
@@ -266,10 +266,15 @@ public class WizardConfigurationPage1 extends WizardPage {
         this.txtNMTErrorEntries.setBounds(179, 80, 76, 21);
 
         this.btnNWLIPSupport = new Button(grpGeneralFeatures, SWT.CHECK);
-        this.btnNWLIPSupport.setBounds(10, 107, 146, 16);
+        this.btnNWLIPSupport.setBounds(10, 130, 146, 16);
         this.btnNWLIPSupport
             .setToolTipText(Messages.wizardConfigurationPage1_EnableDisableIPSupport); //$NON-NLS-1$
         this.btnNWLIPSupport.setText("NWLIPSupport");
+
+        this.btnMultipleASnd = new Button(grpGeneralFeatures, SWT.CHECK);
+        this.btnMultipleASnd.setToolTipText(Messages.wizardConfigurationPage1_btnMultiASnd_text);
+        this.btnMultipleASnd.setText("IP Support");
+        this.btnMultipleASnd.setBounds(10, 107, 146, 16);
     } //createControl
 
     //Metadata getters
@@ -378,6 +383,10 @@ public class WizardConfigurationPage1 extends WizardPage {
         return this.btnCnMultiplexFeature.getSelection();
     }
 
+    public boolean isMultipleASnd() {
+        return this.btnMultipleASnd.getSelection();
+    }
+
     public boolean isNWLIPSupport() {
         return this.btnNWLIPSupport.getSelection();
     }
@@ -385,5 +394,4 @@ public class WizardConfigurationPage1 extends WizardPage {
     public boolean isResponseChaining() {
         return this.btnResponseChaining.getSelection();
     }
-
 } //WizardConfigurationPage1

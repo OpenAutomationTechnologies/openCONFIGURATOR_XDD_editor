@@ -16,7 +16,7 @@ import com.br_automation.buoat.xddeditor.XDD.provider.TCNFeaturesItemProvider;
 /**
  * @brief Custom ItemProvider to set/unset Multiplexing-Feature in object 0x1F82
  *        correspondingly.
-
+ * 
  * @author Joris Lückenga
  */
 public class CustomTCNFeaturesItemProvider extends TCNFeaturesItemProvider {
@@ -31,10 +31,13 @@ public class CustomTCNFeaturesItemProvider extends TCNFeaturesItemProvider {
     //  TODO: Find out whether this is the correct way to do it.
     @Override
     public Object getEditableValue(Object object) {
-        XDDUtilities.setMultiplexFeatureProperties(
-            ((TCNFeatures) object).isDLLCNFeatureMultiplex(),
+        XDDUtilities.setFeatureFlag(
+            ((TCNFeatures) object).isDLLCNFeatureMultiplex(), 9,
             (DocumentRoot) EcoreUtil.getRootContainer((EObject) object));
+        XDDUtilities.setFeatureFlag(
+            ((TCNFeatures) object).isDLLCNPResChaining(), 18,
+            (DocumentRoot) EcoreUtil.getRootContainer((EObject) object));
+
         return object;
     }
-
 } //CustomTCNFeaturesItemProvider
