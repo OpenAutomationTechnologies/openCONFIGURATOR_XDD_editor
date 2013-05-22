@@ -5,6 +5,7 @@ package com.br_automation.buoat.xddeditor.XDD.provider;
 import com.br_automation.buoat.xddeditor.XDD.TDataTypeList;
 import com.br_automation.buoat.xddeditor.XDD.XDDFactory;
 import com.br_automation.buoat.xddeditor.XDD.XDDPackage;
+import com.br_automation.buoat.xddeditor.XDD.impl.TDataTypeListImpl;
 
 import java.util.Collection;
 import java.util.List;
@@ -181,5 +182,23 @@ public class TDataTypeListItemProvider extends ItemProviderAdapter implements
     public ResourceLocator getResourceLocator() {
         return XDDEditPlugin.INSTANCE;
     }
+    
+    /**
+     * @generated NOT
+     */
+    
+    @Override
+    public String getCreateChildText(Object owner,
+        Object feature,
+        Object child,
+        Collection<?> selection) {
+        Object childFeature = feature;
+        // j.l.: Modify label of element in UI.
+        // BEGIN
+        return getString
+            ("_UI_CreateChild_text2",
+             new Object[] { "", getFeatureText(childFeature),"" });
+        //END
+    }	
 
 }

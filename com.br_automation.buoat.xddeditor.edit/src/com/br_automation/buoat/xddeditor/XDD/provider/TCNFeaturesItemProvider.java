@@ -129,12 +129,14 @@ public class TCNFeaturesItemProvider extends ItemProviderAdapter implements
      * This returns the label text for the adapted class. <!-- begin-user-doc
      * --> <!-- end-user-doc -->
      * 
-     * @generated
+     * @generated NOT
      */
     @Override
     public String getText(Object object) {
-        TCNFeatures tcnFeatures = (TCNFeatures) object;
-        return getString("_UI_TCNFeatures_type") + " " + tcnFeatures.isDLLCNFeatureMultiplex();
+   	    // j.l.: Modify label of element in UI.  
+        // BEGIN
+        return getString("_UI_TCNFeatures_type");
+        //END
     }
 
     /**

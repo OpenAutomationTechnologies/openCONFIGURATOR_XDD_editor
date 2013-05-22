@@ -2,6 +2,7 @@
  */
 package com.br_automation.buoat.xddeditor.XDD.provider;
 
+import java.math.BigInteger;
 import java.util.Collection;
 import java.util.List;
 
@@ -357,13 +358,22 @@ public class TObjectItemProvider extends ItemProviderAdapter implements IEditing
      * This returns the label text for the adapted class. <!-- begin-user-doc
      * --> <!-- end-user-doc -->
      * 
-     * @generated
+     * @generated NOT
      */
     @Override
     public String getText(Object object) {
-        String label = ((TObject) object).getName();
-        return label == null || label.length() == 0 ? getString("_UI_TObject_type")
-            : getString("_UI_TObject_type") + " " + label;
+        // j.l.: Modify label of element in UI.
+        // BEGIN
+        String label = " ";
+        String index = " ";
+
+            if(((TObject) object).getIndex() != null) 
+                index = "0x" + new BigInteger(((TObject) object).getIndex()).toString(16).toUpperCase();
+            if(((TObject) object).getName() != null)
+               label = ((TObject) object).getName();
+
+        return (this.getString("_UI_TObject_type") + " ( " + index + " - " + label + " )");
+        //END
     }
 
     /**

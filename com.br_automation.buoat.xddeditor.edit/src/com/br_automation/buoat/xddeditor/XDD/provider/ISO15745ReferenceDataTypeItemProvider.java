@@ -137,14 +137,17 @@ public class ISO15745ReferenceDataTypeItemProvider extends ItemProviderAdapter i
      * This returns the label text for the adapted class. <!-- begin-user-doc
      * --> <!-- end-user-doc -->
      * 
-     * @generated
+     * @generated NOT
      */
     @Override
     public String getText(Object object) {
         BigInteger labelValue = ((ISO15745ReferenceDataType) object).getISO15745Part();
         String label = labelValue == null ? null : labelValue.toString();
+        // j.l.: Modify label of element in UI.
+        // BEGIN
         return label == null || label.length() == 0 ? getString("_UI_ISO15745ReferenceDataType_type")
-            : getString("_UI_ISO15745ReferenceDataType_type") + " " + label;
+            : getString("_UI_ISO15745ReferenceDataType_type");
+        //END
     }
 
     /**

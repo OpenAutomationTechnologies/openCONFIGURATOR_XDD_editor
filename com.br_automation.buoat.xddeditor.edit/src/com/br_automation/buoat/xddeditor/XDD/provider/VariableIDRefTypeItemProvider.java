@@ -93,13 +93,16 @@ public class VariableIDRefTypeItemProvider extends ItemProviderAdapter implement
      * This returns the label text for the adapted class. <!-- begin-user-doc
      * --> <!-- end-user-doc -->
      * 
-     * @generated
+     * @generated NOT
      */
     @Override
     public String getText(Object object) {
         String label = ((VariableIDRefType) object).getUniqueIDRef();
+        // j.l.: Modify label of element in UI.
+        // BEGIN
         return label == null || label.length() == 0 ? getString("_UI_VariableIDRefType_type")
-            : getString("_UI_VariableIDRefType_type") + " " + label;
+            : getString("_UI_VariableIDRefType_type") + ": " + label;
+        //END
     }
 
     /**

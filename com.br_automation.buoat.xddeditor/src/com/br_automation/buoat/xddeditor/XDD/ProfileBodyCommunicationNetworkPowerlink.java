@@ -14,28 +14,19 @@ import org.eclipse.emf.ecore.EObject;
  * <!-- begin-user-doc --> A representation of the model object '
  * <em><b>Profile Body Communication Network Powerlink</b></em>'. <!--
  * end-user-doc -->
- * 
+ *
  * <p>
  * The following features are supported:
  * <ul>
- * <li>
- * {@link com.br_automation.buoat.xddeditor.XDD.ProfileBodyCommunicationNetworkPowerlink#getApplicationLayers
- * <em>Application Layers</em>}</li>
- * <li>
- * {@link com.br_automation.buoat.xddeditor.XDD.ProfileBodyCommunicationNetworkPowerlink#getTransportLayers
- * <em>Transport Layers</em>}</li>
- * <li>
- * {@link com.br_automation.buoat.xddeditor.XDD.ProfileBodyCommunicationNetworkPowerlink#getNetworkManagement
- * <em>Network Management</em>}</li>
- * <li>
- * {@link com.br_automation.buoat.xddeditor.XDD.ProfileBodyCommunicationNetworkPowerlink#getExternalProfileHandle
- * <em>External Profile Handle</em>}</li>
+ *   <li>{@link com.br_automation.buoat.xddeditor.XDD.ProfileBodyCommunicationNetworkPowerlink#getApplicationLayers <em>Application Layers</em>}</li>
+ *   <li>{@link com.br_automation.buoat.xddeditor.XDD.ProfileBodyCommunicationNetworkPowerlink#getTransportLayers <em>Transport Layers</em>}</li>
+ *   <li>{@link com.br_automation.buoat.xddeditor.XDD.ProfileBodyCommunicationNetworkPowerlink#getNetworkManagement <em>Network Management</em>}</li>
+ *   <li>{@link com.br_automation.buoat.xddeditor.XDD.ProfileBodyCommunicationNetworkPowerlink#getExternalProfileHandle <em>External Profile Handle</em>}</li>
  * </ul>
  * </p>
- * 
+ *
  * @see com.br_automation.buoat.xddeditor.XDD.XDDPackage#getProfileBodyCommunicationNetworkPowerlink()
- * @model extendedMetaData=
- *        "name='ProfileBody_CommunicationNetwork_Powerlink' kind='elementOnly'"
+ * @model extendedMetaData="name='ProfileBody_CommunicationNetwork_Powerlink' kind='elementOnly'"
  * @generated
  */
 public interface ProfileBodyCommunicationNetworkPowerlink extends ProfileBodyDataType {
@@ -60,14 +51,10 @@ public interface ProfileBodyCommunicationNetworkPowerlink extends ProfileBodyDat
     TApplicationLayers getApplicationLayers();
 
     /**
-     * Sets the value of the '
-     * {@link com.br_automation.buoat.xddeditor.XDD.ProfileBodyCommunicationNetworkPowerlink#getApplicationLayers
-     * <em>Application Layers</em>}' containment reference. <!-- begin-user-doc
+     * Sets the value of the '{@link com.br_automation.buoat.xddeditor.XDD.ProfileBodyCommunicationNetworkPowerlink#getApplicationLayers <em>Application Layers</em>}' containment reference.
+     * <!-- begin-user-doc
      * --> <!-- end-user-doc -->
-     * 
-     * @param value
-     *            the new value of the '<em>Application Layers</em>' containment
-     *            reference.
+     * @param value the new value of the '<em>Application Layers</em>' containment reference.
      * @see #getApplicationLayers()
      * @generated
      */
@@ -91,21 +78,17 @@ public interface ProfileBodyCommunicationNetworkPowerlink extends ProfileBodyDat
      *        "kind='element' name='TransportLayers' namespace='##targetNamespace'"
      * @generated
      */
-    EObject getTransportLayers();
+    TTransportLayers getTransportLayers();
 
     /**
-     * Sets the value of the '
-     * {@link com.br_automation.buoat.xddeditor.XDD.ProfileBodyCommunicationNetworkPowerlink#getTransportLayers
-     * <em>Transport Layers</em>}' containment reference. <!-- begin-user-doc
-     * --> <!-- end-user-doc -->
-     * 
-     * @param value
-     *            the new value of the '<em>Transport Layers</em>' containment
-     *            reference.
+     * Sets the value of the '{@link com.br_automation.buoat.xddeditor.XDD.ProfileBodyCommunicationNetworkPowerlink#getTransportLayers <em>Transport Layers</em>}' containment reference.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @param value the new value of the '<em>Transport Layers</em>' containment reference.
      * @see #getTransportLayers()
      * @generated
      */
-    void setTransportLayers(EObject value);
+    void setTransportLayers(TTransportLayers value);
 
     /**
      * Returns the value of the '<em><b>Network Management</b></em>' containment
@@ -128,14 +111,10 @@ public interface ProfileBodyCommunicationNetworkPowerlink extends ProfileBodyDat
     TNetworkManagement getNetworkManagement();
 
     /**
-     * Sets the value of the '
-     * {@link com.br_automation.buoat.xddeditor.XDD.ProfileBodyCommunicationNetworkPowerlink#getNetworkManagement
-     * <em>Network Management</em>}' containment reference. <!-- begin-user-doc
+     * Sets the value of the '{@link com.br_automation.buoat.xddeditor.XDD.ProfileBodyCommunicationNetworkPowerlink#getNetworkManagement <em>Network Management</em>}' containment reference.
+     * <!-- begin-user-doc
      * --> <!-- end-user-doc -->
-     * 
-     * @param value
-     *            the new value of the '<em>Network Management</em>' containment
-     *            reference.
+     * @param value the new value of the '<em>Network Management</em>' containment reference.
      * @see #getNetworkManagement()
      * @generated
      */

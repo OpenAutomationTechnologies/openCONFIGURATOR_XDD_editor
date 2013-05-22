@@ -1294,12 +1294,14 @@ public class TGeneralFeaturesItemProvider extends ItemProviderAdapter implements
      * This returns the label text for the adapted class. <!-- begin-user-doc
      * --> <!-- end-user-doc -->
      * 
-     * @generated
+     * @generated NOT
      */
     @Override
     public String getText(Object object) {
-        TGeneralFeatures tGeneralFeatures = (TGeneralFeatures) object;
-        return getString("_UI_TGeneralFeatures_type") + " " + tGeneralFeatures.isSDOCmdLinkName();
+        // j.l.: Modify label of element in UI.
+        // BEGIN
+        return getString("_UI_TGeneralFeatures_type");
+        //END
     }
 
     /**

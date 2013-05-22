@@ -10,6 +10,7 @@ import com.br_automation.buoat.xddeditor.XDD.ProfileBodyCommunicationNetworkPowe
 import com.br_automation.buoat.xddeditor.XDD.ProfileHandleDataType;
 import com.br_automation.buoat.xddeditor.XDD.TApplicationLayers;
 import com.br_automation.buoat.xddeditor.XDD.TNetworkManagement;
+import com.br_automation.buoat.xddeditor.XDD.TTransportLayers;
 import com.br_automation.buoat.xddeditor.XDD.XDDPackage;
 
 import java.util.Collection;
@@ -35,30 +36,21 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>
- * {@link com.br_automation.buoat.xddeditor.XDD.impl.ProfileBodyCommunicationNetworkPowerlinkImpl#getApplicationLayers
- * <em>Application Layers</em>}</li>
- * <li>
- * {@link com.br_automation.buoat.xddeditor.XDD.impl.ProfileBodyCommunicationNetworkPowerlinkImpl#getTransportLayers
- * <em>Transport Layers</em>}</li>
- * <li>
- * {@link com.br_automation.buoat.xddeditor.XDD.impl.ProfileBodyCommunicationNetworkPowerlinkImpl#getNetworkManagement
- * <em>Network Management</em>}</li>
- * <li>
- * {@link com.br_automation.buoat.xddeditor.XDD.impl.ProfileBodyCommunicationNetworkPowerlinkImpl#getExternalProfileHandle
- * <em>External Profile Handle</em>}</li>
+ *   <li>{@link com.br_automation.buoat.xddeditor.XDD.impl.ProfileBodyCommunicationNetworkPowerlinkImpl#getApplicationLayers <em>Application Layers</em>}</li>
+ *   <li>{@link com.br_automation.buoat.xddeditor.XDD.impl.ProfileBodyCommunicationNetworkPowerlinkImpl#getTransportLayers <em>Transport Layers</em>}</li>
+ *   <li>{@link com.br_automation.buoat.xddeditor.XDD.impl.ProfileBodyCommunicationNetworkPowerlinkImpl#getNetworkManagement <em>Network Management</em>}</li>
+ *   <li>{@link com.br_automation.buoat.xddeditor.XDD.impl.ProfileBodyCommunicationNetworkPowerlinkImpl#getExternalProfileHandle <em>External Profile Handle</em>}</li>
  * </ul>
  * </p>
- * 
+ *
  * @generated
  */
 public class ProfileBodyCommunicationNetworkPowerlinkImpl extends ProfileBodyDataTypeImpl implements
     ProfileBodyCommunicationNetworkPowerlink {
     /**
-     * The cached value of the '{@link #getApplicationLayers()
-     * <em>Application Layers</em>}' containment reference. <!-- begin-user-doc
+     * The cached value of the '{@link #getApplicationLayers() <em>Application Layers</em>}' containment reference.
+     * <!-- begin-user-doc
      * --> <!-- end-user-doc -->
-     * 
      * @see #getApplicationLayers()
      * @generated
      * @ordered
@@ -66,21 +58,19 @@ public class ProfileBodyCommunicationNetworkPowerlinkImpl extends ProfileBodyDat
     protected TApplicationLayers applicationLayers;
 
     /**
-     * The cached value of the '{@link #getTransportLayers()
-     * <em>Transport Layers</em>}' containment reference. <!-- begin-user-doc
+     * The cached value of the '{@link #getTransportLayers() <em>Transport Layers</em>}' containment reference.
+     * <!-- begin-user-doc
      * --> <!-- end-user-doc -->
-     * 
      * @see #getTransportLayers()
      * @generated
      * @ordered
      */
-    protected EObject transportLayers;
+    protected TTransportLayers transportLayers;
 
     /**
-     * The cached value of the '{@link #getNetworkManagement()
-     * <em>Network Management</em>}' containment reference. <!-- begin-user-doc
+     * The cached value of the '{@link #getNetworkManagement() <em>Network Management</em>}' containment reference.
+     * <!-- begin-user-doc
      * --> <!-- end-user-doc -->
-     * 
      * @see #getNetworkManagement()
      * @generated
      * @ordered
@@ -100,7 +90,6 @@ public class ProfileBodyCommunicationNetworkPowerlinkImpl extends ProfileBodyDat
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @generated
      */
     protected ProfileBodyCommunicationNetworkPowerlinkImpl() {
@@ -109,7 +98,6 @@ public class ProfileBodyCommunicationNetworkPowerlinkImpl extends ProfileBodyDat
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @generated
      */
     @Override
@@ -119,7 +107,6 @@ public class ProfileBodyCommunicationNetworkPowerlinkImpl extends ProfileBodyDat
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @generated
      */
     public TApplicationLayers getApplicationLayers() {
@@ -128,7 +115,6 @@ public class ProfileBodyCommunicationNetworkPowerlinkImpl extends ProfileBodyDat
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @generated
      */
     public NotificationChain basicSetApplicationLayers(TApplicationLayers newApplicationLayers,
@@ -136,112 +122,74 @@ public class ProfileBodyCommunicationNetworkPowerlinkImpl extends ProfileBodyDat
         TApplicationLayers oldApplicationLayers = applicationLayers;
         applicationLayers = newApplicationLayers;
         if (eNotificationRequired()) {
-            ENotificationImpl notification = new ENotificationImpl(this, Notification.SET,
-                XDDPackage.PROFILE_BODY_COMMUNICATION_NETWORK_POWERLINK__APPLICATION_LAYERS,
-                oldApplicationLayers, newApplicationLayers);
-            if (msgs == null)
-                msgs = notification;
-            else
-                msgs.add(notification);
+            ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, XDDPackage.PROFILE_BODY_COMMUNICATION_NETWORK_POWERLINK__APPLICATION_LAYERS, oldApplicationLayers, newApplicationLayers);
+            if (msgs == null) msgs = notification; else msgs.add(notification);
         }
         return msgs;
     }
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @generated
      */
     public void setApplicationLayers(TApplicationLayers newApplicationLayers) {
         if (newApplicationLayers != applicationLayers) {
             NotificationChain msgs = null;
             if (applicationLayers != null)
-                msgs = ((InternalEObject) applicationLayers)
-                    .eInverseRemove(
-                        this,
-                        EOPPOSITE_FEATURE_BASE
-                            - XDDPackage.PROFILE_BODY_COMMUNICATION_NETWORK_POWERLINK__APPLICATION_LAYERS,
-                        null, msgs);
+                msgs = ((InternalEObject)applicationLayers).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - XDDPackage.PROFILE_BODY_COMMUNICATION_NETWORK_POWERLINK__APPLICATION_LAYERS, null, msgs);
             if (newApplicationLayers != null)
-                msgs = ((InternalEObject) newApplicationLayers)
-                    .eInverseAdd(
-                        this,
-                        EOPPOSITE_FEATURE_BASE
-                            - XDDPackage.PROFILE_BODY_COMMUNICATION_NETWORK_POWERLINK__APPLICATION_LAYERS,
-                        null, msgs);
+                msgs = ((InternalEObject)newApplicationLayers).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - XDDPackage.PROFILE_BODY_COMMUNICATION_NETWORK_POWERLINK__APPLICATION_LAYERS, null, msgs);
             msgs = basicSetApplicationLayers(newApplicationLayers, msgs);
-            if (msgs != null)
-                msgs.dispatch();
-        } else if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET,
-                XDDPackage.PROFILE_BODY_COMMUNICATION_NETWORK_POWERLINK__APPLICATION_LAYERS,
-                newApplicationLayers, newApplicationLayers));
+            if (msgs != null) msgs.dispatch();
+        }
+        else if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, XDDPackage.PROFILE_BODY_COMMUNICATION_NETWORK_POWERLINK__APPLICATION_LAYERS, newApplicationLayers, newApplicationLayers));
     }
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @generated
      */
-    public EObject getTransportLayers() {
+    public TTransportLayers getTransportLayers() {
         return transportLayers;
     }
 
     /**
-     * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain basicSetTransportLayers(EObject newTransportLayers,
-        NotificationChain msgs) {
-        EObject oldTransportLayers = transportLayers;
+    public NotificationChain basicSetTransportLayers(TTransportLayers newTransportLayers, NotificationChain msgs) {
+        TTransportLayers oldTransportLayers = transportLayers;
         transportLayers = newTransportLayers;
         if (eNotificationRequired()) {
-            ENotificationImpl notification = new ENotificationImpl(this, Notification.SET,
-                XDDPackage.PROFILE_BODY_COMMUNICATION_NETWORK_POWERLINK__TRANSPORT_LAYERS,
-                oldTransportLayers, newTransportLayers);
-            if (msgs == null)
-                msgs = notification;
-            else
-                msgs.add(notification);
+            ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, XDDPackage.PROFILE_BODY_COMMUNICATION_NETWORK_POWERLINK__TRANSPORT_LAYERS, oldTransportLayers, newTransportLayers);
+            if (msgs == null) msgs = notification; else msgs.add(notification);
         }
         return msgs;
     }
 
     /**
-     * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
      * @generated
      */
-    public void setTransportLayers(EObject newTransportLayers) {
+    public void setTransportLayers(TTransportLayers newTransportLayers) {
         if (newTransportLayers != transportLayers) {
             NotificationChain msgs = null;
             if (transportLayers != null)
-                msgs = ((InternalEObject) transportLayers)
-                    .eInverseRemove(
-                        this,
-                        EOPPOSITE_FEATURE_BASE
-                            - XDDPackage.PROFILE_BODY_COMMUNICATION_NETWORK_POWERLINK__TRANSPORT_LAYERS,
-                        null, msgs);
+                msgs = ((InternalEObject)transportLayers).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - XDDPackage.PROFILE_BODY_COMMUNICATION_NETWORK_POWERLINK__TRANSPORT_LAYERS, null, msgs);
             if (newTransportLayers != null)
-                msgs = ((InternalEObject) newTransportLayers)
-                    .eInverseAdd(
-                        this,
-                        EOPPOSITE_FEATURE_BASE
-                            - XDDPackage.PROFILE_BODY_COMMUNICATION_NETWORK_POWERLINK__TRANSPORT_LAYERS,
-                        null, msgs);
+                msgs = ((InternalEObject)newTransportLayers).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - XDDPackage.PROFILE_BODY_COMMUNICATION_NETWORK_POWERLINK__TRANSPORT_LAYERS, null, msgs);
             msgs = basicSetTransportLayers(newTransportLayers, msgs);
-            if (msgs != null)
-                msgs.dispatch();
-        } else if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET,
-                XDDPackage.PROFILE_BODY_COMMUNICATION_NETWORK_POWERLINK__TRANSPORT_LAYERS,
-                newTransportLayers, newTransportLayers));
+            if (msgs != null) msgs.dispatch();
+        }
+        else if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, XDDPackage.PROFILE_BODY_COMMUNICATION_NETWORK_POWERLINK__TRANSPORT_LAYERS, newTransportLayers, newTransportLayers));
     }
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @generated
      */
     public TNetworkManagement getNetworkManagement() {
@@ -250,7 +198,6 @@ public class ProfileBodyCommunicationNetworkPowerlinkImpl extends ProfileBodyDat
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @generated
      */
     public NotificationChain basicSetNetworkManagement(TNetworkManagement newNetworkManagement,
@@ -258,65 +205,43 @@ public class ProfileBodyCommunicationNetworkPowerlinkImpl extends ProfileBodyDat
         TNetworkManagement oldNetworkManagement = networkManagement;
         networkManagement = newNetworkManagement;
         if (eNotificationRequired()) {
-            ENotificationImpl notification = new ENotificationImpl(this, Notification.SET,
-                XDDPackage.PROFILE_BODY_COMMUNICATION_NETWORK_POWERLINK__NETWORK_MANAGEMENT,
-                oldNetworkManagement, newNetworkManagement);
-            if (msgs == null)
-                msgs = notification;
-            else
-                msgs.add(notification);
+            ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, XDDPackage.PROFILE_BODY_COMMUNICATION_NETWORK_POWERLINK__NETWORK_MANAGEMENT, oldNetworkManagement, newNetworkManagement);
+            if (msgs == null) msgs = notification; else msgs.add(notification);
         }
         return msgs;
     }
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @generated
      */
     public void setNetworkManagement(TNetworkManagement newNetworkManagement) {
         if (newNetworkManagement != networkManagement) {
             NotificationChain msgs = null;
             if (networkManagement != null)
-                msgs = ((InternalEObject) networkManagement)
-                    .eInverseRemove(
-                        this,
-                        EOPPOSITE_FEATURE_BASE
-                            - XDDPackage.PROFILE_BODY_COMMUNICATION_NETWORK_POWERLINK__NETWORK_MANAGEMENT,
-                        null, msgs);
+                msgs = ((InternalEObject)networkManagement).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - XDDPackage.PROFILE_BODY_COMMUNICATION_NETWORK_POWERLINK__NETWORK_MANAGEMENT, null, msgs);
             if (newNetworkManagement != null)
-                msgs = ((InternalEObject) newNetworkManagement)
-                    .eInverseAdd(
-                        this,
-                        EOPPOSITE_FEATURE_BASE
-                            - XDDPackage.PROFILE_BODY_COMMUNICATION_NETWORK_POWERLINK__NETWORK_MANAGEMENT,
-                        null, msgs);
+                msgs = ((InternalEObject)newNetworkManagement).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - XDDPackage.PROFILE_BODY_COMMUNICATION_NETWORK_POWERLINK__NETWORK_MANAGEMENT, null, msgs);
             msgs = basicSetNetworkManagement(newNetworkManagement, msgs);
-            if (msgs != null)
-                msgs.dispatch();
-        } else if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET,
-                XDDPackage.PROFILE_BODY_COMMUNICATION_NETWORK_POWERLINK__NETWORK_MANAGEMENT,
-                newNetworkManagement, newNetworkManagement));
+            if (msgs != null) msgs.dispatch();
+        }
+        else if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, XDDPackage.PROFILE_BODY_COMMUNICATION_NETWORK_POWERLINK__NETWORK_MANAGEMENT, newNetworkManagement, newNetworkManagement));
     }
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @generated
      */
     public EList<ProfileHandleDataType> getExternalProfileHandle() {
         if (externalProfileHandle == null) {
-            externalProfileHandle = new EObjectContainmentEList<ProfileHandleDataType>(
-                ProfileHandleDataType.class, this,
-                XDDPackage.PROFILE_BODY_COMMUNICATION_NETWORK_POWERLINK__EXTERNAL_PROFILE_HANDLE);
+            externalProfileHandle = new EObjectContainmentEList<ProfileHandleDataType>(ProfileHandleDataType.class, this, XDDPackage.PROFILE_BODY_COMMUNICATION_NETWORK_POWERLINK__EXTERNAL_PROFILE_HANDLE);
         }
         return externalProfileHandle;
     }
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @generated
      */
     @Override
@@ -331,14 +256,13 @@ public class ProfileBodyCommunicationNetworkPowerlinkImpl extends ProfileBodyDat
             case XDDPackage.PROFILE_BODY_COMMUNICATION_NETWORK_POWERLINK__NETWORK_MANAGEMENT:
                 return basicSetNetworkManagement(null, msgs);
             case XDDPackage.PROFILE_BODY_COMMUNICATION_NETWORK_POWERLINK__EXTERNAL_PROFILE_HANDLE:
-                return ((InternalEList<?>) getExternalProfileHandle()).basicRemove(otherEnd, msgs);
+                return ((InternalEList<?>)getExternalProfileHandle()).basicRemove(otherEnd, msgs);
         }
         return super.eInverseRemove(otherEnd, featureID, msgs);
     }
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @generated
      */
     @Override
@@ -358,7 +282,6 @@ public class ProfileBodyCommunicationNetworkPowerlinkImpl extends ProfileBodyDat
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @generated
      */
     @SuppressWarnings("unchecked")
@@ -366,18 +289,17 @@ public class ProfileBodyCommunicationNetworkPowerlinkImpl extends ProfileBodyDat
     public void eSet(int featureID, Object newValue) {
         switch (featureID) {
             case XDDPackage.PROFILE_BODY_COMMUNICATION_NETWORK_POWERLINK__APPLICATION_LAYERS:
-                setApplicationLayers((TApplicationLayers) newValue);
+                setApplicationLayers((TApplicationLayers)newValue);
                 return;
             case XDDPackage.PROFILE_BODY_COMMUNICATION_NETWORK_POWERLINK__TRANSPORT_LAYERS:
-                setTransportLayers((EObject) newValue);
+                setTransportLayers((TTransportLayers)newValue);
                 return;
             case XDDPackage.PROFILE_BODY_COMMUNICATION_NETWORK_POWERLINK__NETWORK_MANAGEMENT:
-                setNetworkManagement((TNetworkManagement) newValue);
+                setNetworkManagement((TNetworkManagement)newValue);
                 return;
             case XDDPackage.PROFILE_BODY_COMMUNICATION_NETWORK_POWERLINK__EXTERNAL_PROFILE_HANDLE:
                 getExternalProfileHandle().clear();
-                getExternalProfileHandle().addAll(
-                    (Collection<? extends ProfileHandleDataType>) newValue);
+                getExternalProfileHandle().addAll((Collection<? extends ProfileHandleDataType>)newValue);
                 return;
         }
         super.eSet(featureID, newValue);
@@ -385,20 +307,19 @@ public class ProfileBodyCommunicationNetworkPowerlinkImpl extends ProfileBodyDat
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @generated
      */
     @Override
     public void eUnset(int featureID) {
         switch (featureID) {
             case XDDPackage.PROFILE_BODY_COMMUNICATION_NETWORK_POWERLINK__APPLICATION_LAYERS:
-                setApplicationLayers((TApplicationLayers) null);
+                setApplicationLayers((TApplicationLayers)null);
                 return;
             case XDDPackage.PROFILE_BODY_COMMUNICATION_NETWORK_POWERLINK__TRANSPORT_LAYERS:
-                setTransportLayers((EObject) null);
+                setTransportLayers((TTransportLayers)null);
                 return;
             case XDDPackage.PROFILE_BODY_COMMUNICATION_NETWORK_POWERLINK__NETWORK_MANAGEMENT:
-                setNetworkManagement((TNetworkManagement) null);
+                setNetworkManagement((TNetworkManagement)null);
                 return;
             case XDDPackage.PROFILE_BODY_COMMUNICATION_NETWORK_POWERLINK__EXTERNAL_PROFILE_HANDLE:
                 getExternalProfileHandle().clear();
@@ -409,7 +330,6 @@ public class ProfileBodyCommunicationNetworkPowerlinkImpl extends ProfileBodyDat
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @generated
      */
     @Override

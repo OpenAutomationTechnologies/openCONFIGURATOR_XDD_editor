@@ -3,10 +3,11 @@
  * @author Joris Lückenga, Bernecker + Rainer Industrie Elektronik Ges.m.b.H.
  */
 
-package com.br_automation.buoat.xddeditor.XDD.custom;
+package com.br_automation.buoat.xddeditor.XDD.custom; // NOPMD by lueckengaj on 17.05.13 14:57
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -21,10 +22,13 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.eclipse.emf.common.util.ECollections;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.query.conditions.Condition;
 import org.eclipse.emf.query.conditions.eobjects.EObjectCondition;
 import org.eclipse.emf.query.conditions.eobjects.EObjectTypeRelationCondition;
+import org.eclipse.emf.query.conditions.eobjects.structuralfeatures.EObjectAttributeValueCondition;
 import org.eclipse.emf.query.statements.FROM;
 import org.eclipse.emf.query.statements.IQueryResult;
 import org.eclipse.emf.query.statements.SELECT;
@@ -36,14 +40,12 @@ import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.widgets.Display;
 
 import com.br_automation.buoat.xddeditor.XDD.DocumentRoot;
-import com.br_automation.buoat.xddeditor.XDD.ISO15745ProfileType;
 import com.br_automation.buoat.xddeditor.XDD.ObjectListType;
 import com.br_automation.buoat.xddeditor.XDD.ProfileBodyCommunicationNetworkPowerlink;
 import com.br_automation.buoat.xddeditor.XDD.ProfileBodyDevicePowerlink;
 import com.br_automation.buoat.xddeditor.XDD.SubObjectType;
-import com.br_automation.buoat.xddeditor.XDD.TApplicationLayers;
-import com.br_automation.buoat.xddeditor.XDD.TCNFeatures;
 import com.br_automation.buoat.xddeditor.XDD.TGeneralFeatures;
+import com.br_automation.buoat.xddeditor.XDD.TMNFeatures;
 import com.br_automation.buoat.xddeditor.XDD.TObject;
 import com.br_automation.buoat.xddeditor.XDD.TObjectPDOMapping;
 import com.br_automation.buoat.xddeditor.XDD.XDDPackage;
@@ -56,6 +58,32 @@ import com.br_automation.buoat.xddeditor.XDD.impl.TCNFeaturesImpl;
  * @author Joris Lückenga
  * */
 public final class XDDUtilities {
+
+    /**
+     * 
+     * @brief Condition class to be used in EMF's query-framework.
+     * 
+     *        Provides finding XDD-Objects by index-attribute.
+     * 
+     * @author Joris Lückenga
+     */
+    public static class ByteArrayCondition extends Condition {
+
+        private byte[] currentByteArray;
+
+        public ByteArrayCondition(int index) {
+            this.currentByteArray = BigInteger.valueOf(index).toByteArray();
+        }
+
+        /**
+         * @see Condition#isSatisfied(Object)
+         */
+        @Override
+        public boolean isSatisfied(Object object) {
+            return Arrays.equals(this.currentByteArray, (byte[]) object);
+        }
+
+    } //ByteArrayCondition
 
     /**
      * @brief VerifyListener for Hex-Text fields.
@@ -143,7 +171,7 @@ public final class XDDUtilities {
             .findEObjects(root, XDDPackage.eINSTANCE.getProfileBodyCommunicationNetworkPowerlink());
         List<ProfileBodyDevicePowerlink> foundDeviceBodys = XDDUtilities.findEObjects(
             root, XDDPackage.eINSTANCE.getProfileBodyDevicePowerlink());
-        if (foundCommunicationBodys.size() == 0 || foundDeviceBodys.size() == 0)
+        if (foundCommunicationBodys.isEmpty() || foundDeviceBodys.isEmpty())
             return;
 
         ProfileBodyCommunicationNetworkPowerlink body1 = foundCommunicationBodys.get(0);
@@ -179,7 +207,7 @@ public final class XDDUtilities {
         //Create Map of current Objectlist
         for (TObject currentObject : currentObjectList)
             currentObjectMap
-                .put(new BigInteger(currentObject.getIndex()).intValue(), currentObject); // NOPMD by lueckengaj on 18.04.13 09:23
+            .put(new BigInteger(currentObject.getIndex()).intValue(), currentObject); // NOPMD by lueckengaj on 18.04.13 09:23
 
         //Iterate thorugh all objects that should be changed
         for (TObject currentObjectToAdd : objectsToAdd) {
@@ -191,18 +219,17 @@ public final class XDDUtilities {
                 //get the subobject-list of the Tobject with matching index,and put it into a hash-map
                 EList<SubObjectType> currentSubObjects = currentObjectMap.get(
                     currentObjectToAddIndex).getSubObject();
-                List<SubObjectType> missingSubObjects = new ArrayList<SubObjectType>();
-                Map<Integer, SubObjectType> currentSubObjectMap = new HashMap<Integer, SubObjectType>();
+                List<SubObjectType> missingSubObjects = new ArrayList<SubObjectType>(); // NOPMD by lueckengaj on 17.05.13 14:57
+                Map<Integer, SubObjectType> currentSubObjectMap = new HashMap<Integer, SubObjectType>(); // NOPMD by lueckengaj on 17.05.13 14:57
                 for (SubObjectType currentSubObject : currentSubObjects)
-                    currentSubObjectMap
-                        .put(
-                            new BigInteger(currentSubObject.getSubIndex()).intValue(),
-                            currentSubObject);
+                    currentSubObjectMap.put(
+                        new BigInteger(currentSubObject.getSubIndex()).intValue(), // NOPMD by lueckengaj on 17.05.13 14:57
+                        currentSubObject);
                 //get Objects to add
                 List<SubObjectType> addableSubObjects = currentObjectToAdd.getSubObject();
                 //Find objects which do not already exist
                 for (SubObjectType addableSubObject : addableSubObjects) {
-                    if (!currentSubObjectMap.containsKey(new BigInteger(addableSubObject
+                    if (!currentSubObjectMap.containsKey(new BigInteger(addableSubObject // NOPMD by lueckengaj on 17.05.13 14:57
                         .getSubIndex()).intValue()))
                         missingSubObjects.add(addableSubObject);
                 }
@@ -210,7 +237,7 @@ public final class XDDUtilities {
                 currentSubObjects.addAll(missingSubObjects);
                 ECollections.sort(currentSubObjects, new SubObjectComparator()); // NOPMD by lueckengaj on 18.04.13 09:26
 
-            } else { //if not found -> add TObject 
+            } else { //if not found -> add TObject
                 currentObjectList.add(currentObjectToAdd);
             }
         }
@@ -218,18 +245,46 @@ public final class XDDUtilities {
     }
 
     /**
-     * @brief @brief Finds and returns all instances of the specified
-     *        <code>eclass</code> in <code>documentRoot</code>.
+     * @brief Finds and returns all instances of an element having an
+     *        <code>eAttribute</code> with a matching <code>condition</code> in
+     *        <code>documentRoot</code>.
      * 
-     *        The eclass parameter can be given by using XDDPackage.eINSTACE.get
-     *        <code>InstanceName</code>();
+     * @param root
+     *            The current resource.
+     * @param eAttribute
+     *            The attribute to check in the condition.The eAttribute can be
+     *            given by using XDDPackage.eINSTANCE.get
+     *            <code>instanceName</code>_ <code>AttributeName</code>();.
+     * @param condition
+     *            The condition for the attribute value.
+     * @return A list of objects with matching conditions in the specified root.
+     */
+    @SuppressWarnings("unchecked")
+    public static <T extends EObject> List<T> findEObjects(DocumentRoot root,
+        EAttribute eAttribute,
+        Condition condition) {
+        EObjectCondition attributeCondition = new EObjectAttributeValueCondition(eAttribute,
+            condition);
+        SELECT statement = new SELECT(new FROM(root.eContents()), new WHERE(attributeCondition));
+        IQueryResult results = statement.execute();
+
+        EObject[] foundObjects = results.toArray(new EObject[] {});
+        List<T> foundObjectsList = new ArrayList<T>();
+        for (EObject object : foundObjects)
+            foundObjectsList.add((T) object);
+        return foundObjectsList;
+    }
+
+    /**
+     * @brief @brief Finds and returns all instances of the specified
+     *        <code>eClass</code> in <code>documentRoot</code>.
      * 
      * @param root
      *            the current resource.
      * @param eClass
-     * @return An array of instances found in the specified Resource or
-     *         <code>null</code>.
-     * 
+     *            the class to search for.The eClass parameter can be given by
+     *            using XDDPackage.eINSTACE.get <code>InstanceName</code>();
+     * @return A list of instances found in the specified Resource.
      */
     @SuppressWarnings("unchecked")
     public static <T extends EObject> List<T> findEObjects(DocumentRoot root, EClass eClass) {
@@ -296,7 +351,7 @@ public final class XDDUtilities {
                 .getPDOmapping()))
                 || !(XDDUtilities.getMappingSubObjects(testObject, mappingTypes).isEmpty()))
                 if (testObject.getName() != null && testObject.getIndex() != null) // NOPMD by lueckengaj on 29.03.13 11:19
-                    validObjects.put(new BigInteger(testObject.getIndex()).intValue(), testObject);
+                    validObjects.put(new BigInteger(testObject.getIndex()).intValue(), testObject); // NOPMD by lueckengaj on 17.05.13 14:57
         }
         return validObjects;
     }
@@ -317,8 +372,8 @@ public final class XDDUtilities {
 
         for (SubObjectType subObject : tObject.getSubObject())
             if (mappingType.contains(subObject.getPDOmapping()) && subObject.getSubIndex() != null
-                && subObject.getDataType() != null)
-                subobjectsList.put(new BigInteger(subObject.getSubIndex()).intValue(), subObject);
+            && subObject.getDataType() != null)
+                subobjectsList.put(new BigInteger(subObject.getSubIndex()).intValue(), subObject); // NOPMD by lueckengaj on 17.05.13 14:57
         return subobjectsList;
     }
 
@@ -467,62 +522,78 @@ public final class XDDUtilities {
     }
 
     /**
-     * @brief Sets the Specified Bit for Object 1F82 and CN- or
-     *        Generalfeatures.Does not add required Objects.<br>
+     * @brief Sets FeatureFlag according to bit-offset in object 1F82
      * 
-     *        bit = 9 for Multiplex Feature.<br>
-     *        bit = 16 for Multiple ASnd.<br>
-     *        bit = 18 for PResponse Chaining.<br>
+     *        Sets corresponding attributes in elements CNFeatures,MNFeatures
+     *        and GeneralFeatures.
      * 
      * @param status
-     *            <code>True</code> if Multiplexing shall be enabled,
+     *            <code>True</code> if FeatureFlag shall be enabled,
      *            <code>false</code> otherwise.
-     * @param documentRoot
-     *            Root of XDD-Document for which to enable Multiplexing.
      * @param bitOffset
-     *            Sets the Bit in the default Value
+     *            Bit-offset according to EPSG DS 301 v1.1.0, Object 0x1F82.
+     * @param documentRoot
+     *            Root of XDD-Document for which to set the FeatureFlag.
      */
-    public static void setFeatureFlag(boolean status,
-        int bitOffset,
-        DocumentRoot documentRoot) {
+    public static void setFeatureFlag(boolean status, int bitOffset, DocumentRoot documentRoot) {
 
         List<TObject> tObjects = XDDUtilities.getTObjectList(documentRoot);
         List<TGeneralFeatures> foundTGeneralFeatures = XDDUtilities.findEObjects(
             documentRoot, XDDPackage.eINSTANCE.getTGeneralFeatures());
         List<TCNFeaturesImpl> foundTCNFeatures = XDDUtilities.findEObjects(
             documentRoot, XDDPackage.eINSTANCE.getTCNFeatures());
+        List<TMNFeatures> foundTMNFeatures = XDDUtilities.findEObjects(
+            documentRoot, XDDPackage.eINSTANCE.getTMNFeatures());
+        TObject featureFlagsObject;
 
-        if (tObjects.isEmpty() || foundTCNFeatures.isEmpty() || foundTGeneralFeatures.isEmpty())
+        //Objects and GeneralFeatures should always be in a XDD file
+        //CN and MN Features are more special cases and treated in switch-case
+        if (tObjects.isEmpty() || foundTGeneralFeatures.isEmpty())
             return;
 
-        TCNFeatures cnFeatures = foundTCNFeatures.get(0);
         TGeneralFeatures generalFeatures = (TGeneralFeatures) foundTGeneralFeatures.get(0);
 
-        //SyncSelection
         switch (bitOffset) {
+            case 11:
+                if (!foundTMNFeatures.isEmpty())
+                    foundTMNFeatures.get(0).setNMTMNBasicEthernet(status);
+                break;
+            case 13:
+                generalFeatures.setRT2RT2Support(status);
+                break;
+            case 12:
+                generalFeatures.setRT1RT1Support(status);
+                break;
+            case 8:
+                generalFeatures.setCFMConfigManager(status);
+                break;
             case 9:
-                cnFeatures.setDLLCNFeatureMultiplex(status);
+                if (!foundTCNFeatures.isEmpty())
+                    foundTCNFeatures.get(0).setDLLCNFeatureMultiplex(status);
                 break;
             case 18:
-                cnFeatures.setDLLCNPResChaining(status);
+                if (!foundTCNFeatures.isEmpty())
+                    foundTCNFeatures.get(0).setDLLCNPResChaining(status);
                 break;
             default:
                 break;
         }
 
-        for (TObject tObject : tObjects)
-            if (ObjectDictionaryEntry.NMT_FEATUREFLAGS_U32 == new BigInteger(tObject.getIndex())
-                .intValue())
-                if (status)
-                    tObject
-                        .setDefaultValue("0x"
-                            + Long.toHexString((Long.decode(tObject.getDefaultValue()) | (1 << bitOffset))));
-                else
-                    tObject
-                        .setDefaultValue("0x"
-                            + Long.toHexString((Long.decode(tObject.getDefaultValue()) & ~(1 << bitOffset))));
+        List<TObject> foundFeatureFlags = XDDUtilities.findEObjects(
+            documentRoot, XDDPackage.eINSTANCE.getTObject_Index(), new ByteArrayCondition(
+                ObjectDictionaryEntry.NMT_FEATUREFLAGS_U32));
+        if (foundFeatureFlags.isEmpty())
+            return;
+        else
+            featureFlagsObject = foundFeatureFlags.get(0);
+        if (status)
+            featureFlagsObject.setDefaultValue("0x"
+                + Long.toHexString((Long.decode(featureFlagsObject.getDefaultValue()) | (1 << bitOffset))));
+        else
+            featureFlagsObject.setDefaultValue("0x"
+                + Long.toHexString((Long.decode(featureFlagsObject.getDefaultValue()) & ~(1 << bitOffset))));
 
-    }//setFeatureFlagProperties
+    } //setFeatureFlag
 
     /**
      * @brief Sets the IP-Support property to CNFeatures object based on
@@ -539,42 +610,5 @@ public final class XDDUtilities {
             root, XDDPackage.eINSTANCE.getTGeneralFeatures());
         tgeneralFeatures.get(0).setNWLIPSupport(status);
     }
-
-    /**
-     * @brief Set Multiplex-Feature for TObject and TCNFeatures.Does not add
-     *        required Objects
-     * @param status
-     *            <code>True</code> if Multiplexing shall be enabled,
-     *            <code>false</code> otherwise.
-     * @param documentRoot
-     *            Root of XDD-Document for which to enable Multiplexing.
-     */
-    public static void setMultiplexFeatureProperties(boolean status, DocumentRoot documentRoot) {
-        try {
-            ISO15745ProfileType profile = documentRoot.getISO15745ProfileContainer()
-                .getISO15745Profile().get(1);
-            TCNFeatures features = (TCNFeatures) profile.getProfileBody().eContents().get(2)
-                .eContents().get(1);
-
-            //Setzen von CNFeature
-            features.setDLLCNFeatureMultiplex(status);
-
-            TApplicationLayers applicationLayers = (TApplicationLayers) profile.getProfileBody()
-                .eContents().get(0);
-            ObjectListType listType = applicationLayers.getObjectList();
-            List<TObject> objects = listType.getObject();
-
-            for (TObject tObject : objects)
-                if (tObject.getName().contentEquals("NMT_FeatureFlags_U32"))
-                    if (status)
-                        tObject.setDefaultValue("0x"
-                            + Long.toHexString((Long.decode(tObject.getDefaultValue()) | 512)));
-                    else
-                        tObject.setDefaultValue("0x"
-                            + Long.toHexString((Long.decode(tObject.getDefaultValue()) & ~512)));
-        } catch (Exception e) {
-            //Do nothing, object was not found.
-        }
-    } //setMultiplexFeature
 
 } // XDDUtilities

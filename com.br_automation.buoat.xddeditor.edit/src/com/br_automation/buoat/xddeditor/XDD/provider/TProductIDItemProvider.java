@@ -110,13 +110,16 @@ public class TProductIDItemProvider extends ItemProviderAdapter implements
      * This returns the label text for the adapted class. <!-- begin-user-doc
      * --> <!-- end-user-doc -->
      * 
-     * @generated
+     * @generated NOT
      */
     @Override
     public String getText(Object object) {
         String label = ((TProductID) object).getValue();
+        // j.l.: Modify label of element in UI.
+        // BEGIN
         return label == null || label.length() == 0 ? getString("_UI_TProductID_type")
-            : getString("_UI_TProductID_type") + " " + label;
+            : getString("_UI_TProductID_type") + " ( " + label + " )";
+        //END
     }
 
     /**

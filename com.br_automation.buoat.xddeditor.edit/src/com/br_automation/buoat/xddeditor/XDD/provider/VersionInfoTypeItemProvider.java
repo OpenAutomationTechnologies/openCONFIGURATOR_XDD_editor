@@ -28,6 +28,7 @@ import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
 import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 import org.eclipse.emf.edit.provider.ViewerNotification;
+import org.eclipse.emf.edit.ui.provider.ExtendedColorRegistry;
 
 /**
  * This is the item provider adapter for a
@@ -184,13 +185,16 @@ public class VersionInfoTypeItemProvider extends ItemProviderAdapter implements
      * This returns the label text for the adapted class. <!-- begin-user-doc
      * --> <!-- end-user-doc -->
      * 
-     * @generated
+     * @generated NOT
      */
     @Override
     public String getText(Object object) {
         String label = ((VersionInfoType) object).getAuthor();
+        // j.l.: Modify label of element in UI.
+        // BEGIN
         return label == null || label.length() == 0 ? getString("_UI_VersionInfoType_type")
-            : getString("_UI_VersionInfoType_type") + " " + label;
+            : getString("_UI_VersionInfoType_type") + " ( " + label + " )";
+        //END
     }
 
     /**

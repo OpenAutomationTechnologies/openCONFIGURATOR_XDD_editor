@@ -148,14 +148,18 @@ public class TApplicationLayersItemProvider extends ItemProviderAdapter implemen
      * This returns the label text for the adapted class. <!-- begin-user-doc
      * --> <!-- end-user-doc -->
      * 
-     * @generated
+     * @generated NOT
      */
     @Override
     public String getText(Object object) {
         List labelValue = ((TApplicationLayers) object).getCommunicationEntityType();
         String label = labelValue == null ? null : labelValue.toString();
+        // j.l.: Removes  to match the XML-Object name given in XDD-File or 
+        
+        // BEGIN
         return label == null || label.length() == 0 ? getString("_UI_TApplicationLayers_type")
-            : getString("_UI_TApplicationLayers_type") + " " + label;
+            : getString("_UI_TApplicationLayers_type");
+        //END
     }
 
     /**

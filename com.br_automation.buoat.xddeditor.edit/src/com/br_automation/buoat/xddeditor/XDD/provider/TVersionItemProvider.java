@@ -3,7 +3,9 @@
 package com.br_automation.buoat.xddeditor.XDD.provider;
 
 import com.br_automation.buoat.xddeditor.XDD.TVersion;
+import com.br_automation.buoat.xddeditor.XDD.VersionInfoType;
 import com.br_automation.buoat.xddeditor.XDD.XDDPackage;
+import com.br_automation.buoat.xddeditor.XDD.impl.TVersionImpl;
 
 import java.util.Collection;
 import java.util.List;
@@ -127,13 +129,19 @@ public class TVersionItemProvider extends ItemProviderAdapter implements
      * This returns the label text for the adapted class. <!-- begin-user-doc
      * --> <!-- end-user-doc -->
      * 
-     * @generated
+     * @generated NOT
      */
     @Override
     public String getText(Object object) {
+        // j.l.: Modify label of element in UI.
+        // BEGIN
+        String versType = " ";
+        if(((TVersionImpl) object).getVersionType().getName() != null);
+             versType = ((TVersionImpl) object).getVersionType().getName();  
         String label = ((TVersion) object).getValue();
         return label == null || label.length() == 0 ? getString("_UI_TVersion_type")
-            : getString("_UI_TVersion_type") + " " + label;
+            : getString("_UI_TVersion_type") + " ( " +versType+" - " + label + " )";
+         //END
     }
 
     /**

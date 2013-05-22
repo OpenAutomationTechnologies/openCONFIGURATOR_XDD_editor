@@ -166,12 +166,14 @@ public class ObjectListTypeItemProvider extends ItemProviderAdapter implements
      * This returns the label text for the adapted class. <!-- begin-user-doc
      * --> <!-- end-user-doc -->
      * 
-     * @generated
+     * @generated NOT
      */
     @Override
     public String getText(Object object) {
-        ObjectListType objectListType = (ObjectListType) object;
-        return getString("_UI_ObjectListType_type") + " " + objectListType.getMandatoryObjects();
+        // j.l.: Modify label of element in UI.
+        // BEGIN
+        return getString("_UI_ObjectListType_type");
+        //END
     }
 
     /**

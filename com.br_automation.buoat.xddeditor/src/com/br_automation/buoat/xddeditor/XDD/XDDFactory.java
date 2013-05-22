@@ -11,15 +11,14 @@ import org.eclipse.emf.ecore.EFactory;
 /**
  * <!-- begin-user-doc --> The <b>Factory</b> for the model. It provides a
  * create method for each non-abstract class of the model. <!-- end-user-doc -->
- * 
  * @see com.br_automation.buoat.xddeditor.XDD.XDDPackage
  * @generated
  */
 public interface XDDFactory extends EFactory {
     /**
-     * The singleton instance of the factory. <!-- begin-user-doc --> <!--
+     * The singleton instance of the factory.
+     * <!-- begin-user-doc --> <!--
      * end-user-doc -->
-     * 
      * @generated
      */
     XDDFactory eINSTANCE = com.br_automation.buoat.xddeditor.XDD.impl.XDDFactoryImpl.init();
@@ -34,9 +33,9 @@ public interface XDDFactory extends EFactory {
     AddInfoType createAddInfoType();
 
     /**
-     * Returns a new object of class '<em>Array Type</em>'. <!-- begin-user-doc
+     * Returns a new object of class '<em>Array Type</em>'.
+     * <!-- begin-user-doc
      * --> <!-- end-user-doc -->
-     * 
      * @return a new object of class '<em>Array Type</em>'.
      * @generated
      */
@@ -54,7 +53,6 @@ public interface XDDFactory extends EFactory {
     /**
      * Returns a new object of class '<em>Characteristic Content Type</em>'.
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @return a new object of class '<em>Characteristic Content Type</em>'.
      * @generated
      */
@@ -178,9 +176,9 @@ public interface XDDFactory extends EFactory {
     DynamicChannelsType createDynamicChannelsType();
 
     /**
-     * Returns a new object of class '<em>Enum Type</em>'. <!-- begin-user-doc
+     * Returns a new object of class '<em>Enum Type</em>'.
+     * <!-- begin-user-doc
      * --> <!-- end-user-doc -->
-     * 
      * @return a new object of class '<em>Enum Type</em>'.
      * @generated
      */
@@ -214,9 +212,9 @@ public interface XDDFactory extends EFactory {
     ErrorListType createErrorListType();
 
     /**
-     * Returns a new object of class '<em>File Type</em>'. <!-- begin-user-doc
+     * Returns a new object of class '<em>File Type</em>'.
+     * <!-- begin-user-doc
      * --> <!-- end-user-doc -->
-     * 
      * @return a new object of class '<em>File Type</em>'.
      * @generated
      */
@@ -288,7 +286,6 @@ public interface XDDFactory extends EFactory {
     /**
      * Returns a new object of class '<em>ISO15745 Profile Container Type</em>'.
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @return a new object of class '<em>ISO15745 Profile Container Type</em>'.
      * @generated
      */
@@ -306,7 +303,6 @@ public interface XDDFactory extends EFactory {
     /**
      * Returns a new object of class '<em>ISO15745 Reference Data Type</em>'.
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @return a new object of class '<em>ISO15745 Reference Data Type</em>'.
      * @generated
      */
@@ -322,9 +318,9 @@ public interface XDDFactory extends EFactory {
     LabelRefType createLabelRefType();
 
     /**
-     * Returns a new object of class '<em>Label Type</em>'. <!-- begin-user-doc
+     * Returns a new object of class '<em>Label Type</em>'.
+     * <!-- begin-user-doc
      * --> <!-- end-user-doc -->
-     * 
      * @return a new object of class '<em>Label Type</em>'.
      * @generated
      */
@@ -479,7 +475,6 @@ public interface XDDFactory extends EFactory {
     /**
      * Returns a new object of class '<em>Profile Body Device Powerlink</em>'.
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @return a new object of class '<em>Profile Body Device Powerlink</em>'.
      * @generated
      */
@@ -506,7 +501,6 @@ public interface XDDFactory extends EFactory {
     /**
      * Returns a new object of class '<em>Standard Compliance List Type</em>'.
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @return a new object of class '<em>Standard Compliance List Type</em>'.
      * @generated
      */
@@ -515,25 +509,24 @@ public interface XDDFactory extends EFactory {
     /**
      * Returns a new object of class '<em>Static Error Bit Field Type</em>'.
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @return a new object of class '<em>Static Error Bit Field Type</em>'.
      * @generated
      */
     StaticErrorBitFieldType createStaticErrorBitFieldType();
 
     /**
-     * Returns a new object of class '<em>Step Type</em>'. <!-- begin-user-doc
+     * Returns a new object of class '<em>Step Type</em>'.
+     * <!-- begin-user-doc
      * --> <!-- end-user-doc -->
-     * 
      * @return a new object of class '<em>Step Type</em>'.
      * @generated
      */
     StepType createStepType();
 
     /**
-     * Returns a new object of class '<em>Struct Type</em>'. <!-- begin-user-doc
+     * Returns a new object of class '<em>Struct Type</em>'.
+     * <!-- begin-user-doc
      * --> <!-- end-user-doc -->
-     * 
      * @return a new object of class '<em>Struct Type</em>'.
      * @generated
      */
@@ -621,9 +614,9 @@ public interface XDDFactory extends EFactory {
     TConditionalSupport createTConditionalSupport();
 
     /**
-     * Returns a new object of class '<em>TCount</em>'. <!-- begin-user-doc -->
+     * Returns a new object of class '<em>TCount</em>'.
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
      * @return a new object of class '<em>TCount</em>'.
      * @generated
      */
@@ -648,18 +641,18 @@ public interface XDDFactory extends EFactory {
     TDataTypeList createTDataTypeList();
 
     /**
-     * Returns a new object of class '<em>TData Types</em>'. <!-- begin-user-doc
+     * Returns a new object of class '<em>TData Types</em>'.
+     * <!-- begin-user-doc
      * --> <!-- end-user-doc -->
-     * 
      * @return a new object of class '<em>TData Types</em>'.
      * @generated
      */
     TDataTypes createTDataTypes();
 
     /**
-     * Returns a new object of class '<em>TDenotation</em>'. <!-- begin-user-doc
+     * Returns a new object of class '<em>TDenotation</em>'.
+     * <!-- begin-user-doc
      * --> <!-- end-user-doc -->
-     * 
      * @return a new object of class '<em>TDenotation</em>'.
      * @generated
      */
@@ -711,13 +704,22 @@ public interface XDDFactory extends EFactory {
     TDeviceManager createTDeviceManager();
 
     /**
-     * Returns a new object of class '<em>TDiagnostic</em>'. <!-- begin-user-doc
+     * Returns a new object of class '<em>TDiagnostic</em>'.
+     * <!-- begin-user-doc
      * --> <!-- end-user-doc -->
-     * 
      * @return a new object of class '<em>TDiagnostic</em>'.
      * @generated
      */
     TDiagnostic createTDiagnostic();
+
+    /**
+     * Returns a new object of class '<em>TTransport Layers</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return a new object of class '<em>TTransport Layers</em>'.
+     * @generated
+     */
+    TTransportLayers createTTransportLayers();
 
     /**
      * Returns a new object of class '<em>TDictionary List</em>'. <!--
@@ -738,9 +740,9 @@ public interface XDDFactory extends EFactory {
     TDynamicChannel createTDynamicChannel();
 
     /**
-     * Returns a new object of class '<em>TEnum Value</em>'. <!-- begin-user-doc
+     * Returns a new object of class '<em>TEnum Value</em>'.
+     * <!-- begin-user-doc
      * --> <!-- end-user-doc -->
-     * 
      * @return a new object of class '<em>TEnum Value</em>'.
      * @generated
      */
@@ -801,9 +803,9 @@ public interface XDDFactory extends EFactory {
     TIndicatorList createTIndicatorList();
 
     /**
-     * Returns a new object of class '<em>TLED</em>'. <!-- begin-user-doc -->
+     * Returns a new object of class '<em>TLED</em>'.
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
      * @return a new object of class '<em>TLED</em>'.
      * @generated
      */
@@ -828,9 +830,9 @@ public interface XDDFactory extends EFactory {
     TNetworkManagement createTNetworkManagement();
 
     /**
-     * Returns a new object of class '<em>TObject</em>'. <!-- begin-user-doc -->
+     * Returns a new object of class '<em>TObject</em>'.
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
      * @return a new object of class '<em>TObject</em>'.
      * @generated
      */
@@ -882,27 +884,27 @@ public interface XDDFactory extends EFactory {
     TPicturesList createTPicturesList();
 
     /**
-     * Returns a new object of class '<em>TProduct ID</em>'. <!-- begin-user-doc
+     * Returns a new object of class '<em>TProduct ID</em>'.
+     * <!-- begin-user-doc
      * --> <!-- end-user-doc -->
-     * 
      * @return a new object of class '<em>TProduct ID</em>'.
      * @generated
      */
     TProductID createTProductID();
 
     /**
-     * Returns a new object of class '<em>TProperty</em>'. <!-- begin-user-doc
+     * Returns a new object of class '<em>TProperty</em>'.
+     * <!-- begin-user-doc
      * --> <!-- end-user-doc -->
-     * 
      * @return a new object of class '<em>TProperty</em>'.
      * @generated
      */
     TProperty createTProperty();
 
     /**
-     * Returns a new object of class '<em>TRange</em>'. <!-- begin-user-doc -->
+     * Returns a new object of class '<em>TRange</em>'.
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
      * @return a new object of class '<em>TRange</em>'.
      * @generated
      */
@@ -918,9 +920,9 @@ public interface XDDFactory extends EFactory {
     TSpecificationRevision createTSpecificationRevision();
 
     /**
-     * Returns a new object of class '<em>TSubrange</em>'. <!-- begin-user-doc
+     * Returns a new object of class '<em>TSubrange</em>'.
+     * <!-- begin-user-doc
      * --> <!-- end-user-doc -->
-     * 
      * @return a new object of class '<em>TSubrange</em>'.
      * @generated
      */
@@ -936,18 +938,18 @@ public interface XDDFactory extends EFactory {
     TTemplateList createTTemplateList();
 
     /**
-     * Returns a new object of class '<em>TUnit</em>'. <!-- begin-user-doc -->
+     * Returns a new object of class '<em>TUnit</em>'.
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
      * @return a new object of class '<em>TUnit</em>'.
      * @generated
      */
     TUnit createTUnit();
 
     /**
-     * Returns a new object of class '<em>TValue</em>'. <!-- begin-user-doc -->
+     * Returns a new object of class '<em>TValue</em>'.
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
      * @return a new object of class '<em>TValue</em>'.
      * @generated
      */
@@ -972,27 +974,27 @@ public interface XDDFactory extends EFactory {
     TVariableRef createTVariableRef();
 
     /**
-     * Returns a new object of class '<em>TVendor ID</em>'. <!-- begin-user-doc
+     * Returns a new object of class '<em>TVendor ID</em>'.
+     * <!-- begin-user-doc
      * --> <!-- end-user-doc -->
-     * 
      * @return a new object of class '<em>TVendor ID</em>'.
      * @generated
      */
     TVendorID createTVendorID();
 
     /**
-     * Returns a new object of class '<em>TVersion</em>'. <!-- begin-user-doc
+     * Returns a new object of class '<em>TVersion</em>'.
+     * <!-- begin-user-doc
      * --> <!-- end-user-doc -->
-     * 
      * @return a new object of class '<em>TVersion</em>'.
      * @generated
      */
     TVersion createTVersion();
 
     /**
-     * Returns a new object of class '<em>Value Type</em>'. <!-- begin-user-doc
+     * Returns a new object of class '<em>Value Type</em>'.
+     * <!-- begin-user-doc
      * --> <!-- end-user-doc -->
-     * 
      * @return a new object of class '<em>Value Type</em>'.
      * @generated
      */
@@ -1035,9 +1037,9 @@ public interface XDDFactory extends EFactory {
     VersionInfoType createVersionInfoType();
 
     /**
-     * Returns the package supported by this factory. <!-- begin-user-doc -->
+     * Returns the package supported by this factory.
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
      * @return the package supported by this factory.
      * @generated
      */

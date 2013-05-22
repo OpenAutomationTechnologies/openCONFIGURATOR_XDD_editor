@@ -19,15 +19,14 @@ import org.eclipse.emf.ecore.xmi.util.XMLProcessor;
 /**
  * This class contains helper methods to serialize and deserialize XML documents
  * <!-- begin-user-doc --> <!-- end-user-doc -->
- * 
  * @generated
  */
 public class XDDXMLProcessor extends XMLProcessor {
 
     /**
-     * Public constructor to instantiate the helper. <!-- begin-user-doc -->
+     * Public constructor to instantiate the helper.
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
      * @generated
      */
     public XDDXMLProcessor() {
@@ -36,9 +35,8 @@ public class XDDXMLProcessor extends XMLProcessor {
     }
 
     /**
-     * Register for "*" and "xml" file extensions the XDDResourceFactoryImpl
-     * factory. <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
+     * Register for "*" and "xml" file extensions the XDDResourceFactoryImpl factory.
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     @Override

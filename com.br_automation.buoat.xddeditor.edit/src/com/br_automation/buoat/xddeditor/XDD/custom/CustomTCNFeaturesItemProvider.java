@@ -14,7 +14,7 @@ import com.br_automation.buoat.xddeditor.XDD.TCNFeatures;
 import com.br_automation.buoat.xddeditor.XDD.provider.TCNFeaturesItemProvider;
 
 /**
- * @brief Custom ItemProvider to set/unset Multiplexing-Feature in object 0x1F82
+ * @brief Custom ItemProvider to set/unset CN-Features in object 0x1F82
  *        correspondingly.
  * 
  * @author Joris Lückenga
@@ -40,4 +40,5 @@ public class CustomTCNFeaturesItemProvider extends TCNFeaturesItemProvider {
 
         return object;
     }
+
 } //CustomTCNFeaturesItemProvider
