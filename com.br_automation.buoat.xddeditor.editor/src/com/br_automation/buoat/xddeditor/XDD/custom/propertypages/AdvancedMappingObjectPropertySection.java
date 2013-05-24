@@ -448,7 +448,7 @@ public class AdvancedMappingObjectPropertySection extends AbstractPropertySectio
      * @param currentValue
      *            The current default value of subobject.
      */
-    private void parseDefaultParameter(long currentValue) {
+    private void parseDefaultParameter(long currentValue) { // NOPMD by lueckengaj on 21.05.13 08:33
 
         //Extract Index,Subindex,Offset & Length from defaultvalue of tsubObject
         this.lengthValue = (currentValue & AdvancedMappingObjectPropertySection.MASK_LENGTH_VALUE) >> 48;
@@ -477,7 +477,8 @@ public class AdvancedMappingObjectPropertySection extends AbstractPropertySectio
                     this.cmbSubindex.add(entry.getValue().getName());
                     this.cmbSubindex.setData(entry.getValue().getName(), entry.getValue());
                 }
-                if ((selectedSubObject = this.validSubObjectTypes.get((int) this.subindexValue)) != null) {
+                selectedSubObject = this.validSubObjectTypes.get((int) this.subindexValue);
+                if (selectedSubObject != null) {
                     this.cmbSubindex.select(this.cmbSubindex.indexOf(selectedSubObject.getName()));
                     this.cmbSubindex.setEnabled(true);
                     this.cmbSubindex.setBackground(XDDUtilities.getWhite(this.device));
@@ -581,8 +582,7 @@ public class AdvancedMappingObjectPropertySection extends AbstractPropertySectio
     private void setNewDefaultValue() {
         long newSubObjectValue = (this.indexValue) | (this.subindexValue << 16)
             | (this.offsetValue << 32) | (this.lengthValue << 48);
-        String newValue = String.format("%016x", newSubObjectValue).toUpperCase(); //$NON-NLS-1$
-        newValue = "0x" + newValue; //$NON-NLS-1$
+        String newValue = "0x" + String.format("%016x", newSubObjectValue).toUpperCase(); //$NON-NLS-1$
         this.lblError.setText("");
         this.subObjectItemProvider.setPropertyValue(this.tsubObject, "defaultValue", newValue); //$NON-NLS-1$
         this.lblDefaultValueValue.setText(newValue);

@@ -6,6 +6,7 @@
 package com.br_automation.buoat.xddeditor.XDD.custom; // NOPMD by lueckengaj on 17.05.13 14:57
 
 import java.math.BigInteger;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.GregorianCalendar;
@@ -22,9 +23,14 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.eclipse.emf.common.util.ECollections;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.eclipse.emf.ecore.xmi.XMLResource;
 import org.eclipse.emf.query.conditions.Condition;
 import org.eclipse.emf.query.conditions.eobjects.EObjectCondition;
 import org.eclipse.emf.query.conditions.eobjects.EObjectTypeRelationCondition;
@@ -50,6 +56,7 @@ import com.br_automation.buoat.xddeditor.XDD.TObject;
 import com.br_automation.buoat.xddeditor.XDD.TObjectPDOMapping;
 import com.br_automation.buoat.xddeditor.XDD.XDDPackage;
 import com.br_automation.buoat.xddeditor.XDD.impl.TCNFeaturesImpl;
+import com.br_automation.buoat.xddeditor.XDD.util.XDDResourceFactoryImpl;
 
 /**
  * @brief Static utility-methods for XDD-File/resource manipulation and
@@ -192,20 +199,29 @@ public final class XDDUtilities {
     } //addSaveModifications
 
     /**
-     * @brief Adds Objects and Subobjects to the current TObjects,if
-     *        Sub-/TObjects with the same Subindex/Index do not exist already.
-     * @param currentObjectList
-     *            List where Objects should be added to
+     * @brief Adds Objects and Subobjects to a given resource, if Sub-/TObjects
+     *        with the same Subindex/Index do not exist already.
+     * @param root
+     *            Resource where objects should be added to.
      * @param objectsToAdd
-     *            List of objects to add. Existing objects will be skipped.
+     *            List of objects to add to the resource.
+     * @throws <code>IllegalArgumentException</code> if the given root document
+     *         does not contain the element "ObjectList".
      * */
-    public static void addTObjects(EList<TObject> currentObjectList, List<TObject> objectsToAdd) {
+    public static void addTObjects(List<TObject> objectsToAdd, DocumentRoot root) {
+
+        List<ObjectListType> objectListTypes = XDDUtilities.findEObjects(
+            root, XDDPackage.eINSTANCE.getObjectListType());
+        if (objectListTypes.isEmpty())
+            throw new IllegalArgumentException(
+                "The specified root document does not contain an object list.");
+        EList<TObject> currentObjectsList = objectListTypes.get(0).getObject();
 
         Map<Integer, TObject> currentObjectMap = new HashMap<Integer, TObject>(
-            currentObjectList.size());
+            currentObjectsList.size());
 
         //Create Map of current Objectlist
-        for (TObject currentObject : currentObjectList)
+        for (TObject currentObject : currentObjectsList)
             currentObjectMap
             .put(new BigInteger(currentObject.getIndex()).intValue(), currentObject); // NOPMD by lueckengaj on 18.04.13 09:23
 
@@ -215,7 +231,6 @@ public final class XDDUtilities {
             int currentObjectToAddIndex = new BigInteger(currentObjectToAdd.getIndex()).intValue(); // NOPMD by lueckengaj on 18.04.13 09:22
             //Check if the object already exists
             if (currentObjectMap.containsKey(currentObjectToAddIndex)) {
-
                 //get the subobject-list of the Tobject with matching index,and put it into a hash-map
                 EList<SubObjectType> currentSubObjects = currentObjectMap.get(
                     currentObjectToAddIndex).getSubObject();
@@ -236,13 +251,12 @@ public final class XDDUtilities {
                 //add & sort them after iterating
                 currentSubObjects.addAll(missingSubObjects);
                 ECollections.sort(currentSubObjects, new SubObjectComparator()); // NOPMD by lueckengaj on 18.04.13 09:26
-
             } else { //if not found -> add TObject
-                currentObjectList.add(currentObjectToAdd);
+                currentObjectsList.add(currentObjectToAdd);
             }
         }
-        ECollections.sort(currentObjectList, new TObjectComparator());
-    }
+        ECollections.sort(currentObjectsList, new TObjectComparator());
+    } //addTObjects
 
     /**
      * @brief Finds and returns all instances of an element having an
@@ -284,7 +298,7 @@ public final class XDDUtilities {
      * @param eClass
      *            the class to search for.The eClass parameter can be given by
      *            using XDDPackage.eINSTACE.get <code>InstanceName</code>();
-     * @return A list of instances found in the specified Resource.
+     * @return A list of instances found in the specified resource.
      */
     @SuppressWarnings("unchecked")
     public static <T extends EObject> List<T> findEObjects(DocumentRoot root, EClass eClass) {
@@ -342,7 +356,7 @@ public final class XDDUtilities {
      */
     public static Map<Integer, TObject> getMappingObjects(DocumentRoot root,
         Set<TObjectPDOMapping> mappingTypes) {
-        List<TObject> tObjects = XDDUtilities.getTObjectList(root);
+        List<TObject> tObjects = XDDUtilities.findEObjects(root, XDDPackage.eINSTANCE.getTObject());
         HashMap<Integer, TObject> validObjects = new HashMap<Integer, TObject>();
 
         for (EObject object : tObjects) {
@@ -388,17 +402,35 @@ public final class XDDUtilities {
     }
 
     /**
-     * @brief Get the list of existing TObjects from the specified root-element.
-     * @param root
-     *            The instance of DocumentRoot which should be searched for the
-     *            ObjectList.
-     * @return An <code>EList</code> of <code>TObject</code> elements found in
-     *         <code>root</code>
+     * @brief Load given URL resource and look up Object-Elements.
+     * 
+     *        Load a given XDD-File and return all Object-Elements with matching
+     *        indices.
+     * 
+     * @param resourcePath
+     *            URL of the resource.
+     * @param objectIndices
+     *            List of objectIndices to search in the resource.
+     * @return A <code>List</code> containing <code>TObject</code> elements with
+     *         indices found in the specified resource.
      */
-    public static EList<TObject> getTObjectList(DocumentRoot root) {
-        ObjectListType objectList = (ObjectListType) (XDDUtilities.findEObjects(
-            root, XDDPackage.eINSTANCE.getObjectListType())).get(0);
-        return objectList.getObject();
+    public static List<TObject> getTObjectsFromResource(URL resourcePath,
+        List<Integer> objectIndices) {
+        if (resourcePath == null)
+            throw new IllegalArgumentException("Parameter 'resourcePath ' must not be null.");
+        //get Resource...
+        DocumentRoot root = XDDUtilities.loadXDD(resourcePath); //(DocumentRoot) resource.getContents().get(0);
+        List<TObject> foundObjects = new ArrayList<TObject>();
+
+        if (!objectIndices.isEmpty()) {
+            for (Integer index : objectIndices) {
+                List<TObject> objects = XDDUtilities.findEObjects(
+                    root, XDDPackage.eINSTANCE.getTObject_Index(),
+                    new XDDUtilities.ByteArrayCondition(index));
+                foundObjects.addAll(objects);
+            }
+        }
+        return foundObjects;
     }
 
     /**
@@ -412,7 +444,7 @@ public final class XDDUtilities {
      * @param mappingType
      *            of the TObject.
      * @return The Set<TObjectPDOMapping> of valid mapping for the given
-     *         TOBject.
+     *         TObject.
      */
     public static Set<TObjectPDOMapping> getValidMappingTypes(TObjectPDOMapping mappingType) {
         Set<TObjectPDOMapping> mappingTypes = new HashSet<TObjectPDOMapping>();
@@ -449,8 +481,8 @@ public final class XDDUtilities {
      */
     public static XMLGregorianCalendar getXMLDate() {
         GregorianCalendar cal = new GregorianCalendar();
-        XMLGregorianCalendar sample = null;
-        XMLGregorianCalendar result = null;
+        XMLGregorianCalendar sample;
+        XMLGregorianCalendar result;
         try {
             sample = DatatypeFactory.newInstance().newXMLGregorianCalendar(cal);
             result = DatatypeFactory.newInstance().newXMLGregorianCalendar();
@@ -469,8 +501,8 @@ public final class XDDUtilities {
      */
     public static XMLGregorianCalendar getXMLTime() {
         GregorianCalendar cal = new GregorianCalendar();
-        XMLGregorianCalendar sample = null;
-        XMLGregorianCalendar result = null;
+        XMLGregorianCalendar sample;
+        XMLGregorianCalendar result;
         try {
             sample = DatatypeFactory.newInstance().newXMLGregorianCalendar(cal);
             result = DatatypeFactory.newInstance().newXMLGregorianCalendar();
@@ -493,7 +525,31 @@ public final class XDDUtilities {
      */
     public static boolean isRPDO(TObject tobject) {
         int index = new BigInteger(1, tobject.getIndex()).intValue();
-        return (index >= ObjectDictionaryEntry.PDO_RXMAPPPARAM_MIN && index <= ObjectDictionaryEntry.PDO_RXMAPPPARAM_MIN);
+        return (index >= EPLGeneralConstants.PDO_RXMAPPPARAM_MIN && index <= EPLGeneralConstants.PDO_RXMAPPPARAM_MIN);
+    }
+
+    /**
+     * @brief Loads a new XDD-File based on the given URL
+     * 
+     * @param resourcePath
+     *            URL of the XDD that should be loaded.
+     * @return The DocumentRoot element of the Resource
+     */
+
+    public static DocumentRoot loadXDD(URL resourcePath) {
+        if (resourcePath == null)
+            throw new IllegalArgumentException("Parameter 'resourcePath ' must not be null.");
+        Map<Object, Object> options = new HashMap<Object, Object>();
+        options.put(XMLResource.OPTION_ENCODING, "UTF-8"); //$NON-NLS-1$
+        //get new Resource
+        ResourceSet resSet = new ResourceSetImpl();
+        resSet.getResourceFactoryRegistry().getExtensionToFactoryMap()
+        .put("xdd", new XDDResourceFactoryImpl()); //$NON-NLS-1$
+
+        //Get the File and root object
+        URI fileuri = URI.createURI(resourcePath.toString());
+        Resource resource = resSet.getResource(fileuri, true);
+        return (DocumentRoot) resource.getContents().get(0);
     }
 
     /**
@@ -521,6 +577,7 @@ public final class XDDUtilities {
         XDDUtilities.creator = string;
     }
 
+
     /**
      * @brief Sets FeatureFlag according to bit-offset in object 1F82
      * 
@@ -536,42 +593,41 @@ public final class XDDUtilities {
      *            Root of XDD-Document for which to set the FeatureFlag.
      */
     public static void setFeatureFlag(boolean status, int bitOffset, DocumentRoot documentRoot) {
-
-        List<TObject> tObjects = XDDUtilities.getTObjectList(documentRoot);
+        List<TObject> foundFeatureFlags = XDDUtilities.findEObjects(
+            documentRoot, XDDPackage.eINSTANCE.getTObject_Index(), new ByteArrayCondition(
+                EPLGeneralConstants.NMT_FEATUREFLAGS_U32));
         List<TGeneralFeatures> foundTGeneralFeatures = XDDUtilities.findEObjects(
             documentRoot, XDDPackage.eINSTANCE.getTGeneralFeatures());
         List<TCNFeaturesImpl> foundTCNFeatures = XDDUtilities.findEObjects(
             documentRoot, XDDPackage.eINSTANCE.getTCNFeatures());
         List<TMNFeatures> foundTMNFeatures = XDDUtilities.findEObjects(
             documentRoot, XDDPackage.eINSTANCE.getTMNFeatures());
-        TObject featureFlagsObject;
 
-        //Objects and GeneralFeatures should always be in a XDD file
-        //CN and MN Features are more special cases and treated in switch-case
-        if (tObjects.isEmpty() || foundTGeneralFeatures.isEmpty())
+        if (foundFeatureFlags.isEmpty() || foundTGeneralFeatures.isEmpty())
             return;
 
         TGeneralFeatures generalFeatures = (TGeneralFeatures) foundTGeneralFeatures.get(0);
+        TObject featureFlagsObject = foundFeatureFlags.get(0);
 
         switch (bitOffset) {
-            case 11:
+            case EPLGeneralConstants.FF_OFFSET_MN_BASIC_ETHERNET_MODE:
                 if (!foundTMNFeatures.isEmpty())
                     foundTMNFeatures.get(0).setNMTMNBasicEthernet(status);
                 break;
-            case 13:
-                generalFeatures.setRT2RT2Support(status);
-                break;
-            case 12:
+            case EPLGeneralConstants.FF_OFFSET_ROUTING_TYPE1_SUPPORT:
                 generalFeatures.setRT1RT1Support(status);
                 break;
-            case 8:
+            case EPLGeneralConstants.FF_OFFSET_ROUTING_TYPE2_SUPPORT:
+                generalFeatures.setRT2RT2Support(status);
+                break;
+            case EPLGeneralConstants.FF_OFFSET_CONFIGURATION_MANAGER:
                 generalFeatures.setCFMConfigManager(status);
                 break;
-            case 9:
+            case EPLGeneralConstants.FF_OFFESET_MULTIPLEXED_ACCESS:
                 if (!foundTCNFeatures.isEmpty())
                     foundTCNFeatures.get(0).setDLLCNFeatureMultiplex(status);
                 break;
-            case 18:
+            case EPLGeneralConstants.FF_OFFSET_PRESP_CHAINING:
                 if (!foundTCNFeatures.isEmpty())
                     foundTCNFeatures.get(0).setDLLCNPResChaining(status);
                 break;
@@ -579,20 +635,12 @@ public final class XDDUtilities {
                 break;
         }
 
-        List<TObject> foundFeatureFlags = XDDUtilities.findEObjects(
-            documentRoot, XDDPackage.eINSTANCE.getTObject_Index(), new ByteArrayCondition(
-                ObjectDictionaryEntry.NMT_FEATUREFLAGS_U32));
-        if (foundFeatureFlags.isEmpty())
-            return;
-        else
-            featureFlagsObject = foundFeatureFlags.get(0);
         if (status)
             featureFlagsObject.setDefaultValue("0x"
                 + Long.toHexString((Long.decode(featureFlagsObject.getDefaultValue()) | (1 << bitOffset))));
         else
             featureFlagsObject.setDefaultValue("0x"
                 + Long.toHexString((Long.decode(featureFlagsObject.getDefaultValue()) & ~(1 << bitOffset))));
-
     } //setFeatureFlag
 
     /**

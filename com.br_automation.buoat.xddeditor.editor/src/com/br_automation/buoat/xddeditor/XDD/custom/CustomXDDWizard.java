@@ -168,11 +168,12 @@ public class CustomXDDWizard extends XDDModelWizard {
             if (activePart instanceof ISetSelectionTarget) {
                 final ISelection targetSelection = new StructuredSelection(modelFile);
                 this.getShell().getDisplay().asyncExec(new Runnable() { // NOPMD by lueckengaj on 29.03.13 11:26
-                        @Override
-                        public void run() {
-                            ((ISetSelectionTarget) activePart).selectReveal(targetSelection);
-                        }
-                    });
+                    @Override
+                    public void run() {
+                        ((ISetSelectionTarget) activePart).selectReveal(targetSelection);
+                    }
+
+                });
             }
 
             // Open an editor on the new file.
@@ -199,9 +200,9 @@ public class CustomXDDWizard extends XDDModelWizard {
      */
     @Override
     protected EObject createInitialModel() {
-        DocumentRoot root = ModelLoader.loadXDD(
+        DocumentRoot root = ModelLoader.createXDDFromWizardData(
             this.wizardTemplatePage, this.wizardConfigurationPage1);
         return root;
     }
 
-} //XDDModelWizard
+} //CustomXDDWizard

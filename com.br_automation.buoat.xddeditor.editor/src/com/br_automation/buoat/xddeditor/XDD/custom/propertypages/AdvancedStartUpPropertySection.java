@@ -294,31 +294,31 @@ public class AdvancedStartUpPropertySection extends AbstractPropertySection {
         this.tObjectComposite.setObject(this.tobject);
         this.lblDefaultValueValue.setText(this.tobject.getDefaultValue());
         Set<Entry<Button, Integer>> buttonSet = this.buttonMap.entrySet();
-        int defaultValue = 0;
+
         try {
+            int currentDefaultValue = 0;
             if (this.tobject.getDefaultValue() != null
                 && this.tobject.getDefaultValue().length() > 0) {
 
-                defaultValue = Integer.decode(this.tobject.getDefaultValue());
+                currentDefaultValue = Integer.decode(this.tobject.getDefaultValue());
 
                 for (Entry<Button, Integer> entry : buttonSet) {
                     int btnValue = entry.getValue().intValue();
-                    if ((defaultValue & (1 << btnValue)) != 0) //Check if Bit of Button is set
+                    if ((currentDefaultValue & (1 << btnValue)) != 0) //Check if Bit of Button is set
                         entry.getKey().setSelection(true); //if yes, set the selection to true
                     else
                         entry.getKey().setSelection(false);
                 }
             }
-            if (defaultValue != 0 && (defaultValue > 0x3FDE || ((defaultValue & (1 << 5)) != 0))
-                || (defaultValue & (1 << 0)) != 0) {
-                this.lblError
-                    .setText(Messages.general_error_defaultValueInvalid);
+            if (currentDefaultValue != 0 //Checks if any reserved bits are set in defaultValue (Bit 0, Bit 5, all Bits > 13)
+                && (currentDefaultValue > 0x3FDE || ((currentDefaultValue & (1 << 5)) != 0))
+                || (currentDefaultValue & (1 << 0)) != 0) {
+                this.lblError.setText(Messages.general_error_defaultValueInvalid);
                 for (Entry<Button, Integer> entry : buttonSet)
                     entry.getKey().setSelection(false);
             }
         } catch (NumberFormatException e) {
-            this.lblError
-                .setText(Messages.general_error_defaultValueInvalid);
+            this.lblError.setText(Messages.general_error_defaultValueInvalid);
         }
     } //setInput
 

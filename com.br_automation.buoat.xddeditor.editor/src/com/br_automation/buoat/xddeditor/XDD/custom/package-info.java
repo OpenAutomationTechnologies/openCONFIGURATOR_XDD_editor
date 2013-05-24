@@ -4,13 +4,8 @@
  */
 
 /**
-
- * @brief Custom and extended Classes / ENUM used for Editor Plugin-Project.
- *
- *Custom classes serve as PropertySection for the TabbedPropertyView and to modify to the generated code
- *Filter-Classes are used to select the right PropertySection when an Object is selected
- *Composites serve to improve usability 
- *
+ * @brief Custom classes, derived classes and enums used for the XDD-Editor plugin.
+ *.
  * @author Joris Lückenga
  */
 package com.br_automation.buoat.xddeditor.XDD.custom;

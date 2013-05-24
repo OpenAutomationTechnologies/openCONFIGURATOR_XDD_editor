@@ -15,22 +15,24 @@ import org.eclipse.osgi.util.NLS;
  */
 public final class Messages extends NLS { // NOPMD by lueckengaj on 08.04.13 14:52 - no constructor needed in this help-class
     public static String advancedDeviceTypePropertySection_CiA_Profile_not_found; // NOPMD by lueckengaj on 29.03.13 12:53
-    public static String advancedFeatureFlagsPropertySection_btnConfigurationManager_tooltip;
-    public static String advancedFeatureFlagsPropertySection_btnDynamicPDOMapping_tooltip;
-    public static String advancedFeatureFlagsPropertySection_btnExtendedNMTStateCommands_tooltip;
-    public static String advancedFeatureFlagsPropertySection_btnIsochronous_tooltip;
-    public static String advancedFeatureFlagsPropertySection_btnMNBasicEthernetMode_tooltip;
-    public static String advancedFeatureFlagsPropertySection_btnMultiplexedAccess_tooltip;
-    public static String advancedFeatureFlagsPropertySection_btnNMTInfoServices_tooltip;
-    public static String advancedFeatureFlagsPropertySection_btnNMTServicebyUDPIP_tooltip;
-    public static String advancedFeatureFlagsPropertySection_btnNodeIDsetupbySW_tooltip;
-    public static String advancedFeatureFlagsPropertySection_btnRoutingType1Support_tooltip;
-    public static String advancedFeatureFlagsPropertySection_btnRoutingType2Support_tooltip;
-    public static String advancedFeatureFlagsPropertySection_btnSDObyASnd_tooltip;
-    public static String advancedFeatureFlagsPropertySection_btnSDObyPDO_tooltip;
-    public static String advancedFeatureFlagsPropertySection_btnSDObyUDPIP_tooltip;
-    public static String advancedFeatureFlagsPropertySection_btnSDOReadWriteAllbyIndex_tooltip;
-    public static String advancedFeatureFlagsPropertySection_btnSDOSDOReadWriteMultipleParameterbyIndex_tooltip;
+    public static String advancedFeatureFlagsPropertySection_btnConfigurationManager_tooltip; // NOPMD by lueckengaj on 21.05.13 07:55
+    public static String advancedFeatureFlagsPropertySection_btnDynamicPDOMapping_tooltip; // NOPMD by lueckengaj on 21.05.13 07:55
+    public static String advancedFeatureFlagsPropertySection_btnExtendedNMTStateCommands_tooltip; // NOPMD by lueckengaj on 21.05.13 07:55
+    public static String advancedFeatureFlagsPropertySection_btnIsochronous_tooltip; // NOPMD by lueckengaj on 21.05.13 07:55
+    public static String advancedFeatureFlagsPropertySection_btnMNBasicEthernetMode_tooltip; // NOPMD by lueckengaj on 21.05.13 07:55
+    public static String advancedFeatureFlagsPropertySection_btnMultiplexedAccess_tooltip; // NOPMD by lueckengaj on 21.05.13 07:55
+    public static String advancedFeatureFlagsPropertySection_btnNMTInfoServices_tooltip; // NOPMD by lueckengaj on 21.05.13 07:55
+    public static String advancedFeatureFlagsPropertySection_btnNMTServicebyUDPIP_tooltip; // NOPMD by lueckengaj on 21.05.13 07:55
+    public static String advancedFeatureFlagsPropertySection_btnNodeIDsetupbySW_tooltip; // NOPMD by lueckengaj on 21.05.13 07:55
+    public static String advancedFeatureFlagsPropertySection_btnRoutingType1Support_tooltip; // NOPMD by lueckengaj on 21.05.13 07:55
+    public static String advancedFeatureFlagsPropertySection_btnRoutingType2Support_tooltip; // NOPMD by lueckengaj on 21.05.13 07:55
+    public static String advancedFeatureFlagsPropertySection_btnSDObyASnd_tooltip; // NOPMD by lueckengaj on 21.05.13 07:55
+    public static String advancedFeatureFlagsPropertySection_btnSDObyPDO_tooltip; // NOPMD by lueckengaj on 21.05.13 07:55
+    public static String advancedFeatureFlagsPropertySection_btnSDObyUDPIP_tooltip; // NOPMD by lueckengaj on 21.05.13 07:55
+    public static String advancedFeatureFlagsPropertySection_btnSDOReadWriteAllbyIndex_tooltip; // NOPMD by lueckengaj on 21.05.13 07:55
+    public static String advancedFeatureFlagsPropertySection_btnSDOSDOReadWriteMultipleParameterbyIndex_tooltip; // NOPMD by lueckengaj on 21.05.13 07:55
+    public static String advancedFeatureFlagsPropertySection_tooltip_multipleASnd; // NOPMD by lueckengaj on 21.05.13 07:55
+    public static String advancedFeatureFlagsPropertySection_tooltip_presChaining; // NOPMD by lueckengaj on 21.05.13 07:55
     public static String advancedMappingObjectPropertySection_err_index_not_found; // NOPMD by lueckengaj on 29.03.13 11:28
     public static String advancedMappingObjectPropertySection_err_length; // NOPMD by lueckengaj on 29.03.13 12:53
     public static String advancedMappingObjectPropertySection_err_length_and_offset; // NOPMD by lueckengaj on 29.03.13 12:53
@@ -74,15 +76,21 @@ public final class Messages extends NLS { // NOPMD by lueckengaj on 08.04.13 14:
     public static String advancedStartUpPropertySection_tooltip_notActiveBasicEthState; // NOPMD by lueckengaj on 02.04.13 14:40
     public static String advancedStartUpPropertySection_tooltip_setReadyToOperate; // NOPMD by lueckengaj on 02.04.13 14:40
     public static String advancedStartUpPropertySection_tooltip_startexplicitCN; // NOPMD by lueckengaj on 02.04.13 14:40
-    public static String advancedFeatureFlagsPropertySection_tooltip_multipleASnd;
-    public static String advancedFeatureFlagsPropertySection_tooltip_presChaining;
-    public static String advancedStoreParamPropertySection_0;
-    public static String advancedStoreParamPropertySection_descr_noSaveSupport;
-    public static String advancedStoreParamPropertySection_descr_saveAuto;
-    public static String advancedStoreParamPropertySection_descr_saveOnCommand;
-    public static String general_error_defaultValueInvalid;
+    public static String advancedStoreParamPropertySection_0; // NOPMD by lueckengaj on 21.05.13 07:55
+    public static String advancedStoreParamPropertySection_descr_noSaveSupport; // NOPMD by lueckengaj on 21.05.13 07:55
+    public static String advancedStoreParamPropertySection_descr_saveAuto; // NOPMD by lueckengaj on 21.05.13 07:55
+    public static String advancedStoreParamPropertySection_descr_saveOnCommand; // NOPMD by lueckengaj on 21.05.13 07:55
+    public static String general_error_defaultValueInvalid; // NOPMD by lueckengaj on 21.05.13 07:55
+    public static String modelLoader_resourceTemplate_ipSupportObjects; // NOPMD by lueckengaj on 21.05.13 07:55
+    public static String modelLoader_resourceTemplate_multiASndObjects; // NOPMD by lueckengaj on 21.05.13 07:55
+    public static String modelLoader_resourceTemplate_multiplexFeatureObjects; // NOPMD by lueckengaj on 21.05.13 07:55
+    public static String modelLoader_resourceTemplate_prespChainingObjects; // NOPMD by lueckengaj on 21.05.13 07:55
+    public static String modelLoader_resourceTemplate_XDDdefault; // NOPMD by lueckengaj on 21.05.13 07:55
+    public static String modelLoader_resourceTemplate_XDDextended; // NOPMD by lueckengaj on 21.05.13 07:55
+    public static String modelLoader_resourceTemplate_XDDstatic; // NOPMD by lueckengaj on 21.05.13 07:55
     public static String tObjectComposite_type_not_found; // NOPMD by lueckengaj on 29.03.13 12:53
     public static String wizardConfigurationPage1_adv_conf_page_title; // NOPMD by lueckengaj on 29.03.13 12:53
+    public static String wizardConfigurationPage1_btnMultiASnd_text; // NOPMD by lueckengaj on 21.05.13 07:55
     public static String wizardConfigurationPage1_creation_date_lbl; // NOPMD by lueckengaj on 29.03.13 12:53
     public static String wizardConfigurationPage1_creation_time_lbl; // NOPMD by lueckengaj on 29.03.13 12:53
     public static String wizardConfigurationPage1_creator_lbl; // NOPMD by lueckengaj on 29.03.13 12:53
@@ -104,8 +112,8 @@ public final class Messages extends NLS { // NOPMD by lueckengaj on 08.04.13 14:
     public static String wizardConfigurationPage1_vendor_id_lbl; // NOPMD by lueckengaj on 29.03.13 12:53
     public static String wizardConfigurationPage1_vendor_name_lbl; // NOPMD by lueckengaj on 29.03.13 12:53
     public static String wizardConfigurationPage1_vendor_prod_info_lbl; // NOPMD by lueckengaj on 29.03.13 12:53
-    private static final String BUNDLE_NAME = "com.br_automation.buoat.xddeditor.XDD.custom.messages"; //$NON-NLS-1$ 
-    public static String wizardConfigurationPage1_btnMultiASnd_text;
+    private static final String BUNDLE_NAME = "com.br_automation.buoat.xddeditor.XDD.custom.messages"; //$NON-NLS-1$
+
 
     static {
         // initialize resource bundle

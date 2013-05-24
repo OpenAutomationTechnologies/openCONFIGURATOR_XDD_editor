@@ -6,20 +6,11 @@
 package com.br_automation.buoat.xddeditor.XDD.custom;
 
 import java.math.BigInteger;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.common.util.TreeIterator;
-import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.eclipse.emf.ecore.xmi.XMLResource;
 
 import com.br_automation.buoat.xddeditor.XDD.DocumentRoot;
 import com.br_automation.buoat.xddeditor.XDD.ISO15745ProfileContainerType;
@@ -38,7 +29,6 @@ import com.br_automation.buoat.xddeditor.XDD.TVersion;
 import com.br_automation.buoat.xddeditor.XDD.VersionTypeType;
 import com.br_automation.buoat.xddeditor.XDD.XDDFactory;
 import com.br_automation.buoat.xddeditor.XDD.XDDPackage;
-import com.br_automation.buoat.xddeditor.XDD.util.XDDResourceFactoryImpl;
 
 /**
  * @brief Provides methods to create an Initial model based on data configured
@@ -49,111 +39,48 @@ import com.br_automation.buoat.xddeditor.XDD.util.XDDResourceFactoryImpl;
  * 
  * @author Joris Lückenga
  */
-public class ModelLoader {
+public final class ModelLoader {
 
     /**
-     * @brief Fetches the given resource by its name and searches for objects
-     *        with matching indices.
-     * @param resourceName
-     *            Name String of the Resource without extension.
-     * @param neededObjects
-     *            Array of indices to search in the resource.
-     * @return A {@link List} containing {@link TObject} elements with indices
-     *         found in the specified resource.
+     * @brief ModelLoader provides only static methods.
      */
-    public static List<TObject> getTObjectFromResource(String resourceName,
-        List<Integer> neededObjects) {
-        //Get RootObject of Template
-        List<TObject> foundObjects = new ArrayList<TObject>();
-        //create encoding Map
-        Map<Object, Object> options = new HashMap<Object, Object>();
-        options.put(XMLResource.OPTION_ENCODING, "UTF-8");
-        URL resourcepath = ModelLoader.class.getResource("/resources/" + resourceName + ".xdd");
-        if (resourcepath == null)
-            return null;
-        //get new Resource
-        ResourceSet resSet = new ResourceSetImpl();
-        resSet.getResourceFactoryRegistry().getExtensionToFactoryMap()
-            .put("xdd", new XDDResourceFactoryImpl());
-
-        //Get the File and root object
-        URI fileuri = URI.createURI(resourcepath.toString());
-        Resource resource = resSet.getResource(fileuri, true);
-        DocumentRoot root = (DocumentRoot) resource.getContents().get(0);
-
-        //Go through every element and check for Index...
-        TreeIterator<EObject> treeIterator = root.eAllContents();
-        EObject currentObject;
-
-        while (treeIterator.hasNext()) {
-            currentObject = treeIterator.next();
-            if (currentObject instanceof TObject) {
-                if (neededObjects != null) { //if no Inidices are given,extract all objects of the Resource
-                    for (Integer index : neededObjects)
-                        if (index.compareTo(new BigInteger(((TObject) currentObject).getIndex()) // NOPMD by lueckengaj on 18.04.13 09:23
-                            .intValue()) == 0) {
-                            foundObjects.add((TObject) currentObject);
-                        } else
-                            treeIterator.prune();
-                } else {
-                    foundObjects.add((TObject) currentObject);
-                    treeIterator.prune();
-                }
-            }
-        }
-        return foundObjects;
-    } //getResourceEObjects
+    private ModelLoader() {
+    }
 
     /**
-     * @brief Loads a new model based on configuration in the Wizard.
+     * @brief Loads a new model based on the configuration in the Wizard.
      * @param wizardTemplatePage
      *            The first configuration page.
      * @param wizardConfigurationPage1
      *            The advanced wizard page with userdata.
-     * @return DocumentRoot With appended data.
+     * @return DocumentRoot with appended data.
      */
-    public static DocumentRoot loadXDD(WizardTemplatePage wizardTemplatePage,
+    public static DocumentRoot createXDDFromWizardData(WizardTemplatePage wizardTemplatePage,
         WizardConfigurationPage1 wizardConfigurationPage1) {
-        URL resourcepath;
-
-        //create encoding Map
-        Map<Object, Object> options = new HashMap<Object, Object>();
-        options.put(XMLResource.OPTION_ENCODING, "UTF-8");
-
-        //get new Resource
-        ResourceSet resSet = new ResourceSetImpl();
-        resSet.getResourceFactoryRegistry().getExtensionToFactoryMap()
-            .put("xdd", new XDDResourceFactoryImpl());
-
         //check which Template is used (static etc.)
+        String resourceName;
         if (wizardTemplatePage.getLoadEmpty())
             return ModelLoader.getEmptyModel();
         else {
             String choice = wizardTemplatePage.getTemplateCombo().getText();
-
-            if (choice.contentEquals("Default device"))
-                resourcepath = wizardConfigurationPage1.getClass().getResource(
-                    "/resources/default_template.xdd");
-
-            else if (choice.contentEquals("Default extended device"))
-                resourcepath = wizardConfigurationPage1.getClass().getResource(
-                    "/resources/default_template_extended.xdd");
-
+            if (choice.contentEquals("Default device")) //$NON-NLS-1$
+                resourceName = Messages.modelLoader_resourceTemplate_XDDdefault;
+            else if (choice.contentEquals("Default extended device")) //$NON-NLS-1$
+                resourceName = Messages.modelLoader_resourceTemplate_XDDextended;
             else
-                resourcepath = wizardConfigurationPage1.getClass().getResource(
-                    "/resources/default_template_static.xdd");
+                resourceName = Messages.modelLoader_resourceTemplate_XDDstatic;
         }
-
-        URI fileuri = URI.createURI(resourcepath.toString());
-        Resource resource = resSet.getResource(fileuri, true);
-        DocumentRoot root = (DocumentRoot) resource.getContents().get(0);
+        DocumentRoot root = XDDUtilities.loadXDD(ModelLoader.class.getResource(resourceName));
 
         if (wizardTemplatePage.isConfigurationWizardStatus())
             ModelLoader.appendUserData(root, wizardConfigurationPage1);
         else
             ModelLoader.appendMetaData(root, wizardConfigurationPage1);
         return root;
-    } //loadXDD
+    } //createXDDFromWizardData
+
+
+
 
     /**
      * @brief Add/Remove objects required for IP-Support.
@@ -161,46 +88,29 @@ public class ModelLoader {
      * @param status
      *            <code>True</code> to add objects, <code>false</code>
      *            otherwise. <code>False</code> is not implemented yet.
-     * 
      * @param root
-     *            The DocumentRoot where IP-support objects should be set.
+     *            The DocumentRoot where IP-Support objects should be set.
      */
     public static void setIPSupportObjects(boolean status, DocumentRoot root) {
-
         //Get all iPSupportIndices
-        List<Integer> iPSupportObjects = new ArrayList<Integer>();
-        iPSupportObjects.add(ObjectDictionaryEntry.NWL_HOSTNAME_VSTR);
-        iPSupportObjects.add(ObjectDictionaryEntry.NWL_IPGROUP_TYPE);
-        int i = ObjectDictionaryEntry.NWL_IPADDRTABLE_REC_MIN;
-        while (i <= ObjectDictionaryEntry.NWL_IPADDRTABLE_REC_MAX) {
-            iPSupportObjects.add(i);
-            i++;
-        }
+        List<Integer> ipSupportObjects = new ArrayList<Integer>();
+        ipSupportObjects.add(EPLGeneralConstants.NWL_HOSTNAME_VSTR);
+        ipSupportObjects.add(EPLGeneralConstants.NWL_IPGROUP_TYPE);
+        for (int i = EPLGeneralConstants.NWL_IPADDRTABLE_REC_MIN; i <= EPLGeneralConstants.NWL_IPADDRTABLE_REC_MAX; i++)
+            ipSupportObjects.add(i);
         if (status) {
-            List<TObject> objectsToAdd = ModelLoader.getTObjectFromResource(
-                "ipSupportTemplate", iPSupportObjects);
-            //Get Current Objects of the Resource
-            List<ObjectListType> objectList = XDDUtilities.findEObjects(
-                root, XDDPackage.eINSTANCE.getObjectListType());
-            EList<TObject> resourceObjects;
-            if (!objectList.isEmpty())
-                resourceObjects = objectList.get(0).getObject();
-            else
-                return;
-            //Set Objects to Resource
-            XDDUtilities.addTObjects(resourceObjects, objectsToAdd);
+            List<TObject> objectsToAdd = XDDUtilities.getTObjectsFromResource(
+                ModelLoader.class
+                .getResource(Messages.modelLoader_resourceTemplate_ipSupportObjects),
+                ipSupportObjects);
+            //Add Objects to Resource
+            XDDUtilities.addTObjects(objectsToAdd, root);
         }
 
-        /*Only for this commit*/
-        TreeIterator<EObject> iterator = root.eAllContents();
-        while (iterator.hasNext()) {
-            Object currentObject = iterator.next();
-            if (currentObject instanceof TGeneralFeatures) {
-                ((TGeneralFeatures) currentObject).setNWLIPSupport(status);
-                break;
-            }
+        List<TGeneralFeatures> generalFeatures = XDDUtilities.findEObjects(root, XDDPackage.eINSTANCE.getTGeneralFeatures());
+        if (!generalFeatures.isEmpty()) {
+            generalFeatures.get(0).setNWLIPSupport(status);
         }
-
     }
 
     /**
@@ -214,20 +124,20 @@ public class ModelLoader {
      */
     public static void setMultipleASndObjects(boolean status, DocumentRoot root) {
 
-        List<Integer> multipleASndObjects = new ArrayList<Integer>();
-        multipleASndObjects.add(ObjectDictionaryEntry.NMT_MNCYCLETIMING_REC);
-        multipleASndObjects.add(ObjectDictionaryEntry.NMT_NODEASSIGNMENT_AU32);
-        multipleASndObjects.add(ObjectDictionaryEntry.NMT_FEATUREFLAGS_U32);
+        List<Integer> multipleASndObjectIndices = new ArrayList<Integer>();
+        multipleASndObjectIndices.add(EPLGeneralConstants.NMT_MNCYCLETIMING_REC);
+        multipleASndObjectIndices.add(EPLGeneralConstants.NMT_NODEASSIGNMENT_AU32);
+        multipleASndObjectIndices.add(EPLGeneralConstants.NMT_FEATUREFLAGS_U32);
 
         if (status) {
-            List<TObject> objectsToAdd = ModelLoader.getTObjectFromResource(
-                "MultiASndTemplate", multipleASndObjects);
-            //Get Current Objects of the Resource
-            EList<TObject> resourceObjects = XDDUtilities.getTObjectList(root);
+            List<TObject> objectsToAdd = XDDUtilities.getTObjectsFromResource(
+                ModelLoader.class
+                .getResource(Messages.modelLoader_resourceTemplate_multiASndObjects),
+                multipleASndObjectIndices);
             //Set Objects to Resource
-            XDDUtilities.addTObjects(resourceObjects, objectsToAdd);
+            XDDUtilities.addTObjects(objectsToAdd, root);
             //SET Properties in FeatureFlags & TCNFeatures/GeneralFeatures
-            XDDUtilities.setFeatureFlag(status, 16, root);
+            XDDUtilities.setFeatureFlag(status, EPLGeneralConstants.FF_OFFSET_MULTIPLE_ASND, root);
         }
     }
 
@@ -247,7 +157,7 @@ public class ModelLoader {
         List<ObjectListType> objectsList = XDDUtilities.findEObjects(
             root, XDDPackage.eINSTANCE.getObjectListType());
 
-        if (objectsList.size() == 0 || tCNfeaturesList.size() == 0)
+        if (objectsList.isEmpty() || tCNfeaturesList.isEmpty())
             return;
 
         TCNFeatures cnFeatures = tCNfeaturesList.get(0);
@@ -255,27 +165,29 @@ public class ModelLoader {
         EList<TObject> objects = objectsList.get(0).getObject();
 
         for (TObject tObject : objects)
-            if (ObjectDictionaryEntry.NMT_FEATUREFLAGS_U32 == new BigInteger(tObject.getIndex()) // NOPMD by lueckengaj on 18.04.13 09:23
-                .intValue())
+            if (EPLGeneralConstants.NMT_FEATUREFLAGS_U32 == new BigInteger(tObject.getIndex()) // NOPMD by lueckengaj on 18.04.13 09:23
+            .intValue())
                 if (status)
-                    tObject.setDefaultValue("0x"
+                    tObject.setDefaultValue("0x" //$NON-NLS-1$
                         + Long.toHexString((Long.decode(tObject.getDefaultValue()) | 512)));
                 else
-                    tObject.setDefaultValue("0x"
+                    tObject.setDefaultValue("0x" //$NON-NLS-1$
                         + Long.toHexString((Long.decode(tObject.getDefaultValue()) & ~512)));
 
         List<Integer> multiplexFeatureObjects = new ArrayList<Integer>(3);
-        multiplexFeatureObjects.add(ObjectDictionaryEntry.NMT_ISOCHSLOTASSIGN_AU8);
-        multiplexFeatureObjects.add(ObjectDictionaryEntry.NMT_MULTIPLCYCLEASSIGN_AU8);
-        multiplexFeatureObjects.add(ObjectDictionaryEntry.NMT_CYCLETIMING_REC);
-        multiplexFeatureObjects.add(ObjectDictionaryEntry.NMT_FEATUREFLAGS_U32);
+        multiplexFeatureObjects.add(EPLGeneralConstants.NMT_ISOCHSLOTASSIGN_AU8);
+        multiplexFeatureObjects.add(EPLGeneralConstants.NMT_MULTIPLCYCLEASSIGN_AU8);
+        multiplexFeatureObjects.add(EPLGeneralConstants.NMT_CYCLETIMING_REC);
+        multiplexFeatureObjects.add(EPLGeneralConstants.NMT_FEATUREFLAGS_U32);
 
         if (status) {
             //Get Needed Objects for Multiplex Support
-            List<TObject> objectsToAdd = ModelLoader.getTObjectFromResource(
-                "multiplexFeatureTemplate", multiplexFeatureObjects);
+            List<TObject> objectsToAdd = XDDUtilities.getTObjectsFromResource(
+                ModelLoader.class
+                .getResource(Messages.modelLoader_resourceTemplate_multiplexFeatureObjects),
+                multiplexFeatureObjects);
             //Set Objects to Resource
-            XDDUtilities.addTObjects(objectsList.get(0).getObject(), objectsToAdd);
+            XDDUtilities.addTObjects(objectsToAdd, root);
         }
 
     }
@@ -289,21 +201,21 @@ public class ModelLoader {
      * @param root
      *            The DocumentRoot where PRes-Chaining objects should be set.
      */
-    public static void setPRespChainingObjects(boolean status, DocumentRoot root) {
+    public static void setPResChainingObjects(boolean status, DocumentRoot root) {
 
         List<Integer> prespChainingObjects = new ArrayList<Integer>();
-        prespChainingObjects.add(ObjectDictionaryEntry.NMT_RELATIVELATENCYDIFF_AU32);
-        prespChainingObjects.add(ObjectDictionaryEntry.NMT_CYCLETIMING_REC);
-        prespChainingObjects.add(ObjectDictionaryEntry.NMT_NODEASSIGNMENT_AU32);
-        prespChainingObjects.add(ObjectDictionaryEntry.NMT_FEATUREFLAGS_U32);
+        prespChainingObjects.add(EPLGeneralConstants.NMT_RELATIVELATENCYDIFF_AU32);
+        prespChainingObjects.add(EPLGeneralConstants.NMT_CYCLETIMING_REC);
+        prespChainingObjects.add(EPLGeneralConstants.NMT_NODEASSIGNMENT_AU32);
+        prespChainingObjects.add(EPLGeneralConstants.NMT_FEATUREFLAGS_U32);
 
         if (status) {
-            List<TObject> objectsToAdd = ModelLoader.getTObjectFromResource(
-                "PrespChainingTemplate", prespChainingObjects);
-            //Get Current Objects of the Resource
-            EList<TObject> resourceObjects = XDDUtilities.getTObjectList(root);
+            List<TObject> objectsToAdd = XDDUtilities.getTObjectsFromResource(
+                ModelLoader.class
+                .getResource(Messages.modelLoader_resourceTemplate_prespChainingObjects),
+                prespChainingObjects);
             //Set Objects to Resource
-            XDDUtilities.addTObjects(resourceObjects, objectsToAdd);
+            XDDUtilities.addTObjects(objectsToAdd, root);
             //Set Properties in FeatureFlags, TCN- / General Features
             XDDUtilities.setFeatureFlag(status, 18, root);
         }
@@ -325,9 +237,9 @@ public class ModelLoader {
         ISO15745ProfileType profile1 = profiles.get(0);
         ISO15745ProfileType profile2 = profiles.get(1);
         ProfileHeaderDataType header1 = profile1.getProfileHeader();
-        header1.setProfileIdentification("Powerlink_"
-            + wizardConfigurationPage1.getDeviceNameString() + "_Profile");
-        header1.setProfileName(wizardConfigurationPage1.getDeviceNameString() + " Profile");
+        header1.setProfileIdentification("Powerlink_" //$NON-NLS-1$
+            + wizardConfigurationPage1.getDeviceNameString() + "_Profile"); //$NON-NLS-1$
+        header1.setProfileName(wizardConfigurationPage1.getDeviceNameString() + " Profile"); //$NON-NLS-1$
 
         //Setzen der Body-Werte im Profil 1
         ProfileBodyDataType body1 = profile1.getProfileBody();
@@ -349,7 +261,7 @@ public class ModelLoader {
         body2.setFileModificationTime(wizardConfigurationPage1.getCreationTimeXML());
         body2.setFileVersion(wizardConfigurationPage1.getFileNameString());
 
-        //For further Saves -> Give Utilites the creatorname
+        //For further Saves -> Give Utilites the creator name
         XDDUtilities.setCreator(wizardConfigurationPage1.getCreatorString());
 
         return root;
@@ -372,9 +284,9 @@ public class ModelLoader {
         ISO15745ProfileType profile2 = profiles.get(1);
 
         ProfileHeaderDataType header1 = profile1.getProfileHeader();
-        header1.setProfileIdentification("Powerlink_"
-            + wizardConfigurationPage1.getDeviceNameString() + "_Profile");
-        header1.setProfileName(wizardConfigurationPage1.getDeviceNameString() + " Profile");
+        header1.setProfileIdentification("Powerlink_" //$NON-NLS-1$
+            + wizardConfigurationPage1.getDeviceNameString() + "_Profile"); //$NON-NLS-1$
+        header1.setProfileName(wizardConfigurationPage1.getDeviceNameString() + " Profile"); //$NON-NLS-1$
         XDDUtilities.setCreator(wizardConfigurationPage1.getCreatorString());
         //Setzen der Body-Werte im Profil 1
         ProfileBodyDataType body1 = profile1.getProfileBody();
@@ -395,9 +307,9 @@ public class ModelLoader {
         tDeviceIdentity.getVendorID().setValue(wizardConfigurationPage1.getVendorIDString());
         tDeviceIdentity.getProductName().setValue(wizardConfigurationPage1.getProductNameString());
         tDeviceIdentity.getVersion().get(0)
-            .setValue(wizardConfigurationPage1.getHardwareversString());
+        .setValue(wizardConfigurationPage1.getHardwareversString());
         tDeviceIdentity.getVersion().get(1)
-            .setValue(wizardConfigurationPage1.getSoftwareversString());
+        .setValue(wizardConfigurationPage1.getSoftwareversString());
         tDeviceIdentity.getVersion().add(XDDFactory.eINSTANCE.createTVersion());
         TVersion fwVersion = tDeviceIdentity.getVersion().get(2);
         fwVersion.setVersionType(VersionTypeType.HW);
@@ -438,24 +350,18 @@ public class ModelLoader {
 
         //Setzen der CN Features aus dem Wizard
         TCNFeatures cnFeatures = tnmg.getCNFeatures();
-
         cnFeatures.setDLLCNPResChaining(wizardConfigurationPage1.isResponseChaining());
         cnFeatures.setNMTCNSoC2PReq(wizardConfigurationPage1.getNMTCNSoC2PReq());
 
         cnFeatures.setDLLCNFeatureMultiplex(wizardConfigurationPage1.isCnMultiplexFeature());
-        if (wizardConfigurationPage1.isCnMultiplexFeature()) {
+        if (wizardConfigurationPage1.isCnMultiplexFeature())
             ModelLoader.setMultiplexFeatureObjects(true, root);
-        }
-
         if (wizardConfigurationPage1.isNWLIPSupport())
             ModelLoader.setIPSupportObjects(true, root);
-
         if (wizardConfigurationPage1.isResponseChaining())
-            ModelLoader.setPRespChainingObjects(true, root);
-
+            ModelLoader.setPResChainingObjects(true, root);
         if (wizardConfigurationPage1.isMultipleASnd())
-            ModelLoader.setPRespChainingObjects(true, root);
-
+            ModelLoader.setPResChainingObjects(true, root);
         return root;
     }
 
@@ -475,4 +381,5 @@ public class ModelLoader {
         profile.setProfileHeader(XDDFactory.eINSTANCE.createProfileHeaderDataType());
         return root;
     }
+
 } //InitialModelLoader

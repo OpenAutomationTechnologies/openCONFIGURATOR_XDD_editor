@@ -35,7 +35,6 @@ import com.br_automation.buoat.xddeditor.XDD.TObject;
 import com.br_automation.buoat.xddeditor.XDD.custom.Messages;
 import com.br_automation.buoat.xddeditor.XDD.custom.XDDUtilities;
 import com.br_automation.buoat.xddeditor.XDD.impl.TObjectImpl;
-import com.br_automation.buoat.xddeditor.XDD.provider.TObjectItemProvider;
 
 /**
  * @brief FeatureFlags-Section for Object index 0x1F82.
@@ -48,7 +47,6 @@ import com.br_automation.buoat.xddeditor.XDD.provider.TObjectItemProvider;
 public class AdvancedFeatureFlagsPropertySection extends AbstractPropertySection {
 
     private AdapterFactory adapterFactory;
-    private Button btnMultiplexedAccess;
     private final Map<Button, Integer> buttonMap = new HashMap<Button, Integer>();
     private CLabel lblDefaultValueValue;
     private CLabel lblError;
@@ -96,7 +94,6 @@ public class AdvancedFeatureFlagsPropertySection extends AbstractPropertySection
 
     private TObject tobject;
     private TObjectComposite tobjectComposite;
-    private TObjectItemProvider tObjectProvider;
 
     //Creates the Checkbox-Buttons and Labels as well as selection listeners for each box
     @Override
@@ -104,7 +101,6 @@ public class AdvancedFeatureFlagsPropertySection extends AbstractPropertySection
 
         super.createControls(parent, aTabbedPropertySheetPage);
         Composite composite = super.getWidgetFactory().createFlatFormComposite(parent);
-        this.tObjectProvider = new TObjectItemProvider(this.getAdapterFactory());
         FormData data;
         //Standard-Label--------------------------------------
 
@@ -250,16 +246,16 @@ public class AdvancedFeatureFlagsPropertySection extends AbstractPropertySection
         this.buttonMap.put(btnConfigurationManager, Integer.valueOf(8));
 
         //btnMultiplexedAccess
-        this.btnMultiplexedAccess = this.getWidgetFactory().createButton(
+        Button btnMultiplexedAccess = this.getWidgetFactory().createButton(
             composite, "Multiplexed  Access", SWT.CHECK); //$NON-NLS-1$
-        this.btnMultiplexedAccess
+        btnMultiplexedAccess
             .setToolTipText(Messages.advancedFeatureFlagsPropertySection_btnMultiplexedAccess_tooltip);
         data = new FormData();
         data.top = new FormAttachment(btnConfigurationManager, -5);
         data.left = new FormAttachment(btnIsochronous, 80);
-        this.btnMultiplexedAccess.setLayoutData(data);
-        this.btnMultiplexedAccess.addSelectionListener(this.selectionListener);
-        this.buttonMap.put(this.btnMultiplexedAccess, Integer.valueOf(9));
+        btnMultiplexedAccess.setLayoutData(data);
+        btnMultiplexedAccess.addSelectionListener(this.selectionListener);
+        this.buttonMap.put(btnMultiplexedAccess, Integer.valueOf(9));
 
         //btnNodeIDsetupbySW
         Button btnNodeIDsetupbySW = this.getWidgetFactory().createButton(
@@ -267,7 +263,7 @@ public class AdvancedFeatureFlagsPropertySection extends AbstractPropertySection
         btnNodeIDsetupbySW
             .setToolTipText(Messages.advancedFeatureFlagsPropertySection_btnNodeIDsetupbySW_tooltip);
         data = new FormData();
-        data.top = new FormAttachment(this.btnMultiplexedAccess, -5);
+        data.top = new FormAttachment(btnMultiplexedAccess, -5);
         data.left = new FormAttachment(btnIsochronous, 80);
         btnNodeIDsetupbySW.setLayoutData(data);
         btnNodeIDsetupbySW.addSelectionListener(this.selectionListener);

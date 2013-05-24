@@ -10,7 +10,7 @@ import java.math.BigInteger;
 import org.eclipse.jface.viewers.IFilter;
 
 import com.br_automation.buoat.xddeditor.XDD.TObject;
-import com.br_automation.buoat.xddeditor.XDD.custom.ObjectDictionaryEntry;
+import com.br_automation.buoat.xddeditor.XDD.custom.EPLGeneralConstants;
 
 /**
  * @brief Filters for TObjects with Index set to 0x1F82.
@@ -22,7 +22,7 @@ public class Index1F82Filter implements IFilter {
     @Override
     public boolean select(Object toTest) {
         if (toTest instanceof TObject && (((TObject) toTest).getIndex() != null))
-            return (new BigInteger(1, ((TObject) toTest).getIndex()).intValue() == ObjectDictionaryEntry.NMT_FEATUREFLAGS_U32);
+            return (new BigInteger(1, ((TObject) toTest).getIndex()).intValue() == EPLGeneralConstants.NMT_FEATUREFLAGS_U32);
         return false;
     }
 

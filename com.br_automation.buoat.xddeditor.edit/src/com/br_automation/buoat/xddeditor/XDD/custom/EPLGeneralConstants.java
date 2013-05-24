@@ -6,12 +6,19 @@
 package com.br_automation.buoat.xddeditor.XDD.custom;
 
 /**
- * @brief Class containing constants of object index values
+ * @brief Class containing constants of EPL Specification
  * 
  * @author Joris Lückenga
  */
-public class ObjectDictionaryEntry { // NOPMD by lueckengaj on 18.04.13 09:24
+public final class EPLGeneralConstants { // NOPMD by lueckengaj on 18.04.13 09:24
 
+    public static final int FF_OFFESET_MULTIPLEXED_ACCESS = 9;
+    public static final int FF_OFFSET_CONFIGURATION_MANAGER = 8;
+    public static final int FF_OFFSET_MN_BASIC_ETHERNET_MODE = 11;
+    public static final int FF_OFFSET_MULTIPLE_ASND = 16;
+    public static final int FF_OFFSET_PRESP_CHAINING = 18;
+    public static final int FF_OFFSET_ROUTING_TYPE1_SUPPORT = 12;
+    public static final int FF_OFFSET_ROUTING_TYPE2_SUPPORT = 13;
     public static final int NMT_CYCLETIMING_REC = 0x1F98;
     public static final int NMT_DEVICETYPE = 0x1000;
     public static final int NMT_FEATUREFLAGS_U32 = 0x1F82;
@@ -31,4 +38,10 @@ public class ObjectDictionaryEntry { // NOPMD by lueckengaj on 18.04.13 09:24
     public static final int PDO_TXCOMMPARAM_MAX = 0x1AFF;
     public static final int PDO_TXCOMMPARAM_MIN = 0x1A00;
 
-} //ObjectDictionaryEntry
+    /**
+     * @brief EPLGeneralConstants provides only static constants.
+     */
+    private EPLGeneralConstants() {
+    }
+
+} //EPLGeneralConstants
