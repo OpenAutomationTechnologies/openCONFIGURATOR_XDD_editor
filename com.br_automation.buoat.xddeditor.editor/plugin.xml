@@ -99,7 +99,7 @@
       <propertySections
             contributorId="com.br_automation.buoat.xddeditor.properties">
          <propertySection
-               class="org.eclipse.emf.eef.runtime.ui.properties.sections.EEFAdvancedPropertySection"
+               class="com.br_automation.buoat.xddeditor.XDD.custom.propertypages.BasicViewSection"
                id="basic_section"
                tab="basic_propertytab">
             <input

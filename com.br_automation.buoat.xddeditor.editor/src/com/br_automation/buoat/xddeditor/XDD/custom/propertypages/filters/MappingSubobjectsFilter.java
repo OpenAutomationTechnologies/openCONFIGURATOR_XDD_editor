@@ -27,13 +27,14 @@ public class MappingSubobjectsFilter implements IFilter {
             SubObjectType subObject = (SubObjectType) toTest;
             TObject parentObject = (TObject) subObject.eContainer();
 
-
             if (parentObject.getIndex() != null) {
                 int objectIndex = new BigInteger(1, parentObject.getIndex()).intValue();
-                if ((objectIndex >= EPLGeneralConstants.PDO_RXMAPPPARAM_MIN && objectIndex <= EPLGeneralConstants.PDO_RXMAPPPARAM_MAX)
-                    || (objectIndex >= EPLGeneralConstants.PDO_TXCOMMPARAM_MIN && objectIndex <= EPLGeneralConstants.PDO_TXCOMMPARAM_MAX)) {
-                    int subIndex = new BigInteger(subObject.getSubIndex()).intValue();
-                    return (subIndex != 0); //This statement ignores NumberOfEntries object
+                if ((objectIndex >= EPLGeneralConstants.PDO_RX_MAPP_PARAM_MIN && objectIndex <= EPLGeneralConstants.PDO_RX_MAPP_PARAM_MAX)
+                    || (objectIndex >= EPLGeneralConstants.PDO_TX_COMM_PARAM_MIN && objectIndex <= EPLGeneralConstants.PDO_TX_COMM_PARAM_MAX)) {
+                    if (subObject.getSubIndex() != null) {
+                        int subIndex = new BigInteger(subObject.getSubIndex()).intValue();
+                        return (subIndex != 0);
+                    } //This statement ignores NumberOfEntries object 
                 }
             }
         }

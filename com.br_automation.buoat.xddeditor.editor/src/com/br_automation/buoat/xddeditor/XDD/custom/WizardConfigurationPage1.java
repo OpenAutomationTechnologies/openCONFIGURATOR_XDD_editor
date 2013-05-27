@@ -206,25 +206,25 @@ public class WizardConfigurationPage1 extends WizardPage {
         this.btnCnMultiplexFeature = new Button(grpCnFeatures, SWT.CHECK);
         this.btnCnMultiplexFeature
             .setToolTipText(Messages.wizardConfigurationPage1_multiplex_feature_tooltip);
-        this.btnCnMultiplexFeature.setBounds(10, 32, 146, 16);
+        this.btnCnMultiplexFeature.setBounds(10, 22, 146, 16);
         this.btnCnMultiplexFeature.setText("DLLCNFeatureMultiplex"); //$NON-NLS-1$
 
         this.btnResponseChaining = new Button(grpCnFeatures, SWT.CHECK);
         this.btnResponseChaining
             .setToolTipText(Messages.wizardConfigurationPage1_Response_chaining_tooltip);
-        this.btnResponseChaining.setBounds(10, 50, 146, 16);
+        this.btnResponseChaining.setBounds(10, 44, 146, 16);
         this.btnResponseChaining.setText("DLLCNPResChaining"); //$NON-NLS-1$
 
         Label lblSoc = new Label(grpCnFeatures, SWT.NONE);
         lblSoc.setToolTipText(Messages.wizardConfigurationPage1_Time_for_cn_to_process_Soc_tooltip);
         lblSoc.setText("NMTCNSoC2PReq (ns):"); //$NON-NLS-1$
-        lblSoc.setBounds(10, 72, 124, 15);
+        lblSoc.setBounds(10, 66, 124, 15);
 
         this.txtNMTCNSoC2PReq = new Text(grpCnFeatures, SWT.BORDER);
         this.txtNMTCNSoC2PReq.setText("25"); //$NON-NLS-1$
         this.txtNMTCNSoC2PReq
             .setToolTipText(Messages.wizardConfigurationPage1_time_for_CN_tro_process_SoC_tooltip);
-        this.txtNMTCNSoC2PReq.setBounds(140, 69, 76, 21);
+        this.txtNMTCNSoC2PReq.setBounds(140, 63, 76, 21);
 
         Group grpGeneralFeatures = new Group(container, SWT.SHADOW_OUT);
         grpGeneralFeatures.setFont(SWTResourceManager.getFont("Segoe UI", 9, SWT.NORMAL)); //$NON-NLS-1$

@@ -6,6 +6,8 @@
  */
 package com.br_automation.buoat.xddeditor.XDD.impl;
 
+import java.util.Arrays;
+
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
@@ -714,14 +716,17 @@ public class SubObjectTypeImpl extends EObjectImpl implements SubObjectType {
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
      * 
-     * @generated
+     * @generated NOT
      */
     public void setSubIndex(byte[] newSubIndex) {
         byte[] oldSubIndex = subIndex;
         subIndex = newSubIndex;
-        if (eNotificationRequired())
+        //j.l: Only notify adapters when index is changed.
+    	// BEGIN
+        if (!Arrays.equals(oldSubIndex, newSubIndex) && eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                 XDDPackage.SUB_OBJECT_TYPE__SUB_INDEX, oldSubIndex, subIndex));
+     	// j.l.: END 
     }
 
     /**

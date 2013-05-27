@@ -33,10 +33,10 @@ public final class EPLGeneralConstants { // NOPMD by lueckengaj on 18.04.13 09:2
     public static final int NWL_IPADDRTABLE_REC_MAX = 0x1E49;
     public static final int NWL_IPADDRTABLE_REC_MIN = 0x1E40;
     public static final int NWL_IPGROUP_TYPE = 0x1E4A;
-    public static final int PDO_RXMAPPPARAM_MAX = 0x16FF;
-    public static final int PDO_RXMAPPPARAM_MIN = 0x1600;
-    public static final int PDO_TXCOMMPARAM_MAX = 0x1AFF;
-    public static final int PDO_TXCOMMPARAM_MIN = 0x1A00;
+    public static final int PDO_RX_MAPP_PARAM_MAX = 0x16FF;
+    public static final int PDO_RX_MAPP_PARAM_MIN = 0x1600;
+    public static final int PDO_TX_COMM_PARAM_MAX = 0x1AFF;
+    public static final int PDO_TX_COMM_PARAM_MIN = 0x1A00;
 
     /**
      * @brief EPLGeneralConstants provides only static constants.

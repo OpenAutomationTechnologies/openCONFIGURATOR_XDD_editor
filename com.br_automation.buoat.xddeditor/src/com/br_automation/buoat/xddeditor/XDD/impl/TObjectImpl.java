@@ -6,27 +6,24 @@
  */
 package com.br_automation.buoat.xddeditor.XDD.impl;
 
+import java.util.Arrays;
+import java.util.Collection;
+
+import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.common.notify.NotificationChain;
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.InternalEObject;
+import org.eclipse.emf.ecore.impl.ENotificationImpl;
+import org.eclipse.emf.ecore.impl.EObjectImpl;
+import org.eclipse.emf.ecore.util.EObjectContainmentEList;
+import org.eclipse.emf.ecore.util.InternalEList;
+
 import com.br_automation.buoat.xddeditor.XDD.SubObjectType;
 import com.br_automation.buoat.xddeditor.XDD.TObject;
 import com.br_automation.buoat.xddeditor.XDD.TObjectAccessType;
 import com.br_automation.buoat.xddeditor.XDD.TObjectPDOMapping;
 import com.br_automation.buoat.xddeditor.XDD.XDDPackage;
-
-import java.util.Collection;
-
-import org.eclipse.emf.common.notify.Notification;
-import org.eclipse.emf.common.notify.NotificationChain;
-
-import org.eclipse.emf.common.util.EList;
-
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.InternalEObject;
-
-import org.eclipse.emf.ecore.impl.ENotificationImpl;
-import org.eclipse.emf.ecore.impl.EObjectImpl;
-
-import org.eclipse.emf.ecore.util.EObjectContainmentEList;
-import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
  * <!-- begin-user-doc --> An implementation of the model object '
@@ -618,16 +615,21 @@ public class TObjectImpl extends EObjectImpl implements TObject {
      * @generated NOT
      */
     public void setIndex(byte[] newIndex) {
-        byte[] oldIndex = index;
+        byte[] oldIndex = this.index;
         // j.l.: Checks whether the newIndex is not empty to avoid invalid index-values in the Object.
-        // Is also needed for a functioning validation.
+        // Is also needed for a functioning validation. If the index is NOT changed, 
+        //the adapters shouldn´t be notified (for better performance, avoiding loops)
         // BEGIN
+        boolean notify = true;
         if (newIndex.length > 0)
-            index = newIndex;
+            this.index = newIndex;
+        if (Arrays.equals(oldIndex, newIndex))
+            notify = false;
+
+        if (notify && this.eNotificationRequired())
+            this.eNotify(new ENotificationImpl(this, Notification.SET, XDDPackage.TOBJECT__INDEX,
+                oldIndex, this.index));
         //END
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, XDDPackage.TOBJECT__INDEX,
-                oldIndex, index));
     }
 
     /**

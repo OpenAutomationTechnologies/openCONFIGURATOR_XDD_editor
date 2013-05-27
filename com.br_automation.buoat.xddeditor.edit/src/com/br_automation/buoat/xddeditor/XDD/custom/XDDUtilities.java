@@ -525,7 +525,7 @@ public final class XDDUtilities {
      */
     public static boolean isRPDO(TObject tobject) {
         int index = new BigInteger(1, tobject.getIndex()).intValue();
-        return (index >= EPLGeneralConstants.PDO_RXMAPPPARAM_MIN && index <= EPLGeneralConstants.PDO_RXMAPPPARAM_MIN);
+        return (index >= EPLGeneralConstants.PDO_RX_MAPP_PARAM_MIN && index <= EPLGeneralConstants.PDO_RX_MAPP_PARAM_MIN);
     }
 
     /**

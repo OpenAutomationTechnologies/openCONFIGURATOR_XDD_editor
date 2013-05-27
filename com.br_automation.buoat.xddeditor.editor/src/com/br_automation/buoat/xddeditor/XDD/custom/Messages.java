@@ -80,6 +80,7 @@ public final class Messages extends NLS { // NOPMD by lueckengaj on 08.04.13 14:
     public static String advancedStoreParamPropertySection_descr_noSaveSupport; // NOPMD by lueckengaj on 21.05.13 07:55
     public static String advancedStoreParamPropertySection_descr_saveAuto; // NOPMD by lueckengaj on 21.05.13 07:55
     public static String advancedStoreParamPropertySection_descr_saveOnCommand; // NOPMD by lueckengaj on 21.05.13 07:55
+    public static String basicViewSection_resourceTemplate_defaultObjects; // NOPMD by lueckengaj on 29.03.13 12:53
     public static String general_error_defaultValueInvalid; // NOPMD by lueckengaj on 21.05.13 07:55
     public static String modelLoader_resourceTemplate_ipSupportObjects; // NOPMD by lueckengaj on 21.05.13 07:55
     public static String modelLoader_resourceTemplate_multiASndObjects; // NOPMD by lueckengaj on 21.05.13 07:55
@@ -113,7 +114,6 @@ public final class Messages extends NLS { // NOPMD by lueckengaj on 08.04.13 14:
     public static String wizardConfigurationPage1_vendor_name_lbl; // NOPMD by lueckengaj on 29.03.13 12:53
     public static String wizardConfigurationPage1_vendor_prod_info_lbl; // NOPMD by lueckengaj on 29.03.13 12:53
     private static final String BUNDLE_NAME = "com.br_automation.buoat.xddeditor.XDD.custom.messages"; //$NON-NLS-1$
-
 
     static {
         // initialize resource bundle
