@@ -17,6 +17,10 @@
       <parser
             type="xdd"
             class="com.br_automation.buoat.xddeditor.XDD.util.XDDResourceFactoryImpl"/>
+      <parser
+            class="com.br_automation.buoat.xddeditor.XDD.util.XDDResourceFactoryImpl"
+            type="xdc">
+      </parser>
    </extension>
 
 </plugin>

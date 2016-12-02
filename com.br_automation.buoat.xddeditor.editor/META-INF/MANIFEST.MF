@@ -10,14 +10,27 @@ Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: com.br_automation.buoat.xddeditor.XDD.presentation
-Require-Bundle: org.eclipse.core.runtime,
+Require-Bundle: com.br_automation.buoat.xddeditor.edit;visibility:=reexport,
+ org.eclipse.eef.edit,
+ org.eclipse.emf.databinding.edit,
+ org.eclipse.emf.ecore.change.edit,
+ org.eclipse.emf.ecore.editor,
+ org.eclipse.emf.eef.components.editor,
+ org.eclipse.emf.eef.eefgen.editor,
+ org.eclipse.emf.eef.views.editor,
+ org.eclipse.emf.exporter,
+ org.eclipse.emf.importer,
+ org.eclipse.emf.mapping.ecore2ecore.editor,
+ org.eclipse.emf.mapping.ecore2xml.ui,
+ org.eclipse.emf.query.ocl,
+ org.eclipse.emf.validation,
  org.eclipse.core.resources;visibility:=reexport,
- com.br_automation.buoat.xddeditor.edit;visibility:=reexport,
  org.eclipse.emf.ecore.xmi;visibility:=reexport,
  org.eclipse.emf.edit.ui;visibility:=reexport,
  org.eclipse.ui.ide;visibility:=reexport,
+ org.eclipse.core.runtime,
  org.eclipse.ui.navigator,
  org.eclipse.ui,
  org.eclipse.ui.views.properties.tabbed,
- org.eclipse.emf.eef.runtime;bundle-version="1.1.1";visibility:=reexport
+ org.eclipse.emf.eef.runtime;visibility:=reexport
 Bundle-ActivationPolicy: lazy

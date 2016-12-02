@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/com.br_automation.buoat.xddeditor.feature_1.0.0.qualifier.jar" id="com.br_automation.buoat.xddeditor.feature" version="1.0.0.qualifier">
+      <category name="org.epsg.category"/>
+   </feature>
+   <category-def name="org.epsg.category" label="Industrial Automation"/>
+</site>
