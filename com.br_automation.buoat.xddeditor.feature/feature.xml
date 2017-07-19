@@ -3,18 +3,21 @@
       id="com.br_automation.buoat.xddeditor.feature"
       label="Ethernet POWERLINK XDD Editor"
       version="1.0.0.qualifier"
-      provider-name="Bernecker + Rainer Industrie-Elektronik Ges.m.b.H.">
+      provider-name="Kalycito Infotech Pvt Ltd. and Bernecker + Rainer Industrie-Elektronik Ges.m.b.H."
+      plugin="com.br_automation.buoat.xddeditor">
 
    <description>
       Ethernet POWERLINK XDD Editor
    </description>
 
    <copyright>
-      Copyright (c) 2016 Bernecker + Rainer Industrie-Elektronik Ges.m.b.H.
+      Copyright (c) 2017 Kalycito Infotech Pvt Ltd.
+Copyright (c) 2017 Bernecker + Rainer Industrie-Elektronik Ges.m.b.H.
    </copyright>
 
    <license url="license.html">
-      Copyright (c) 2016 Bernecker + Rainer Industrie-Elektronik Ges.m.b.H.
+      Copyright (c) 2017 Kalycito Infotech Pvt Ltd.
+Copyright (c) 2017 Bernecker + Rainer Industrie-Elektronik Ges.m.b.H.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:

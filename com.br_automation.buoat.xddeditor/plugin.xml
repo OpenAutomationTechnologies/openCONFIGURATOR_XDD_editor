@@ -23,4 +23,18 @@
       </parser>
    </extension>
 
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated XDD -->
+      <package
+            uri="http://www.ethernet-powerlink.org"
+            class="com.br_automation.buoat.xddeditor.XDD.XDDPackage"
+            genModel="model/XDD.genmodel"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.extension_parser">
+      <!-- @generated XDD -->
+      <parser
+            type="xdd"
+            class="com.br_automation.buoat.xddeditor.XDD.util.XDDResourceFactoryImpl"/>
+   </extension>
 </plugin>

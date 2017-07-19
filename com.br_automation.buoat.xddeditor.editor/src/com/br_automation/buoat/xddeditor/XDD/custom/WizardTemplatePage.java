@@ -60,7 +60,7 @@ public class WizardTemplatePage extends WizardPage {
 
         this.rbtnLoadEmptyXDD = new Button(composite, SWT.RADIO);
         this.rbtnLoadEmptyXDD.setBounds(10, 121, 149, 16);
-        this.rbtnLoadEmptyXDD.setText("Load empty XDD file");
+        this.rbtnLoadEmptyXDD.setText("Create an empty XDD file");
         //If Empty Project is loaded....
         this.rbtnLoadEmptyXDD.addSelectionListener(new SelectionAdapter() {
             @Override
@@ -95,8 +95,8 @@ public class WizardTemplatePage extends WizardPage {
             }
         });
         rbtnLoadDefaultXDD.setSelection(true);
-        rbtnLoadDefaultXDD.setBounds(10, 10, 172, 16);
-        rbtnLoadDefaultXDD.setText("Load default XDD Template");
+        rbtnLoadDefaultXDD.setBounds(10, 10, 240, 16);
+        rbtnLoadDefaultXDD.setText("Create a new XDD file based on a template");
 
         this.cbtnUseConfigurationWizard = new Button(composite, SWT.CHECK);
         this.cbtnUseConfigurationWizard.addSelectionListener(new SelectionAdapter() {
