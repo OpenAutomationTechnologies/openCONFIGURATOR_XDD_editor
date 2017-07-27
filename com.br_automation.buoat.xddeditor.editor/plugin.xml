@@ -28,6 +28,12 @@
             class="com.br_automation.buoat.xddeditor.XDD.presentation.XDDEditor"
             contributorClass="com.br_automation.buoat.xddeditor.XDD.presentation.XDDActionBarContributor">
       </editor>
+      <editor
+            class="com.br_automation.buoat.xddeditor.editor.editors.DeviceDescriptionFileEditor"
+            default="false"
+            id="com.br_automation.buoat.xddeditor.editor.XDD"
+            name="POWERLINK Editor">
+      </editor>
    </extension>
    
    <extension
