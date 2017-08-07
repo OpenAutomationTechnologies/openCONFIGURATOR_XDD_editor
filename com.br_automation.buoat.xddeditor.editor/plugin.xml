@@ -31,6 +31,7 @@
       <editor
             class="com.br_automation.buoat.xddeditor.editor.editors.DeviceDescriptionFileEditor"
             default="false"
+            icon="icons/sample.gif"
             id="com.br_automation.buoat.xddeditor.editor.XDD"
             name="POWERLINK Editor">
       </editor>
@@ -163,6 +164,14 @@
             </input>
          </propertySection>
       </propertySections>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            class="com.br_automation.buoat.xddeditor.editor.editors.View"
+            id="com.br_automation.buoat.xddeditor.editor.editors.View"
+            name="New ViewPart">
+      </view>
    </extension>
    
 

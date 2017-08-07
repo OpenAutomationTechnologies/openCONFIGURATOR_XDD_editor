@@ -1,11 +1,42 @@
+/*******************************************************************************
+ * @file   DeviceDescriptionFileEditor.java
+ *
+ * @author Sree Hari Vignesh, Kalycito Infotech Private Limited.
+ *
+ * @copyright (c) 2017, Kalycito Infotech Private Limited
+ *                    All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *   * Redistributions of source code must retain the above copyright
+ *     notice, this list of conditions and the following disclaimer.
+ *   * Redistributions in binary form must reproduce the above copyright
+ *     notice, this list of conditions and the following disclaimer in the
+ *     documentation and/or other materials provided with the distribution.
+ *   * Neither the name of the copyright holders nor the
+ *     names of its contributors may be used to endorse or promote products
+ *     derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDERS BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *******************************************************************************/
+
 package com.br_automation.buoat.xddeditor.editor.editors;
-
-
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.List;
 
@@ -27,6 +58,9 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.IDocument;
@@ -49,16 +83,23 @@ import org.eclipse.ui.texteditor.IDocumentProvider;
 
 import org.xml.sax.SAXException;
 
+import com.br_automation.buoat.xddeditor.XDD.DocumentRoot;
+import com.br_automation.buoat.xddeditor.XDD.ISO15745ProfileContainerType;
+import com.br_automation.buoat.xddeditor.XDD.ISO15745ProfileType;
+import com.br_automation.buoat.xddeditor.XDD.TObject;
+import com.br_automation.buoat.xddeditor.XDD.XDDPackage;
+import com.br_automation.buoat.xddeditor.XDD.custom.ModelLoader;
+import com.br_automation.buoat.xddeditor.XDD.custom.XDDUtilities;
+
 /**
- * IndustrialNetworkProjectEditor class provides the multi-tab based form editor
- * to configure the openCONFIGURATOR project
+ * DeviceDescriptionFileEditor class provides the multi-tab based form editor to
+ * configure the device description file
  *
- * This editor is the main UI opened once the project.xml is double clicked from
- * the project explorer.
+ * This editor is the main UI opened once the XDD/XDC is double clicked from the
+ * project explorer.
  *
- * Additionally this opens the {@link IndustrialNetworkView}.
  *
- * @author Ramakrishnan P
+ * @author Sree Hari Vignesh B
  *
  */
 public final class DeviceDescriptionFileEditor extends FormEditor
@@ -72,18 +113,11 @@ public final class DeviceDescriptionFileEditor extends FormEditor
     /**
      * Editor strings and messages.
      */
-    private static final String PROJECT_EDITOR_PAGE_NAME = "POWERLINK Project";
+    private static final String OVERVIEW_EDITOR_PAGE_NAME = "Overview";
+    private static final String OBJECT_DICTIONARY_EDITOR_PAGE_NAME = "Object Dictionary";
+    private static final String NETWORK_MANAGEMENT_EDITOR_PAGE_NAME = "Network Management";
     private static final String PROJECT_EDITOR_CREATION_ERROR_MESSAGE = "Error creating project editor overview page.";
-    private static final String PROJECT_SOURCE_PAGE_NAME = "Source";
-    private static final String PROJECT_SOURCE_PAGE_CREATION_ERROR_MESSAGE = "Error creating nested XML editor.";
-    private static final String MARSHALL_ERROR = "Error marshalling the openCONFIGURATOR project.";
-    private static final String UNMARSHALL_ERROR = "Error unmarshalling the openCONFIGURATOR project.";
     private static final String INVALID_INPUT_ERROR = "Invalid input: Must be a valid openCONFIGURATOR project file.";
-
-    /**
-     * Network identifier for the editor.
-     */
-    private String networkId;
 
     /**
      * Eclipse project instance linked with this editor.
@@ -95,27 +129,15 @@ public final class DeviceDescriptionFileEditor extends FormEditor
      */
     private IFile projectFile;
 
- 
     /**
-     * Flag to check for the library initialization
-     */
-    private boolean initSuccessful = false;
-
-   
-    /**
-     * Advanced project editor page.
+     * Overview editor page.
      */
     private DeviceDescriptionFileEditorPage editorPage;
 
     /**
-     * XDC import of node
+     * Network management editor page.
      */
-    private Job importNodeXdcJob;
-
-    /**
-     * Upgrade project version
-     */
-    private boolean upgradeFlag;
+    private NetworkManagementEditorPage ntwrkMgmteditorPage;
 
     /**
      * Constructor
@@ -128,25 +150,18 @@ public final class DeviceDescriptionFileEditor extends FormEditor
     /**
      * Adds an editor page and source page for the project editor.
      *
-     * @see IndustrialNetworkProjectSourcePage
+     * @see ObjectDictionaryEditorPage
      * @see DeviceDescriptionFileEditorPage
+     * @see NetworkManagementEditorPage
      */
     @Override
     protected void addPages() {
 
         createDeviceDescriptionFileEditor();
+        createNetworkManagementFileEditor();
         createObjectDictionaryEditorPage();
-        createDeviceDescriptionFileEditor();
 
         this.setActivePage(editorPage.getId());
-
-       
-
-        // If upgraded - update the source page and the file contents from
-        // the model.
-        if (upgradeFlag) {
-            
-        }
     }
 
     /**
@@ -158,11 +173,9 @@ public final class DeviceDescriptionFileEditor extends FormEditor
             @Override
             public void run() {
 
-                IWorkbenchPage[] pages = DeviceDescriptionFileEditor.this
-                        .getSite().getWorkbenchWindow().getPages();
+                IWorkbenchPage[] pages = DeviceDescriptionFileEditor.this.getSite().getWorkbenchWindow().getPages();
                 for (IWorkbenchPage editorPage : pages) {
-                    IEditorPart editorPart = editorPage
-                            .findEditor(getEditorInput());
+                    IEditorPart editorPart = editorPage.findEditor(getEditorInput());
                     editorPage.closeEditor(editorPart, true);
                 }
             }
@@ -170,31 +183,49 @@ public final class DeviceDescriptionFileEditor extends FormEditor
     }
 
     /**
-     * Creates the POWERLNK project editor page
+     * Creates the Description file editor page
      *
      * @see DeviceDescriptionFileEditorPage
      */
     private void createDeviceDescriptionFileEditor() {
 
         try {
-        	        	
-           editorPage = new DeviceDescriptionFileEditorPage(this,
-                   getTitle());
+
+            editorPage = new DeviceDescriptionFileEditorPage(this, getTitle(), getDocumentRoot());
             int index = this.addPage(editorPage, getEditorInput());
-            setPageText(index,
-                    DeviceDescriptionFileEditor.PROJECT_EDITOR_PAGE_NAME);
+            setPageText(index, DeviceDescriptionFileEditor.OVERVIEW_EDITOR_PAGE_NAME);
             editorPage.setIndex(index);
 
         } catch (PartInitException e) {
             ErrorDialog.openError(getSite().getShell(), null,
-                    DeviceDescriptionFileEditor.PROJECT_EDITOR_CREATION_ERROR_MESSAGE,
-                    e.getStatus());
+                    DeviceDescriptionFileEditor.PROJECT_EDITOR_CREATION_ERROR_MESSAGE, e.getStatus());
             e.printStackTrace();
         }
     }
-    
+
+    /**
+     * Creates the NetworkManagement editor page
+     *
+     * @see NetworkManagementEditorPage
+     */
+    private void createNetworkManagementFileEditor() {
+
+        try {
+
+            ntwrkMgmteditorPage = new NetworkManagementEditorPage(this, getTitle(), getDocumentRoot());
+            int index = this.addPage(ntwrkMgmteditorPage, getEditorInput());
+            setPageText(index, DeviceDescriptionFileEditor.NETWORK_MANAGEMENT_EDITOR_PAGE_NAME);
+            ntwrkMgmteditorPage.setIndex(index);
+
+        } catch (PartInitException e) {
+            ErrorDialog.openError(getSite().getShell(), null,
+                    DeviceDescriptionFileEditor.PROJECT_EDITOR_CREATION_ERROR_MESSAGE, e.getStatus());
+            e.printStackTrace();
+        }
+    }
+
     private ObjectDictionaryEditorPage objectEditorPage;
-    
+
     /**
      * Creates the Object dictionary editor page
      *
@@ -203,49 +234,24 @@ public final class DeviceDescriptionFileEditor extends FormEditor
     private void createObjectDictionaryEditorPage() {
 
         try {
-        	        	
-           objectEditorPage = new ObjectDictionaryEditorPage(this,
-                   getTitle());
+
+            objectEditorPage = new ObjectDictionaryEditorPage(this, getTitle(), getDocumentRoot());
             int index = this.addPage(objectEditorPage, getEditorInput());
-            setPageText(index,
-                    DeviceDescriptionFileEditor.PROJECT_EDITOR_PAGE_NAME);
+            setPageText(index, DeviceDescriptionFileEditor.OBJECT_DICTIONARY_EDITOR_PAGE_NAME);
             objectEditorPage.setIndex(index);
 
         } catch (PartInitException e) {
             ErrorDialog.openError(getSite().getShell(), null,
-                    DeviceDescriptionFileEditor.PROJECT_EDITOR_CREATION_ERROR_MESSAGE,
-                    e.getStatus());
+                    DeviceDescriptionFileEditor.PROJECT_EDITOR_CREATION_ERROR_MESSAGE, e.getStatus());
             e.printStackTrace();
         }
     }
 
-   
-
     /**
-     * Disposes the project editor UI.
+     * Disposes the description file editor UI.
      */
     @Override
     public void dispose() {
-        if (initSuccessful) {
-
-            Display.getDefault().syncExec(new Runnable() {
-                @Override
-                public void run() {
-                    if (importNodeXdcJob != null) {
-                        importNodeXdcJob.cancel();
-                        try {
-                            importNodeXdcJob.join();
-                        } catch (InterruptedException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            });
-
-           
-            
-        }
         ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
         super.dispose();
     }
@@ -255,28 +261,14 @@ public final class DeviceDescriptionFileEditor extends FormEditor
      */
     @Override
     public void doSave(IProgressMonitor monitor) {
-        upgradeFlag = false;
         editorPage.doSave(monitor);
-        
+
     }
 
     @Override
     public void doSaveAs() {
         // TODO Auto-generated method stub
     }
-
-      
-    /**
-     *
-     * @return the instance of xdc import job
-     */
-    public Job getimportnode() {
-        return importNodeXdcJob;
-    }
-
-   
-
-    
 
     /**
      * @return The IFile instance of the openCONFIGURATOR project XML file.
@@ -285,11 +277,11 @@ public final class DeviceDescriptionFileEditor extends FormEditor
         return projectFile;
     }
 
-   
     /**
      * Marks the content in the project editor source page based on the marker.
      *
-     * @param marker Marker details
+     * @param marker
+     *            Marker details
      */
     public void gotoMarker(IMarker marker) {
         this.setActivePage(0);
@@ -304,6 +296,19 @@ public final class DeviceDescriptionFileEditor extends FormEditor
         super.handlePropertyChange(propertyId);
     }
 
+    public DocumentRoot getDocumentRoot() {
+        java.net.URI uri = projectFile.getLocationURI();
+        DocumentRoot root = null;
+        try {
+            URL url = uri.toURL();
+            root = XDDUtilities.loadXDD(url);
+
+        } catch (MalformedURLException e1) {
+            e1.printStackTrace();
+        }
+        return root;
+    }
+
     /**
      * Initializes the project editor
      *
@@ -312,11 +317,9 @@ public final class DeviceDescriptionFileEditor extends FormEditor
      * <code>IFileEditorInput</code>.
      */
     @Override
-    public void init(IEditorSite site, IEditorInput editorInput)
-            throws PartInitException {
+    public void init(IEditorSite site, IEditorInput editorInput) throws PartInitException {
         if (!(editorInput instanceof IFileEditorInput)) {
-            throw new PartInitException(
-                    DeviceDescriptionFileEditor.INVALID_INPUT_ERROR);
+            throw new PartInitException(DeviceDescriptionFileEditor.INVALID_INPUT_ERROR);
         }
         super.init(site, editorInput);
 
@@ -325,25 +328,17 @@ public final class DeviceDescriptionFileEditor extends FormEditor
         setPartName(projectFile.getName());
 
         activeProject = projectFile.getProject();
-        networkId = activeProject.getName();
 
         try {
-            activeProject.refreshLocal(IResource.DEPTH_INFINITE,
-                    new NullProgressMonitor());
+            activeProject.refreshLocal(IResource.DEPTH_INFINITE, new NullProgressMonitor());
         } catch (CoreException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
-        // Validate the input with openCONFIGURATOR project file schema.
-      
-
         System.out.println("activeProject- path" + activeProject.getLocation());
 
-       
     }
 
-  
     /**
      * Returns false as saveAs is not supported for this editor.
      */
@@ -358,26 +353,18 @@ public final class DeviceDescriptionFileEditor extends FormEditor
     @Override
     protected void pageChange(int newPageIndex) {
 
-//        if ((getActivePage() == sourcePage.getIndex()) && (isDirty())) {
-//            
-//        }
-
         // switch page
         super.pageChange(newPageIndex);
 
         // update page if needed
         final IFormPage page = getActivePageInstance();
-        
-    }
 
-    
+    }
 
     @Override
     public void propertyChange(PropertyChangeEvent event) {
         // TODO Auto-generated method stub
     }
-
-  
 
     /**
      * Handles the project change events.
@@ -386,20 +373,20 @@ public final class DeviceDescriptionFileEditor extends FormEditor
     public void resourceChanged(final IResourceChangeEvent event) {
 
         switch (event.getType()) {
-            case IResourceChangeEvent.POST_CHANGE:
-                break;
-            case IResourceChangeEvent.PRE_CLOSE:
-            case IResourceChangeEvent.PRE_DELETE: // Fallthrough
-               
-                break;
-            case IResourceChangeEvent.PRE_BUILD:
-                break;
-            case IResourceChangeEvent.POST_BUILD:
-                break;
-            case IResourceChangeEvent.PRE_REFRESH:
-                break;
-            default:
-                break;
+        case IResourceChangeEvent.POST_CHANGE:
+            break;
+        case IResourceChangeEvent.PRE_CLOSE:
+        case IResourceChangeEvent.PRE_DELETE: // Fallthrough
+
+            break;
+        case IResourceChangeEvent.PRE_BUILD:
+            break;
+        case IResourceChangeEvent.POST_BUILD:
+            break;
+        case IResourceChangeEvent.PRE_REFRESH:
+            break;
+        default:
+            break;
         }
 
         // Handle project file delete and rename events
@@ -420,53 +407,48 @@ public final class DeviceDescriptionFileEditor extends FormEditor
             return;
         }
 
-        IResourceDelta oldDelta = delta
-                .findMember(currentProjectFile.getFullPath());
+        IResourceDelta oldDelta = delta.findMember(currentProjectFile.getFullPath());
         if (oldDelta == null) {
             return;
         }
 
         switch (oldDelta.getKind()) {
-            case IResourceDelta.REMOVED:
-                if ((oldDelta.getFlags() & IResourceDelta.MOVED_TO) != 0) {
-                    IPath newPath = oldDelta.getMovedToPath();
-                    final IFile newfile = ResourcesPlugin.getWorkspace()
-                            .getRoot().getFile(newPath);
-                    if (newfile != null) {
-                        setInput(new FileEditorInput(newfile));
+        case IResourceDelta.REMOVED:
+            if ((oldDelta.getFlags() & IResourceDelta.MOVED_TO) != 0) {
+                IPath newPath = oldDelta.getMovedToPath();
+                final IFile newfile = ResourcesPlugin.getWorkspace().getRoot().getFile(newPath);
+                if (newfile != null) {
+                    setInput(new FileEditorInput(newfile));
 
-                        if (newfile.getName() != null) {
-                            Display.getDefault().asyncExec(new Runnable() {
-                                @Override
-                                public void run() {
-                                    setPartName(newfile.getName());
-                                }
-                            });
-                        }
+                    if (newfile.getName() != null) {
+                        Display.getDefault().asyncExec(new Runnable() {
+                            @Override
+                            public void run() {
+                                setPartName(newfile.getName());
+                            }
+                        });
                     }
-                } else if (oldDelta.getFlags() == 0) {
-                    closeEditor();
                 }
-                break;
-            case IResourceDelta.CHANGED:
-                if (oldDelta.getFlags() == IResourceDelta.CONTENT) {
-                    setInput(new FileEditorInput(currentProjectFile));
-                    Display.getDefault().asyncExec(new Runnable() {
-                        @Override
-                        public void run() {
-                          
-                        }
-                    });
+            } else if (oldDelta.getFlags() == 0) {
+                closeEditor();
+            }
+            break;
+        case IResourceDelta.CHANGED:
+            if (oldDelta.getFlags() == IResourceDelta.CONTENT) {
+                setInput(new FileEditorInput(currentProjectFile));
+                Display.getDefault().asyncExec(new Runnable() {
+                    @Override
+                    public void run() {
 
-                }
+                    }
+                });
 
-                break;
-            default:
-                break;
+            }
+
+            break;
+        default:
+            break;
         }
     }
 
-   
-
-   
 }
