@@ -34,6 +34,7 @@ package com.br_automation.buoat.xddeditor.editor.editors;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
@@ -327,12 +328,7 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
         vendorIdText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         toolkit.adapt(vendorIdText, true, true);
 
-        TDeviceIdentity tDeviceIdentity = getDeviceIdentity();
-        if (tDeviceIdentity.getVendorID() != null) {
-            vendorIdText.setText(tDeviceIdentity.getVendorID().getValue());
-        } else {
-            vendorIdText.setText("");
-        }
+
 
         Label vendorNameLabel = new Label(client, SWT.NONE);
         vendorNameLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
@@ -343,11 +339,7 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
         vendorNameText = new Text(client, SWT.BORDER | SWT.WRAP);
         vendorNameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         toolkit.adapt(vendorNameText, true, true);
-        if (tDeviceIdentity.getVendorName() != null) {
-            vendorNameText.setText(tDeviceIdentity.getVendorName().getValue());
-        } else {
-            vendorNameText.setText("");
-        }
+
 
         Label hwVersionLabel = new Label(client, SWT.NONE);
         hwVersionLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
@@ -358,11 +350,7 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
         hardwareVersionText = new Text(client, SWT.BORDER | SWT.WRAP);
         hardwareVersionText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         toolkit.adapt(hardwareVersionText, true, true);
-        if (tDeviceIdentity.getVersion().get(0) != null) {
-            hardwareVersionText.setText(tDeviceIdentity.getVersion().get(0).getValue());
-        } else {
-            hardwareVersionText.setText("");
-        }
+
 
         Label swVersionLabel = new Label(client, SWT.NONE);
         swVersionLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
@@ -373,11 +361,7 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
         swVersionText = new Text(client, SWT.BORDER | SWT.WRAP);
         swVersionText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         toolkit.adapt(swVersionText, true, true);
-        if (tDeviceIdentity.getVersion().get(1) != null) {
-            swVersionText.setText(tDeviceIdentity.getVersion().get(1).getValue());
-        } else {
-            swVersionText.setText("");
-        }
+
 
         Label fwVersionLabel = new Label(client, SWT.NONE);
         fwVersionLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
@@ -388,11 +372,7 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
         fwVersionText = new Text(client, SWT.BORDER | SWT.WRAP);
         fwVersionText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         toolkit.adapt(fwVersionText, true, true);
-        if (tDeviceIdentity.getVersion().get(2) != null) {
-            fwVersionText.setText(tDeviceIdentity.getVersion().get(2).getValue());
-        } else {
-            fwVersionText.setText("");
-        }
+
 
         Label productnameLabel = new Label(client, SWT.NONE);
         productnameLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
@@ -403,11 +383,7 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
         productNameText = new Text(client, SWT.BORDER | SWT.WRAP);
         productNameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         toolkit.adapt(productNameText, true, true);
-        if (tDeviceIdentity.getProductName() != null) {
-            productNameText.setText(tDeviceIdentity.getProductName().getValue());
-        } else {
-            productNameText.setText("");
-        }
+
 
         Label productIdlabel = new Label(client, SWT.NONE);
         productIdlabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
@@ -418,11 +394,52 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
         productIdText = new Text(client, SWT.BORDER | SWT.WRAP);
         productIdText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         toolkit.adapt(productIdText, true, true);
+
+
+        TDeviceIdentity tDeviceIdentity = getDeviceIdentity();
+        if (tDeviceIdentity.getVendorID() != null) {
+            vendorIdText.setText(tDeviceIdentity.getVendorID().getValue());
+        } else {
+            vendorIdText.setText(StringUtils.EMPTY);
+        }
+
         if (tDeviceIdentity.getProductID() != null) {
             productIdText.setText(tDeviceIdentity.getProductID().getValue());
         } else {
-            productIdText.setText("");
+            productIdText.setText(StringUtils.EMPTY);
         }
+
+        if (tDeviceIdentity.getProductName() != null) {
+            productNameText.setText(tDeviceIdentity.getProductName().getValue());
+        } else {
+            productNameText.setText(StringUtils.EMPTY);
+        }
+
+        if (tDeviceIdentity.getVendorName() != null) {
+            vendorNameText.setText(tDeviceIdentity.getVendorName().getValue());
+        } else {
+            vendorNameText.setText(StringUtils.EMPTY);
+        }
+
+
+        if(tDeviceIdentity.getVersion() != null){
+        	List<TVersion> deviceIdentityVersion = tDeviceIdentity.getVersion();
+        	 swVersionText.setText(StringUtils.EMPTY);
+        	 hardwareVersionText.setText(StringUtils.EMPTY);
+        	 fwVersionText.setText(StringUtils.EMPTY);
+        	for(TVersion version : deviceIdentityVersion){
+        		if(version.getVersionType().getName().equalsIgnoreCase("SW")){
+        			swVersionText.setText(tDeviceIdentity.getVersion().get(1).getValue());
+        		}else if(version.getVersionType().getName().equalsIgnoreCase("HW")) {
+        			hardwareVersionText.setText(tDeviceIdentity.getVersion().get(0).getValue());
+        		}else if (version.getVersionType().getName().equalsIgnoreCase("FW")) {
+        			fwVersionText.setText(tDeviceIdentity.getVersion().get(2).getValue());
+        		}
+        	}
+        }
+
+
+
 
     }
 

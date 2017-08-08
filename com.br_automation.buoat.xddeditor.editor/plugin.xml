@@ -21,22 +21,15 @@
 
    <extension point="org.eclipse.ui.editors">
       <editor
-            id="com.br_automation.buoat.xddeditor.XDD.presentation.XDDEditorID"
-            name="%_UI_XDDEditor_label"
-            icon="icons/full/obj16/XDDModelFile.gif"
-            extensions="xdd"
-            class="com.br_automation.buoat.xddeditor.XDD.presentation.XDDEditor"
-            contributorClass="com.br_automation.buoat.xddeditor.XDD.presentation.XDDActionBarContributor">
-      </editor>
-      <editor
             class="com.br_automation.buoat.xddeditor.editor.editors.DeviceDescriptionFileEditor"
-            default="false"
+            contributorClass="com.br_automation.buoat.xddeditor.XDD.presentation.XDDActionBarContributor"
+            extensions="xdd, xdc"
             icon="icons/sample.gif"
             id="com.br_automation.buoat.xddeditor.editor.XDD"
-            name="POWERLINK Editor">
+            name="XDD Editor">
       </editor>
    </extension>
-   
+
    <extension
          point="org.eclipse.ui.perspectiveExtensions">
       <perspectiveExtension
@@ -46,7 +39,7 @@
          </newWizardShortcut>
       </perspectiveExtension>
    </extension>
-   
+
    <extension
          point="org.eclipse.ui.navigator.navigatorContent">
       <commonWizard
@@ -173,7 +166,7 @@
             name="New ViewPart">
       </view>
    </extension>
-   
+
 
 
 </plugin>
