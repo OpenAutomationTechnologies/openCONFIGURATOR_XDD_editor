@@ -43,6 +43,7 @@ import java.util.List;
 import javax.xml.bind.JAXBException;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
@@ -60,12 +61,15 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -86,6 +90,10 @@ import org.xml.sax.SAXException;
 import com.br_automation.buoat.xddeditor.XDD.DocumentRoot;
 import com.br_automation.buoat.xddeditor.XDD.ISO15745ProfileContainerType;
 import com.br_automation.buoat.xddeditor.XDD.ISO15745ProfileType;
+import com.br_automation.buoat.xddeditor.XDD.ProfileBodyDataType;
+import com.br_automation.buoat.xddeditor.XDD.ProfileHeaderDataType;
+import com.br_automation.buoat.xddeditor.XDD.TDeviceFunction;
+import com.br_automation.buoat.xddeditor.XDD.TDeviceIdentity;
 import com.br_automation.buoat.xddeditor.XDD.TObject;
 import com.br_automation.buoat.xddeditor.XDD.XDDPackage;
 import com.br_automation.buoat.xddeditor.XDD.custom.ModelLoader;
@@ -103,7 +111,7 @@ import com.br_automation.buoat.xddeditor.XDD.custom.XDDUtilities;
  *
  */
 public final class DeviceDescriptionFileEditor extends FormEditor
-        implements IResourceChangeListener, IPropertyChangeListener {
+        implements IResourceChangeListener, IPropertyChangeListener{
 
     /**
      * Identifier for this page.
@@ -309,6 +317,14 @@ public final class DeviceDescriptionFileEditor extends FormEditor
         return root;
     }
 
+    public IFile getModelFile() {
+    	return projectFile;
+    }
+
+    public IPath getPathOfXddFile() {
+    	return projectFile.getRawLocation();
+    }
+
     /**
      * Initializes the project editor
      *
@@ -339,12 +355,54 @@ public final class DeviceDescriptionFileEditor extends FormEditor
 
     }
 
+
+    public String getVendorId() {
+    	TDeviceIdentity deviceIdentity = getDeviceIdentity();
+    	if(deviceIdentity.getVendorID() != null){
+    		return deviceIdentity.getVendorID().getValue();
+    	}
+
+    	return StringUtils.EMPTY;
+    }
+
+    public String getproductId() {
+    	TDeviceIdentity deviceIdentity = getDeviceIdentity();
+    	if(deviceIdentity.getProductID() != null){
+    	return deviceIdentity.getProductID().getValue();
+    	}
+    	return StringUtils.EMPTY;
+    }
+
+
+
+    public TDeviceIdentity getDeviceIdentity() {
+        EList<ISO15745ProfileType> profiles = getDocumentRoot().getISO15745ProfileContainer().getISO15745Profile();
+        ISO15745ProfileType profile1 = profiles.get(0);
+        ISO15745ProfileType profile2 = profiles.get(1);
+
+        ProfileHeaderDataType header1 = profile1.getProfileHeader();
+
+        ProfileBodyDataType body1 = profile1.getProfileBody();
+        EList<EObject> bodyContents = body1.eContents();
+        System.err.println("The elements of XDD..."+bodyContents);
+        EObject identity = bodyContents.get(0);
+        TDeviceIdentity tDeviceIdentity = (TDeviceIdentity) identity;
+
+        return tDeviceIdentity;
+    }
+
+
     /**
      * Returns false as saveAs is not supported for this editor.
      */
     @Override
     public boolean isSaveAsAllowed() {
         return false;
+    }
+
+
+    public IProject getProject(){
+    	return activeProject;
     }
 
     /**
@@ -450,5 +508,7 @@ public final class DeviceDescriptionFileEditor extends FormEditor
             break;
         }
     }
+
+
 
 }

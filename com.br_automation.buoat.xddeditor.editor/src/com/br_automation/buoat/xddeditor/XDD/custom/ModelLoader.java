@@ -33,10 +33,10 @@ import com.br_automation.buoat.xddeditor.XDD.XDDPackage;
 /**
  * @brief Provides methods to create an Initial model based on data configured
  *        in the Wizard.
- * 
+ *
  *        Gets the user-input from the CustomXDDWizard-Pages and adds the needed
  *        objects to the root. Also adds the correct time,user etc.
- * 
+ *
  * @author Joris Lückenga
  */
 public final class ModelLoader {
@@ -84,7 +84,7 @@ public final class ModelLoader {
 
     /**
      * @brief Add/Remove objects required for IP-Support.
-     * 
+     *
      * @param status
      *            <code>True</code> to add objects, <code>false</code>
      *            otherwise. <code>False</code> is not implemented yet.
@@ -115,7 +115,7 @@ public final class ModelLoader {
 
     /**
      * @brief Add/Remove objects required for Multi-ASnd
-     * 
+     *
      * @param status
      *            <code>True</code> to add objects, <code>false</code>
      *            otherwise. <code>False</code> is not implemented yet.
@@ -143,7 +143,7 @@ public final class ModelLoader {
 
     /**
      * @brief Add/Remove objects required for Multiplexing-feature
-     * 
+     *
      * @param status
      *            <code>True</code> to add objects, <code>false</code>
      *            otherwise. <code>False</code> is not implemented yet.
@@ -194,7 +194,7 @@ public final class ModelLoader {
 
     /**
      * @brief Add/Remove objects required for PRes-Chaining feature
-     * 
+     *
      * @param status
      *            <code>True</code> to add objects, <code>false</code>
      *            otherwise. <code>False</code> is not implemented yet.
