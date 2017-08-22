@@ -44,7 +44,9 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -53,6 +55,17 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.window.Window;
+import org.eclipse.pde.core.IModelChangedEvent;
+import org.eclipse.pde.internal.ui.editor.PDEFormPage;
+import org.eclipse.pde.internal.ui.editor.PDEMasterDetailsBlock;
+import org.eclipse.pde.internal.ui.editor.PDESection;
+import org.eclipse.pde.internal.ui.editor.plugin.AbstractPluginElementDetails;
+import org.eclipse.pde.internal.ui.editor.plugin.ExtensionDetails;
+import org.eclipse.pde.internal.ui.editor.plugin.ExtensionElementBodyTextDetails;
+import org.eclipse.pde.internal.ui.editor.plugin.ExtensionElementDetails;
+import org.eclipse.pde.internal.ui.editor.plugin.ExtensionsPage;
+import org.eclipse.pde.internal.ui.editor.plugin.ExtensionsSection;
+
 import org.eclipse.pde.internal.ui.editor.text.IControlHoverContentProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
@@ -83,6 +96,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.FilteredTree;
 import org.eclipse.ui.dialogs.PatternFilter;
 import org.eclipse.ui.forms.IFormColors;
+import org.eclipse.ui.forms.IFormPart;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.events.HyperlinkAdapter;
@@ -104,6 +118,7 @@ import com.br_automation.buoat.xddeditor.XDD.custom.CiADeviceProfile;
 import com.br_automation.buoat.xddeditor.XDD.custom.ModelLoader;
 import com.br_automation.buoat.xddeditor.XDD.custom.XDDUtilities;
 import com.br_automation.buoat.xddeditor.XDD.custom.propertypages.TObjectComposite;
+import com.br_automation.buoat.xddeditor.XDD.impl.SubObjectTypeImpl;
 import com.br_automation.buoat.xddeditor.XDD.impl.TObjectImpl;
 import com.br_automation.buoat.xddeditor.XDD.provider.TObjectItemProvider;
 import com.br_automation.buoat.xddeditor.XDD.resources.IPluginImages;
@@ -115,12 +130,13 @@ import com.br_automation.buoat.xddeditor.XDD.resources.IPluginImages;
  * @author Sree Hari Vignesh B
  *
  */
-public final class ObjectDictionaryEditorPage extends FormPage {
+public final class ObjectDictionaryEditorPage extends FormPage implements ISelectionChangedListener {
 
     /** Identifier */
     private static final String ID = "org.epsg.openconfigurator.editors.objectDictionaryEditorPage";
 
     private static final String OBJECT_DICTIONARY_HEADING = "Object Dictionary";
+    private static final String OBJECT_DICTIONARY_DETAILS_HEADING = "Object Dictionary Details";
     private static final String OBJECT_DICTIONARY_HEADING_DESCRIPTION = "Provides POWERLINK object dictionary of device.";
 
     private static final String ADD_BUTTON_LABEL = "Add...";
@@ -204,15 +220,104 @@ public final class ObjectDictionaryEditorPage extends FormPage {
         body.setLayout(layout);
 
         createObjectDictionarySection(managedForm);
+
+        createObjectDetailsSections(managedForm);
+
+
     }
 
     // TO be implemented
     private void createObjectDetailsSections(final IManagedForm managedForm) {
+        deviceFirmwareSection = managedForm.getToolkit().createSection(managedForm.getForm().getBody(),
+                ExpandableComposite.EXPANDED | Section.DESCRIPTION | ExpandableComposite.TWISTIE
+                        | ExpandableComposite.TITLE_BAR);
+        managedForm.getToolkit().paintBordersFor(deviceFirmwareSection);
+        deviceFirmwareSection.setText(ObjectDictionaryEditorPage.OBJECT_DICTIONARY_DETAILS_HEADING);
+        deviceFirmwareSection.setDescription(ObjectDictionaryEditorPage.OBJECT_DICTIONARY_HEADING_DESCRIPTION);
+
+
+
+
+    }
+
+
+
+
+
+
+private Section deviceFirmwareSection;
+
+private Composite clientComposite;
+
+
+    public void updateSections(Section deviceFirmwareSection) {
+
+    	clientComposite = toolkit.createComposite(deviceFirmwareSection, SWT.WRAP);
+        GridLayout layout = new GridLayout(2, false);
+        layout.marginHeight = 15;
+        layout.marginBottom = 15;
+        clientComposite.setLayout(layout);
+        toolkit.paintBordersFor(clientComposite);
+        deviceFirmwareSection.setClient(clientComposite);
+
+    	Label vendorIdLabel = new Label(clientComposite, SWT.NONE);
+        vendorIdLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+        vendorIdLabel.setText("Vendor ID");
+        toolkit.adapt(vendorIdLabel, true, true);
+        vendorIdLabel.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
+
+        Text vendorIdText = new Text(clientComposite, SWT.BORDER | SWT.WRAP);
+        vendorIdText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+        toolkit.adapt(vendorIdText, true, true);
+
+        Label vendorNameLabel = new Label(clientComposite, SWT.NONE);
+        vendorNameLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+        vendorNameLabel.setText("Vendor Name");
+        toolkit.adapt(vendorNameLabel, true, true);
+        vendorNameLabel.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
+
+        Text vendorNameText = new Text(clientComposite, SWT.BORDER | SWT.WRAP);
+        vendorNameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+        toolkit.adapt(vendorNameText, true, true);
+    }
+
+    public void updateSubObjectSections(Section deviceFirmwareSection) {
+
+    	clientComposite = toolkit.createComposite(deviceFirmwareSection, SWT.WRAP);
+        GridLayout layout = new GridLayout(2, false);
+        layout.marginHeight = 15;
+        layout.marginBottom = 15;
+        clientComposite.setLayout(layout);
+        toolkit.paintBordersFor(clientComposite);
+        deviceFirmwareSection.setClient(clientComposite);
+
+    	Label vendorIdLabel = new Label(clientComposite, SWT.NONE);
+        vendorIdLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+        vendorIdLabel.setText("Vendor");
+        toolkit.adapt(vendorIdLabel, true, true);
+        vendorIdLabel.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
+
+        Text vendorIdText = new Text(clientComposite, SWT.BORDER | SWT.WRAP);
+        vendorIdText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+        toolkit.adapt(vendorIdText, true, true);
+
+        Label vendorNameLabel = new Label(clientComposite, SWT.NONE);
+        vendorNameLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+        vendorNameLabel.setText("Vendor Name ID");
+        toolkit.adapt(vendorNameLabel, true, true);
+        vendorNameLabel.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
+
+        Text vendorNameText = new Text(clientComposite, SWT.BORDER | SWT.WRAP);
+        vendorNameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+        toolkit.adapt(vendorNameText, true, true);
+    }
+
+    private void createSubObjectDetailsSections(final IManagedForm managedForm) {
         Section deviceFirmwareSection = managedForm.getToolkit().createSection(managedForm.getForm().getBody(),
                 ExpandableComposite.EXPANDED | Section.DESCRIPTION | ExpandableComposite.TWISTIE
                         | ExpandableComposite.TITLE_BAR);
         managedForm.getToolkit().paintBordersFor(deviceFirmwareSection);
-        deviceFirmwareSection.setText(ObjectDictionaryEditorPage.OBJECT_DICTIONARY_HEADING);
+        deviceFirmwareSection.setText("New");
         deviceFirmwareSection.setDescription(ObjectDictionaryEditorPage.OBJECT_DICTIONARY_HEADING_DESCRIPTION);
 
         Composite clientComposite = toolkit.createComposite(deviceFirmwareSection, SWT.WRAP);
@@ -223,6 +328,7 @@ public final class ObjectDictionaryEditorPage extends FormPage {
         toolkit.paintBordersFor(clientComposite);
 
     }
+
 
     /**
      * PatternFilter class to always show sub objects after filtering of
@@ -363,6 +469,11 @@ public final class ObjectDictionaryEditorPage extends FormPage {
 
     }
 
+
+
+
+    private TreeViewer listViewer;
+
     /**
      * Creates the widgets and controls for the Object dictionary model.
      *
@@ -389,7 +500,7 @@ public final class ObjectDictionaryEditorPage extends FormPage {
         PatternFilter filter = new PowerlinkObjectPatternFilter();
         filter.setIncludeLeadingWildcard(true);
         FilteredTree tree = new FilteredTree(clientComposite, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL, filter, true);
-        TreeViewer listViewer = tree.getViewer();
+        listViewer = tree.getViewer();
         Tree lst_no_foi = listViewer.getTree();
 
         listViewer.setContentProvider(new ObjectDictionaryContentProvider());
@@ -400,6 +511,8 @@ public final class ObjectDictionaryEditorPage extends FormPage {
         pst.heightHint = 400;
         pst.widthHint = 626;
         lst_no_foi.setLayoutData(pst);
+
+        getEditorSite().setSelectionProvider(listViewer);
 
         addPathSettingsButton = toolkit.createButton(clientComposite, ObjectDictionaryEditorPage.ADD_BUTTON_LABEL,
                 SWT.PUSH);
@@ -412,6 +525,18 @@ public final class ObjectDictionaryEditorPage extends FormPage {
         removeButton.setLayoutData(pst);
         removeButton.setEnabled(false);
         toolkit.adapt(removeButton, true, true);
+
+
+        ISelectionProvider selectionProvider = editor.getSite().getSelectionProvider();
+        selectionProvider.addSelectionChangedListener(this);
+
+
+		// Fake a selection changed event to update the menus.
+		//
+		if (selectionProvider.getSelection() != null) {
+			selectionChanged(new SelectionChangedEvent(selectionProvider, selectionProvider.getSelection()));
+		}
+
 
     }
 
@@ -466,5 +591,20 @@ public final class ObjectDictionaryEditorPage extends FormPage {
             getEditor().editorDirtyStateChanged();
         }
     }
+
+	@Override
+	public void selectionChanged(SelectionChangedEvent event) {
+		ISelection selection = event.getSelection();
+		if (selection instanceof IStructuredSelection && ((IStructuredSelection)selection).size() == 1) {
+			Object object = ((IStructuredSelection)selection).getFirstElement();
+			if(object instanceof TObjectImpl){
+				updateSections(deviceFirmwareSection);
+			}else if (object instanceof SubObjectTypeImpl) {
+				updateSubObjectSections(deviceFirmwareSection);
+			}
+
+		}
+
+	}
 
 }

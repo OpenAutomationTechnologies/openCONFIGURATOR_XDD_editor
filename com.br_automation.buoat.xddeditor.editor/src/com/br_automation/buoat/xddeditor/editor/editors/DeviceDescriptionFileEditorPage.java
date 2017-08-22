@@ -31,24 +31,48 @@
 
 package com.br_automation.buoat.xddeditor.editor.editors;
 
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import javax.xml.bind.DatatypeConverter;
 
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.emf.common.notify.Adapter;
+import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.TreeIterator;
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EOperation;
+import org.eclipse.emf.ecore.EReference;
+import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.eclipse.emf.ecore.xmi.XMLResource;
+import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.window.Window;
+import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -81,16 +105,34 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.forms.widgets.TableWrapLayout;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.jdom2.Element;
+import org.jdom2.Namespace;
 
 import com.br_automation.buoat.xddeditor.XDD.DocumentRoot;
+import com.br_automation.buoat.xddeditor.XDD.FirmwareType;
 import com.br_automation.buoat.xddeditor.XDD.ISO15745ProfileType;
+import com.br_automation.buoat.xddeditor.XDD.ProductNameType;
 import com.br_automation.buoat.xddeditor.XDD.ProfileBodyDataType;
 import com.br_automation.buoat.xddeditor.XDD.ProfileHeaderDataType;
+import com.br_automation.buoat.xddeditor.XDD.SubObjectType;
 import com.br_automation.buoat.xddeditor.XDD.TDeviceIdentity;
+import com.br_automation.buoat.xddeditor.XDD.TFirmwareList;
+import com.br_automation.buoat.xddeditor.XDD.TObject;
+import com.br_automation.buoat.xddeditor.XDD.TProductID;
+import com.br_automation.buoat.xddeditor.XDD.TVendorID;
 import com.br_automation.buoat.xddeditor.XDD.TVersion;
+import com.br_automation.buoat.xddeditor.XDD.VendorNameType;
+import com.br_automation.buoat.xddeditor.XDD.VersionInfoType;
 import com.br_automation.buoat.xddeditor.XDD.VersionTypeType;
 import com.br_automation.buoat.xddeditor.XDD.XDDFactory;
+import com.br_automation.buoat.xddeditor.XDD.XDDPackage;
+import com.br_automation.buoat.xddeditor.XDD.custom.CustomXDDWizard;
 import com.br_automation.buoat.xddeditor.XDD.custom.XDDUtilities;
+import com.br_automation.buoat.xddeditor.XDD.presentation.XDDEditor;
+import com.br_automation.buoat.xddeditor.XDD.resources.IPluginImages;
+import com.br_automation.buoat.xddeditor.XDD.validation.NameVerifyListener;
+import com.br_automation.buoat.xddeditor.XDD.wizards.NewFirmwareWizard;
 
 /**
  * The editor page to manipulate the device identity of description file.
@@ -130,6 +172,36 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
     private static final String NETWORK_MANAGEMENT_HYPERLINK_SECTION = "Network Management";
 
     private static final String FORM_EDITOR_PAGE_TITLE = "Device Description File Editor";
+
+    static final Namespace POWERLINK_XDD_NAMESPACE;
+
+    private static final String APPLICATION_PROCESS_XPATH = "//plk:ProfileBody" + "/plk:ApplicationProcess";
+    private static final String APPLICATION_LAYER_XPATH = "//plk:ProfileBody" + "/plk:ApplicationLayers";
+    private static final String FILE_MODIFICATION_TIME = "fileModificationTime";
+    private static final String FILE_MODIFICATION_DATE = "fileModificationDate";
+    private static final String FILE_MODIFIED_BY = "fileModifiedBy";
+    private static final String FILE_MODIFICATION_TIME_XPATH = "//plk:ProfileBody[@" + FILE_MODIFICATION_TIME + "]";
+    private static final String FILE_MODIFICATION_DATE_XPATH = "//plk:ProfileBody[@" + FILE_MODIFICATION_DATE + "]";
+    private static final String FILE_MODIFIED_BY_XPATH = "//plk:ProfileBody[@" + FILE_MODIFIED_BY + "]";
+    private static final String INTERFACE_LIST_XPATH = "//plk:DeviceManager" + "/plk:moduleManagement"
+            + "/plk:interfaceList";
+    private static final String IDENTITY_XPATH = APPLICATION_LAYER_XPATH + "/plk:identity";
+    private static final String VENDOR_ID_XPATH = IDENTITY_XPATH + "/plk:vendorID";
+
+    private static final String VENDOR_ID_ELEMENT = "vendorID";
+
+    private static final String PARAMETER_LIST_XPATH = APPLICATION_PROCESS_XPATH + "/plk:parameterList";
+    private static final String TEMPLATE_LIST_XPATH = APPLICATION_PROCESS_XPATH + "/plk:templateList";
+    private static final String PARAMETER_GROUP_LIST_XPATH = APPLICATION_PROCESS_XPATH + "/plk:parameterGroupList";
+
+    static {
+        POWERLINK_XDD_NAMESPACE = Namespace.getNamespace("plk", "http://www.ethernet-powerlink.org");
+    }
+
+    /**
+     * Name verify listener
+     */
+    private NameVerifyListener nameVerifyListener = new NameVerifyListener();
 
     /**
      * Form size
@@ -184,7 +256,7 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
     private Button editPathSettingsButton;
     private Button deletePathSettingsButton;
 
-    private DocumentRoot documentRoot;
+    private static DocumentRoot documentRoot;
 
     public DeviceDescriptionFileEditorPage(DeviceDescriptionFileEditor editor, final String title,
             DocumentRoot documentRoot) {
@@ -282,20 +354,7 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
 
     }
 
-    private TDeviceIdentity getDeviceIdentity() {
-        EList<ISO15745ProfileType> profiles = documentRoot.getISO15745ProfileContainer().getISO15745Profile();
-        ISO15745ProfileType profile1 = profiles.get(0);
-        ISO15745ProfileType profile2 = profiles.get(1);
 
-        ProfileHeaderDataType header1 = profile1.getProfileHeader();
-
-        ProfileBodyDataType body1 = profile1.getProfileBody();
-        EList<EObject> bodyContents = body1.eContents();
-        EObject identity = bodyContents.get(0);
-        TDeviceIdentity tDeviceIdentity = (TDeviceIdentity) identity;
-
-        return tDeviceIdentity;
-    }
 
     /**
      * Creates the widgets and controls for the model.
@@ -328,8 +387,6 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
         vendorIdText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         toolkit.adapt(vendorIdText, true, true);
 
-
-
         Label vendorNameLabel = new Label(client, SWT.NONE);
         vendorNameLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
         vendorNameLabel.setText(DeviceDescriptionFileEditorPage.VENDOR_NAME_LABEL);
@@ -339,7 +396,6 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
         vendorNameText = new Text(client, SWT.BORDER | SWT.WRAP);
         vendorNameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         toolkit.adapt(vendorNameText, true, true);
-
 
         Label hwVersionLabel = new Label(client, SWT.NONE);
         hwVersionLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
@@ -351,7 +407,6 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
         hardwareVersionText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         toolkit.adapt(hardwareVersionText, true, true);
 
-
         Label swVersionLabel = new Label(client, SWT.NONE);
         swVersionLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
         swVersionLabel.setText(DeviceDescriptionFileEditorPage.SOFTWARE_VERSION_LABEL);
@@ -361,7 +416,6 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
         swVersionText = new Text(client, SWT.BORDER | SWT.WRAP);
         swVersionText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         toolkit.adapt(swVersionText, true, true);
-
 
         Label fwVersionLabel = new Label(client, SWT.NONE);
         fwVersionLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
@@ -373,7 +427,6 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
         fwVersionText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         toolkit.adapt(fwVersionText, true, true);
 
-
         Label productnameLabel = new Label(client, SWT.NONE);
         productnameLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
         productnameLabel.setText(DeviceDescriptionFileEditorPage.PRODUCT_NAME_LABEL);
@@ -383,7 +436,6 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
         productNameText = new Text(client, SWT.BORDER | SWT.WRAP);
         productNameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         toolkit.adapt(productNameText, true, true);
-
 
         Label productIdlabel = new Label(client, SWT.NONE);
         productIdlabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
@@ -395,8 +447,434 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
         productIdText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         toolkit.adapt(productIdText, true, true);
 
+        updateGeneralInfoFields();
+        addListenersToControls();
 
+    }
+
+    private void addListenersToControls() {
+        vendorIdText.addModifyListener(vendorIdModifyListener);
+        vendorIdText.addVerifyListener(nameVerifyListener);
+        vendorNameText.addVerifyListener(nameVerifyListener);
+        vendorNameText.addModifyListener(vendorNameModifyListener);
+        productIdText.addVerifyListener(nameVerifyListener);
+        productNameText.addVerifyListener(nameVerifyListener);
+        productIdText.addModifyListener(productIdModifyListener);
+        productNameText.addModifyListener(productNameModifyListener);
+        hardwareVersionText.addModifyListener(hardwareVerModifyListener);
+        swVersionText.addModifyListener(softwareVerModifyListener);
+        fwVersionText.addModifyListener(firmwareVerModifyListener);
+        hardwareVersionText.addVerifyListener(nameVerifyListener);
+        swVersionText.addVerifyListener(nameVerifyListener);
+        fwVersionText.addVerifyListener(nameVerifyListener);
+    }
+
+    private void setErrorMessage(String message) {
+        form.setMessage(message, IMessageProvider.ERROR);
+        if (message == null) {
+                        form.setMessage(message, IMessageProvider.NONE);
+        }
+    }
+
+    private void setInfoMessage(String message) {
+        form.setMessage(message, IMessageProvider.INFORMATION);
+        if (message == null) {
+            form.setMessage(message, IMessageProvider.NONE);
+        }
+    }
+
+
+    public TDeviceIdentity getDeviceIdentity() {
+        EList<ISO15745ProfileType> profiles = documentRoot.getISO15745ProfileContainer().getISO15745Profile();
+        ISO15745ProfileType profile1 = profiles.get(0);
+        ISO15745ProfileType profile2 = profiles.get(1);
+
+        ProfileHeaderDataType header1 = profile1.getProfileHeader();
+
+        ProfileBodyDataType body1 = profile1.getProfileBody();
+        EList<EObject> bodyContents = body1.eContents();
+        EObject identity = bodyContents.get(0);
+        TDeviceIdentity tDeviceIdentity = (TDeviceIdentity) identity;
+
+        return tDeviceIdentity;
+    }
+
+    private ModifyListener vendorIdModifyListener = new ModifyListener() {
+
+        @Override
+        public void modifyText(ModifyEvent e) {
+            setErrorMessage(null);
+            String vendorId = vendorIdText.getText();
+            try {
+
+                if (vendorId == null) {
+                    setErrorMessage("Invalid vendor ID value.");
+                    return;
+                }
+
+                if (vendorId.length() <= 0) {
+                    setErrorMessage("Invalid vendor ID value.");
+                    return;
+                }
+
+                // Space as first character is not allowed. ppc:tNonEmptyString
+                if (vendorId.contains(" ")) {
+                    setErrorMessage("Invalid vendor ID value.");
+                    return;
+                }
+
+                if (vendorId.contains("0x")) {
+                    String val = vendorId.substring(2);
+                    long vendorIdValue = Long.valueOf(val);
+                    if (vendorId.length() > 10) {
+                        setErrorMessage("Invalid vendor ID value.");
+                        return;
+                    }
+                } else {
+                    setErrorMessage("Invalid vendor ID value.");
+                    return;
+                }
+
+                if (getDeviceIdentity().getVendorID() != null) {
+                	getDeviceIdentity().getVendorID().setValue(vendorId);
+                	System.err.println("Vendor Id value updated..");
+                } else {
+                    TVendorID venId = XDDFactory.eINSTANCE.createTVendorID();
+                    getDeviceIdentity().setVendorID(venId);
+                    venId.setValue(vendorId);
+                }
+                updateDocument(documentRoot);
+                System.err.println("Vendor Id value document updated..");
+            } catch (NumberFormatException ex) {
+                setErrorMessage("Invalid vendor ID value.");
+                ex.printStackTrace();
+                return;
+            }
+
+        }
+    };
+
+    private ModifyListener productNameModifyListener = new ModifyListener() {
+
+        @Override
+        public void modifyText(ModifyEvent e) {
+            setErrorMessage(null);
+            String productName = productNameText.getText();
+            try {
+
+                if (productName == null) {
+                    setErrorMessage("Invalid product name.");
+                    return;
+                }
+
+                if (productName.length() <= 0) {
+                    setErrorMessage("Invalid product name.");
+                    return;
+                }
+
+                // Space as first character is not allowed. ppc:tNonEmptyString
+                if (productName.contains(" ")) {
+                    setErrorMessage("Invalid product name.");
+                    return;
+                }
+
+                if (getDeviceIdentity().getProductName() != null) {
+                	getDeviceIdentity().getProductName().setValue(productName);
+                } else {
+                    ProductNameType productNameVal = XDDFactory.eINSTANCE.createProductNameType();
+                    getDeviceIdentity().setProductName(productNameVal);
+                    productNameVal.setValue(productName);
+                }
+                updateDocument(documentRoot);
+            } catch (NumberFormatException ex) {
+                setErrorMessage("Invalid vendor ID value.");
+                ex.printStackTrace();
+                return;
+            }
+
+        }
+    };
+
+    private ModifyListener hardwareVerModifyListener = new ModifyListener() {
+
+        @Override
+        public void modifyText(ModifyEvent e) {
+            setErrorMessage(null);
+            String hardwareVerText = hardwareVersionText.getText();
+            try {
+
+                if (hardwareVerText == null) {
+                    setErrorMessage("Invalid hardware version value.");
+                    return;
+                }
+
+                if (hardwareVerText.length() <= 0) {
+                    setErrorMessage("Invalid hardware version value.");
+                    return;
+                }
+
+                // Space as first character is not allowed. ppc:tNonEmptyString
+                if (hardwareVerText.contains(" ")) {
+                    setErrorMessage("Invalid hardware version value.");
+                    return;
+                }
+
+                if (getDeviceIdentity().getVersion() != null) {
+                    List<TVersion> deviceIdentityVersion = getDeviceIdentity().getVersion();
+                    boolean hwVersionAvailable = false;
+                    for (TVersion version : deviceIdentityVersion) {
+                        if (version.getVersionType().getName().equalsIgnoreCase("HW")) {
+                        	getDeviceIdentity().getVersion().get(0).setValue(hardwareVerText);
+                            hwVersionAvailable = true;
+                        }
+                    }
+                    if (!hwVersionAvailable) {
+                        TVersion hwVersion = XDDFactory.eINSTANCE.createTVersion();
+                        hwVersion.setVersionType(VersionTypeType.HW);
+                        hwVersion.setValue(hardwareVerText);
+                    }
+
+                }
+
+                updateDocument(documentRoot);
+            } catch (NumberFormatException ex) {
+                setErrorMessage("Invalid hardware version value.");
+                ex.printStackTrace();
+                return;
+            }
+
+        }
+    };
+
+    private ModifyListener softwareVerModifyListener = new ModifyListener() {
+
+        @Override
+        public void modifyText(ModifyEvent e) {
+            setErrorMessage(null);
+            String softwareVerText = swVersionText.getText();
+            try {
+
+                if (softwareVerText == null) {
+                    setErrorMessage("Invalid software version.");
+                    return;
+                }
+
+                if (softwareVerText.length() <= 0) {
+                    setErrorMessage("Invalid software version.");
+                    return;
+                }
+
+                // Space as first character is not allowed. ppc:tNonEmptyString
+                if (softwareVerText.contains(" ")) {
+                    setErrorMessage("Invalid software version.");
+                    return;
+                }
+
+                if (getDeviceIdentity().getVersion() != null) {
+                    List<TVersion> deviceIdentityVersion = getDeviceIdentity().getVersion();
+                    boolean swVersionAvailable = false;
+                    for (TVersion version : deviceIdentityVersion) {
+                        if (version.getVersionType().getName().equalsIgnoreCase("SW")) {
+                        	getDeviceIdentity().getVersion().get(0).setValue(softwareVerText);
+                            swVersionAvailable = true;
+                        }
+                    }
+                    if (!swVersionAvailable) {
+                        TVersion hwVersion = XDDFactory.eINSTANCE.createTVersion();
+                        hwVersion.setVersionType(VersionTypeType.SW);
+                        hwVersion.setValue(softwareVerText);
+                    }
+
+                }
+                updateDocument(documentRoot);
+            } catch (NumberFormatException ex) {
+                setErrorMessage("Invalid software version.");
+                ex.printStackTrace();
+                return;
+            }
+
+        }
+    };
+
+    private ModifyListener firmwareVerModifyListener = new ModifyListener() {
+
+        @Override
+        public void modifyText(ModifyEvent e) {
+            setErrorMessage(null);
+            String firmwareVerText = fwVersionText.getText();
+            try {
+
+                if (firmwareVerText == null) {
+                    setErrorMessage("Invalid Firmware version.");
+                    return;
+                }
+
+                if (firmwareVerText.length() <= 0) {
+                    setErrorMessage("Invalid Firmware version.");
+                    return;
+                }
+
+                // Space as first character is not allowed. ppc:tNonEmptyString
+                if (firmwareVerText.contains(" ")) {
+                    setErrorMessage("Invalid Firmware version.");
+                    return;
+                }
+
+                if (getDeviceIdentity().getVersion() != null) {
+                    List<TVersion> deviceIdentityVersion = getDeviceIdentity().getVersion();
+                    boolean swVersionAvailable = false;
+                    for (TVersion version : deviceIdentityVersion) {
+                        if (version.getVersionType().getName().equalsIgnoreCase("FW")) {
+                        	getDeviceIdentity().getVersion().get(0).setValue(firmwareVerText);
+                            swVersionAvailable = true;
+                        }
+                    }
+                    if (!swVersionAvailable) {
+                        TVersion fwVersion = XDDFactory.eINSTANCE.createTVersion();
+                        fwVersion.setVersionType(VersionTypeType.FW);
+                        fwVersion.setValue(firmwareVerText);
+                    }
+
+                }
+                updateDocument(documentRoot);
+            } catch (NumberFormatException ex) {
+                setErrorMessage("Invalid Firmware version.");
+                ex.printStackTrace();
+                return;
+            }
+
+        }
+    };
+
+    private ModifyListener productIdModifyListener = new ModifyListener() {
+
+        @Override
+        public void modifyText(ModifyEvent e) {
+            setErrorMessage(null);
+            String productId = productIdText.getText();
+            try {
+
+                if (productId == null) {
+                    setErrorMessage("Invalid product ID value.");
+                    return;
+                }
+
+                if (productId.length() <= 0) {
+                    setErrorMessage("Invalid product ID value.");
+                    return;
+                }
+
+                // Space as first character is not allowed. ppc:tNonEmptyString
+                if (productId.contains(" ")) {
+                    setErrorMessage("Invalid product ID value.");
+                    return;
+                }
+
+                if (productId.contains("0x")) {
+                    String val = productId.substring(2);
+                    if (productId.length() > 10) {
+                        setErrorMessage("Invalid product ID value.");
+                        return;
+                    }
+                } else {
+                    setErrorMessage("Invalid product ID value.");
+                    return;
+                }
+
+                if (getDeviceIdentity().getProductID() != null) {
+                	getDeviceIdentity().getProductID().setValue(productId);
+                } else {
+                    TProductID prodId = XDDFactory.eINSTANCE.createTProductID();
+                    getDeviceIdentity().setProductID(prodId);
+                    prodId.setValue(productId);
+                }
+                updateDocument(documentRoot);
+            } catch (NumberFormatException ex) {
+                setErrorMessage("Invalid product ID value.");
+                ex.printStackTrace();
+                return;
+            }
+
+        }
+    };
+
+    private ModifyListener vendorNameModifyListener = new ModifyListener() {
+
+        @Override
+        public void modifyText(ModifyEvent e) {
+            setErrorMessage(null);
+            String vendorName = vendorNameText.getText();
+            try {
+
+                if (vendorName == null) {
+                    setErrorMessage("Invalid vendor name.");
+                    return;
+                }
+
+                if (vendorName.length() <= 0) {
+                    setErrorMessage("Invalid vendor name.");
+                    return;
+                }
+
+                // Space as first character is not allowed. ppc:tNonEmptyString
+                if (vendorName.contains(" ")) {
+                    setErrorMessage("Invalid vendor name.");
+                    return;
+                }
+
+                if (getDeviceIdentity().getVendorName() != null) {
+                	getDeviceIdentity().getVendorName().setValue(vendorName);
+                } else {
+                    VendorNameType venName = XDDFactory.eINSTANCE.createVendorNameType();
+                    getDeviceIdentity().setVendorName(venName);
+                    venName.setValue(vendorName);
+                }
+                updateDocument(documentRoot);
+            } catch (NumberFormatException ex) {
+                setErrorMessage("Invalid vendor name.");
+                ex.printStackTrace();
+                return;
+            }
+
+        }
+    };
+
+
+
+    public boolean updateDocument(DocumentRoot documentRoot) {
+        // Create a resource set
+        ResourceSet resourceSet = new ResourceSetImpl();
+
+        // Get the URI of the model file.
+        URI fileURI = URI.createPlatformResourceURI(editor.getModelFile().getFullPath().toString(), true);
+
+
+
+        // Create a resource for this file.
+        Resource resource = resourceSet.createResource(fileURI);
+
+        // Add the initial model object to the contents.
+        EObject rootObject = documentRoot;
+        if (rootObject != null)
+            resource.getContents().add(rootObject);
+
+        // Save the contents of the resource to the file system.
+        Map<Object, Object> options = new HashMap<Object, Object>();
+        options.put(XMLResource.OPTION_ENCODING, "UTF-8");
+        try {
+            resource.save(options);
+                        return true;
+        } catch (IOException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+        return false;
+    }
+
+    private void updateGeneralInfoFields() {
         TDeviceIdentity tDeviceIdentity = getDeviceIdentity();
+        // Reference object =
+
         if (tDeviceIdentity.getVendorID() != null) {
             vendorIdText.setText(tDeviceIdentity.getVendorID().getValue());
         } else {
@@ -421,27 +899,133 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
             vendorNameText.setText(StringUtils.EMPTY);
         }
 
+        if (tDeviceIdentity.getVersion() != null) {
+            List<TVersion> deviceIdentityVersion = tDeviceIdentity.getVersion();
+            swVersionText.setText(StringUtils.EMPTY);
+            hardwareVersionText.setText(StringUtils.EMPTY);
+            fwVersionText.setText(StringUtils.EMPTY);
+            for (TVersion version : deviceIdentityVersion) {
+                if (version.getVersionType().getName().equalsIgnoreCase("SW")) {
+                    swVersionText.setText(tDeviceIdentity.getVersion().get(1).getValue());
+                } else if (version.getVersionType().getName().equalsIgnoreCase("HW")) {
+                    hardwareVersionText.setText(tDeviceIdentity.getVersion().get(0).getValue());
+                } else if (version.getVersionType().getName().equalsIgnoreCase("FW")) {
+                    fwVersionText.setText(tDeviceIdentity.getVersion().get(2).getValue());
+                }
+            }
+        }
+    }
 
-        if(tDeviceIdentity.getVersion() != null){
-        	List<TVersion> deviceIdentityVersion = tDeviceIdentity.getVersion();
-        	 swVersionText.setText(StringUtils.EMPTY);
-        	 hardwareVersionText.setText(StringUtils.EMPTY);
-        	 fwVersionText.setText(StringUtils.EMPTY);
-        	for(TVersion version : deviceIdentityVersion){
-        		if(version.getVersionType().getName().equalsIgnoreCase("SW")){
-        			swVersionText.setText(tDeviceIdentity.getVersion().get(1).getValue());
-        		}else if(version.getVersionType().getName().equalsIgnoreCase("HW")) {
-        			hardwareVersionText.setText(tDeviceIdentity.getVersion().get(0).getValue());
-        		}else if (version.getVersionType().getName().equalsIgnoreCase("FW")) {
-        			fwVersionText.setText(tDeviceIdentity.getVersion().get(2).getValue());
-        		}
-        	}
+    /**
+     * Content provider to list the forced objects and sub_objects of node and
+     * module.
+     *
+     * @author Sree Hari Vignesh B
+     *
+     */
+    private static class FirmwareContentProvider implements ITreeContentProvider {
+
+        public FirmwareContentProvider() {
         }
 
+        @Override
+        public void dispose() {
+        }
 
+        @Override
+        public Object[] getChildren(Object parentElement) {
+            if (parentElement instanceof TFirmwareList) {
+                TFirmwareList objItem = (TFirmwareList) parentElement;
+                return objItem.getFirmware().toArray();
+            }
+            return new Object[0];
+        }
 
+        @Override
+        public Object[] getElements(Object inputElement) {
 
+            if (inputElement instanceof EClass) {
+                EClass obj = (EClass) inputElement;
+                List<TFirmwareList> tFirmware = XDDUtilities.findEObjects(documentRoot, obj);
+                return tFirmware.toArray();
+            }
+
+            return new Object[0];
+        }
+
+        @Override
+        public Object getParent(Object element) {
+            return null;
+        }
+
+        @Override
+        public boolean hasChildren(Object element) {
+            if (element instanceof TFirmwareList) {
+                TFirmwareList object = (TFirmwareList) element;
+                return ((object.getFirmware().size() > 0) ? true : false);
+            }
+            return false;
+        }
+
+        @Override
+        public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+        }
     }
+
+    /**
+     * Label provider for the objects and sub-objects.
+     *
+     * @author Sree Hari Vignesh B
+     *
+     */
+    private static class FirmwareLabelProvider extends LabelProvider {
+
+        org.eclipse.swt.graphics.Image objectIcon;
+        org.eclipse.swt.graphics.Image subObjectIcon;
+
+        public FirmwareLabelProvider() {
+            objectIcon = AbstractUIPlugin
+                    .imageDescriptorFromPlugin("com.br_automation.buoat.xddeditor.editor", IPluginImages.OBJECT_ICON)
+                    .createImage();
+            subObjectIcon = AbstractUIPlugin.imageDescriptorFromPlugin("com.br_automation.buoat.xddeditor.editor",
+                    IPluginImages.SUB_OBJECT_ICON).createImage();
+
+        }
+
+        @Override
+        public void dispose() {
+            objectIcon.dispose();
+            subObjectIcon.dispose();
+        }
+
+        @Override
+        public org.eclipse.swt.graphics.Image getImage(Object obj) {
+            if (obj instanceof TFirmwareList) {
+
+                return objectIcon;
+            } else if (obj instanceof FirmwareType) {
+
+                return subObjectIcon;
+            }
+            return null;
+        }
+
+        @Override
+        public String getText(Object element) {
+            if (element instanceof TFirmwareList) {
+                TFirmwareList obj = (TFirmwareList) element;
+
+                return "Firmware List";
+            } else if (element instanceof FirmwareType) {
+                FirmwareType subObj = (FirmwareType) element;
+                String firmware = subObj.getURI();
+                return firmware;
+            }
+            return "";
+        }
+    }
+
+    private TreeViewer listViewer;
 
     /**
      * Creates the widgets and controls for the device firmware model.
@@ -466,13 +1050,17 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
 
         deviceFirmwareSection.setClient(clientComposite);
 
-        TreeViewer listViewer = new TreeViewer(clientComposite, SWT.BORDER | SWT.V_SCROLL);
+        listViewer = new TreeViewer(clientComposite, SWT.BORDER | SWT.V_SCROLL);
         Tree lst_no_foi = listViewer.getTree();
 
         GridData pst = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 3);
         pst.heightHint = 180;
         pst.widthHint = 626;
         lst_no_foi.setLayoutData(pst);
+
+        listViewer.setContentProvider(new FirmwareContentProvider());
+        listViewer.setLabelProvider(new FirmwareLabelProvider());
+        listViewer.setInput(XDDPackage.eINSTANCE.getTFirmwareList());
 
         addPathSettingsButton = toolkit.createButton(clientComposite, DeviceDescriptionFileEditorPage.ADD_BUTTON_LABEL,
                 SWT.PUSH);
@@ -494,7 +1082,28 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
         deletePathSettingsButton.setEnabled(false);
         toolkit.adapt(deletePathSettingsButton, true, true);
 
+        addListenerstoControls();
+
     }
+
+    private void addListenerstoControls() {
+        addPathSettingsButton.addSelectionListener(addFirmwareWizardSelectionAdapter);
+
+    }
+
+    private SelectionAdapter addFirmwareWizardSelectionAdapter = new SelectionAdapter() {
+
+        @Override
+        public void widgetSelected(SelectionEvent e) {
+            NewFirmwareWizard firmwareWizard = new NewFirmwareWizard(documentRoot,editor);
+
+            WizardDialog dialog = new WizardDialog(Display.getDefault().getActiveShell(), firmwareWizard);
+            dialog.setTitle(firmwareWizard.getWindowTitle());
+            dialog.open();
+
+            listViewer.setInput(XDDPackage.eINSTANCE.getTFirmwareList());
+        }
+    };
 
     /**
      * Creates the widgets and controls for the shortcut to editor page.

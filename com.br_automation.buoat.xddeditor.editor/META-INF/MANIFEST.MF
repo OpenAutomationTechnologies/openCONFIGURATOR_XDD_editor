@@ -41,5 +41,6 @@ Require-Bundle: com.br_automation.buoat.xddeditor.edit;visibility:=reexport,
  org.eclipse.pde.core;bundle-version="3.11.1",
  org.eclipse.jface.text,
  org.eclipse.ui.editors,
- org.eclipse.pde.ui;bundle-version="3.9.100"
+ org.eclipse.pde.ui;bundle-version="3.9.100",
+ org.eclipse.ui.forms
 Bundle-ActivationPolicy: lazy

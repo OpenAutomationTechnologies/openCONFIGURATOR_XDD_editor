@@ -32,12 +32,21 @@
 package com.br_automation.buoat.xddeditor.editor.editors;
 
 import java.awt.Checkbox;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.eclipse.emf.ecore.xmi.XMLResource;
+import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -48,7 +57,10 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.window.Window;
+import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -86,11 +98,19 @@ import com.br_automation.buoat.xddeditor.XDD.DocumentRoot;
 import com.br_automation.buoat.xddeditor.XDD.ISO15745ProfileType;
 import com.br_automation.buoat.xddeditor.XDD.ProfileBodyDataType;
 import com.br_automation.buoat.xddeditor.XDD.ProfileHeaderDataType;
+import com.br_automation.buoat.xddeditor.XDD.TCNFeatures;
 import com.br_automation.buoat.xddeditor.XDD.TDeviceIdentity;
+import com.br_automation.buoat.xddeditor.XDD.TGeneralFeatures;
+import com.br_automation.buoat.xddeditor.XDD.TVendorID;
 import com.br_automation.buoat.xddeditor.XDD.TVersion;
 import com.br_automation.buoat.xddeditor.XDD.VersionTypeType;
 import com.br_automation.buoat.xddeditor.XDD.XDDFactory;
+import com.br_automation.buoat.xddeditor.XDD.XDDPackage;
 import com.br_automation.buoat.xddeditor.XDD.custom.XDDUtilities;
+import com.br_automation.buoat.xddeditor.XDD.impl.ProfileBodyCommunicationNetworkPowerlinkImpl;
+import com.br_automation.buoat.xddeditor.XDD.impl.TNetworkManagementImpl;
+import com.br_automation.buoat.xddeditor.XDD.validation.NameVerifyListener;
+import com.br_automation.buoat.xddeditor.XDD.wizards.NewFirmwareWizard;
 
 /**
  * The editor page to manipulate the network management features of device
@@ -111,10 +131,10 @@ public final class NetworkManagementEditorPage extends FormPage {
     private static final String TIME_FOR_PREQ_LABEL = "Time for PReq (ns):";
     private static final String NETWORK_IP_SUPPORT_LABEL = "Network IP Support:";
     private static final String TOTAL_NETWORK_ERROR_ENTRIES_LABEL = "Total Network Error Entries:";
-    private static final String MAXIMUM_CYCLE_TIME_LABEL = "Maximum Cycle Time ():";
+    private static final String MAXIMUM_CYCLE_TIME_LABEL = "Maximum Cycle Time (\u00B5s):";
 
-    private static final String MINIMUM_CYCLE_TIME_LABEL = "Minimum Cycle Time ():";
-    private static final String NETWORK_BOOT_TIME_LABEL = "Network Boot Time ():";
+    private static final String MINIMUM_CYCLE_TIME_LABEL = "Minimum Cycle Time (\u00B5s):";
+    private static final String NETWORK_BOOT_TIME_LABEL = "Network Boot Time  (\u00B5s):";
 
     private static final String MULTIPLEXED_COMMUNICATION_LABEL = "Multiplexed Communication";
     private static final String POLL_RESPONSE_COMMUNICATION_LABEL = "Poll Response Communication";
@@ -126,11 +146,11 @@ public final class NetworkManagementEditorPage extends FormPage {
      */
     private static final int FORM_BODY_MARGIN_TOP = 12;
     private static final int FORM_BODY_MARGIN_BOTTOM = 12;
-    private static final int FORM_BODY_MARGIN_LEFT = 6;
-    private static final int FORM_BODY_MARGIN_RIGHT = 6;
+    private static final int FORM_BODY_MARGIN_LEFT = 12;
+    private static final int FORM_BODY_MARGIN_RIGHT = 12;
     private static final int FORM_BODY_HORIZONTAL_SPACING = 20;
     private static final int FORM_BODY_VERTICAL_SPACING = 17;
-    private static final int FORM_BODY_NUMBER_OF_COLUMNS = 2;
+    private static final int FORM_BODY_NUMBER_OF_COLUMNS = 1;
 
     /**
      * Editor dirty flag for this page.
@@ -155,7 +175,7 @@ public final class NetworkManagementEditorPage extends FormPage {
     private Text networkBootTimeText;
     private Text maximumCycleTimeText;
     private Text totalNetworkErrorEntriesText;
-    private Combo networkIpCombo;
+    private Button networkIpButton;
     private Button multiplexedCommunicationChkBox;
     private Button pollResponseCommunication;
     private Text timeForPreqText;
@@ -199,18 +219,350 @@ public final class NetworkManagementEditorPage extends FormPage {
         createGeneralFeaturesSection(managedForm);
         createCnFeaturesSection(managedForm);
 
+        addListenersToControls();
+
     }
 
-    private TDeviceIdentity getDeviceIdentity() {
+    /**
+     * Name verify listener
+     */
+    private NameVerifyListener nameVerifyListener = new NameVerifyListener();
+
+    private void addListenersToControls() {
+        minimumCycleTimeText.addModifyListener(minimumCycleTimeModifyListener);
+        networkBootTimeText.addModifyListener(networkBootTimeModifyListener);
+        maximumCycleTimeText.addModifyListener(maximumCycleTimeModifyListener);
+        totalNetworkErrorEntriesText.addModifyListener(totalnetworkEntriesModifyListener);
+        minimumCycleTimeText.addVerifyListener(nameVerifyListener);
+        networkBootTimeText.addVerifyListener(nameVerifyListener);
+        maximumCycleTimeText.addVerifyListener(nameVerifyListener);
+        totalNetworkErrorEntriesText.addVerifyListener(nameVerifyListener);
+        networkIpButton.addSelectionListener(networkIpButtonSelectionListener);
+        multiplexedCommunicationChkBox.addSelectionListener(multiplexedCommunicationChkBoxSelectionListener);
+    pollResponseCommunication.addSelectionListener(pollResponseCommunicationSelectionListener);
+    timeForPreqText.addModifyListener(timeForPreqModifyListener);
+    timeForPreqText.addVerifyListener(nameVerifyListener);
+    }
+
+    private SelectionAdapter networkIpButtonSelectionListener = new SelectionAdapter() {
+
+        @Override
+        public void widgetSelected(SelectionEvent e) {
+           if(!networkIpButton.getSelection()){
+        	   if(getGeneralFeatures() != null) {
+        		   getGeneralFeatures().unsetNWLIPSupport();
+        	   }
+           }else {
+        	   if(getGeneralFeatures() != null) {
+        		   getGeneralFeatures().setNWLIPSupport(true);
+        	   }
+           }
+        }
+    };
+
+    private SelectionAdapter multiplexedCommunicationChkBoxSelectionListener = new SelectionAdapter() {
+
+        @Override
+        public void widgetSelected(SelectionEvent e) {
+           if(!multiplexedCommunicationChkBox.getSelection()){
+        	   if(getCnFeatures() != null) {
+        		   getCnFeatures().unsetDLLCNFeatureMultiplex();
+        	   }
+           }else {
+        	   if(getCnFeatures() != null) {
+        		   getCnFeatures().setDLLCNFeatureMultiplex(true);
+        	   }
+           }
+        }
+    };
+
+
+    private SelectionAdapter pollResponseCommunicationSelectionListener = new SelectionAdapter() {
+
+        @Override
+        public void widgetSelected(SelectionEvent e) {
+           if(!pollResponseCommunication.getSelection()){
+        	   if(getCnFeatures() != null) {
+        		   getCnFeatures().unsetDLLCNPResChaining();
+        	   }
+           }else {
+        	   if(getCnFeatures() != null) {
+        		   getCnFeatures().setDLLCNPResChaining(true);
+        	   }
+           }
+        }
+    };
+
+    private void setErrorMessage(String message) {
+        form.setMessage(message, IMessageProvider.ERROR);
+        if (message == null) {
+            form.setMessage(message, IMessageProvider.NONE);
+        }
+    }
+
+
+
+    private ModifyListener timeForPreqModifyListener = new ModifyListener() {
+
+        @Override
+        public void modifyText(ModifyEvent e) {
+            setErrorMessage(null);
+            String timeforPreqText = timeForPreqText.getText();
+            try {
+
+                if (timeforPreqText == null) {
+                    setErrorMessage("Invalid PReq time value.");
+                    return;
+                }
+
+                if (timeforPreqText.length() <= 0) {
+                    setErrorMessage("Invalid PReq time value.");
+                    return;
+                }
+
+                // Space as first character is not allowed. ppc:tNonEmptyString
+                if (timeforPreqText.contains(" ")) {
+                    setErrorMessage("Invalid PReq time value.");
+                    return;
+                }
+
+               if(getCnFeatures() != null) {
+            	   Long preqTimeValue = Long.parseLong(timeforPreqText);
+            	   getCnFeatures().setNMTCNSoC2PReq(preqTimeValue);
+               }
+                updateDocument(documentRoot);
+
+            } catch (NumberFormatException ex) {
+                setErrorMessage("Invalid PReq time value.");
+                ex.printStackTrace();
+                return;
+            }
+
+        }
+    };
+
+    private ModifyListener totalnetworkEntriesModifyListener = new ModifyListener() {
+
+        @Override
+        public void modifyText(ModifyEvent e) {
+            setErrorMessage(null);
+            String totalNetworkEntry = totalNetworkErrorEntriesText.getText();
+            try {
+
+                if (totalNetworkEntry == null) {
+                    setErrorMessage("Invalid network error entries.");
+                    return;
+                }
+
+                if (totalNetworkEntry.length() <= 0) {
+                    setErrorMessage("Invalid network error entries.");
+                    return;
+                }
+
+                // Space as first character is not allowed. ppc:tNonEmptyString
+                if (totalNetworkEntry.contains(" ")) {
+                    setErrorMessage("Invalid network error entries.");
+                    return;
+                }
+
+               if(getGeneralFeatures() != null) {
+            	   Long ntwrkErrorEntries = Long.parseLong(totalNetworkEntry);
+            	   getGeneralFeatures().setNMTErrorEntries(ntwrkErrorEntries);
+               }
+                updateDocument(documentRoot);
+
+            } catch (NumberFormatException ex) {
+                setErrorMessage("Invalid network error entries.");
+                ex.printStackTrace();
+                return;
+            }
+
+        }
+    };
+
+    public boolean updateDocument(DocumentRoot documentRoot) {
+        // Create a resource set
+        ResourceSet resourceSet = new ResourceSetImpl();
+
+        // Get the URI of the model file.
+        URI fileURI = URI.createPlatformResourceURI(editor.getModelFile().getFullPath().toString(), true);
+
+        // Create a resource for this file.
+        Resource resource = resourceSet.createResource(fileURI);
+
+        // Add the initial model object to the contents.
+        EObject rootObject = documentRoot;
+        if (rootObject != null)
+            resource.getContents().add(rootObject);
+
+        // Save the contents of the resource to the file system.
+        Map<Object, Object> options = new HashMap<Object, Object>();
+        options.put(XMLResource.OPTION_ENCODING, "UTF-8");
+        try {
+            resource.save(options);
+            return true;
+        } catch (IOException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+        return false;
+    }
+
+    private ModifyListener maximumCycleTimeModifyListener = new ModifyListener() {
+
+        @Override
+        public void modifyText(ModifyEvent e) {
+            setErrorMessage(null);
+            String maximumCycleTime = maximumCycleTimeText.getText();
+            try {
+
+                if (maximumCycleTime == null) {
+                    setErrorMessage("Maximum cycle time value invalid.");
+                    return;
+                }
+
+                if (maximumCycleTime.length() <= 0) {
+                    setErrorMessage("The cycle time value cannot be empty.");
+                    return;
+                }
+
+                // Space as first character is not allowed. ppc:tNonEmptyString
+                if (maximumCycleTime.contains(" ")) {
+                    setErrorMessage("Invalid cycle time value.");
+                    return;
+                }
+
+                if(getGeneralFeatures() != null){
+                	Long maxCycleTimeValue = Long.parseLong(maximumCycleTime);
+                	getGeneralFeatures().setNMTCycleTimeMax(maxCycleTimeValue);
+                }
+                updateDocument(documentRoot);
+
+            } catch (NumberFormatException ex) {
+                setErrorMessage("Invalid cycle time value.");
+                ex.printStackTrace();
+                return;
+            }
+
+        }
+    };
+
+    private ModifyListener minimumCycleTimeModifyListener = new ModifyListener() {
+
+        @Override
+        public void modifyText(ModifyEvent e) {
+            setErrorMessage(null);
+            String minimumCycleTime = minimumCycleTimeText.getText();
+            try {
+
+                if (minimumCycleTime == null) {
+                    setErrorMessage("The minimum cycle time value cannot be empty.");
+                    return;
+                }
+
+                if (minimumCycleTime.length() <= 0) {
+                    setErrorMessage("Invalid minimum cycle time value.");
+                    return;
+                }
+
+                // Space as first character is not allowed. ppc:tNonEmptyString
+                if (minimumCycleTime.contains(" ")) {
+                    setErrorMessage("Invalid minimum cycle time value.");
+                    return;
+                }
+
+                if(getGeneralFeatures() != null){
+                	Long minimumCycleTimeValue = Long.parseLong(minimumCycleTime);
+                	getGeneralFeatures().setNMTCycleTimeMin(minimumCycleTimeValue);
+                }
+
+                updateDocument(documentRoot);
+
+            } catch (NumberFormatException ex) {
+                setErrorMessage("Invalid minimum cycle time value.");
+                ex.printStackTrace();
+                return;
+            }
+
+        }
+    };
+
+    private ModifyListener networkBootTimeModifyListener = new ModifyListener() {
+
+        @Override
+        public void modifyText(ModifyEvent e) {
+            setErrorMessage(null);
+            String networkBootTime = networkBootTimeText.getText();
+            try {
+
+                if (networkBootTime == null) {
+                    setErrorMessage("The network boot time value cannot be empty.");
+                    return;
+                }
+
+                if (networkBootTime.length() <= 0) {
+                    setErrorMessage("Invalid network boot time value.");
+                    return;
+                }
+
+
+                // Space as first character is not allowed. ppc:tNonEmptyString
+                if (networkBootTime.contains(" ")) {
+                    setErrorMessage("Invalid network boot time value.");
+                    return;
+                }
+
+                if (getGeneralFeatures() != null) {
+                    Long ntwrkBootTime = Long.parseLong(networkBootTime);
+                    getGeneralFeatures().setNMTBootTimeNotActive(ntwrkBootTime);
+                }
+
+                updateDocument(documentRoot);
+
+            } catch (NumberFormatException ex) {
+                setErrorMessage("Invalid network boot time value.");
+                ex.printStackTrace();
+                return;
+            }
+
+        }
+    };
+
+        private TGeneralFeatures getGeneralFeatures() {
         EList<ISO15745ProfileType> profiles = documentRoot.getISO15745ProfileContainer().getISO15745Profile();
-        ISO15745ProfileType profile1 = profiles.get(0);
+        for (ISO15745ProfileType profile : profiles) {
+            ProfileBodyDataType profileBody = profile.getProfileBody();
+            if (profileBody instanceof ProfileBodyCommunicationNetworkPowerlinkImpl) {
+                EList<EObject> bodyContents = profileBody.eContents();
+                for (EObject object : bodyContents) {
+                    if (object instanceof TNetworkManagementImpl) {
+                        TNetworkManagementImpl networkManagement = (TNetworkManagementImpl) object;
+                        return networkManagement.getGeneralFeatures();
+                    }
+                }
+            }
+        }
+        return null;
 
-        ProfileBodyDataType body1 = profile1.getProfileBody();
-        EList<EObject> bodyContents = body1.eContents();
-        EObject identity = bodyContents.get(0);
-        TDeviceIdentity tDeviceIdentity = (TDeviceIdentity) identity;
-        return tDeviceIdentity;
     }
+
+        private TCNFeatures getCnFeatures() {
+            EList<ISO15745ProfileType> profiles = documentRoot.getISO15745ProfileContainer().getISO15745Profile();
+            for (ISO15745ProfileType profile : profiles) {
+                ProfileBodyDataType profileBody = profile.getProfileBody();
+                if (profileBody instanceof ProfileBodyCommunicationNetworkPowerlinkImpl) {
+                    EList<EObject> bodyContents = profileBody.eContents();
+                    for (EObject object : bodyContents) {
+                        if (object instanceof TNetworkManagementImpl) {
+                            TNetworkManagementImpl networkManagement = (TNetworkManagementImpl) object;
+                            return networkManagement.getCNFeatures();
+                        }
+                    }
+                }
+            }
+            return null;
+
+        }
 
     /**
      * Creates the widgets and controls for the general features of device
@@ -227,7 +579,7 @@ public final class NetworkManagementEditorPage extends FormPage {
         sctnGenerator.setDescription(NetworkManagementEditorPage.GENERAL_SECTION_HEADING_DESCRIPTION);
 
         Composite client = toolkit.createComposite(sctnGenerator, SWT.WRAP);
-        GridLayout layout = new GridLayout(2, false);
+        GridLayout layout = new GridLayout(3, false);
         layout.marginWidth = 2;
         layout.marginHeight = 2;
         client.setLayout(layout);
@@ -244,6 +596,8 @@ public final class NetworkManagementEditorPage extends FormPage {
         networkBootTimeText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         toolkit.adapt(networkBootTimeText, true, true);
 
+        new Label(client, SWT.NONE);
+
         Label minimumCycleTime = new Label(client, SWT.NONE);
         minimumCycleTime.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
         minimumCycleTime.setText(NetworkManagementEditorPage.MINIMUM_CYCLE_TIME_LABEL);
@@ -253,6 +607,8 @@ public final class NetworkManagementEditorPage extends FormPage {
         minimumCycleTimeText = new Text(client, SWT.BORDER | SWT.WRAP);
         minimumCycleTimeText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         toolkit.adapt(minimumCycleTimeText, true, true);
+
+        new Label(client, SWT.NONE);
 
         Label maximumCycleTimeLabel = new Label(client, SWT.NONE);
         maximumCycleTimeLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
@@ -264,6 +620,8 @@ public final class NetworkManagementEditorPage extends FormPage {
         maximumCycleTimeText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         toolkit.adapt(maximumCycleTimeText, true, true);
 
+        new Label(client, SWT.NONE);
+
         Label totalNetworkErrorEntries = new Label(client, SWT.NONE);
         totalNetworkErrorEntries.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
         totalNetworkErrorEntries.setText(NetworkManagementEditorPage.TOTAL_NETWORK_ERROR_ENTRIES_LABEL);
@@ -273,6 +631,7 @@ public final class NetworkManagementEditorPage extends FormPage {
         totalNetworkErrorEntriesText = new Text(client, SWT.BORDER | SWT.WRAP);
         totalNetworkErrorEntriesText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         toolkit.adapt(totalNetworkErrorEntriesText, true, true);
+        new Label(client, SWT.NONE);
 
         Label networkIpSupportLabel = new Label(client, SWT.NONE);
         networkIpSupportLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
@@ -280,11 +639,11 @@ public final class NetworkManagementEditorPage extends FormPage {
         toolkit.adapt(networkIpSupportLabel, true, true);
         networkIpSupportLabel.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
 
-        networkIpCombo = new Combo(client, SWT.READ_ONLY);
-        networkIpCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-        toolkit.adapt(networkIpCombo, true, true);
-        networkIpCombo.setItems("True", "false");
-        networkIpCombo.select(0);
+        networkIpButton = new Button(client, SWT.CHECK);
+        networkIpButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+        toolkit.adapt(networkIpButton, true, true);
+
+        new Label(client, SWT.NONE);
 
     }
 
@@ -303,26 +662,36 @@ public final class NetworkManagementEditorPage extends FormPage {
         sctnGenerator.setDescription(NetworkManagementEditorPage.GENERAL_SECTION_HEADING_DESCRIPTION);
 
         Composite client = toolkit.createComposite(sctnGenerator, SWT.WRAP);
-        GridLayout layout = new GridLayout(2, false);
+        GridLayout layout = new GridLayout(3, false);
         layout.marginWidth = 2;
         layout.marginHeight = 2;
         client.setLayout(layout);
         toolkit.paintBordersFor(client);
         sctnGenerator.setClient(client);
 
-        new Label(client, SWT.NONE);
+        Label multiplexedCommunicationlabel = new Label(client, SWT.NONE);
+        multiplexedCommunicationlabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+        multiplexedCommunicationlabel.setText(NetworkManagementEditorPage.MULTIPLEXED_COMMUNICATION_LABEL);
+        toolkit.adapt(multiplexedCommunicationlabel, true, true);
+        multiplexedCommunicationlabel.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
 
         multiplexedCommunicationChkBox = new Button(client, SWT.CHECK);
-        multiplexedCommunicationChkBox.setText(NetworkManagementEditorPage.MULTIPLEXED_COMMUNICATION_LABEL);
+
         multiplexedCommunicationChkBox.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         toolkit.adapt(multiplexedCommunicationChkBox, true, true);
 
         new Label(client, SWT.NONE);
+        Label pollresponseChainLabel = new Label(client, SWT.NONE);
+        pollresponseChainLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+        pollresponseChainLabel.setText(NetworkManagementEditorPage.POLL_RESPONSE_COMMUNICATION_LABEL);
+        toolkit.adapt(pollresponseChainLabel, true, true);
+        pollresponseChainLabel.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
 
         pollResponseCommunication = new Button(client, SWT.CHECK);
-        pollResponseCommunication.setText(NetworkManagementEditorPage.POLL_RESPONSE_COMMUNICATION_LABEL);
         pollResponseCommunication.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         toolkit.adapt(pollResponseCommunication, true, true);
+
+        new Label(client, SWT.NONE);
 
         Label timeForPreq = new Label(client, SWT.NONE);
         timeForPreq.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
