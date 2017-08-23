@@ -31,10 +31,10 @@ import com.br_automation.buoat.xddeditor.XDD.provider.TObjectItemProvider;
 
 /**
  * @brief Composite for TObjects or SubObjectTypes.
- * 
+ *
  *        Contains text and combo boxes with listeners to set mandatory values
  *        for TObjects and SubobjecTypes.
- * 
+ *
  * @author Joris Lückenga
  */
 public class TObjectComposite extends Composite {
