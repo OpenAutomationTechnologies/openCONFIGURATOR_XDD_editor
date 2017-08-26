@@ -59,6 +59,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.window.Window;
+import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.pde.core.IModelChangedEvent;
 import org.eclipse.pde.internal.ui.editor.PDEFormPage;
 import org.eclipse.pde.internal.ui.editor.PDEMasterDetailsBlock;
@@ -134,6 +135,9 @@ import com.br_automation.buoat.xddeditor.XDD.impl.SubObjectTypeImpl;
 import com.br_automation.buoat.xddeditor.XDD.impl.TObjectImpl;
 import com.br_automation.buoat.xddeditor.XDD.provider.TObjectItemProvider;
 import com.br_automation.buoat.xddeditor.XDD.resources.IPluginImages;
+import com.br_automation.buoat.xddeditor.XDD.wizards.AddObjectWizardPage;
+import com.br_automation.buoat.xddeditor.XDD.wizards.NewFirmwareWizard;
+import com.br_automation.buoat.xddeditor.XDD.wizards.NewObjectWizard;
 
 /**
  * The editor page to manipulate the object dictionary of device description
@@ -474,12 +478,16 @@ public final class ObjectDictionaryEditorPage extends FormPage {
         public String getText(Object element) {
             if (element instanceof TObject) {
                 TObject obj = (TObject) element;
+                if(obj.getIndex() != null){
                 String objIndex = getIndex(obj.getIndex());
                 return obj.getName() + " (0x" + objIndex + ")";
+                }
             } else if (element instanceof SubObjectType) {
                 SubObjectType subObj = (SubObjectType) element;
+                if(subObj.getSubIndex() != null){
                 String subObjIndex = getIndex(subObj.getSubIndex());
                 return subObj.getName() + " (0x" + subObjIndex + ")";
+                }
             }
             return "";
         }
@@ -572,7 +580,28 @@ public final class ObjectDictionaryEditorPage extends FormPage {
             }
         });
 
+        addListenerstoControls();
+
     }
+
+    private void addListenerstoControls() {
+        addPathSettingsButton.addSelectionListener(addObjectWizardSelectionAdapter);
+
+    }
+
+    private SelectionAdapter addObjectWizardSelectionAdapter = new SelectionAdapter() {
+
+        @Override
+        public void widgetSelected(SelectionEvent e) {
+            NewObjectWizard objWizard = new NewObjectWizard(docRoot,editor);
+
+            WizardDialog dialog = new WizardDialog(Display.getDefault().getActiveShell(), objWizard);
+            dialog.setTitle(objWizard.getWindowTitle());
+            dialog.open();
+
+            listViewer.setInput(XDDPackage.eINSTANCE.getTObject());
+        }
+    };
 
     public class ObjectDetailsPage implements IDetailsPage {
 
