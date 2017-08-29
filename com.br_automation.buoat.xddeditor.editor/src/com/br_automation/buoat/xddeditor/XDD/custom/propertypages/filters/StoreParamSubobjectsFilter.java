@@ -15,7 +15,7 @@ import com.br_automation.buoat.xddeditor.XDD.custom.EPLGeneralConstants;
 
 /**
  * @brief Filters for subObjects of Object 0x1010 with subIndex != 0.
- * 
+ *
  * @author Joris Lückenga
  */
 public class StoreParamSubobjectsFilter implements IFilter {
@@ -27,7 +27,12 @@ public class StoreParamSubobjectsFilter implements IFilter {
             TObject parentObject = (TObject) subObject.eContainer();
 
             if (parentObject.getIndex() != null) {
-                if (new BigInteger(1, parentObject.getIndex()).intValue() == EPLGeneralConstants.NMT_STOREPARAM_REC) { // NOPMD by lueckengaj on 21.05.13 08:33
+                if (new BigInteger(1, parentObject.getIndex()).intValue() == EPLGeneralConstants.NMT_STOREPARAM_REC) { // NOPMD
+                                                                                                                        // by
+                                                                                                                        // lueckengaj
+                                                                                                                        // on
+                                                                                                                        // 21.05.13
+                                                                                                                        // 08:33
                     if (subObject.getSubIndex() == null || subObject.getSubIndex().length == 0)
                         return true;
                     int subIndex = new BigInteger(subObject.getSubIndex()).intValue();
@@ -38,4 +43,4 @@ public class StoreParamSubobjectsFilter implements IFilter {
         return false;
     }
 
-} //StoreParamSubobjectsFilter
+} // StoreParamSubobjectsFilter

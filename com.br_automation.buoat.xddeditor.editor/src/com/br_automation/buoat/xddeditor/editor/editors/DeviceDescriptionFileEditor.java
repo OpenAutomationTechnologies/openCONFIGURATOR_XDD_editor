@@ -38,6 +38,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.Collection;
+import java.util.EventObject;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.xml.bind.JAXBException;
@@ -59,10 +62,20 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.emf.common.command.BasicCommandStack;
+import org.eclipse.emf.common.command.Command;
+import org.eclipse.emf.common.command.CommandStack;
+import org.eclipse.emf.common.command.CommandStackListener;
+import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.edit.domain.AdapterFactoryEditingDomain;
+import org.eclipse.emf.edit.provider.ComposedAdapterFactory;
+import org.eclipse.emf.edit.provider.ReflectiveItemProviderAdapterFactory;
+import org.eclipse.emf.edit.provider.resource.ResourceItemProviderAdapterFactory;
+import org.eclipse.emf.edit.ui.action.EditingDomainActionBarContributor;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.IDocument;
@@ -70,21 +83,30 @@ import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.IFormPage;
 import org.eclipse.ui.ide.IDE;
+import org.eclipse.ui.ide.IGotoMarker;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.IDocumentProvider;
-
+import org.eclipse.ui.views.contentoutline.ContentOutline;
+import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
+import org.eclipse.ui.views.properties.IPropertySheetPage;
+import org.eclipse.ui.views.properties.PropertySheet;
+import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributor;
+import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.xml.sax.SAXException;
 
 import com.br_automation.buoat.xddeditor.XDD.DocumentRoot;
@@ -98,6 +120,8 @@ import com.br_automation.buoat.xddeditor.XDD.TObject;
 import com.br_automation.buoat.xddeditor.XDD.XDDPackage;
 import com.br_automation.buoat.xddeditor.XDD.custom.ModelLoader;
 import com.br_automation.buoat.xddeditor.XDD.custom.XDDUtilities;
+import com.br_automation.buoat.xddeditor.XDD.presentation.XDDEditor;
+import com.br_automation.buoat.xddeditor.XDD.provider.XDDItemProviderAdapterFactory;
 
 /**
  * DeviceDescriptionFileEditor class provides the multi-tab based form editor to
@@ -111,7 +135,7 @@ import com.br_automation.buoat.xddeditor.XDD.custom.XDDUtilities;
  *
  */
 public final class DeviceDescriptionFileEditor extends FormEditor
-        implements IResourceChangeListener, IPropertyChangeListener{
+        implements IResourceChangeListener, IPropertyChangeListener, ITabbedPropertySheetPageContributor {
 
     /**
      * Identifier for this page.
@@ -153,6 +177,7 @@ public final class DeviceDescriptionFileEditor extends FormEditor
     public DeviceDescriptionFileEditor() {
         super();
         ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
+        initializeEditingDomain();
     }
 
     /**
@@ -318,11 +343,11 @@ public final class DeviceDescriptionFileEditor extends FormEditor
     }
 
     public IFile getModelFile() {
-    	return projectFile;
+        return projectFile;
     }
 
     public IPath getPathOfXddFile() {
-    	return projectFile.getRawLocation();
+        return projectFile.getRawLocation();
     }
 
     /**
@@ -355,25 +380,22 @@ public final class DeviceDescriptionFileEditor extends FormEditor
 
     }
 
-
     public String getVendorId() {
-    	TDeviceIdentity deviceIdentity = getDeviceIdentity();
-    	if(deviceIdentity.getVendorID() != null){
-    		return deviceIdentity.getVendorID().getValue();
-    	}
+        TDeviceIdentity deviceIdentity = getDeviceIdentity();
+        if (deviceIdentity.getVendorID() != null) {
+            return deviceIdentity.getVendorID().getValue();
+        }
 
-    	return StringUtils.EMPTY;
+        return StringUtils.EMPTY;
     }
 
     public String getproductId() {
-    	TDeviceIdentity deviceIdentity = getDeviceIdentity();
-    	if(deviceIdentity.getProductID() != null){
-    	return deviceIdentity.getProductID().getValue();
-    	}
-    	return StringUtils.EMPTY;
+        TDeviceIdentity deviceIdentity = getDeviceIdentity();
+        if (deviceIdentity.getProductID() != null) {
+            return deviceIdentity.getProductID().getValue();
+        }
+        return StringUtils.EMPTY;
     }
-
-
 
     public TDeviceIdentity getDeviceIdentity() {
         EList<ISO15745ProfileType> profiles = getDocumentRoot().getISO15745ProfileContainer().getISO15745Profile();
@@ -384,13 +406,12 @@ public final class DeviceDescriptionFileEditor extends FormEditor
 
         ProfileBodyDataType body1 = profile1.getProfileBody();
         EList<EObject> bodyContents = body1.eContents();
-        System.err.println("The elements of XDD..."+bodyContents);
+        System.err.println("The elements of XDD..." + bodyContents);
         EObject identity = bodyContents.get(0);
         TDeviceIdentity tDeviceIdentity = (TDeviceIdentity) identity;
 
         return tDeviceIdentity;
     }
-
 
     /**
      * Returns false as saveAs is not supported for this editor.
@@ -400,9 +421,8 @@ public final class DeviceDescriptionFileEditor extends FormEditor
         return false;
     }
 
-
-    public IProject getProject(){
-    	return activeProject;
+    public IProject getProject() {
+        return activeProject;
     }
 
     /**
@@ -509,6 +529,179 @@ public final class DeviceDescriptionFileEditor extends FormEditor
         }
     }
 
+    protected TabbedPropertySheetPage propertySheetPage;
 
+    public IPropertySheetPage getPropertySheetPage() {
+        if (propertySheetPage == null || propertySheetPage.getControl().isDisposed()) {
+            propertySheetPage = new TabbedPropertySheetPage(this);
+        }
+        return propertySheetPage;
+    }
+
+    /**
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    public EditingDomainActionBarContributor getActionBarContributor() {
+        return (EditingDomainActionBarContributor) getEditorSite().getActionBarContributor();
+    }
+
+    protected AdapterFactoryEditingDomain editingDomain;
+
+    /**
+     * Handles activation of the editor or it's associated views. <!--
+     * begin-user-doc --> <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    protected void handleActivate() {
+        // Recompute the read only state.
+        //
+        if (editingDomain.getResourceToReadOnlyMap() != null) {
+            editingDomain.getResourceToReadOnlyMap().clear();
+
+            // Refresh any actions that may become enabled or disabled.
+            //
+            // setSelection(getSelection());
+        }
+
+    }
+
+    /**
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    public AdapterFactory getAdapterFactory() {
+        return adapterFactory;
+    }
+
+    /**
+     * This is the one adapter factory used for providing views of the model.
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    protected ComposedAdapterFactory adapterFactory;
+
+    protected void initializeEditingDomain() {
+        // Create an adapter factory that yields item providers.
+        //
+        adapterFactory = new ComposedAdapterFactory(ComposedAdapterFactory.Descriptor.Registry.INSTANCE);
+
+        adapterFactory.addAdapterFactory(new ResourceItemProviderAdapterFactory());
+        adapterFactory.addAdapterFactory(new XDDItemProviderAdapterFactory());
+        adapterFactory.addAdapterFactory(new ReflectiveItemProviderAdapterFactory());
+
+        // Create the command stack that will notify this editor as commands are
+        // executed.
+        //
+        BasicCommandStack commandStack = new BasicCommandStack();
+
+        // Add a listener to set the most recent command's affected objects to
+        // be the selection of the viewer with focus.
+        //
+        commandStack.addCommandStackListener(new CommandStackListener() {
+            public void commandStackChanged(final EventObject event) {
+                getContainer().getDisplay().asyncExec(new Runnable() {
+                    public void run() {
+                        firePropertyChange(IEditorPart.PROP_DIRTY);
+
+                        // Try to select the affected objects.
+                        //
+                        Command mostRecentCommand = ((CommandStack) event.getSource()).getMostRecentCommand();
+                        if (mostRecentCommand != null) {
+                            setSelectionToViewer(mostRecentCommand.getAffectedObjects());
+                        }
+                        if (propertySheetPage != null && !propertySheetPage.getControl().isDisposed()) {
+                            propertySheetPage.refresh();
+                        }
+                    }
+                });
+            }
+        });
+
+        // Create the editing domain with a special command stack.
+        //
+        editingDomain = new AdapterFactoryEditingDomain(adapterFactory, commandStack, new HashMap<Resource, Boolean>());
+    }
+
+    /**
+     * This sets the selection into whichever viewer is active. <!--
+     * begin-user-doc --> <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    public void setSelectionToViewer(Collection<?> collection) {
+        final Collection<?> theSelection = collection;
+        // Make sure it's okay.
+        //
+        if (theSelection != null && !theSelection.isEmpty()) {
+            Runnable runnable = new Runnable() {
+                public void run() {
+                    // Try to select the items in the current content viewer of
+                    // the editor.
+                    //
+                    if (objectEditorPage.getViewer() != null) {
+                        objectEditorPage.getViewer().setSelection(new StructuredSelection(theSelection.toArray()),
+                                true);
+                    }
+                }
+            };
+            getSite().getShell().getDisplay().asyncExec(runnable);
+        }
+    }
+
+    /**
+     * This listens for when the outline becomes active <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    protected IPartListener partListener = new IPartListener() {
+        public void partActivated(IWorkbenchPart p) {
+            if (p instanceof PropertySheet) {
+                if (((PropertySheet) p).getCurrentPage() == propertySheetPage) {
+                    getActionBarContributor().setActiveEditor(DeviceDescriptionFileEditor.this);
+                    handleActivate();
+                }
+            } else if (p == DeviceDescriptionFileEditor.this) {
+                handleActivate();
+            }
+        }
+
+        public void partBroughtToTop(IWorkbenchPart p) {
+            // Ignore.
+        }
+
+        public void partClosed(IWorkbenchPart p) {
+            // Ignore.
+        }
+
+        public void partDeactivated(IWorkbenchPart p) {
+            // Ignore.
+        }
+
+        public void partOpened(IWorkbenchPart p) {
+            // Ignore.
+        }
+    };
+
+    @Override
+    public Object getAdapter(Class key) {
+        if (key.equals(IPropertySheetPage.class)) {
+            return getPropertySheetPage();
+        } else if (key.equals(IGotoMarker.class)) {
+            return this;
+        } else {
+            return super.getAdapter(key);
+        }
+    }
+
+    @Override
+    public String getContributorId() {
+        return "com.br_automation.buoat.xddeditor.properties";
+    }
 
 }
