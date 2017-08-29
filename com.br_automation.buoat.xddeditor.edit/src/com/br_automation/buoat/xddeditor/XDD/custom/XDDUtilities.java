@@ -55,23 +55,24 @@ import com.br_automation.buoat.xddeditor.XDD.TMNFeatures;
 import com.br_automation.buoat.xddeditor.XDD.TObject;
 import com.br_automation.buoat.xddeditor.XDD.TObjectPDOMapping;
 import com.br_automation.buoat.xddeditor.XDD.XDDPackage;
+import com.br_automation.buoat.xddeditor.XDD.impl.SubObjectTypeImpl;
 import com.br_automation.buoat.xddeditor.XDD.impl.TCNFeaturesImpl;
 import com.br_automation.buoat.xddeditor.XDD.util.XDDResourceFactoryImpl;
 
 /**
  * @brief Static utility-methods for XDD-File/resource manipulation and
  *        conversion / checks.
- * 
+ *
  * @author Joris Lückenga
- * */
+ */
 public final class XDDUtilities {
 
     /**
-     * 
+     *
      * @brief Condition class to be used in EMF's query-framework.
-     * 
+     *
      *        Provides finding XDD-Objects by index-attribute.
-     * 
+     *
      * @author Joris Lückenga
      */
     public static class ByteArrayCondition extends Condition {
@@ -90,7 +91,7 @@ public final class XDDUtilities {
             return Arrays.equals(this.currentByteArray, (byte[]) object);
         }
 
-    } //ByteArrayCondition
+    } // ByteArrayCondition
 
     /**
      * @brief VerifyListener for Hex-Text fields.
@@ -114,9 +115,7 @@ public final class XDDUtilities {
          *            <code>True</code> to convert the entered character to
          *            upper-case, <code>false</code> otherwise.
          */
-        public RegexVerifyListener(String pattern,
-            List<Character> excludedChars,
-            boolean toUpper) {
+        public RegexVerifyListener(String pattern, List<Character> excludedChars, boolean toUpper) {
             this.pattern = pattern;
             if (excludedChars == null)
                 this.excludedChars = new ArrayList<Character>(0);
@@ -162,22 +161,22 @@ public final class XDDUtilities {
 
     /**
      * @brief Set attributes of an XDD's ProfileBody-Element.
-     * 
+     *
      *        Sets fileModificatioDate and -Time to the current time and date,
      *        as well as fileModifiedBy. fileModifiedBy will be set to the
      *        username set by XDDUtilities#setCreator(String) if not
      *        <code>null</code>, system property <code>user.name</code>
      *        otherwise.
-     * 
+     *
      * @param root
      *            Root object of the current document.
      */
     public static void addSaveModifications(DocumentRoot root) {
 
-        List<ProfileBodyCommunicationNetworkPowerlink> foundCommunicationBodys = XDDUtilities
-            .findEObjects(root, XDDPackage.eINSTANCE.getProfileBodyCommunicationNetworkPowerlink());
-        List<ProfileBodyDevicePowerlink> foundDeviceBodys = XDDUtilities.findEObjects(
-            root, XDDPackage.eINSTANCE.getProfileBodyDevicePowerlink());
+        List<ProfileBodyCommunicationNetworkPowerlink> foundCommunicationBodys = XDDUtilities.findEObjects(root,
+                XDDPackage.eINSTANCE.getProfileBodyCommunicationNetworkPowerlink());
+        List<ProfileBodyDevicePowerlink> foundDeviceBodys = XDDUtilities.findEObjects(root,
+                XDDPackage.eINSTANCE.getProfileBodyDevicePowerlink());
         if (foundCommunicationBodys.isEmpty() || foundDeviceBodys.isEmpty())
             return;
 
@@ -196,7 +195,7 @@ public final class XDDUtilities {
         body2.setFileModificationDate(XDDUtilities.getXMLDate());
         body2.setFileModificationTime(XDDUtilities.getXMLTime());
 
-    } //addSaveModifications
+    } // addSaveModifications
 
     /**
      * @brief Adds Objects and Subobjects to a given resource, if Sub-/TObjects
@@ -205,64 +204,96 @@ public final class XDDUtilities {
      *            Resource where objects should be added to.
      * @param objectsToAdd
      *            List of objects to add to the resource.
-     * @throws <code>IllegalArgumentException</code> if the given root document
-     *         does not contain the element "ObjectList".
-     * */
+     * @throws <code>IllegalArgumentException</code>
+     *             if the given root document does not contain the element
+     *             "ObjectList".
+     */
     public static void addTObjects(List<TObject> objectsToAdd, DocumentRoot root) {
 
-        List<ObjectListType> objectListTypes = XDDUtilities.findEObjects(
-            root, XDDPackage.eINSTANCE.getObjectListType());
+        List<ObjectListType> objectListTypes = XDDUtilities.findEObjects(root,
+                XDDPackage.eINSTANCE.getObjectListType());
         if (objectListTypes.isEmpty())
-            throw new IllegalArgumentException(
-                "The specified root document does not contain an object list.");
+            throw new IllegalArgumentException("The specified root document does not contain an object list.");
         EList<TObject> currentObjectsList = objectListTypes.get(0).getObject();
 
-        Map<Integer, TObject> currentObjectMap = new HashMap<Integer, TObject>(
-            currentObjectsList.size());
+        Map<Integer, TObject> currentObjectMap = new HashMap<Integer, TObject>(currentObjectsList.size());
 
-        //Create Map of current Objectlist
+        // Create Map of current Objectlist
         for (TObject currentObject : currentObjectsList)
-            currentObjectMap
-            .put(new BigInteger(currentObject.getIndex()).intValue(), currentObject); // NOPMD by lueckengaj on 18.04.13 09:23
+            currentObjectMap.put(new BigInteger(currentObject.getIndex()).intValue(), currentObject); // NOPMD
+                                                                                                      // by
+                                                                                                      // lueckengaj
+                                                                                                      // on
+                                                                                                      // 18.04.13
+                                                                                                      // 09:23
 
-        //Iterate thorugh all objects that should be changed
+        // Iterate thorugh all objects that should be changed
         for (TObject currentObjectToAdd : objectsToAdd) {
-            //Get current index as integer-value
-            int currentObjectToAddIndex = new BigInteger(currentObjectToAdd.getIndex()).intValue(); // NOPMD by lueckengaj on 18.04.13 09:22
-            //Check if the object already exists
+            // Get current index as integer-value
+            int currentObjectToAddIndex = new BigInteger(currentObjectToAdd.getIndex()).intValue(); // NOPMD
+                                                                                                    // by
+                                                                                                    // lueckengaj
+                                                                                                    // on
+                                                                                                    // 18.04.13
+                                                                                                    // 09:22
+            // Check if the object already exists
             if (currentObjectMap.containsKey(currentObjectToAddIndex)) {
-                //get the subobject-list of the Tobject with matching index,and put it into a hash-map
-                EList<SubObjectType> currentSubObjects = currentObjectMap.get(
-                    currentObjectToAddIndex).getSubObject();
-                List<SubObjectType> missingSubObjects = new ArrayList<SubObjectType>(); // NOPMD by lueckengaj on 17.05.13 14:57
-                Map<Integer, SubObjectType> currentSubObjectMap = new HashMap<Integer, SubObjectType>(); // NOPMD by lueckengaj on 17.05.13 14:57
+                // get the subobject-list of the Tobject with matching index,and
+                // put it into a hash-map
+                EList<SubObjectType> currentSubObjects = currentObjectMap.get(currentObjectToAddIndex).getSubObject();
+                List<SubObjectType> missingSubObjects = new ArrayList<SubObjectType>(); // NOPMD
+                                                                                        // by
+                                                                                        // lueckengaj
+                                                                                        // on
+                                                                                        // 17.05.13
+                                                                                        // 14:57
+                Map<Integer, SubObjectType> currentSubObjectMap = new HashMap<Integer, SubObjectType>(); // NOPMD
+                                                                                                         // by
+                                                                                                         // lueckengaj
+                                                                                                         // on
+                                                                                                         // 17.05.13
+                                                                                                         // 14:57
                 for (SubObjectType currentSubObject : currentSubObjects)
-                    currentSubObjectMap.put(
-                        new BigInteger(currentSubObject.getSubIndex()).intValue(), // NOPMD by lueckengaj on 17.05.13 14:57
-                        currentSubObject);
-                //get Objects to add
+                    currentSubObjectMap.put(new BigInteger(currentSubObject.getSubIndex()).intValue(), // NOPMD
+                                                                                                       // by
+                                                                                                       // lueckengaj
+                                                                                                       // on
+                                                                                                       // 17.05.13
+                                                                                                       // 14:57
+                            currentSubObject);
+                // get Objects to add
                 List<SubObjectType> addableSubObjects = currentObjectToAdd.getSubObject();
-                //Find objects which do not already exist
+                // Find objects which do not already exist
                 for (SubObjectType addableSubObject : addableSubObjects) {
-                    if (!currentSubObjectMap.containsKey(new BigInteger(addableSubObject // NOPMD by lueckengaj on 17.05.13 14:57
-                        .getSubIndex()).intValue()))
+                    if (!currentSubObjectMap.containsKey(new BigInteger(addableSubObject // NOPMD
+                                                                                         // by
+                                                                                         // lueckengaj
+                                                                                         // on
+                                                                                         // 17.05.13
+                                                                                         // 14:57
+                            .getSubIndex()).intValue()))
                         missingSubObjects.add(addableSubObject);
                 }
-                //add & sort them after iterating
+                // add & sort them after iterating
                 currentSubObjects.addAll(missingSubObjects);
-                ECollections.sort(currentSubObjects, new SubObjectComparator()); // NOPMD by lueckengaj on 18.04.13 09:26
-            } else { //if not found -> add TObject
+                ECollections.sort(currentSubObjects, new SubObjectComparator()); // NOPMD
+                                                                                 // by
+                                                                                 // lueckengaj
+                                                                                 // on
+                                                                                 // 18.04.13
+                                                                                 // 09:26
+            } else { // if not found -> add TObject
                 currentObjectsList.add(currentObjectToAdd);
             }
         }
         ECollections.sort(currentObjectsList, new TObjectComparator());
-    } //addTObjects
+    } // addTObjects
 
     /**
      * @brief Finds and returns all instances of an element having an
      *        <code>eAttribute</code> with a matching <code>condition</code> in
      *        <code>documentRoot</code>.
-     * 
+     *
      * @param root
      *            The current resource.
      * @param eAttribute
@@ -274,11 +305,9 @@ public final class XDDUtilities {
      * @return A list of objects with matching conditions in the specified root.
      */
     @SuppressWarnings("unchecked")
-    public static <T extends EObject> List<T> findEObjects(DocumentRoot root,
-        EAttribute eAttribute,
-        Condition condition) {
-        EObjectCondition attributeCondition = new EObjectAttributeValueCondition(eAttribute,
-            condition);
+    public static <T extends EObject> List<T> findEObjects(DocumentRoot root, EAttribute eAttribute,
+            Condition condition) {
+        EObjectCondition attributeCondition = new EObjectAttributeValueCondition(eAttribute, condition);
         SELECT statement = new SELECT(new FROM(root.eContents()), new WHERE(attributeCondition));
         IQueryResult results = statement.execute();
 
@@ -292,7 +321,7 @@ public final class XDDUtilities {
     /**
      * @brief @brief Finds and returns all instances of the specified
      *        <code>eClass</code> in <code>documentRoot</code>.
-     * 
+     *
      * @param root
      *            the current resource.
      * @param eClass
@@ -354,18 +383,26 @@ public final class XDDUtilities {
      *            An array of valid ENUMs of MappingType.
      * @return A HashMap<String, TObject> with Objects that are mappable.
      */
-    public static Map<Integer, TObject> getMappingObjects(DocumentRoot root,
-        Set<TObjectPDOMapping> mappingTypes) {
+    public static Map<Integer, TObject> getMappingObjects(DocumentRoot root, Set<TObjectPDOMapping> mappingTypes) {
         List<TObject> tObjects = XDDUtilities.findEObjects(root, XDDPackage.eINSTANCE.getTObject());
         HashMap<Integer, TObject> validObjects = new HashMap<Integer, TObject>();
 
         for (EObject object : tObjects) {
             TObject testObject = (TObject) object;
-            if ((testObject.getSubObject().isEmpty() && mappingTypes.contains(testObject
-                .getPDOmapping()))
-                || !(XDDUtilities.getMappingSubObjects(testObject, mappingTypes).isEmpty()))
-                if (testObject.getName() != null && testObject.getIndex() != null) // NOPMD by lueckengaj on 29.03.13 11:19
-                    validObjects.put(new BigInteger(testObject.getIndex()).intValue(), testObject); // NOPMD by lueckengaj on 17.05.13 14:57
+            if ((testObject.getSubObject().isEmpty() && mappingTypes.contains(testObject.getPDOmapping()))
+                    || !(XDDUtilities.getMappingSubObjects(testObject, mappingTypes).isEmpty()))
+                if (testObject.getName() != null && testObject.getIndex() != null) // NOPMD
+                                                                                   // by
+                                                                                   // lueckengaj
+                                                                                   // on
+                                                                                   // 29.03.13
+                                                                                   // 11:19
+                    validObjects.put(new BigInteger(testObject.getIndex()).intValue(), testObject); // NOPMD
+                                                                                                    // by
+                                                                                                    // lueckengaj
+                                                                                                    // on
+                                                                                                    // 17.05.13
+                                                                                                    // 14:57
         }
         return validObjects;
     }
@@ -381,14 +418,35 @@ public final class XDDUtilities {
      * @return A HashMap<String, SubObjectType> with Objects that are mappable.
      */
     public static Map<Integer, SubObjectType> getMappingSubObjects(TObject tObject,
-        Set<TObjectPDOMapping> mappingType) {
+            Set<TObjectPDOMapping> mappingType) {
         Map<Integer, SubObjectType> subobjectsList = new HashMap<Integer, SubObjectType>();
 
         for (SubObjectType subObject : tObject.getSubObject())
             if (mappingType.contains(subObject.getPDOmapping()) && subObject.getSubIndex() != null
-            && subObject.getDataType() != null)
-                subobjectsList.put(new BigInteger(subObject.getSubIndex()).intValue(), subObject); // NOPMD by lueckengaj on 17.05.13 14:57
+                    && subObject.getDataType() != null)
+                subobjectsList.put(new BigInteger(subObject.getSubIndex()).intValue(), subObject); // NOPMD
+                                                                                                   // by
+                                                                                                   // lueckengaj
+                                                                                                   // on
+                                                                                                   // 17.05.13
+                                                                                                   // 14:57
         return subobjectsList;
+    }
+
+    public static boolean isMappableObject(TObject tObject, Set<TObjectPDOMapping> mappingType) {
+        if (mappingType.contains(tObject.getPDOmapping()) && tObject.getIndex() != null
+                && tObject.getDataType() != null) {
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean isMappableSubObject(SubObjectTypeImpl subObject, Set<TObjectPDOMapping> mappingType) {
+        if (mappingType.contains(subObject.getPDOmapping()) && subObject.getSubIndex() != null
+                && subObject.getDataType() != null) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -403,10 +461,10 @@ public final class XDDUtilities {
 
     /**
      * @brief Load given URL resource and look up Object-Elements.
-     * 
+     *
      *        Load a given XDD-File and return all Object-Elements with matching
      *        indices.
-     * 
+     *
      * @param resourcePath
      *            URL of the resource.
      * @param objectIndices
@@ -414,19 +472,18 @@ public final class XDDUtilities {
      * @return A <code>List</code> containing <code>TObject</code> elements with
      *         indices found in the specified resource.
      */
-    public static List<TObject> getTObjectsFromResource(URL resourcePath,
-        List<Integer> objectIndices) {
+    public static List<TObject> getTObjectsFromResource(URL resourcePath, List<Integer> objectIndices) {
         if (resourcePath == null)
             throw new IllegalArgumentException("Parameter 'resourcePath ' must not be null.");
-        //get Resource...
-        DocumentRoot root = XDDUtilities.loadXDD(resourcePath); //(DocumentRoot) resource.getContents().get(0);
+        // get Resource...
+        DocumentRoot root = XDDUtilities.loadXDD(resourcePath); // (DocumentRoot)
+                                                                // resource.getContents().get(0);
         List<TObject> foundObjects = new ArrayList<TObject>();
 
         if (!objectIndices.isEmpty()) {
             for (Integer index : objectIndices) {
-                List<TObject> objects = XDDUtilities.findEObjects(
-                    root, XDDPackage.eINSTANCE.getTObject_Index(),
-                    new XDDUtilities.ByteArrayCondition(index));
+                List<TObject> objects = XDDUtilities.findEObjects(root, XDDPackage.eINSTANCE.getTObject_Index(),
+                        new XDDUtilities.ByteArrayCondition(index));
                 foundObjects.addAll(objects);
             }
         }
@@ -435,12 +492,12 @@ public final class XDDUtilities {
 
     /**
      * @brief Used to get the valid MappingTypes of a TObject.
-     * 
+     *
      *        If the MappingType is set to RPDO, only RPDO,DEFAULT and OPTIONAL
      *        mappings are allowed. The same principle applies for TPDO mapping.
      *        This function returns a HashSet with valid MappingTypes to ease
      *        the check of SubObjectTypes.
-     * 
+     *
      * @param mappingType
      *            of the TObject.
      * @return The Set<TObjectPDOMapping> of valid mapping for the given
@@ -450,18 +507,18 @@ public final class XDDUtilities {
         Set<TObjectPDOMapping> mappingTypes = new HashSet<TObjectPDOMapping>();
 
         switch (mappingType) {
-            case RPDO:
-                mappingTypes.add(TObjectPDOMapping.RPDO);
-                mappingTypes.add(TObjectPDOMapping.DEFAULT);
-                mappingTypes.add(TObjectPDOMapping.OPTIONAL);
-                break;
-            case TPDO:
-                mappingTypes.add(TObjectPDOMapping.TPDO);
-                mappingTypes.add(TObjectPDOMapping.DEFAULT);
-                mappingTypes.add(TObjectPDOMapping.OPTIONAL);
-                break;
-            default:
-                break;
+        case RPDO:
+            mappingTypes.add(TObjectPDOMapping.RPDO);
+            mappingTypes.add(TObjectPDOMapping.DEFAULT);
+            mappingTypes.add(TObjectPDOMapping.OPTIONAL);
+            break;
+        case TPDO:
+            mappingTypes.add(TObjectPDOMapping.TPDO);
+            mappingTypes.add(TObjectPDOMapping.DEFAULT);
+            mappingTypes.add(TObjectPDOMapping.OPTIONAL);
+            break;
+        default:
+            break;
         }
         return mappingTypes;
     }
@@ -525,12 +582,26 @@ public final class XDDUtilities {
      */
     public static boolean isRPDO(TObject tobject) {
         int index = new BigInteger(1, tobject.getIndex()).intValue();
-        return (index >= EPLGeneralConstants.PDO_RX_MAPP_PARAM_MIN && index <= EPLGeneralConstants.PDO_RX_MAPP_PARAM_MIN);
+        return (index >= EPLGeneralConstants.PDO_RX_MAPP_PARAM_MIN
+                && index <= EPLGeneralConstants.PDO_RX_MAPP_PARAM_MIN);
+    }
+
+    /**
+     * @brief Checks if the TOBject is an RPDO Mapping-Object.
+     * @param tobject
+     *            The object to check.
+     * @return <code>True</code> if this is an RPDO Mapping-Object,
+     *         <code>false</code> otherwise.
+     */
+    public static boolean isTPDO(TObject tobject) {
+        int index = new BigInteger(1, tobject.getIndex()).intValue();
+        return (index >= EPLGeneralConstants.PDO_TX_COMM_PARAM_MIN
+                && index <= EPLGeneralConstants.PDO_TX_COMM_PARAM_MAX);
     }
 
     /**
      * @brief Loads a new XDD-File based on the given URL
-     * 
+     *
      * @param resourcePath
      *            URL of the XDD that should be loaded.
      * @return The DocumentRoot element of the Resource
@@ -541,12 +612,11 @@ public final class XDDUtilities {
             throw new IllegalArgumentException("Parameter 'resourcePath ' must not be null.");
         Map<Object, Object> options = new HashMap<Object, Object>();
         options.put(XMLResource.OPTION_ENCODING, "UTF-8"); //$NON-NLS-1$
-        //get new Resource
+        // get new Resource
         ResourceSet resSet = new ResourceSetImpl();
-        resSet.getResourceFactoryRegistry().getExtensionToFactoryMap()
-        .put("xdd", new XDDResourceFactoryImpl()); //$NON-NLS-1$
+        resSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xdd", new XDDResourceFactoryImpl()); //$NON-NLS-1$
 
-        //Get the File and root object
+        // Get the File and root object
         URI fileuri = URI.createURI(resourcePath.toString());
         Resource resource = resSet.getResource(fileuri, true);
         return (DocumentRoot) resource.getContents().get(0);
@@ -554,7 +624,7 @@ public final class XDDUtilities {
 
     /**
      * @brief Parses integer from a String.
-     * 
+     *
      * @param data
      *            String to parse.
      * @return The parsed Integer or <code>null</code> if not not an Integer.
@@ -577,13 +647,12 @@ public final class XDDUtilities {
         XDDUtilities.creator = string;
     }
 
-
     /**
      * @brief Sets FeatureFlag according to bit-offset in object 1F82
-     * 
+     *
      *        Sets corresponding attributes in elements CNFeatures,MNFeatures
      *        and GeneralFeatures.
-     * 
+     *
      * @param status
      *            <code>True</code> if FeatureFlag shall be enabled,
      *            <code>false</code> otherwise.
@@ -593,15 +662,15 @@ public final class XDDUtilities {
      *            Root of XDD-Document for which to set the FeatureFlag.
      */
     public static void setFeatureFlag(boolean status, int bitOffset, DocumentRoot documentRoot) {
-        List<TObject> foundFeatureFlags = XDDUtilities.findEObjects(
-            documentRoot, XDDPackage.eINSTANCE.getTObject_Index(), new ByteArrayCondition(
-                EPLGeneralConstants.NMT_FEATUREFLAGS_U32));
-        List<TGeneralFeatures> foundTGeneralFeatures = XDDUtilities.findEObjects(
-            documentRoot, XDDPackage.eINSTANCE.getTGeneralFeatures());
-        List<TCNFeaturesImpl> foundTCNFeatures = XDDUtilities.findEObjects(
-            documentRoot, XDDPackage.eINSTANCE.getTCNFeatures());
-        List<TMNFeatures> foundTMNFeatures = XDDUtilities.findEObjects(
-            documentRoot, XDDPackage.eINSTANCE.getTMNFeatures());
+        List<TObject> foundFeatureFlags = XDDUtilities.findEObjects(documentRoot,
+                XDDPackage.eINSTANCE.getTObject_Index(),
+                new ByteArrayCondition(EPLGeneralConstants.NMT_FEATUREFLAGS_U32));
+        List<TGeneralFeatures> foundTGeneralFeatures = XDDUtilities.findEObjects(documentRoot,
+                XDDPackage.eINSTANCE.getTGeneralFeatures());
+        List<TCNFeaturesImpl> foundTCNFeatures = XDDUtilities.findEObjects(documentRoot,
+                XDDPackage.eINSTANCE.getTCNFeatures());
+        List<TMNFeatures> foundTMNFeatures = XDDUtilities.findEObjects(documentRoot,
+                XDDPackage.eINSTANCE.getTMNFeatures());
 
         if (foundFeatureFlags.isEmpty() || foundTGeneralFeatures.isEmpty())
             return;
@@ -610,38 +679,38 @@ public final class XDDUtilities {
         TObject featureFlagsObject = foundFeatureFlags.get(0);
 
         switch (bitOffset) {
-            case EPLGeneralConstants.FF_OFFSET_MN_BASIC_ETHERNET_MODE:
-                if (!foundTMNFeatures.isEmpty())
-                    foundTMNFeatures.get(0).setNMTMNBasicEthernet(status);
-                break;
-            case EPLGeneralConstants.FF_OFFSET_ROUTING_TYPE1_SUPPORT:
-                generalFeatures.setRT1RT1Support(status);
-                break;
-            case EPLGeneralConstants.FF_OFFSET_ROUTING_TYPE2_SUPPORT:
-                generalFeatures.setRT2RT2Support(status);
-                break;
-            case EPLGeneralConstants.FF_OFFSET_CONFIGURATION_MANAGER:
-                generalFeatures.setCFMConfigManager(status);
-                break;
-            case EPLGeneralConstants.FF_OFFESET_MULTIPLEXED_ACCESS:
-                if (!foundTCNFeatures.isEmpty())
-                    foundTCNFeatures.get(0).setDLLCNFeatureMultiplex(status);
-                break;
-            case EPLGeneralConstants.FF_OFFSET_PRESP_CHAINING:
-                if (!foundTCNFeatures.isEmpty())
-                    foundTCNFeatures.get(0).setDLLCNPResChaining(status);
-                break;
-            default:
-                break;
+        case EPLGeneralConstants.FF_OFFSET_MN_BASIC_ETHERNET_MODE:
+            if (!foundTMNFeatures.isEmpty())
+                foundTMNFeatures.get(0).setNMTMNBasicEthernet(status);
+            break;
+        case EPLGeneralConstants.FF_OFFSET_ROUTING_TYPE1_SUPPORT:
+            generalFeatures.setRT1RT1Support(status);
+            break;
+        case EPLGeneralConstants.FF_OFFSET_ROUTING_TYPE2_SUPPORT:
+            generalFeatures.setRT2RT2Support(status);
+            break;
+        case EPLGeneralConstants.FF_OFFSET_CONFIGURATION_MANAGER:
+            generalFeatures.setCFMConfigManager(status);
+            break;
+        case EPLGeneralConstants.FF_OFFESET_MULTIPLEXED_ACCESS:
+            if (!foundTCNFeatures.isEmpty())
+                foundTCNFeatures.get(0).setDLLCNFeatureMultiplex(status);
+            break;
+        case EPLGeneralConstants.FF_OFFSET_PRESP_CHAINING:
+            if (!foundTCNFeatures.isEmpty())
+                foundTCNFeatures.get(0).setDLLCNPResChaining(status);
+            break;
+        default:
+            break;
         }
 
         if (status)
-            featureFlagsObject.setDefaultValue("0x"
-                + Long.toHexString((Long.decode(featureFlagsObject.getDefaultValue()) | (1 << bitOffset))));
+            featureFlagsObject.setDefaultValue(
+                    "0x" + Long.toHexString((Long.decode(featureFlagsObject.getDefaultValue()) | (1 << bitOffset))));
         else
-            featureFlagsObject.setDefaultValue("0x"
-                + Long.toHexString((Long.decode(featureFlagsObject.getDefaultValue()) & ~(1 << bitOffset))));
-    } //setFeatureFlag
+            featureFlagsObject.setDefaultValue(
+                    "0x" + Long.toHexString((Long.decode(featureFlagsObject.getDefaultValue()) & ~(1 << bitOffset))));
+    } // setFeatureFlag
 
     /**
      * @brief Sets the IP-Support property to CNFeatures object based on
@@ -654,8 +723,8 @@ public final class XDDUtilities {
      *            unset.
      */
     public static void setIPSupportProperties(DocumentRoot root, boolean status) {
-        List<TGeneralFeatures> tgeneralFeatures = XDDUtilities.findEObjects(
-            root, XDDPackage.eINSTANCE.getTGeneralFeatures());
+        List<TGeneralFeatures> tgeneralFeatures = XDDUtilities.findEObjects(root,
+                XDDPackage.eINSTANCE.getTGeneralFeatures());
         tgeneralFeatures.get(0).setNWLIPSupport(status);
     }
 

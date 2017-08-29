@@ -38,6 +38,8 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.xml.bind.DatatypeConverter;
 
@@ -49,9 +51,12 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.util.EContentAdapter;
 import org.eclipse.emf.eef.runtime.ui.properties.sections.EEFAdvancedPropertySection;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelection;
@@ -64,6 +69,7 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.pde.core.IModelChangedEvent;
@@ -71,6 +77,7 @@ import org.eclipse.pde.internal.ui.editor.PDEFormPage;
 import org.eclipse.pde.internal.ui.editor.PDEMasterDetailsBlock;
 import org.eclipse.pde.internal.ui.editor.PDESection;
 import org.eclipse.pde.internal.ui.editor.plugin.AbstractPluginElementDetails;
+
 import org.eclipse.pde.internal.ui.editor.plugin.ExtensionDetails;
 import org.eclipse.pde.internal.ui.editor.plugin.ExtensionElementBodyTextDetails;
 import org.eclipse.pde.internal.ui.editor.plugin.ExtensionElementDetails;
@@ -125,6 +132,7 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.forms.widgets.TableWrapLayout;
+import org.eclipse.ui.internal.handlers.HideTrimBarsHandler;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
@@ -132,6 +140,7 @@ import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import com.br_automation.buoat.xddeditor.XDD.DocumentRoot;
 import com.br_automation.buoat.xddeditor.XDD.SubObjectType;
 import com.br_automation.buoat.xddeditor.XDD.TObject;
+import com.br_automation.buoat.xddeditor.XDD.TObjectPDOMapping;
 import com.br_automation.buoat.xddeditor.XDD.XDDPackage;
 import com.br_automation.buoat.xddeditor.XDD.custom.CiADeviceProfile;
 import com.br_automation.buoat.xddeditor.XDD.custom.EPLGeneralConstants;
@@ -149,6 +158,7 @@ import com.br_automation.buoat.xddeditor.XDD.impl.SubObjectTypeImpl;
 import com.br_automation.buoat.xddeditor.XDD.impl.TObjectImpl;
 import com.br_automation.buoat.xddeditor.XDD.provider.TObjectItemProvider;
 import com.br_automation.buoat.xddeditor.XDD.resources.IPluginImages;
+import com.br_automation.buoat.xddeditor.XDD.resources.IPowerlinkConstants;
 import com.br_automation.buoat.xddeditor.XDD.wizards.AddObjectWizardPage;
 import com.br_automation.buoat.xddeditor.XDD.wizards.NewFirmwareWizard;
 import com.br_automation.buoat.xddeditor.XDD.wizards.NewObjectWizard;
@@ -259,35 +269,20 @@ public final class ObjectDictionaryEditorPage extends FormPage {
 
         @Override
         protected void createMasterPart(IManagedForm managedForm, Composite parent) {
+            createActions();
             createObjectDictionarySection(managedForm, parent);
+
         }
 
         @Override
         protected void registerPages(DetailsPart detailsPart) {
 
-            // EClass object = XDDPackage.eINSTANCE.getTObject();
-            // List<TObject> tObjects = XDDUtilities.findEObjects(docRoot,
-            // object);
-            // for(TObject obj : tObjects){
-            // String index = DatatypeConverter.printHexBinary(obj.getIndex());
-            // if(index.equalsIgnoreCase("1F82")) {
-            // detailsPart.registerPage(TObjectImpl.class, new
-            // ObjectDetailsPage());
-            // }
-            // }
-            // detailsPart.registerPage(TObjectImpl.class, new
-            // ObjectDetailsPage());
-            // detailsPart.registerPage(SubObjectTypeImpl.class, new
-            // SubObjectDetailsPage());
-            // detailsPart.registerPage(TObjectImpl.class,
-            // getPage(TObjectImpl.class));
             detailsPart.setPageProvider(this);
 
         }
 
         @Override
         protected void createToolBarActions(IManagedForm managedForm) {
-            // TODO Auto-generated method stub
 
         }
 
@@ -557,24 +552,7 @@ public final class ObjectDictionaryEditorPage extends FormPage {
 
     public static final String OBJECT_PROPERTIES = "Properties";
 
-    private void createActions() {
-        propertiesAction = new Action(OBJECT_PROPERTIES) {
-            @Override
-            public void run() {
-                super.run();
-                try {
-                    PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-                            .showView(IPageLayout.ID_PROP_SHEET);
-                    listViewer.setSelection(listViewer.getSelection());
-                } catch (PartInitException e) {
-                    e.printStackTrace();
-
-                }
-            }
-        };
-        // propertiesAction.setImageDescriptor(org.epsg.openconfigurator.Activator
-        // .getImageDescriptor(IPluginImages.PROPERTIES_ICON));
-    }
+    private FilteredTree filteredTree;
 
     /**
      * Creates the widgets and controls for the Object dictionary model.
@@ -597,7 +575,7 @@ public final class ObjectDictionaryEditorPage extends FormPage {
         layout.numColumns = 2;
         parent.setLayout(layout);
 
-        Section deviceFirmwareSection = toolKit.createSection(parent, ExpandableComposite.EXPANDED | Section.DESCRIPTION
+        deviceFirmwareSection = toolKit.createSection(parent, ExpandableComposite.EXPANDED | Section.DESCRIPTION
                 | ExpandableComposite.TWISTIE | ExpandableComposite.TITLE_BAR);
         managedForm.getToolkit().paintBordersFor(deviceFirmwareSection);
         deviceFirmwareSection.setText(ObjectDictionaryEditorPage.OBJECT_DICTIONARY_HEADING);
@@ -614,8 +592,8 @@ public final class ObjectDictionaryEditorPage extends FormPage {
 
         PatternFilter filter = new PowerlinkObjectPatternFilter();
         filter.setIncludeLeadingWildcard(true);
-        FilteredTree tree = new FilteredTree(clientComposite, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL, filter, true);
-        listViewer = tree.getViewer();
+        filteredTree = new FilteredTree(clientComposite, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL, filter, true);
+        listViewer = filteredTree.getViewer();
         Tree lst_no_foi = listViewer.getTree();
 
         listViewer.setContentProvider(new ObjectDictionaryContentProvider());
@@ -628,8 +606,6 @@ public final class ObjectDictionaryEditorPage extends FormPage {
         lst_no_foi.setLayoutData(pst);
 
         createContextMenu(listViewer);
-
-        createActions();
 
         // getEditorSite().setSelectionProvider(listViewer);
 
@@ -648,8 +624,6 @@ public final class ObjectDictionaryEditorPage extends FormPage {
         final SectionPart spart = new SectionPart(deviceFirmwareSection);
         managedForm.addPart(spart);
 
-        // ISelectionProvider selectionProvider =
-        // editor.getSite().getSelectionProvider();
         listViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
             @Override
@@ -659,7 +633,180 @@ public final class ObjectDictionaryEditorPage extends FormPage {
             }
         });
 
+        listViewer.addFilter(new ViewerFilter() {
+
+            @Override
+            public boolean select(Viewer viewer, Object parentElement, Object element) {
+                try {
+                    if (element instanceof TObjectImpl) {
+                        TObjectImpl obj = (TObjectImpl) element;
+                        byte[] index = obj.getIndex();
+                        String indexValue = DatatypeConverter.printHexBinary(index);
+                        Integer objectId = Integer.parseInt(indexValue, 16);
+                        if (!communicationProfileObjectsVisible) {
+                            if ((objectId >= IPowerlinkConstants.COMMUNICATION_PROFILE_START_INDEX)
+                                    && (objectId < IPowerlinkConstants.MANUFACTURER_PROFILE_START_INDEX)) {
+                                return false;
+                            }
+
+                        }
+
+                        if (!standardisedDeviceProfileObjectsVisible) {
+                            if ((objectId >= IPowerlinkConstants.STANDARDISED_DEVICE_PROFILE_START_INDEX)
+                                    && (objectId <= IPowerlinkConstants.STANDARDISED_DEVICE_PROFILE_END_INDEX)) {
+                                return false;
+                            }
+                        }
+
+                        validRpdoTObjectMapping = XDDUtilities.getValidMappingTypes(TObjectPDOMapping.RPDO);
+
+                        validTpdoTObjectMapping = XDDUtilities.getValidMappingTypes(TObjectPDOMapping.TPDO);
+
+                        Map<Integer, SubObjectType> tpdoMappableSubObjects = XDDUtilities.getMappingSubObjects(obj,
+                                validTpdoTObjectMapping);
+                        Map<Integer, SubObjectType> rpdoMappableSubObjects = XDDUtilities.getMappingSubObjects(obj,
+                                validRpdoTObjectMapping);
+
+                        if (!nonMappableObjectsVisible) {
+                            if (!XDDUtilities.isMappableObject(obj, validTpdoTObjectMapping)
+                                    && !XDDUtilities.isMappableObject(obj, validRpdoTObjectMapping)
+                                    && tpdoMappableSubObjects.isEmpty() && rpdoMappableSubObjects.isEmpty()) {
+                                return false;
+                            }
+                        }
+
+                        if (!userdefinedObjectsVisisble) {
+                            if ((objectId >= IPowerlinkConstants.MANUFACTURER_PROFILE_START_INDEX)
+                                    && (objectId <= IPowerlinkConstants.MANUFACTURER_PROFILE_END_INDEX)) {
+                                return false;
+                            }
+                        }
+
+                    } else if (element instanceof SubObjectTypeImpl) {
+                        SubObjectTypeImpl subObj = (SubObjectTypeImpl) element;
+                        validRpdoTObjectMapping = XDDUtilities.getValidMappingTypes(TObjectPDOMapping.RPDO);
+
+                        validTpdoTObjectMapping = XDDUtilities.getValidMappingTypes(TObjectPDOMapping.TPDO);
+                        if (!nonMappableObjectsVisible) {
+                            if (!XDDUtilities.isMappableSubObject(subObj, validTpdoTObjectMapping)
+                                    && !XDDUtilities.isMappableSubObject(subObj, validRpdoTObjectMapping)) {
+                                return false;
+                            }
+                        }
+                    }
+
+                } catch (Exception exc) {
+                    exc.printStackTrace();
+                }
+                return true;
+            }
+        });
+
         addListenerstoControls();
+
+        ToolBarManager toolBarManager = new ToolBarManager(SWT.NONE);
+        org.eclipse.swt.widgets.ToolBar toolbar = toolBarManager.createControl(deviceFirmwareSection);
+        final org.eclipse.swt.graphics.Cursor handCursor = Display.getCurrent().getSystemCursor(SWT.CURSOR_HAND);
+        toolbar.setCursor(handCursor);
+
+        toolBarManager.removeAll();
+        toolBarManager.add(hideCommunicationProfileObjects);
+        toolBarManager.add(hideStandardisedDeviceProfileObjects);
+        toolBarManager.add(hideNonMappableObjects);
+        toolBarManager.add(hideUserDefinedObjects);
+        toolBarManager.update(true);
+        deviceFirmwareSection.setTextClient(toolbar);
+
+    }
+
+    private Action hideCommunicationProfileObjects;
+    private Action hideStandardisedDeviceProfileObjects;
+    private Action hideNonMappableObjects;
+    private Action hideUserDefinedObjects;
+    private Set<TObjectPDOMapping> validTpdoTObjectMapping;
+    private Set<TObjectPDOMapping> validRpdoTObjectMapping;
+
+    private boolean communicationProfileObjectsVisible = true;
+    private boolean standardisedDeviceProfileObjectsVisible = true;
+    private boolean nonMappableObjectsVisible = true;
+    private boolean userdefinedObjectsVisisble = true;
+
+    public static final String HIDE_NON_MAPPABLE_OBJECTS = "Hide Non Mappable Objects";
+
+    public static final String HIDE_COMMUNICATION_PROFILE_AREA_OBJECTS = "Hide Communication Profile Area Objects(0x1000-0x1FFF)";
+    public static final String HIDE_STANDARDISED_DEVICE_PROFILE_AREA_OBJECTS = "Hide Standardised Device Profile Area Objects(0x6000-0x9FFF)";
+    public static final String HIDE_USER_DEFINED_OBJECTS = "Hide User Defined Objects(0x2000-0x5FFF)";
+    public static final String HIDE_NON_FORCED_OBJECTS = "Hide NonForced Objects";
+
+    /**
+     * Create the actions.
+     */
+    private void createActions() {
+
+        hideNonMappableObjects = new Action(HIDE_NON_MAPPABLE_OBJECTS, IAction.AS_CHECK_BOX) {
+            @Override
+            public void run() {
+                if (hideNonMappableObjects.isChecked()) {
+                    nonMappableObjectsVisible = false;
+                } else {
+                    nonMappableObjectsVisible = true;
+                }
+                listViewer.refresh();
+            }
+        };
+        hideNonMappableObjects.setToolTipText(HIDE_NON_MAPPABLE_OBJECTS);
+        hideNonMappableObjects.setImageDescriptor(AbstractUIPlugin
+                .imageDescriptorFromPlugin("com.br_automation.buoat.xddeditor.editor", IPluginImages.OBJECT_ICON));
+        hideNonMappableObjects.setChecked(false);
+
+        hideCommunicationProfileObjects = new Action(HIDE_COMMUNICATION_PROFILE_AREA_OBJECTS, IAction.AS_CHECK_BOX) {
+            @Override
+            public void run() {
+                if (hideCommunicationProfileObjects.isChecked()) {
+                    communicationProfileObjectsVisible = false;
+                } else {
+                    communicationProfileObjectsVisible = true;
+                }
+                listViewer.refresh();
+            }
+        };
+        hideCommunicationProfileObjects.setToolTipText(HIDE_COMMUNICATION_PROFILE_AREA_OBJECTS);
+        hideCommunicationProfileObjects.setImageDescriptor(AbstractUIPlugin
+                .imageDescriptorFromPlugin("com.br_automation.buoat.xddeditor.editor", IPluginImages.OBJECT_ICON));
+        hideCommunicationProfileObjects.setChecked(false);
+
+        hideStandardisedDeviceProfileObjects = new Action(HIDE_STANDARDISED_DEVICE_PROFILE_AREA_OBJECTS,
+                IAction.AS_CHECK_BOX) {
+            @Override
+            public void run() {
+                if (hideStandardisedDeviceProfileObjects.isChecked()) {
+                    standardisedDeviceProfileObjectsVisible = false;
+                } else {
+                    standardisedDeviceProfileObjectsVisible = true;
+                }
+                listViewer.refresh();
+            }
+        };
+        hideStandardisedDeviceProfileObjects.setToolTipText(HIDE_STANDARDISED_DEVICE_PROFILE_AREA_OBJECTS);
+        hideStandardisedDeviceProfileObjects.setImageDescriptor(AbstractUIPlugin
+                .imageDescriptorFromPlugin("com.br_automation.buoat.xddeditor.editor", IPluginImages.OBJECT_ICON));
+        hideStandardisedDeviceProfileObjects.setChecked(false);
+
+        hideUserDefinedObjects = new Action(HIDE_STANDARDISED_DEVICE_PROFILE_AREA_OBJECTS, IAction.AS_CHECK_BOX) {
+            @Override
+            public void run() {
+                if (hideUserDefinedObjects.isChecked()) {
+                    userdefinedObjectsVisisble = false;
+                } else {
+                    userdefinedObjectsVisisble = true;
+                }
+                listViewer.refresh();
+            }
+        };
+        hideUserDefinedObjects.setToolTipText(HIDE_USER_DEFINED_OBJECTS);
+        hideUserDefinedObjects.setImageDescriptor(AbstractUIPlugin
+                .imageDescriptorFromPlugin("com.br_automation.buoat.xddeditor.editor", IPluginImages.OBJECT_ICON));
+        hideUserDefinedObjects.setChecked(false);
 
     }
 
