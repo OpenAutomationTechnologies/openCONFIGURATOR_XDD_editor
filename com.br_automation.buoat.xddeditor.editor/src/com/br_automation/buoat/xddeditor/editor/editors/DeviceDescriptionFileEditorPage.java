@@ -116,6 +116,7 @@ import com.br_automation.buoat.xddeditor.XDD.ProductNameType;
 import com.br_automation.buoat.xddeditor.XDD.ProfileBodyDataType;
 import com.br_automation.buoat.xddeditor.XDD.ProfileHeaderDataType;
 import com.br_automation.buoat.xddeditor.XDD.SubObjectType;
+import com.br_automation.buoat.xddeditor.XDD.TDeviceFunction;
 import com.br_automation.buoat.xddeditor.XDD.TDeviceIdentity;
 import com.br_automation.buoat.xddeditor.XDD.TFirmwareList;
 import com.br_automation.buoat.xddeditor.XDD.TObject;
@@ -129,6 +130,7 @@ import com.br_automation.buoat.xddeditor.XDD.XDDFactory;
 import com.br_automation.buoat.xddeditor.XDD.XDDPackage;
 import com.br_automation.buoat.xddeditor.XDD.custom.CustomXDDWizard;
 import com.br_automation.buoat.xddeditor.XDD.custom.XDDUtilities;
+import com.br_automation.buoat.xddeditor.XDD.impl.FirmwareTypeImpl;
 import com.br_automation.buoat.xddeditor.XDD.presentation.XDDEditor;
 import com.br_automation.buoat.xddeditor.XDD.resources.IPluginImages;
 import com.br_automation.buoat.xddeditor.XDD.validation.NameVerifyListener;
@@ -256,6 +258,13 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
     private Button editPathSettingsButton;
     private Button deletePathSettingsButton;
 
+    /**
+     * Controls for Firmware setting tag
+     */
+    private Button addFirmwareSettingsButton;
+    private Button editFirmwareSettingsButton;
+    private Button deleteFirmwareSettingsButton;
+
     private static DocumentRoot documentRoot;
 
     public DeviceDescriptionFileEditorPage(DeviceDescriptionFileEditor editor, final String title,
@@ -353,8 +362,6 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
         createDevImageSection(managedForm);
 
     }
-
-
 
     /**
      * Creates the widgets and controls for the model.
@@ -472,7 +479,7 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
     private void setErrorMessage(String message) {
         form.setMessage(message, IMessageProvider.ERROR);
         if (message == null) {
-                        form.setMessage(message, IMessageProvider.NONE);
+            form.setMessage(message, IMessageProvider.NONE);
         }
     }
 
@@ -482,7 +489,6 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
             form.setMessage(message, IMessageProvider.NONE);
         }
     }
-
 
     public TDeviceIdentity getDeviceIdentity() {
         EList<ISO15745ProfileType> profiles = documentRoot.getISO15745ProfileContainer().getISO15745Profile();
@@ -536,8 +542,8 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
                 }
 
                 if (getDeviceIdentity().getVendorID() != null) {
-                	getDeviceIdentity().getVendorID().setValue(vendorId);
-                	System.err.println("Vendor Id value updated..");
+                    getDeviceIdentity().getVendorID().setValue(vendorId);
+                    System.err.println("Vendor Id value updated..");
                 } else {
                     TVendorID venId = XDDFactory.eINSTANCE.createTVendorID();
                     getDeviceIdentity().setVendorID(venId);
@@ -579,7 +585,7 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
                 }
 
                 if (getDeviceIdentity().getProductName() != null) {
-                	getDeviceIdentity().getProductName().setValue(productName);
+                    getDeviceIdentity().getProductName().setValue(productName);
                 } else {
                     ProductNameType productNameVal = XDDFactory.eINSTANCE.createProductNameType();
                     getDeviceIdentity().setProductName(productNameVal);
@@ -624,7 +630,7 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
                     boolean hwVersionAvailable = false;
                     for (TVersion version : deviceIdentityVersion) {
                         if (version.getVersionType().getName().equalsIgnoreCase("HW")) {
-                        	getDeviceIdentity().getVersion().get(0).setValue(hardwareVerText);
+                            getDeviceIdentity().getVersion().get(0).setValue(hardwareVerText);
                             hwVersionAvailable = true;
                         }
                     }
@@ -675,7 +681,7 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
                     boolean swVersionAvailable = false;
                     for (TVersion version : deviceIdentityVersion) {
                         if (version.getVersionType().getName().equalsIgnoreCase("SW")) {
-                        	getDeviceIdentity().getVersion().get(0).setValue(softwareVerText);
+                            getDeviceIdentity().getVersion().get(0).setValue(softwareVerText);
                             swVersionAvailable = true;
                         }
                     }
@@ -725,7 +731,7 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
                     boolean swVersionAvailable = false;
                     for (TVersion version : deviceIdentityVersion) {
                         if (version.getVersionType().getName().equalsIgnoreCase("FW")) {
-                        	getDeviceIdentity().getVersion().get(0).setValue(firmwareVerText);
+                            getDeviceIdentity().getVersion().get(0).setValue(firmwareVerText);
                             swVersionAvailable = true;
                         }
                     }
@@ -782,7 +788,7 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
                 }
 
                 if (getDeviceIdentity().getProductID() != null) {
-                	getDeviceIdentity().getProductID().setValue(productId);
+                    getDeviceIdentity().getProductID().setValue(productId);
                 } else {
                     TProductID prodId = XDDFactory.eINSTANCE.createTProductID();
                     getDeviceIdentity().setProductID(prodId);
@@ -823,7 +829,7 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
                 }
 
                 if (getDeviceIdentity().getVendorName() != null) {
-                	getDeviceIdentity().getVendorName().setValue(vendorName);
+                    getDeviceIdentity().getVendorName().setValue(vendorName);
                 } else {
                     VendorNameType venName = XDDFactory.eINSTANCE.createVendorNameType();
                     getDeviceIdentity().setVendorName(venName);
@@ -839,16 +845,12 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
         }
     };
 
-
-
     public boolean updateDocument(DocumentRoot documentRoot) {
         // Create a resource set
         ResourceSet resourceSet = new ResourceSetImpl();
 
         // Get the URI of the model file.
         URI fileURI = URI.createPlatformResourceURI(editor.getModelFile().getFullPath().toString(), true);
-
-
 
         // Create a resource for this file.
         Resource resource = resourceSet.createResource(fileURI);
@@ -863,7 +865,7 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
         options.put(XMLResource.OPTION_ENCODING, "UTF-8");
         try {
             resource.save(options);
-                        return true;
+            return true;
         } catch (IOException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();
@@ -1062,45 +1064,110 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
         listViewer.setLabelProvider(new FirmwareLabelProvider());
         listViewer.setInput(XDDPackage.eINSTANCE.getTFirmwareList());
 
-        addPathSettingsButton = toolkit.createButton(clientComposite, DeviceDescriptionFileEditorPage.ADD_BUTTON_LABEL,
-                SWT.PUSH);
+        addFirmwareSettingsButton = toolkit.createButton(clientComposite,
+                DeviceDescriptionFileEditorPage.ADD_BUTTON_LABEL, SWT.PUSH);
         pst = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
-        addPathSettingsButton.setLayoutData(pst);
-        toolkit.adapt(addPathSettingsButton, true, true);
+        addFirmwareSettingsButton.setLayoutData(pst);
+        toolkit.adapt(addFirmwareSettingsButton, true, true);
 
-        editPathSettingsButton = toolkit.createButton(clientComposite,
+        editFirmwareSettingsButton = toolkit.createButton(clientComposite,
                 DeviceDescriptionFileEditorPage.EDIT_BUTTON_LABEL, SWT.PUSH);
         pst = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
-        editPathSettingsButton.setLayoutData(pst);
-        editPathSettingsButton.setEnabled(false);
-        toolkit.adapt(editPathSettingsButton, true, true);
+        editFirmwareSettingsButton.setLayoutData(pst);
+        editFirmwareSettingsButton.setEnabled(false);
+        toolkit.adapt(editFirmwareSettingsButton, true, true);
 
-        deletePathSettingsButton = toolkit.createButton(clientComposite,
+        deleteFirmwareSettingsButton = toolkit.createButton(clientComposite,
                 DeviceDescriptionFileEditorPage.DELETE_BUTTON_LABEL, SWT.PUSH);
         pst = new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1);
-        deletePathSettingsButton.setLayoutData(pst);
-        deletePathSettingsButton.setEnabled(false);
-        toolkit.adapt(deletePathSettingsButton, true, true);
+        deleteFirmwareSettingsButton.setLayoutData(pst);
+        deleteFirmwareSettingsButton.setEnabled(false);
+        toolkit.adapt(deleteFirmwareSettingsButton, true, true);
 
+        listViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+
+            @Override
+            public void selectionChanged(SelectionChangedEvent event) {
+                IStructuredSelection selectionEvent = (IStructuredSelection) event.getSelection();
+                Object selectedobject = selectionEvent.getFirstElement();
+                System.err.println("Selected object.." + selectedobject);
+                if (selectedobject instanceof FirmwareTypeImpl) {
+                    editFirmwareSettingsButton.setEnabled(true);
+                    deleteFirmwareSettingsButton.setEnabled(true);
+                    firmwareObj = (FirmwareTypeImpl) selectedobject;
+                } else {
+                    editFirmwareSettingsButton.setEnabled(false);
+                    deleteFirmwareSettingsButton.setEnabled(false);
+                }
+            }
+        });
         addListenerstoControls();
 
     }
 
-    private void addListenerstoControls() {
-        addPathSettingsButton.addSelectionListener(addFirmwareWizardSelectionAdapter);
+    private FirmwareTypeImpl firmwareObj;
 
+    private void addListenerstoControls() {
+        addFirmwareSettingsButton.addSelectionListener(addFirmwareWizardSelectionAdapter);
+        editFirmwareSettingsButton.addSelectionListener(editFirmwareWizardSelectionAdapter);
+        deleteFirmwareSettingsButton.addSelectionListener(removeFirmwareWizardSelectionAdapter);
+
+    }
+
+    public TDeviceFunction getDeviceFunction() {
+        EList<ISO15745ProfileType> profiles = documentRoot.getISO15745ProfileContainer().getISO15745Profile();
+        ISO15745ProfileType profile1 = profiles.get(0);
+        ISO15745ProfileType profile2 = profiles.get(1);
+
+        ProfileHeaderDataType header1 = profile1.getProfileHeader();
+
+        ProfileBodyDataType body1 = profile1.getProfileBody();
+        EList<EObject> bodyContents = body1.eContents();
+        for (EObject object : bodyContents) {
+            if (object instanceof TDeviceFunction) {
+                TDeviceFunction deviceFunction = (TDeviceFunction) object;
+                return deviceFunction;
+            }
+        }
+        return null;
     }
 
     private SelectionAdapter addFirmwareWizardSelectionAdapter = new SelectionAdapter() {
 
         @Override
         public void widgetSelected(SelectionEvent e) {
-            NewFirmwareWizard firmwareWizard = new NewFirmwareWizard(documentRoot,editor);
+            boolean editFirmware = false;
+            NewFirmwareWizard firmwareWizard = new NewFirmwareWizard(documentRoot, editor, editFirmware);
 
             WizardDialog dialog = new WizardDialog(Display.getDefault().getActiveShell(), firmwareWizard);
             dialog.setTitle(firmwareWizard.getWindowTitle());
             dialog.open();
 
+            listViewer.setInput(XDDPackage.eINSTANCE.getTFirmwareList());
+        }
+    };
+
+    private SelectionAdapter editFirmwareWizardSelectionAdapter = new SelectionAdapter() {
+
+        @Override
+        public void widgetSelected(SelectionEvent e) {
+            boolean editFirmware = true;
+            NewFirmwareWizard firmwareWizard = new NewFirmwareWizard(documentRoot, editor, editFirmware, firmwareObj);
+
+            WizardDialog dialog = new WizardDialog(Display.getDefault().getActiveShell(), firmwareWizard);
+            dialog.setTitle(firmwareWizard.getWindowTitle());
+            dialog.open();
+
+            listViewer.setInput(XDDPackage.eINSTANCE.getTFirmwareList());
+        }
+    };
+
+    private SelectionAdapter removeFirmwareWizardSelectionAdapter = new SelectionAdapter() {
+
+        @Override
+        public void widgetSelected(SelectionEvent e) {
+            getDeviceFunction().getFirmwareList().getFirmware().remove(firmwareObj);
+            updateDocument(documentRoot);
             listViewer.setInput(XDDPackage.eINSTANCE.getTFirmwareList());
         }
     };

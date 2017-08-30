@@ -52,6 +52,7 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.swt.events.SelectionAdapter;
 
 import com.br_automation.buoat.xddeditor.XDD.DocumentRoot;
 import com.br_automation.buoat.xddeditor.XDD.ISO15745ProfileType;
@@ -60,6 +61,7 @@ import com.br_automation.buoat.xddeditor.XDD.ProfileHeaderDataType;
 import com.br_automation.buoat.xddeditor.XDD.TDeviceFunction;
 import com.br_automation.buoat.xddeditor.XDD.TFirmwareList;
 import com.br_automation.buoat.xddeditor.XDD.XDDFactory;
+import com.br_automation.buoat.xddeditor.XDD.impl.FirmwareTypeImpl;
 import com.br_automation.buoat.xddeditor.editor.editors.DeviceDescriptionFileEditor;
 
 import FwSchema.util.FwSchemaResourceFactoryImpl;
@@ -83,14 +85,32 @@ public class NewFirmwareWizard extends Wizard {
 
     private DeviceDescriptionFileEditor editor;
 
+    private boolean editFirmware;
+
+    private FirmwareTypeImpl firmwareObj;
+
     public NewFirmwareWizard(
 
-            DocumentRoot selectedObj, DeviceDescriptionFileEditor editor) {
+            DocumentRoot selectedObj, DeviceDescriptionFileEditor editor, boolean editFirmware) {
         if (selectedObj == null) {
             System.err.println("Invalid node selection");
         }
         documentRoot = selectedObj;
         this.editor = editor;
+        this.editFirmware = editFirmware;
+        setWindowTitle(WINDOW_TITLE);
+        validateFirmwarePage = new ValidateFirmwareWizardPage(WINDOW_TITLE, documentRoot, editor);
+    }
+
+    public NewFirmwareWizard(DocumentRoot selectedObj, DeviceDescriptionFileEditor editor, boolean editFirmware,
+            FirmwareTypeImpl firmwareObj) {
+        if (selectedObj == null) {
+            System.err.println("Invalid node selection");
+        }
+        documentRoot = selectedObj;
+        this.editor = editor;
+        this.editFirmware = editFirmware;
+        this.firmwareObj = firmwareObj;
         setWindowTitle(WINDOW_TITLE);
         validateFirmwarePage = new ValidateFirmwareWizardPage(WINDOW_TITLE, documentRoot, editor);
     }
@@ -171,20 +191,24 @@ public class NewFirmwareWizard extends Wizard {
             Path firmwareFileName = firmwareFilePath.getFileName();
 
         }
+        if (!editFirmware) {
+            if (getDeviceFunction().getFirmwareList() != null) {
+                com.br_automation.buoat.xddeditor.XDD.FirmwareType fwType = XDDFactory.eINSTANCE.createFirmwareType();
+                fwType.setURI(fileName);
+                fwType.setDeviceRevisionNumber(firmwareDocumentRoot.getFirmware().getVer());
+                getDeviceFunction().getFirmwareList().getFirmware().add(fwType);
 
-        if (getDeviceFunction().getFirmwareList() != null) {
-            com.br_automation.buoat.xddeditor.XDD.FirmwareType fwType = XDDFactory.eINSTANCE.createFirmwareType();
-            fwType.setURI(fileName);
-            fwType.setDeviceRevisionNumber(firmwareDocumentRoot.getFirmware().getVer());
-            getDeviceFunction().getFirmwareList().getFirmware().add(fwType);
-
+            } else {
+                com.br_automation.buoat.xddeditor.XDD.FirmwareType fwType = XDDFactory.eINSTANCE.createFirmwareType();
+                TFirmwareList fwList = XDDFactory.eINSTANCE.createTFirmwareList();
+                getDeviceFunction().setFirmwareList(fwList);
+                fwType.setURI(fileName);
+                fwType.setDeviceRevisionNumber(firmwareDocumentRoot.getFirmware().getVer());
+                getDeviceFunction().getFirmwareList().getFirmware().add(fwType);
+            }
         } else {
-            com.br_automation.buoat.xddeditor.XDD.FirmwareType fwType = XDDFactory.eINSTANCE.createFirmwareType();
-            TFirmwareList fwList = XDDFactory.eINSTANCE.createTFirmwareList();
-            getDeviceFunction().setFirmwareList(fwList);
-            fwType.setURI(fileName);
-            fwType.setDeviceRevisionNumber(firmwareDocumentRoot.getFirmware().getVer());
-            getDeviceFunction().getFirmwareList().getFirmware().add(fwType);
+            firmwareObj.setURI(fileName);
+            firmwareObj.setDeviceRevisionNumber(firmwareDocumentRoot.getFirmware().getVer());
         }
         updateDocument(documentRoot);
 
