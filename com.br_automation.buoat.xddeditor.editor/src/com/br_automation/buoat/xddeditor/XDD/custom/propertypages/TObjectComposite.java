@@ -1,7 +1,31 @@
 /**
  * @since 19.3.2013
  * @author Joris Lückenga, Bernecker + Rainer Industrie Elektronik Ges.m.b.H.
- */
+ *
+ * @copyright (c) 2017, Bernecker + Rainer Industrie Elektronik Ges.m.b.H.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *   * Redistributions of source code must retain the above copyright
+ *     notice, this list of conditions and the following disclaimer.
+ *   * Redistributions in binary form must reproduce the above copyright
+ *     notice, this list of conditions and the following disclaimer in the
+ *     documentation and/or other materials provided with the distribution.
+ *   * Neither the name of the copyright holders nor the
+ *     names of its contributors may be used to endorse or promote products
+ *     derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDERS BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *******************************************************************************/
 
 package com.br_automation.buoat.xddeditor.XDD.custom.propertypages;
 
@@ -43,25 +67,22 @@ public class TObjectComposite extends Composite {
         @Override
         public void focusLost(FocusEvent event) {
             if (TObjectComposite.this.txtIndex.getText() != null
-                && !TObjectComposite.this.txtIndex.getText().contentEquals("")) {
-                byte[] indexNew = new BigInteger(TObjectComposite.this.txtIndex.getText(), 16)
-                    .toByteArray();
+                    && !TObjectComposite.this.txtIndex.getText().contentEquals("")) {
+                byte[] indexNew = new BigInteger(TObjectComposite.this.txtIndex.getText(), 16).toByteArray();
 
                 if (TObjectComposite.this.isTObject) {
-                    TObjectComposite.this.tobjectitemProvider.setPropertyValue(
-                        TObjectComposite.this.tobject, "index", //$NON-NLS-1$
-                        indexNew); //$NON-NLS-1$
+                    TObjectComposite.this.tobjectitemProvider.setPropertyValue(TObjectComposite.this.tobject, "index", //$NON-NLS-1$
+                            indexNew); // $NON-NLS-1$
                 } else {
-                    TObjectComposite.this.subObjectItemProvicer.setPropertyValue(
-                        TObjectComposite.this.subobject, "subIndex", //$NON-NLS-1$
-                        indexNew); //$NON-NLS-1$
+                    TObjectComposite.this.subObjectItemProvicer.setPropertyValue(TObjectComposite.this.subobject,
+                            "subIndex", //$NON-NLS-1$
+                            indexNew); // $NON-NLS-1$
                 }
             }
         }
     };
-    private final RegexVerifyListener indexVerifyListener = new RegexVerifyListener(
-        RegexVerifyListener.PATTERN_HEX, Arrays.asList(
-            Character.valueOf((char) 0x7f), Character.valueOf((char) 0x8)), true);
+    private final RegexVerifyListener indexVerifyListener = new RegexVerifyListener(RegexVerifyListener.PATTERN_HEX,
+            Arrays.asList(Character.valueOf((char) 0x7f), Character.valueOf((char) 0x8)), true);
 
     private boolean isTObject;
     private final Label lblindex;
@@ -70,12 +91,11 @@ public class TObjectComposite extends Composite {
         @Override
         public void focusLost(FocusEvent event) {
             if (TObjectComposite.this.isTObject)
-                TObjectComposite.this.tobjectitemProvider.setPropertyValue(
-                    TObjectComposite.this.tobject, "name", TObjectComposite.this.txtName.getText()); //$NON-NLS-1$
+                TObjectComposite.this.tobjectitemProvider.setPropertyValue(TObjectComposite.this.tobject, "name", //$NON-NLS-1$
+                        TObjectComposite.this.txtName.getText());
             else
-                TObjectComposite.this.subObjectItemProvicer.setPropertyValue(
-                    TObjectComposite.this.subobject, "name", //$NON-NLS-1$
-                    TObjectComposite.this.txtName.getText());
+                TObjectComposite.this.subObjectItemProvicer.setPropertyValue(TObjectComposite.this.subobject, "name", //$NON-NLS-1$
+                        TObjectComposite.this.txtName.getText());
         }
     };
 
@@ -95,11 +115,11 @@ public class TObjectComposite extends Composite {
                 selection = 0;
 
             if (TObjectComposite.this.isTObject && selection != 0)
-                TObjectComposite.this.tobjectitemProvider.setPropertyValue(
-                    TObjectComposite.this.tobject, "objectType", selection); //$NON-NLS-1$
+                TObjectComposite.this.tobjectitemProvider.setPropertyValue(TObjectComposite.this.tobject, "objectType", //$NON-NLS-1$
+                        selection);
             else if (selection != 0)
-                TObjectComposite.this.subObjectItemProvicer.setPropertyValue(
-                    TObjectComposite.this.subobject, "objectType", selection); //$NON-NLS-1$
+                TObjectComposite.this.subObjectItemProvicer.setPropertyValue(TObjectComposite.this.subobject,
+                        "objectType", selection); //$NON-NLS-1$
         }
     };
     private SubObjectType subobject;
@@ -115,9 +135,7 @@ public class TObjectComposite extends Composite {
      * @param factory
      *            to set properties for TObject/SubObjectType.
      */
-    public TObjectComposite(Composite parent,
-        int style,
-        AdapterFactory factory) {
+    public TObjectComposite(Composite parent, int style, AdapterFactory factory) {
         super(parent, style);
         this.tobjectitemProvider = new TObjectItemProvider(factory);
         this.subObjectItemProvicer = new SubObjectTypeItemProvider(factory);
@@ -177,8 +195,8 @@ public class TObjectComposite extends Composite {
             this.tobject = (TObject) object;
 
             if (this.tobject.getIndex() != null) {
-                String result = Integer.toHexString(
-                    new BigInteger(1, this.tobject.getIndex()).intValue()).toUpperCase();
+                String result = Integer.toHexString(new BigInteger(1, this.tobject.getIndex()).intValue())
+                        .toUpperCase();
                 this.txtIndex.setText(result);
             } else
                 this.txtIndex.setText(""); //$NON-NLS-1$
@@ -201,9 +219,8 @@ public class TObjectComposite extends Composite {
             this.lblindex.setText("Subindex:"); //$NON-NLS-1$
 
             if (this.subobject.getSubIndex() != null) {
-                String result = String.format(
-                    "%02x", (new BigInteger(1, this.subobject.getSubIndex())).intValue()) //$NON-NLS-1$
-                    .toUpperCase();
+                String result = String.format("%02x", (new BigInteger(1, this.subobject.getSubIndex())).intValue()) //$NON-NLS-1$
+                        .toUpperCase();
                 this.txtIndex.setText(result);
             } else
                 this.txtIndex.setText(""); //$NON-NLS-1$
@@ -249,4 +266,4 @@ public class TObjectComposite extends Composite {
         this.cmbObjectType.removeModifyListener(this.objectTypeListener);
     }
 
-} //TObjectComposite
+} // TObjectComposite

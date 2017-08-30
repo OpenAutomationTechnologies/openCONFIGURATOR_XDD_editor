@@ -16,27 +16,28 @@ import org.eclipse.emf.ecore.xmi.util.XMLProcessor;
 
 /**
  * This class contains helper methods to serialize and deserialize XML documents
- * <!-- begin-user-doc -->
- * <!-- end-user-doc -->
+ * <!-- begin-user-doc --> <!-- end-user-doc -->
+ *
  * @generated
  */
 public class FwSchemaXMLProcessor extends XMLProcessor {
 
     /**
-     * Public constructor to instantiate the helper.
-     * <!-- begin-user-doc -->
+     * Public constructor to instantiate the helper. <!-- begin-user-doc -->
      * <!-- end-user-doc -->
+     *
      * @generated
      */
     public FwSchemaXMLProcessor() {
         super(new EPackageRegistryImpl(EPackage.Registry.INSTANCE));
         extendedMetaData.putPackage(null, FwSchemaPackage.eINSTANCE);
     }
-    
+
     /**
-     * Register for "*" and "xml" file extensions the FwSchemaResourceFactoryImpl factory.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * Register for "*" and "xml" file extensions the
+     * FwSchemaResourceFactoryImpl factory. <!-- begin-user-doc --> <!--
+     * end-user-doc -->
+     *
      * @generated
      */
     @Override
@@ -49,4 +50,4 @@ public class FwSchemaXMLProcessor extends XMLProcessor {
         return registrations;
     }
 
-} //FwSchemaXMLProcessor
+} // FwSchemaXMLProcessor

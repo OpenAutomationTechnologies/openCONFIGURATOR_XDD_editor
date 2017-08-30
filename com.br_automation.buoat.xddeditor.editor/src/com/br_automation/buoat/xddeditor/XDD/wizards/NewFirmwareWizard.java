@@ -74,7 +74,7 @@ import FwSchema.util.FwSchemaResourceFactoryImpl;
  */
 public class NewFirmwareWizard extends Wizard {
 
-    private static final String WINDOW_TITLE = "POWERLINK firmware wizard";
+    private static final String WINDOW_TITLE = "Add firmware";
 
     /**
      * Add validateFirmwareWizardPage
@@ -92,9 +92,7 @@ public class NewFirmwareWizard extends Wizard {
     public NewFirmwareWizard(
 
             DocumentRoot selectedObj, DeviceDescriptionFileEditor editor, boolean editFirmware) {
-        if (selectedObj == null) {
-            System.err.println("Invalid node selection");
-        }
+
         documentRoot = selectedObj;
         this.editor = editor;
         this.editFirmware = editFirmware;
@@ -139,7 +137,8 @@ public class NewFirmwareWizard extends Wizard {
         ResourceSet resourceSet = new ResourceSetImpl();
 
         // Get the URI of the model file.
-        URI fileURI = URI.createPlatformResourceURI(editor.getModelFile().getFullPath().toString(), true);
+        URI fileURI = URI.createPlatformResourceURI(editor.getModelFile().getFullPath().toString(),
+        		true);
 
         // Create a resource for this file.
         Resource resource = resourceSet.createResource(fileURI);
@@ -165,9 +164,6 @@ public class NewFirmwareWizard extends Wizard {
     public TDeviceFunction getDeviceFunction() {
         EList<ISO15745ProfileType> profiles = documentRoot.getISO15745ProfileContainer().getISO15745Profile();
         ISO15745ProfileType profile1 = profiles.get(0);
-        ISO15745ProfileType profile2 = profiles.get(1);
-
-        ProfileHeaderDataType header1 = profile1.getProfileHeader();
 
         ProfileBodyDataType body1 = profile1.getProfileBody();
         EList<EObject> bodyContents = body1.eContents();
@@ -184,11 +180,12 @@ public class NewFirmwareWizard extends Wizard {
     public boolean performFinish() {
         Path firmwareFilePath = validateFirmwarePage.getFirmwareConfigurationPath();
         FwSchema.DocumentRoot firmwareDocumentRoot = validateFirmwarePage.getFirmwareDocument();
-        File firmwareFile = firmwareFilePath.toFile();
-        String fileName = firmwareFile.getName();
+        File firmwareFile = null;
+        String fileName = StringUtils.EMPTY;
 
         if (firmwareFilePath != null) {
-            Path firmwareFileName = firmwareFilePath.getFileName();
+        	firmwareFile = firmwareFilePath.toFile();
+        	fileName = firmwareFile.getName();
 
         }
         if (!editFirmware) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * @file   NewFirmwareWizard.java
+ * @file   NewObjectWizard.java
  *
  * @author Sree Hari Vignesh, Kalycito Infotech Private Limited.
  *
@@ -78,10 +78,10 @@ import FwSchema.util.FwSchemaResourceFactoryImpl;
  */
 public class NewObjectWizard extends Wizard {
 
-    private static final String WINDOW_TITLE = "POWERLINK firmware wizard";
+    private static final String WINDOW_TITLE = "Add object";
 
     /**
-     * Add validateFirmwareWizardPage
+     * AddObjectWizardPage
      */
     private final AddObjectWizardPage addObjectWizardPage;
 
@@ -92,9 +92,7 @@ public class NewObjectWizard extends Wizard {
     public NewObjectWizard(
 
             DocumentRoot selectedObj, DeviceDescriptionFileEditor editor) {
-        if (selectedObj == null) {
-            System.err.println("Invalid node selection");
-        }
+
         documentRoot = selectedObj;
         this.editor = editor;
         setWindowTitle(WINDOW_TITLE);
@@ -148,24 +146,6 @@ public class NewObjectWizard extends Wizard {
         return false;
     }
 
-    public TDeviceFunction getDeviceFunction() {
-        EList<ISO15745ProfileType> profiles = documentRoot.getISO15745ProfileContainer().getISO15745Profile();
-        ISO15745ProfileType profile1 = profiles.get(0);
-        ISO15745ProfileType profile2 = profiles.get(1);
-
-        ProfileHeaderDataType header1 = profile1.getProfileHeader();
-
-        ProfileBodyDataType body1 = profile1.getProfileBody();
-        EList<EObject> bodyContents = body1.eContents();
-        for (EObject object : bodyContents) {
-            if (object instanceof TDeviceFunction) {
-                TDeviceFunction deviceFunction = (TDeviceFunction) object;
-                return deviceFunction;
-            }
-        }
-        return null;
-    }
-
     private TApplicationLayersImpl getApplicationLayer() {
         EList<ISO15745ProfileType> profiles = documentRoot.getISO15745ProfileContainer().getISO15745Profile();
         for (ISO15745ProfileType profile : profiles) {
@@ -173,62 +153,59 @@ public class NewObjectWizard extends Wizard {
             if (profileBody instanceof ProfileBodyCommunicationNetworkPowerlinkImpl) {
                 EList<EObject> bodyContents = profileBody.eContents();
                 for (EObject object : bodyContents) {
-                	System.err.println("Object instance list.."+object);
+                    System.err.println("Object instance list.." + object);
                     if (object instanceof TApplicationLayersImpl) {
-                    	TApplicationLayersImpl applicationLayer = (TApplicationLayersImpl) object;
-                       return applicationLayer;
+                        TApplicationLayersImpl applicationLayer = (TApplicationLayersImpl) object;
+                        return applicationLayer;
                     }
                 }
             }
         }
-       return null;
+        return null;
 
     }
 
     @Override
     public boolean performFinish() {
 
-    	if(getApplicationLayer().getObjectList() != null) {
-    		TObject obj = XDDFactory.eINSTANCE.createTObject();
+        if (getApplicationLayer().getObjectList() != null) {
+            TObject obj = XDDFactory.eINSTANCE.createTObject();
 
-    		obj.setAccessType(addObjectWizardPage.getAccessType());
+            obj.setAccessType(addObjectWizardPage.getAccessType());
 
-    		if(!addObjectWizardPage.getActualValue().isEmpty()) {
-    		obj.setActualValue(addObjectWizardPage.getActualValue());
-    		}
+            if (!addObjectWizardPage.getActualValue().isEmpty()) {
+                obj.setActualValue(addObjectWizardPage.getActualValue());
+            }
 
-    		if(addObjectWizardPage.getDataType() != null){
-    		obj.setDataType(addObjectWizardPage.getDataType());
-    		}
+            if (addObjectWizardPage.getDataType() != null) {
+                obj.setDataType(addObjectWizardPage.getDataType());
+            }
 
-    		if(!addObjectWizardPage.getDefaultValue().isEmpty()) {
-    		obj.setDefaultValue(addObjectWizardPage.getDefaultValue());
-    		}
+            if (!addObjectWizardPage.getDefaultValue().isEmpty()) {
+                obj.setDefaultValue(addObjectWizardPage.getDefaultValue());
+            }
 
-    		//obj.setDenotation(addObjectWizardPage.getDenotation());
+            if (!addObjectWizardPage.getHighLimit().isEmpty()) {
+                obj.setHighLimit(addObjectWizardPage.getHighLimit());
+            }
 
-    		if(!addObjectWizardPage.getHighLimit().isEmpty()) {
-    		obj.setHighLimit(addObjectWizardPage.getHighLimit());
-    		}
+            if (!addObjectWizardPage.getLowLimit().isEmpty()) {
+                obj.setLowLimit(addObjectWizardPage.getLowLimit());
+            }
 
-    		if(!addObjectWizardPage.getLowLimit().isEmpty()) {
-    			obj.setLowLimit(addObjectWizardPage.getLowLimit());
-    		}
+            if (addObjectWizardPage.getIndex() != null) {
+                obj.setIndex(addObjectWizardPage.getIndex());
+            }
 
+            obj.setObjectType(addObjectWizardPage.getObjectType());
+            obj.setPDOmapping(addObjectWizardPage.getPdoMapping());
 
-    		if(addObjectWizardPage.getIndex() != null) {
-    		obj.setIndex(addObjectWizardPage.getIndex());
-    		}
+            obj.setName(addObjectWizardPage.getObjectName());
 
-    		obj.setObjectType(addObjectWizardPage.getObjectType());
-    		obj.setPDOmapping(addObjectWizardPage.getPdoMapping());
+            getApplicationLayer().getObjectList().getObject().add(obj);
+        }
 
-    		obj.setName(addObjectWizardPage.getObjectName());
-
-    		getApplicationLayer().getObjectList().getObject().add(obj);
-    	}
-
-               updateDocument(documentRoot);
+        updateDocument(documentRoot);
 
         return true;
     }

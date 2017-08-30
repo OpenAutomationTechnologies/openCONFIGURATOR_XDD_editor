@@ -127,15 +127,15 @@ import com.br_automation.buoat.xddeditor.XDD.provider.XDDItemProviderAdapterFact
  * DeviceDescriptionFileEditor class provides the multi-tab based form editor to
  * configure the device description file
  *
- * This editor is the main UI opened once the XDD/XDC is double clicked from the
- * project explorer.
+ * This editor is the main UI opened once the XDD/XDC is opened from the project
+ * explorer through menu action XDD Editor.
  *
  *
- * @author Sree Hari Vignesh B
+ * @author Sree Hari Vignesh
  *
  */
 public final class DeviceDescriptionFileEditor extends FormEditor
-        implements IResourceChangeListener, IPropertyChangeListener, ITabbedPropertySheetPageContributor {
+        implements IResourceChangeListener, IPropertyChangeListener {
 
     /**
      * Identifier for this page.
@@ -149,7 +149,7 @@ public final class DeviceDescriptionFileEditor extends FormEditor
     private static final String OBJECT_DICTIONARY_EDITOR_PAGE_NAME = "Object Dictionary";
     private static final String NETWORK_MANAGEMENT_EDITOR_PAGE_NAME = "Network Management";
     private static final String PROJECT_EDITOR_CREATION_ERROR_MESSAGE = "Error creating project editor overview page.";
-    private static final String INVALID_INPUT_ERROR = "Invalid input: Must be a valid openCONFIGURATOR project file.";
+    private static final String INVALID_INPUT_ERROR = "Invalid input: Must be a valid device description file.";
 
     /**
      * Eclipse project instance linked with this editor.
@@ -157,7 +157,7 @@ public final class DeviceDescriptionFileEditor extends FormEditor
     private IProject activeProject;
 
     /**
-     * openCONFIGURATOR project XML instance linked with this editor.
+     * Device description XML instance linked with this editor.
      */
     private IFile projectFile;
 
@@ -304,7 +304,7 @@ public final class DeviceDescriptionFileEditor extends FormEditor
     }
 
     /**
-     * @return The IFile instance of the openCONFIGURATOR project XML file.
+     * @return The IFile instance of the device description file.
      */
     public IFile getProjectFile() {
         return projectFile;
@@ -376,8 +376,6 @@ public final class DeviceDescriptionFileEditor extends FormEditor
             e.printStackTrace();
         }
 
-        System.out.println("activeProject- path" + activeProject.getLocation());
-
     }
 
     public String getVendorId() {
@@ -400,13 +398,8 @@ public final class DeviceDescriptionFileEditor extends FormEditor
     public TDeviceIdentity getDeviceIdentity() {
         EList<ISO15745ProfileType> profiles = getDocumentRoot().getISO15745ProfileContainer().getISO15745Profile();
         ISO15745ProfileType profile1 = profiles.get(0);
-        ISO15745ProfileType profile2 = profiles.get(1);
-
-        ProfileHeaderDataType header1 = profile1.getProfileHeader();
-
         ProfileBodyDataType body1 = profile1.getProfileBody();
         EList<EObject> bodyContents = body1.eContents();
-        System.err.println("The elements of XDD..." + bodyContents);
         EObject identity = bodyContents.get(0);
         TDeviceIdentity tDeviceIdentity = (TDeviceIdentity) identity;
 
@@ -426,7 +419,7 @@ public final class DeviceDescriptionFileEditor extends FormEditor
     }
 
     /**
-     * Reloads the contents of pages when the it is activated.
+     * Reloads the contents of pages when it is activated.
      */
     @Override
     protected void pageChange(int newPageIndex) {
@@ -434,8 +427,6 @@ public final class DeviceDescriptionFileEditor extends FormEditor
         // switch page
         super.pageChange(newPageIndex);
 
-        // update page if needed
-        final IFormPage page = getActivePageInstance();
 
     }
 
@@ -529,15 +520,6 @@ public final class DeviceDescriptionFileEditor extends FormEditor
         }
     }
 
-    protected TabbedPropertySheetPage propertySheetPage;
-
-    public IPropertySheetPage getPropertySheetPage() {
-        if (propertySheetPage == null || propertySheetPage.getControl().isDisposed()) {
-            propertySheetPage = new TabbedPropertySheetPage(this);
-        }
-        return propertySheetPage;
-    }
-
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
      *
@@ -547,7 +529,7 @@ public final class DeviceDescriptionFileEditor extends FormEditor
         return (EditingDomainActionBarContributor) getEditorSite().getActionBarContributor();
     }
 
-    protected AdapterFactoryEditingDomain editingDomain;
+    public AdapterFactoryEditingDomain editingDomain;
 
     /**
      * Handles activation of the editor or it's associated views. <!--
@@ -561,9 +543,6 @@ public final class DeviceDescriptionFileEditor extends FormEditor
         if (editingDomain.getResourceToReadOnlyMap() != null) {
             editingDomain.getResourceToReadOnlyMap().clear();
 
-            // Refresh any actions that may become enabled or disabled.
-            //
-            // setSelection(getSelection());
         }
 
     }
@@ -583,7 +562,7 @@ public final class DeviceDescriptionFileEditor extends FormEditor
      *
      * @generated
      */
-    protected ComposedAdapterFactory adapterFactory;
+    public ComposedAdapterFactory adapterFactory;
 
     protected void initializeEditingDomain() {
         // Create an adapter factory that yields item providers.
@@ -613,9 +592,6 @@ public final class DeviceDescriptionFileEditor extends FormEditor
                         Command mostRecentCommand = ((CommandStack) event.getSource()).getMostRecentCommand();
                         if (mostRecentCommand != null) {
                             setSelectionToViewer(mostRecentCommand.getAffectedObjects());
-                        }
-                        if (propertySheetPage != null && !propertySheetPage.getControl().isDisposed()) {
-                            propertySheetPage.refresh();
                         }
                     }
                 });
@@ -653,55 +629,14 @@ public final class DeviceDescriptionFileEditor extends FormEditor
         }
     }
 
-    /**
-     * This listens for when the outline becomes active <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     *
-     * @generated
-     */
-    protected IPartListener partListener = new IPartListener() {
-        public void partActivated(IWorkbenchPart p) {
-            if (p instanceof PropertySheet) {
-                if (((PropertySheet) p).getCurrentPage() == propertySheetPage) {
-                    getActionBarContributor().setActiveEditor(DeviceDescriptionFileEditor.this);
-                    handleActivate();
-                }
-            } else if (p == DeviceDescriptionFileEditor.this) {
-                handleActivate();
-            }
-        }
-
-        public void partBroughtToTop(IWorkbenchPart p) {
-            // Ignore.
-        }
-
-        public void partClosed(IWorkbenchPart p) {
-            // Ignore.
-        }
-
-        public void partDeactivated(IWorkbenchPart p) {
-            // Ignore.
-        }
-
-        public void partOpened(IWorkbenchPart p) {
-            // Ignore.
-        }
-    };
 
     @Override
     public Object getAdapter(Class key) {
-        if (key.equals(IPropertySheetPage.class)) {
-            return getPropertySheetPage();
-        } else if (key.equals(IGotoMarker.class)) {
+        if (key.equals(IGotoMarker.class)) {
             return this;
         } else {
             return super.getAdapter(key);
         }
-    }
-
-    @Override
-    public String getContributorId() {
-        return "com.br_automation.buoat.xddeditor.properties";
     }
 
 }

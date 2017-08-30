@@ -118,16 +118,16 @@ public class ValidateFirmwareWizardPage extends WizardPage {
 
     private FwSchema.DocumentRoot firmwareDocumentRoot;
 
-    private static final String WINDOW_TITLE = "POWERLINK firmware wizard";
+    private static final String WINDOW_TITLE = "Add firmware";
 
-    public static final String DIALOG_DESCRIPTION = "Add firmware to controlled node or module.";
-    public static final String DIALOG_PAGE_LABEL = "POWERLINK firmware";
+    public static final String DIALOG_DESCRIPTION = "Add firmware to device description file.";
+    public static final String DIALOG_PAGE_LABEL = "Firmware";
     private static final String FIRMWARE_FILE_LABEL = "Firmware File";
     private static final String DEFAULT_CONFIGURATION_LABEL = "Choose a firmware file";
 
     private static final String DIALOG_PAGE_NAME = "ValidateFirmwarewizardPage";
     private static final String BROWSE_CONFIGURATION_LABEL = "Browse...";
-    private static final String IMPORT_FIRMWARE_FILE_DIALOG_LABEL = "Import firmware file for node/module.";
+    private static final String IMPORT_FIRMWARE_FILE_DIALOG_LABEL = "Import firmware file for XDD/XDC.";
     private static final String ERROR_CHOOSE_VALID_FILE_MESSAGE = "Choose a valid firmware file.";
     private static final String ERROR_CHOOSE_VALID_PATH_MESSAGE = "Firmware file does not exist in the path: ";
     private static final String VALID_FILE_MESSAGE = "Firmware file is valid for the device {0}.";
@@ -149,12 +149,6 @@ public class ValidateFirmwareWizardPage extends WizardPage {
     private static final short XDD_SUBOBJECT_INDEX_PRODUCTCODE = 2;
     private static final short XDD_SUBOBJECT_INDEX_REVISIONNO = 3;
 
-    private static String getDeviceName(Object nodeOrModuleObj) {
-        String deviceName = StringUtils.EMPTY;
-
-        return deviceName;
-    }
-
     private static boolean isFirmwareConfigurationValid(final String firmwarePath) {
         boolean retVal = false;
         if ((firmwarePath == null) || (firmwarePath.isEmpty())) {
@@ -168,7 +162,7 @@ public class ValidateFirmwareWizardPage extends WizardPage {
     }
 
     /**
-     * Control to display the node configuration path.
+     * Control to display the firmware configuration path.
      */
     private Text firmwareConfigurationPath;
 
@@ -191,8 +185,8 @@ public class ValidateFirmwareWizardPage extends WizardPage {
 
     private Group grpFirmwareFile;
 
-    // Node configuration path listener
-    private ModifyListener nodeConfigurationPathModifyListener = new ModifyListener() {
+    // Firmware configuration path listener
+    private ModifyListener firmwareConfigurationPathModifyListener = new ModifyListener() {
         @Override
         public void modifyText(ModifyEvent e) {
             setErrorMessage(null);
@@ -248,8 +242,8 @@ public class ValidateFirmwareWizardPage extends WizardPage {
         gd_firmwareConfigurationPath.widthHint = 436;
         firmwareConfigurationPath.setLayoutData(gd_firmwareConfigurationPath);
         firmwareConfigurationPath.setToolTipText(firmwareConfigurationPath.getText());
-        firmwareConfigurationPath.addModifyListener(nodeConfigurationPathModifyListener);
-        firmwareConfigurationPath.addModifyListener(nodeConfigurationPathModifyListener);
+        firmwareConfigurationPath.addModifyListener(firmwareConfigurationPathModifyListener);
+        firmwareConfigurationPath.addModifyListener(firmwareConfigurationPathModifyListener);
 
         btnBrowse = new Button(grpFirmwareFile, SWT.NONE);
         btnBrowse.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
@@ -263,7 +257,7 @@ public class ValidateFirmwareWizardPage extends WizardPage {
                 FileDialog fileDialog = new FileDialog(getContainer().getShell(), SWT.OPEN);
 
                 fileDialog.setText(IMPORT_FIRMWARE_FILE_DIALOG_LABEL);
-                // Set filter on .XDD and .XDC files
+                // Set filter on .fw files
                 fileDialog.setFilterExtensions(FIRMWARE_FILTER_EXTENSIONS);
                 // Put in a readable name for the filter
                 fileDialog.setFilterNames(CONFIGURATION_FILTER_NAMES_EXTENSIONS);
@@ -384,7 +378,6 @@ public class ValidateFirmwareWizardPage extends WizardPage {
                 input = new InputSource(new StringReader(firmwareHeader));
                 input.setSystemId(firmwareFile.toURI().toString());
                 Reader reader = input.getCharacterStream();
-                String result = reader.toString();
 
                 char[] charBuffer = new char[8 * 1024];
                 StringBuilder builder = new StringBuilder();
@@ -410,7 +403,7 @@ public class ValidateFirmwareWizardPage extends WizardPage {
                     outputStream.write(bytes, 0, read);
                 }
 
-                firmwareDocumentRoot = FirmwareUtilities.loadFirmware(newFile.toURL());
+                firmwareDocumentRoot = FirmwareUtilities.loadFirmware(newFile.toURI().toURL());
 
                 bufferedRdr.close();
                 outputStream.close();
@@ -432,11 +425,16 @@ public class ValidateFirmwareWizardPage extends WizardPage {
                     outputStream.close();
                 }
                 e.printStackTrace();
+            } finally {
+            	 if (outputStream != null) {
+            	outputStream.close();
+            	 }
             }
 
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+
         }
         return firmwareDocumentRoot;
     }

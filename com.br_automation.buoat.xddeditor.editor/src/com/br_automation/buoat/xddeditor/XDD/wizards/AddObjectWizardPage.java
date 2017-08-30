@@ -1,7 +1,33 @@
-/**
- * @since 19.3.2013
- * @author Joris Lückenga, Bernecker + Rainer Industrie Elektronik Ges.m.b.H.
- */
+/*******************************************************************************
+ * @file   AddObjectWizardPage.java
+ *
+ * @author Jenifer Anthonysamy, Kalycito Infotech Private Limited.
+ *
+ * @copyright (c) 2017, Kalycito Infotech Private Limited
+ *                    All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *   * Redistributions of source code must retain the above copyright
+ *     notice, this list of conditions and the following disclaimer.
+ *   * Redistributions in binary form must reproduce the above copyright
+ *     notice, this list of conditions and the following disclaimer in the
+ *     documentation and/or other materials provided with the distribution.
+ *   * Neither the name of the copyright holders nor the
+ *     names of its contributors may be used to endorse or promote products
+ *     derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDERS BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *******************************************************************************/
 
 package com.br_automation.buoat.xddeditor.XDD.wizards;
 
@@ -41,12 +67,9 @@ import com.br_automation.buoat.xddeditor.XDD.validation.NameVerifyListener;
 import com.br_automation.buoat.xddeditor.editor.editors.DeviceDescriptionFileEditor;
 
 /**
- * @brief Advanced configurationPage for a new XDD Model.
+ * Wizard page to add user defined objects
  *
- *        Provides different controls to set options and data in the
- *        "AdvancedWizard"-page.
- *
- * @author Joris Lückenga
+ * @author Jenifer Anthonysamy
  */
 public class AddObjectWizardPage extends WizardPage {
     private Text txtLowLimit;
@@ -64,10 +87,8 @@ public class AddObjectWizardPage extends WizardPage {
     public static final int MANUFACTURER_PROFILE_START_INDEX = 0x2000;
     public static final int MANUFACTURER_PROFILE_END_INDEX = 0x5FFF;
 
-    public static final String DIALOG_DESCRIPTION = "Add object to controlled node or module.";
-    public static final String DIALOG_PAGE_LABEL = "POWERLINK Object";
-    private static final String FIRMWARE_FILE_LABEL = "Firmware File";
-    private static final String DEFAULT_CONFIGURATION_LABEL = "Choose a firmware file";
+    public static final String DIALOG_DESCRIPTION = "Configure the attributes for the new object.";
+    public static final String DIALOG_PAGE_LABEL = "Object";
 
     private static final String DIALOG_PAGE_NAME = "AddObjectWizardPage";
 
@@ -99,44 +120,62 @@ public class AddObjectWizardPage extends WizardPage {
 
     private Combo comboObjectType;
 
-    private static final String[] DATA_TYPE_LIST = new String[] { "Boolean", "Integer8", "Integer16", "Integer32", "Unsigned8",
-            "Unsigned16", "Unsigned32", "Real32", "Visible_String", "Integer24", "Real64", "Integer40", "Integer48",
-            "Integer56", "Integer64", "Octet_String", "Unicode_String", "Time_of_Day", "Time_Diff", "Domain",
-            "Unsigned24", "Unsigned40", "Unsigned48", "Unsigned56", "Unsigned64", "MAC_ADDRESS", "IP_ADDRESS",
+    private String accessType;
+
+    private String pdoMapping;
+
+    private String lowLimit = StringUtils.EMPTY;
+
+    private String highLimit = StringUtils.EMPTY;
+
+    private String objIndex = StringUtils.EMPTY;
+
+    private String defaultValue = StringUtils.EMPTY;
+
+    private String objName = StringUtils.EMPTY;
+
+    private String dataType;
+
+    private static final String[] DATA_TYPE_LIST = new String[] { "Boolean", "Integer8", "Integer16", "Integer32",
+            "Unsigned8", "Unsigned16", "Unsigned32", "Real32", "Visible_String", "Integer24", "Real64", "Integer40",
+            "Integer48", "Integer56", "Integer64", "Octet_String", "Unicode_String", "Time_of_Day", "Time_Diff",
+            "Domain", "Unsigned24", "Unsigned40", "Unsigned48", "Unsigned56", "Unsigned64", "MAC_ADDRESS", "IP_ADDRESS",
             "NETTIME" };
+
+    private static final String[] OBJECT_TYPES = new String[] { "7 - VAR", "8 - ARRAY", "9 - RECORD" };
+
+    private static final String[] PDO_MAPPING_TYPES = new String[] { "Non-mappable", "Mapped by default",
+            "Mapped optionally", "Trasmit process data objects", "Receive process data objects" };
 
     private boolean isValueValid(String value) {
         if (!value.isEmpty()) {
-        	try {
-        	if(value.contains("0x")) {
-        		value = value.substring(2);
-            Integer val = Integer.valueOf(value);
-            if (val < 0) {
+            try {
+                if (value.contains("0x")) {
+                    value = value.substring(2);
+                    Integer val = Integer.valueOf(value);
+                    if (val < 0) {
+                        return false;
+                    }
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                setErrorMessage("Invalid value.");
                 return false;
             }
-        }
-        	} catch (Exception ex) {
-        		ex.printStackTrace();
-        		setErrorMessage("Invalid value.");
-        		return false;
-        	}
         }
         return true;
     }
 
-    private static final String[] ACCESS_TYPE_LIST = new String[] { "Constant", "Read only", "Write only", "Read write" };
+    private static final String[] ACCESS_TYPE_LIST = new String[] { "Constant", "Read only", "Write only",
+            "Read write" };
 
     /**
-     * @see WizardPage#createControl(Composite)
+     * Create control for wizard page
      */
     @Override
     public void createControl(Composite parent) {
         Composite container = new Composite(parent, SWT.NULL);
         this.setControl(container);
-
-        SimpleDateFormat creationTime = new SimpleDateFormat("HH:mm:ssZ"); //$NON-NLS-1$
-        String creationTimeStr = creationTime.format(new Date());
-        creationTimeStr = creationTimeStr.substring(0, 11) + ":00";
 
         Group grpAddObjectAdvancedOptions = new Group(container, SWT.SHADOW_OUT);
         grpAddObjectAdvancedOptions.setFont(SWTResourceManager.getFont("Segoe UI", 9, SWT.NORMAL)); //$NON-NLS-1$
@@ -145,15 +184,15 @@ public class AddObjectWizardPage extends WizardPage {
         grpAddObjectAdvancedOptions.setBounds(278, 10, 286, 221);
 
         Label lblLowLimit = new Label(grpAddObjectAdvancedOptions, SWT.NONE);
-        lblLowLimit.setBounds(10, 136, 120, 21);
+        lblLowLimit.setBounds(10, 136, 119, 21);
         lblLowLimit.setText(Messages.addObjectWizardPage_lblLow_limit); // $NON-NLS-1$
 
         Label lblHighLimit = new Label(grpAddObjectAdvancedOptions, SWT.NONE);
-        lblHighLimit.setBounds(10, 164, 81, 15);
+        lblHighLimit.setBounds(10, 164, 119, 21);
         lblHighLimit.setText(Messages.addObjectWizardPage_lblHigh_limit); // $NON-NLS-1$
 
         Label lblDataType = new Label(grpAddObjectAdvancedOptions, SWT.NONE);
-        lblDataType.setBounds(10, 22, 120, 21);
+        lblDataType.setBounds(10, 22, 119, 21);
         lblDataType.setText(Messages.addObjectWizardPage_lblDataType);
 
         txtLowLimit = new Text(grpAddObjectAdvancedOptions, SWT.BORDER);
@@ -178,7 +217,7 @@ public class AddObjectWizardPage extends WizardPage {
 
         txtHighLimit = new Text(grpAddObjectAdvancedOptions, SWT.BORDER);
         txtHighLimit.setText(Messages.addObjectWizardPage_txtHighLimit); // $NON-NLS-1$
-        txtHighLimit.setBounds(136, 164, 140, 21);
+        txtHighLimit.setBounds(136, 164, 140, 23);
         txtHighLimit.addModifyListener(new ModifyListener() {
             @Override
             public void modifyText(ModifyEvent e) {
@@ -198,9 +237,9 @@ public class AddObjectWizardPage extends WizardPage {
 
         Label lblAccessType = new Label(grpAddObjectAdvancedOptions, SWT.NONE);
         lblAccessType.setText(Messages.addObjectWizardPage_lblAccess_type);
-        lblAccessType.setBounds(10, 51, 120, 21);
+        lblAccessType.setBounds(10, 51, 119, 21);
 
-        comboAccessType = new Combo(grpAddObjectAdvancedOptions, SWT.NONE);
+        comboAccessType = new Combo(grpAddObjectAdvancedOptions, SWT.NONE | SWT.READ_ONLY);
         comboAccessType.setItems(ACCESS_TYPE_LIST);
         comboAccessType.setBounds(136, 51, 140, 25);
         comboAccessType.select(0);
@@ -213,7 +252,7 @@ public class AddObjectWizardPage extends WizardPage {
             }
         });
 
-        comboDataType = new Combo(grpAddObjectAdvancedOptions, SWT.NONE);
+        comboDataType = new Combo(grpAddObjectAdvancedOptions, SWT.NONE | SWT.READ_ONLY);
         comboDataType.setItems(DATA_TYPE_LIST);
         comboDataType.setBounds(136, 22, 140, 25);
         comboDataType.select(0);
@@ -254,11 +293,7 @@ public class AddObjectWizardPage extends WizardPage {
         lblPdoMapping.setText(Messages.addObjectWizardPage_lblPdo_mapping);
         lblPdoMapping.setBounds(10, 80, 120, 21);
 
-        Label lblUniqueIdRef = new Label(grpAddObjectAdvancedOptions, SWT.NONE);
-        lblUniqueIdRef.setText(Messages.addObjectWizardPage_lblUnique_ref_id);
-        lblUniqueIdRef.setBounds(10, 191, 120, 21);
-
-        comboPdoMapping = new Combo(grpAddObjectAdvancedOptions, SWT.NONE);
+        comboPdoMapping = new Combo(grpAddObjectAdvancedOptions, SWT.NONE | SWT.READ_ONLY);
         comboPdoMapping.setItems(PDO_MAPPING_TYPES);
         comboPdoMapping.setBounds(136, 78, 140, 23);
         comboPdoMapping.select(0);
@@ -271,22 +306,17 @@ public class AddObjectWizardPage extends WizardPage {
             }
         });
 
-        Combo comboUniqueRefId = new Combo(grpAddObjectAdvancedOptions, SWT.NONE);
-        comboUniqueRefId.setItems(new String[] {});
-        comboUniqueRefId.setBounds(136, 191, 140, 23);
-        comboUniqueRefId.select(0);
-
         Group grpAddObjectBasicOptions = new Group(container, SWT.NONE);
         grpAddObjectBasicOptions.setBounds(10, 10, 262, 96);
         grpAddObjectBasicOptions.setText(Messages.addObjectWizardPage_basic_options);
 
         Label lblObjectIndex = new Label(grpAddObjectBasicOptions, SWT.NONE);
-        lblObjectIndex.setBounds(10, 22, 91, 15);
+        lblObjectIndex.setBounds(10, 22, 93, 21);
         lblObjectIndex.setText(Messages.addObjectWizardPage_lblObject_index);
 
         Label lblObjectName = new Label(grpAddObjectBasicOptions, SWT.NONE);
         lblObjectName.setText(Messages.addObjectWizardPage_lblObject_name);
-        lblObjectName.setBounds(10, 46, 78, 15);
+        lblObjectName.setBounds(10, 46, 93, 21);
 
         Label lblObjectType = new Label(grpAddObjectBasicOptions, SWT.NONE);
         lblObjectType.setText(Messages.addObjectWizardPage_lblObject_type);
@@ -329,7 +359,7 @@ public class AddObjectWizardPage extends WizardPage {
         txtObjectNameText.addVerifyListener(nameVerifyListener);
         txtObjectNameText.setFocus();
 
-        comboObjectType = new Combo(grpAddObjectBasicOptions, SWT.NONE);
+        comboObjectType = new Combo(grpAddObjectBasicOptions, SWT.NONE | SWT.READ_ONLY);
         comboObjectType.setItems(OBJECT_TYPES);
         comboObjectType.setBounds(107, 67, 140, 21);
         comboObjectType.select(0);
@@ -343,44 +373,27 @@ public class AddObjectWizardPage extends WizardPage {
         });
     } // createControl
 
-    // Metadata getters
-
-    private static final String[] OBJECT_TYPES = new String[] { "Variable", "Array", "Record" };
-
-    private static final String[] PDO_MAPPING_TYPES = new String[] { "Non-mappable", "Mapped by default", "Mapped optionally",
-            "Trasmit process data objects", "Receive process data objects" };
-
-    public void getDataTypeDetails() {
-
-    }
-
-    private String accessType;
-
-    private String pdoMapping;
-
-    private String dataType;
 
     private boolean isObjectIndexValid(String text) {
         if (!text.isEmpty()) {
-        	try{
-            Integer indexvalue = Integer.decode(text);
-            if ((indexvalue < MANUFACTURER_PROFILE_START_INDEX) || (indexvalue > MANUFACTURER_PROFILE_END_INDEX)) {
+            try {
+                Integer indexvalue = Integer.decode(text);
+                if ((indexvalue < MANUFACTURER_PROFILE_START_INDEX) || (indexvalue > MANUFACTURER_PROFILE_END_INDEX)) {
 
+                    return false;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
                 return false;
             }
-        }
-        catch (Exception e){
-        	e.printStackTrace();
-        	return false;
-        }
         }
         return true;
     }
 
     public TObjectAccessType getAccessType() {
-    	if(accessType == null) {
-    		accessType = comboAccessType.getText();
-    	}
+        if (accessType == null) {
+            accessType = comboAccessType.getText();
+        }
 
         if (accessType.equalsIgnoreCase("Constant")) {
             return TObjectAccessType.CONST;
@@ -401,16 +414,6 @@ public class AddObjectWizardPage extends WizardPage {
         return lowLimit;
     }
 
-    private String lowLimit = StringUtils.EMPTY;
-
-    private String highLimit = StringUtils.EMPTY;
-
-    private String objIndex = StringUtils.EMPTY;
-
-    private String defaultValue = StringUtils.EMPTY;
-
-    private String objName = StringUtils.EMPTY;
-
     public String getTxtHighLimit() {
         return highLimit;
     }
@@ -430,9 +433,9 @@ public class AddObjectWizardPage extends WizardPage {
     private boolean validateObjectModel() {
         String index = getTxtObjectIndexText();
         setErrorMessage(null);
-        if(index.isEmpty()){
-        	setErrorMessage("Enter the hexadecimal object index value within the range (0x2000 to 0x5FFF).");
-        	return false;
+        if (index.isEmpty()) {
+            setErrorMessage("Enter the hexadecimal object index value within the range (0x2000 to 0x5FFF).");
+            return false;
         }
 
         if (!isValueValid(objIndex)) {
@@ -444,38 +447,37 @@ public class AddObjectWizardPage extends WizardPage {
             return false;
         }
 
-        if(!isObjectIndexAvailable(objIndex)) {
-        	setErrorMessage("The Object index '"+objIndex+"' already available.");
-        	return false;
+        if (!isObjectIndexAvailable(objIndex)) {
+            setErrorMessage("The Object index '" + objIndex + "' already available.");
+            return false;
         }
 
         String objName = getTxtObjectNameText();
-        if(objName.isEmpty()){
-        	setErrorMessage("Enter the name of object.");
-        	return false;
+        if (objName.isEmpty()) {
+            setErrorMessage("Enter the name of object.");
+            return false;
         }
-
 
         return true;
     }
 
     private boolean isObjectIndexAvailable(String objIndex) {
-    	List<TObject> tObjects = XDDUtilities.findEObjects(documentRoot, XDDPackage.eINSTANCE.getTObject());
+        List<TObject> tObjects = XDDUtilities.findEObjects(documentRoot, XDDPackage.eINSTANCE.getTObject());
 
-    	for(TObject object: tObjects) {
-    		byte[] index = object.getIndex();
-     		String indexValue = DatatypeConverter.printHexBinary(index);
-if(objIndex.contains("0x")) {
-	objIndex = objIndex.substring(2);
-}
-if(indexValue.equalsIgnoreCase(objIndex)) {
-	return false;
-}
-    	}
-		return true;
-	}
+        for (TObject object : tObjects) {
+            byte[] index = object.getIndex();
+            String indexValue = DatatypeConverter.printHexBinary(index);
+            if (objIndex.contains("0x")) {
+                objIndex = objIndex.substring(2);
+            }
+            if (indexValue.equalsIgnoreCase(objIndex)) {
+                return false;
+            }
+        }
+        return true;
+    }
 
-	/**
+    /**
      * Checks for error in the page
      *
      * @return page complete status.
@@ -484,8 +486,6 @@ if(indexValue.equalsIgnoreCase(objIndex)) {
     public boolean isPageComplete() {
 
         boolean pageComplete = (super.isPageComplete());
-
-
 
         if (validateObjectModel()) {
             pageComplete = true;
@@ -501,83 +501,88 @@ if(indexValue.equalsIgnoreCase(objIndex)) {
         return StringUtils.EMPTY;
     }
 
-    public String getDatTypeValue(String dataType) {
-    	switch(dataType) {
-    	case "Boolean":
-    		return "0001";
-    	case "Integer8":
-    		return "0002";
-    	case "Integer16":
-    		return "0003";
-    	case "Integer32":
-    		return "0004";
-    	case "Unsigned8":
-    		return "0005";
-    	case "Unsigned16":
-    		return "0006";
-    	case "Unsigned32":
-    		return "0007";
-    	case "Real32":
-    		return "0008";
-    	case "Visible_String":
-    		return "0009";
-    	case "Integer24":
-    		return "0010";
-    	case "Real64":
-    		return "0011";
-    	case "Integer40":
-    		return "0012";
-    	case "Integer48":
-    		return "0013";
-    	case "Integer56":
-    		return "0014";
-    	case "Integer64":
-    		return "0015";
-    	case "Octet_String":
-    		return "000A";
-    	case "Unicode_String":
-    		return "000B";
-    	case "Time_of_Day":
-    		return "000C";
-    	case "Time_Diff":
-    		return "000D";
-    	case "Domain":
-    		return "000F";
-    	case "Unsigned24":
-    		return "0016";
-    	case "Unsigned40":
-    		return "0018";
-    	case "Unsigned48":
-    		return "0019";
-    	case "Unsigned56":
-    		return "001A";
-    	case "Unsigned64":
-    		return "001B";
-    	case "MAC_ADDRESS":
-    		return "0401";
-    	case "IP_ADDRESS":
-    		return "0402";
-    	case "NETTIME":
-    		return "0403";
+    /**
+     * Gets the value of IEC data type
+     *
+     * @param dataType
+     *            Value of selected data type
+     * @return IEC value of data type
+     */
+    public String getDataTypeValue(String dataType) {
+        switch (dataType) {
+        case "Boolean":
+            return "0001";
+        case "Integer8":
+            return "0002";
+        case "Integer16":
+            return "0003";
+        case "Integer32":
+            return "0004";
+        case "Unsigned8":
+            return "0005";
+        case "Unsigned16":
+            return "0006";
+        case "Unsigned32":
+            return "0007";
+        case "Real32":
+            return "0008";
+        case "Visible_String":
+            return "0009";
+        case "Integer24":
+            return "0010";
+        case "Real64":
+            return "0011";
+        case "Integer40":
+            return "0012";
+        case "Integer48":
+            return "0013";
+        case "Integer56":
+            return "0014";
+        case "Integer64":
+            return "0015";
+        case "Octet_String":
+            return "000A";
+        case "Unicode_String":
+            return "000B";
+        case "Time_of_Day":
+            return "000C";
+        case "Time_Diff":
+            return "000D";
+        case "Domain":
+            return "000F";
+        case "Unsigned24":
+            return "0016";
+        case "Unsigned40":
+            return "0018";
+        case "Unsigned48":
+            return "0019";
+        case "Unsigned56":
+            return "001A";
+        case "Unsigned64":
+            return "001B";
+        case "MAC_ADDRESS":
+            return "0401";
+        case "IP_ADDRESS":
+            return "0402";
+        case "NETTIME":
+            return "0403";
 
-    	default:
-    		return "0000";
-    	}
-
+        default:
+            return "0000";
+        }
 
     }
 
     public byte[] getDataType() {
-    	if(dataType == null) {
-    		dataType = comboDataType.getText();
-    	}
-
+        if (dataType == null) {
+            dataType = comboDataType.getText();
+        }
 
         if (!dataType.isEmpty()) {
 
-            return DatatypeConverter.parseHexBinary(getDatTypeValue(dataType));
+            return DatatypeConverter.parseHexBinary(getDataTypeValue(dataType));
         }
-        return null;
+        return new byte[] {0};
 
     }
 
@@ -613,19 +618,19 @@ if(indexValue.equalsIgnoreCase(objIndex)) {
     public byte[] getIndex() {
         String index = getTxtObjectIndexText();
         if (!index.isEmpty()) {
-        	index = index.substring(2);
+            index = index.substring(2);
             return DatatypeConverter.parseHexBinary(index);
         }
-        return null;
+        return new byte[] {0};
     }
 
     private String objectTypeText;
 
     public short getObjectType() {
 
-    	if(objectTypeText == null) {
-    		objectTypeText = comboObjectType.getText();
-    	}
+        if (objectTypeText == null) {
+            objectTypeText = comboObjectType.getText();
+        }
 
         if (objectTypeText.equalsIgnoreCase("Variable")) {
             return 7;
@@ -642,9 +647,9 @@ if(indexValue.equalsIgnoreCase(objIndex)) {
 
     public TObjectPDOMapping getPdoMapping() {
 
-    	if(pdoMapping == null) {
-    		pdoMapping = comboPdoMapping.getText();
-    	}
+        if (pdoMapping == null) {
+            pdoMapping = comboPdoMapping.getText();
+        }
 
         if (pdoMapping.equalsIgnoreCase("Non-mappable")) {
             return TObjectPDOMapping.NO;
@@ -664,8 +669,8 @@ if(indexValue.equalsIgnoreCase(objIndex)) {
         return TObjectPDOMapping.DEFAULT;
     }
 
-	public String getObjectName() {
+    public String getObjectName() {
 
-		return objName;
-	}
-} // WizardConfigurationPage1
+        return objName;
+    }
+}// AddObjectWizardPage

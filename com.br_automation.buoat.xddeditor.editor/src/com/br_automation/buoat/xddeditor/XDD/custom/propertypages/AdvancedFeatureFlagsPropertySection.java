@@ -38,10 +38,10 @@ import com.br_automation.buoat.xddeditor.XDD.impl.TObjectImpl;
 
 /**
  * @brief FeatureFlags-Section for Object index 0x1F82.
- * 
+ *
  *        Contains different checkbox-buttons for the FeatureFlags object.
  *        Generates default value for the user based on selection.
- * 
+ *
  * @author Joris Lückenga
  * */
 public class AdvancedFeatureFlagsPropertySection extends AbstractPropertySection {
@@ -64,7 +64,7 @@ public class AdvancedFeatureFlagsPropertySection extends AbstractPropertySection
 
                 //CHECK FOR INVALID BITS!
             } catch (NumberFormatException e2) {
-                // Generate a valid default-value by using selected checkboxes, 
+                // Generate a valid default-value by using selected checkboxes,
                 //if user had entered an invalid value but wants to continue...
                 AdvancedFeatureFlagsPropertySection.this.tobject.setDefaultValue("0"); //$NON-NLS-1$
                 Set<Entry<Button, Integer>> buttonSet = AdvancedFeatureFlagsPropertySection.this.buttonMap
@@ -365,11 +365,16 @@ public class AdvancedFeatureFlagsPropertySection extends AbstractPropertySection
         Object input = ((IStructuredSelection) selection).getFirstElement();
         Assert.isTrue(input instanceof TObjectImpl);
         this.tobject = (TObject) input;
+        if(tobjectComposite != null) {
         this.tobjectComposite.setObject(this.tobject);
+        }
+        if(lblError != null) {
         this.lblError.setText(""); //$NON-NLS-1$
+        }
         if (this.tobject.getDefaultValue() != null)
-
+        	if(lblDefaultValueValue != null) {
             this.lblDefaultValueValue.setText(this.tobject.getDefaultValue());
+        	}
 
         if (this.tobject.getIndex() != null && this.tobject.getDefaultValue() != null) {
             try {

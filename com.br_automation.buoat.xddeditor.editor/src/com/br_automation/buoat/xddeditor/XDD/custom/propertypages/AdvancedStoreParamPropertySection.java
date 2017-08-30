@@ -33,21 +33,21 @@ import com.br_automation.buoat.xddeditor.XDD.provider.SubObjectTypeItemProvider;
 
 /**
  * @brief PropertySection for Store-Parameter SubObjectTypes.
- * 
+ *
  *        This section only applies for subobjects of object 0x1010.Shows
  *        different radio-buttons to set parameters and calculates the default
  *        value based on the selection. Uses "StoreParamComposite".
- * 
+ *
  * @author Joris Lückenga
  */
 public class AdvancedStoreParamPropertySection extends AbstractPropertySection {
 
     /**
-     * 
+     *
      * @brief Composite showing radiobuttons for device save options.
-     * 
+     *
      *        Generates a default value based on the selection.
-     * 
+     *
      * @author Joris Lückenga
      */
     private class StoreParamComposite extends Composite {
@@ -274,8 +274,12 @@ public class AdvancedStoreParamPropertySection extends AbstractPropertySection {
         Object input = ((IStructuredSelection) selection).getFirstElement();
         subObject = (SubObjectType) input;
         tobject = (TObject) subObject.eContainer();
+        if(tObjectComposite != null) {
         this.tObjectComposite.setObject(subObject);
-        this.lblIndexValue.setText("0x1010 (" + tobject.getName() + ")"); //$NON-NLS-1$ //$NON-NLS-2$
+        }
+        if(lblIndexValue != null) {
+        this.lblIndexValue.setText("0x1010 (" + tobject.getName() + ")"); //$NON-NLS-1$
+        }
         this.storeparam
             .setSubObject(subObject, this.subObjectItemProvider, this.lblDefaultvalValue);
     }

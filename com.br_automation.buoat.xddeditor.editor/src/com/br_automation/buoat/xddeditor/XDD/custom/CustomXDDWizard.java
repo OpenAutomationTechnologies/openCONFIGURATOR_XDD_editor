@@ -37,11 +37,11 @@ import com.br_automation.buoat.xddeditor.XDD.presentation.XDDModelWizard;
 
 /**
  * @brief Modified/Overridden XDDWizard extended from generated Wizard.
- * 
+ *
  *        Modifications for methods addPages(), performFinis() and
  *        creatInitialModel() as well as getters for WizardPages to extend the
  *        design and functions of the wizard.
- * 
+ *
  * @author Joris Lückenga
  * */
 public class CustomXDDWizard extends XDDModelWizard {
@@ -125,6 +125,7 @@ public class CustomXDDWizard extends XDDModelWizard {
     @Override
     public boolean performFinish() {
         try {
+        	if(newFileCreationPage != null) {
             final IFile modelFile = this.newFileCreationPage.getModelFile();
 
             // Do the work within an operation.
@@ -188,10 +189,12 @@ public class CustomXDDWizard extends XDDModelWizard {
                 return false;
             }
             return true;
+        }
         } catch (Exception exception) { //Code was copied from generated class
             XDDEditorPlugin.INSTANCE.log(exception);
             return false;
         }
+		return false;
     }
 
     /**

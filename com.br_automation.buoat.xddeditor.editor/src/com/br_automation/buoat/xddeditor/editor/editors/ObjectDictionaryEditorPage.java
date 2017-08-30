@@ -1,7 +1,7 @@
 /*******************************************************************************
  * @file   ObjectDictionaryEditorPage.java
  *
- * @author Sree Hari Vignesh B, Kalycito Infotech Private Limited.
+ * @author Sree Hari Vignesh, Kalycito Infotech Private Limited.
  *
  * @copyright (c) 2017, Kalycito Infotech Private Limited
  *                    All rights reserved.
@@ -31,9 +31,6 @@
 
 package com.br_automation.buoat.xddeditor.editor.editors;
 
-import java.awt.Image;
-import java.awt.Menu;
-import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -44,111 +41,56 @@ import java.util.Set;
 import javax.xml.bind.DatatypeConverter;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.util.EContentAdapter;
-import org.eclipse.emf.eef.runtime.ui.properties.sections.EEFAdvancedPropertySection;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.ToolBarManager;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.ComboViewer;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
-import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
-import org.eclipse.pde.core.IModelChangedEvent;
-import org.eclipse.pde.internal.ui.editor.PDEFormPage;
-import org.eclipse.pde.internal.ui.editor.PDEMasterDetailsBlock;
-import org.eclipse.pde.internal.ui.editor.PDESection;
-import org.eclipse.pde.internal.ui.editor.plugin.AbstractPluginElementDetails;
-
-import org.eclipse.pde.internal.ui.editor.plugin.ExtensionDetails;
-import org.eclipse.pde.internal.ui.editor.plugin.ExtensionElementBodyTextDetails;
-import org.eclipse.pde.internal.ui.editor.plugin.ExtensionElementDetails;
-import org.eclipse.pde.internal.ui.editor.plugin.ExtensionsPage;
-import org.eclipse.pde.internal.ui.editor.plugin.ExtensionsSection;
-
-import org.eclipse.pde.internal.ui.editor.text.IControlHoverContentProvider;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
-import org.eclipse.ui.IPageLayout;
-import org.eclipse.ui.IViewPart;
-import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.FilteredTree;
 import org.eclipse.ui.dialogs.PatternFilter;
 import org.eclipse.ui.forms.DetailsPart;
 import org.eclipse.ui.forms.IDetailsPage;
 import org.eclipse.ui.forms.IDetailsPageProvider;
-import org.eclipse.ui.forms.IFormColors;
-import org.eclipse.ui.forms.IFormPart;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.MasterDetailsBlock;
 import org.eclipse.ui.forms.SectionPart;
 import org.eclipse.ui.forms.editor.FormPage;
-import org.eclipse.ui.forms.events.HyperlinkAdapter;
-import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.forms.widgets.TableWrapLayout;
-import org.eclipse.ui.internal.handlers.HideTrimBarsHandler;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.eclipse.ui.views.properties.IPropertySource;
-import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 
 import com.br_automation.buoat.xddeditor.XDD.DocumentRoot;
 import com.br_automation.buoat.xddeditor.XDD.SubObjectType;
 import com.br_automation.buoat.xddeditor.XDD.TObject;
 import com.br_automation.buoat.xddeditor.XDD.TObjectPDOMapping;
 import com.br_automation.buoat.xddeditor.XDD.XDDPackage;
-import com.br_automation.buoat.xddeditor.XDD.custom.CiADeviceProfile;
 import com.br_automation.buoat.xddeditor.XDD.custom.EPLGeneralConstants;
-import com.br_automation.buoat.xddeditor.XDD.custom.Messages;
-import com.br_automation.buoat.xddeditor.XDD.custom.ModelLoader;
 import com.br_automation.buoat.xddeditor.XDD.custom.XDDUtilities;
-import com.br_automation.buoat.xddeditor.XDD.custom.propertypages.BasicViewSection;
-import com.br_automation.buoat.xddeditor.XDD.custom.propertypages.TObjectComposite;
 import com.br_automation.buoat.xddeditor.XDD.custom.propertypages.filters.Index1000Filter;
 import com.br_automation.buoat.xddeditor.XDD.custom.propertypages.filters.Index1F80Filter;
 import com.br_automation.buoat.xddeditor.XDD.custom.propertypages.filters.Index1F82Filter;
@@ -156,31 +98,30 @@ import com.br_automation.buoat.xddeditor.XDD.custom.propertypages.filters.Mappin
 import com.br_automation.buoat.xddeditor.XDD.custom.propertypages.filters.StoreParamSubobjectsFilter;
 import com.br_automation.buoat.xddeditor.XDD.impl.SubObjectTypeImpl;
 import com.br_automation.buoat.xddeditor.XDD.impl.TObjectImpl;
-import com.br_automation.buoat.xddeditor.XDD.provider.TObjectItemProvider;
 import com.br_automation.buoat.xddeditor.XDD.resources.IPluginImages;
 import com.br_automation.buoat.xddeditor.XDD.resources.IPowerlinkConstants;
-import com.br_automation.buoat.xddeditor.XDD.wizards.AddObjectWizardPage;
-import com.br_automation.buoat.xddeditor.XDD.wizards.NewFirmwareWizard;
 import com.br_automation.buoat.xddeditor.XDD.wizards.NewObjectWizard;
 
 /**
  * The editor page to manipulate the object dictionary of device description
  * file.
  *
- * @author Sree Hari Vignesh B
+ * @author Sree Hari Vignesh
  *
  */
 public final class ObjectDictionaryEditorPage extends FormPage {
 
     /** Identifier */
-    private static final String ID = "org.epsg.openconfigurator.editors.objectDictionaryEditorPage";
+    private static final String ID = "com.buoat.xddeditor.editors.objectDictionaryEditorPage";
 
     private static final String OBJECT_DICTIONARY_HEADING = "Object Dictionary";
     public static final String OBJECT_DICTIONARY_DETAILS_HEADING = "Object Details";
-    public static final String SUB_OBJECT_DICTIONARY_DETAILS_HEADING = "Sub Object Details";
-    public static final String OBJECT_DICTIONARY_HEADING_DESCRIPTION = "Provides POWERLINK object dictionary of device.";
+    public static final String SUB_OBJECT_DICTIONARY_DETAILS_HEADING = "Sub-Object Details";
+    public static final String OBJECT_DICTIONARY_HEADING_DESCRIPTION = "Provides POWERLINK object dictionary of the device.";
+    public static final String SUB_OBJECT_DICTIONARY_HEADING_DESCRIPTION = "Provides POWERLINK subobject dictionary of the device.";
 
-    private static final String ADD_BUTTON_LABEL = "Add...";
+    private static final String ADD_OBJECT_BUTTON_LABEL = "Add object...";
+    private static final String ADD_SUB_OBJECT_BUTTON_LABEL = "Add sub-object...";
     private static final String REMOVE_BUTTON_LABEL = "Remove";
 
     private static final String FORM_EDITOR_PAGE_TITLE = "Device Description File Editor";
@@ -214,8 +155,11 @@ public final class ObjectDictionaryEditorPage extends FormPage {
     private FormToolkit toolkit;
     private DeviceDescriptionFileEditor editor;
 
-    private Button addPathSettingsButton;
+    private Button addObjectButton;
+    private Button addSubObjectButton;
     private Button removeButton;
+
+    private Section objectDictionarySection;
 
     /**
      * Constructor to instantiate object dictionary editor.
@@ -257,7 +201,7 @@ public final class ObjectDictionaryEditorPage extends FormPage {
         layout.horizontalSpacing = ObjectDictionaryEditorPage.FORM_BODY_HORIZONTAL_SPACING;
         layout.verticalSpacing = ObjectDictionaryEditorPage.FORM_BODY_VERTICAL_SPACING;
         layout.makeColumnsEqualWidth = true;
-        layout.numColumns = 2;
+        layout.numColumns = ObjectDictionaryEditorPage.FORM_BODY_NUMBER_OF_COLUMNS;
         body.setLayout(layout);
 
         ObjectDictionaryBlock masterDetailsBlock = new ObjectDictionaryBlock();
@@ -265,7 +209,22 @@ public final class ObjectDictionaryEditorPage extends FormPage {
 
     }
 
+    /**
+     * Class to list the details of objects and sub objects in the list viewer
+     *
+     * @author Sree Hari Vignesh
+     *
+     */
     public class ObjectDictionaryBlock extends MasterDetailsBlock implements IDetailsPageProvider {
+
+        private static final String OBJECT_INDEX_1F82 = "1F82";
+        private static final String OBJECT_INDEX_1F80 = "1F80";
+        private static final String OBJECT_INDEX_1000 = "1000";
+
+        private SubObjectTypeImpl subObject;
+        private TObjectImpl index1000Object;
+        private TObjectImpl index1F80Object;
+        private TObjectImpl index1F82Object;
 
         @Override
         protected void createMasterPart(IManagedForm managedForm, Composite parent) {
@@ -288,22 +247,22 @@ public final class ObjectDictionaryEditorPage extends FormPage {
 
         @Override
         public Object getPageKey(Object object) {
-            System.err.println("The page key.." + object);
+
             if (object instanceof TObjectImpl) {
                 TObjectImpl obj = (TObjectImpl) object;
                 String index = DatatypeConverter.printHexBinary(obj.getIndex());
-                System.err.println("The Obb.." + index);
-                if (index.equalsIgnoreCase("1F82")) {
+
+                if (index.equalsIgnoreCase(OBJECT_INDEX_1F82)) {
                     index1F82Object = obj;
                     return Index1F82Filter.class;
                 }
 
-                if (index.equalsIgnoreCase("1F80")) {
+                if (index.equalsIgnoreCase(OBJECT_INDEX_1F80)) {
                     index1F80Object = obj;
                     return Index1F80Filter.class;
                 }
 
-                if (index.equalsIgnoreCase("1000")) {
+                if (index.equalsIgnoreCase(OBJECT_INDEX_1000)) {
                     index1000Object = obj;
                     return Index1000Filter.class;
                 }
@@ -327,15 +286,9 @@ public final class ObjectDictionaryEditorPage extends FormPage {
 
                 if (parentObject.getIndex() != null) {
                     if (new BigInteger(1, parentObject.getIndex())
-                            .intValue() == EPLGeneralConstants.NMT_STOREPARAM_REC) { // NOPMD
-                                                                                        // by
-                                                                                        // lueckengaj
-                                                                                        // on
-                                                                                        // 21.05.13
-                                                                                        // 08:33
+                            .intValue() == EPLGeneralConstants.NMT_STOREPARAM_REC) {
                         if (subObject.getSubIndex() == null || subObject.getSubIndex().length == 0)
                             return true;
-                        int subIndex = new BigInteger(subObject.getSubIndex()).intValue();
                         this.subObject = subObject;
                         return StoreParamSubobjectsFilter.class;
                     }
@@ -346,14 +299,9 @@ public final class ObjectDictionaryEditorPage extends FormPage {
             return null;
         }
 
-        private SubObjectTypeImpl subObject;
-        private TObjectImpl index1000Object;
-        private TObjectImpl index1F80Object;
-        private TObjectImpl index1F82Object;
-
         @Override
         public IDetailsPage getPage(Object key) {
-            System.err.println("Key.." + key);
+
             if (key.equals(TObjectImpl.class)) {
 
                 return new ObjectDetailsPage();
@@ -376,15 +324,11 @@ public final class ObjectDictionaryEditorPage extends FormPage {
 
     }
 
-    private Section deviceFirmwareSection;
-
-    private Composite clientComposite;
-
     /**
-     * PatternFilter class to always show sub objects after filtering of
+     * PatternFilter class to always show sub-objects after filtering of
      * objects.
      */
-    private class PowerlinkObjectPatternFilter extends PatternFilter {
+    private static class PowerlinkObjectPatternFilter extends PatternFilter {
 
         @Override
         public Object[] filter(Viewer viewer, Object parent, Object[] elements) {
@@ -405,10 +349,9 @@ public final class ObjectDictionaryEditorPage extends FormPage {
     }
 
     /**
-     * Content provider to list the forced objects and sub_objects of node and
-     * module.
+     * Content provider to list the objects and sub-objects in XDD/XDC file
      *
-     * @author Sree Hari Vignesh B
+     * @author Sree Hari Vignesh
      *
      */
     private static class ObjectDictionaryContentProvider implements ITreeContentProvider {
@@ -525,30 +468,9 @@ public final class ObjectDictionaryEditorPage extends FormPage {
 
     private TreeViewer listViewer;
 
-    protected void fillContextMenu(IMenuManager contextMenu) {
-
-        contextMenu.add(propertiesAction);
-    }
-
-    protected void createContextMenu(Viewer viewer) {
-        MenuManager contextMenu = new MenuManager("ViewerMenu");
-        contextMenu.setRemoveAllWhenShown(true);
-        contextMenu.addMenuListener(new IMenuListener() {
-            @Override
-            public void menuAboutToShow(IMenuManager mgr) {
-                fillContextMenu(mgr);
-            }
-        });
-
-        org.eclipse.swt.widgets.Menu menu = contextMenu.createContextMenu(viewer.getControl());
-        viewer.getControl().setMenu(menu);
-    }
-
     public TreeViewer getViewer() {
         return listViewer;
     }
-
-    private Action propertiesAction;
 
     public static final String OBJECT_PROPERTIES = "Properties";
 
@@ -559,6 +481,8 @@ public final class ObjectDictionaryEditorPage extends FormPage {
      *
      * @param managedForm
      *            The parent form.
+     * @param parent
+     *            The parent composite.
      */
     private void createObjectDictionarySection(final IManagedForm managedForm, Composite parent) {
 
@@ -575,137 +499,158 @@ public final class ObjectDictionaryEditorPage extends FormPage {
         layout.numColumns = 2;
         parent.setLayout(layout);
 
-        deviceFirmwareSection = toolKit.createSection(parent, ExpandableComposite.EXPANDED | Section.DESCRIPTION
+        objectDictionarySection = toolKit.createSection(parent, ExpandableComposite.EXPANDED | Section.DESCRIPTION
                 | ExpandableComposite.TWISTIE | ExpandableComposite.TITLE_BAR);
-        managedForm.getToolkit().paintBordersFor(deviceFirmwareSection);
-        deviceFirmwareSection.setText(ObjectDictionaryEditorPage.OBJECT_DICTIONARY_HEADING);
-        deviceFirmwareSection.setDescription(ObjectDictionaryEditorPage.OBJECT_DICTIONARY_HEADING_DESCRIPTION);
+        managedForm.getToolkit().paintBordersFor(objectDictionarySection);
+        objectDictionarySection.setText(ObjectDictionaryEditorPage.OBJECT_DICTIONARY_HEADING);
+        objectDictionarySection.setDescription(ObjectDictionaryEditorPage.OBJECT_DICTIONARY_HEADING_DESCRIPTION);
 
-        Composite clientComposite = toolkit.createComposite(deviceFirmwareSection, SWT.WRAP);
-        GridLayout layouts = new GridLayout(2, false);
-        // layout.marginHeight = 15;
-        // layout.marginBottom = 15;
-        clientComposite.setLayout(layouts);
-        toolkit.paintBordersFor(clientComposite);
+        if (toolkit != null) {
+            Composite clientComposite = toolkit.createComposite(objectDictionarySection, SWT.WRAP);
+            GridLayout layouts = new GridLayout(3, false);
+            clientComposite.setLayout(layouts);
+            toolkit.paintBordersFor(clientComposite);
 
-        deviceFirmwareSection.setClient(clientComposite);
+            objectDictionarySection.setClient(clientComposite);
 
-        PatternFilter filter = new PowerlinkObjectPatternFilter();
-        filter.setIncludeLeadingWildcard(true);
-        filteredTree = new FilteredTree(clientComposite, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL, filter, true);
-        listViewer = filteredTree.getViewer();
-        Tree lst_no_foi = listViewer.getTree();
+            Composite listComposite = toolkit.createComposite(clientComposite, SWT.WRAP);
+            GridLayout listLayout = new GridLayout(1, false);
+            listLayout.marginHeight = 10;
+            listLayout.marginBottom = 10;
+            listComposite.setLayout(listLayout);
+            toolkit.paintBordersFor(listComposite);
 
-        listViewer.setContentProvider(new ObjectDictionaryContentProvider());
-        listViewer.setLabelProvider(new ObjectDictionaryLabelProvider());
-        listViewer.setInput(XDDPackage.eINSTANCE.getTObject());
-        GridData pst = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 3);
+            GridData pst = new GridData(SWT.TOP, SWT.TOP, false, false, 1, 1);
+            pst.heightHint = 400;
+            pst.widthHint = 500;
 
-        pst.heightHint = 400;
-        pst.widthHint = 500;
-        lst_no_foi.setLayoutData(pst);
+            Composite btnComposite = toolkit.createComposite(clientComposite, SWT.ON_TOP | SWT.TOP);
+            GridLayout btnLayout = new GridLayout(1, false);
+            btnLayout.marginHeight = 2;
+            btnLayout.marginBottom = 2;
+            btnComposite.setLayout(btnLayout);
+            toolkit.paintBordersFor(btnComposite);
 
-        createContextMenu(listViewer);
+            GridData btn = new GridData(SWT.TOP, SWT.TOP, false, false, 1, 1);
+            btn.heightHint = 5;
+            btn.widthHint = 5;
 
-        // getEditorSite().setSelectionProvider(listViewer);
+            PatternFilter filter = new PowerlinkObjectPatternFilter();
+            filter.setIncludeLeadingWildcard(true);
+            filteredTree = new FilteredTree(listComposite, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL, filter, true);
+            listViewer = filteredTree.getViewer();
+            Tree lst_no_foi = listViewer.getTree();
 
-        addPathSettingsButton = toolkit.createButton(clientComposite, ObjectDictionaryEditorPage.ADD_BUTTON_LABEL,
-                SWT.PUSH);
-        pst = new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1);
-        addPathSettingsButton.setLayoutData(pst);
-        toolkit.adapt(addPathSettingsButton, true, true);
+            lst_no_foi.setLayoutData(pst);
 
-        removeButton = toolkit.createButton(clientComposite, ObjectDictionaryEditorPage.REMOVE_BUTTON_LABEL, SWT.PUSH);
-        pst = new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1);
-        removeButton.setLayoutData(pst);
-        removeButton.setEnabled(false);
-        toolkit.adapt(removeButton, true, true);
+            listViewer.setContentProvider(new ObjectDictionaryContentProvider());
+            listViewer.setLabelProvider(new ObjectDictionaryLabelProvider());
+            listViewer.setInput(XDDPackage.eINSTANCE.getTObject());
 
-        final SectionPart spart = new SectionPart(deviceFirmwareSection);
-        managedForm.addPart(spart);
+            addObjectButton = toolkit.createButton(btnComposite, ObjectDictionaryEditorPage.ADD_OBJECT_BUTTON_LABEL,
+                    SWT.PUSH);
+            btn = new GridData(SWT.FILL, SWT.BEGINNING, false, false, 1, 1);
+            addObjectButton.setLayoutData(btn);
+            toolkit.adapt(addObjectButton, true, true);
 
-        listViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+            addSubObjectButton = toolkit.createButton(btnComposite,
+                    ObjectDictionaryEditorPage.ADD_SUB_OBJECT_BUTTON_LABEL, SWT.PUSH);
+            btn = new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1);
+            addSubObjectButton.setLayoutData(btn);
+            toolkit.adapt(addSubObjectButton, true, true);
 
-            @Override
-            public void selectionChanged(SelectionChangedEvent event) {
-                managedForm.fireSelectionChanged(spart, event.getSelection());
+            removeButton = toolkit.createButton(btnComposite, ObjectDictionaryEditorPage.REMOVE_BUTTON_LABEL, SWT.PUSH);
+            btn = new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1);
+            removeButton.setLayoutData(btn);
+            removeButton.setEnabled(false);
+            toolkit.adapt(removeButton, true, true);
 
-            }
-        });
+            final SectionPart spart = new SectionPart(objectDictionarySection);
+            managedForm.addPart(spart);
 
-        listViewer.addFilter(new ViewerFilter() {
+            listViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
-            @Override
-            public boolean select(Viewer viewer, Object parentElement, Object element) {
-                try {
-                    if (element instanceof TObjectImpl) {
-                        TObjectImpl obj = (TObjectImpl) element;
-                        byte[] index = obj.getIndex();
-                        String indexValue = DatatypeConverter.printHexBinary(index);
-                        Integer objectId = Integer.parseInt(indexValue, 16);
-                        if (!communicationProfileObjectsVisible) {
-                            if ((objectId >= IPowerlinkConstants.COMMUNICATION_PROFILE_START_INDEX)
-                                    && (objectId < IPowerlinkConstants.MANUFACTURER_PROFILE_START_INDEX)) {
-                                return false;
-                            }
+                @Override
+                public void selectionChanged(SelectionChangedEvent event) {
+                    managedForm.fireSelectionChanged(spart, event.getSelection());
 
-                        }
-
-                        if (!standardisedDeviceProfileObjectsVisible) {
-                            if ((objectId >= IPowerlinkConstants.STANDARDISED_DEVICE_PROFILE_START_INDEX)
-                                    && (objectId <= IPowerlinkConstants.STANDARDISED_DEVICE_PROFILE_END_INDEX)) {
-                                return false;
-                            }
-                        }
-
-                        validRpdoTObjectMapping = XDDUtilities.getValidMappingTypes(TObjectPDOMapping.RPDO);
-
-                        validTpdoTObjectMapping = XDDUtilities.getValidMappingTypes(TObjectPDOMapping.TPDO);
-
-                        Map<Integer, SubObjectType> tpdoMappableSubObjects = XDDUtilities.getMappingSubObjects(obj,
-                                validTpdoTObjectMapping);
-                        Map<Integer, SubObjectType> rpdoMappableSubObjects = XDDUtilities.getMappingSubObjects(obj,
-                                validRpdoTObjectMapping);
-
-                        if (!nonMappableObjectsVisible) {
-                            if (!XDDUtilities.isMappableObject(obj, validTpdoTObjectMapping)
-                                    && !XDDUtilities.isMappableObject(obj, validRpdoTObjectMapping)
-                                    && tpdoMappableSubObjects.isEmpty() && rpdoMappableSubObjects.isEmpty()) {
-                                return false;
-                            }
-                        }
-
-                        if (!userdefinedObjectsVisisble) {
-                            if ((objectId >= IPowerlinkConstants.MANUFACTURER_PROFILE_START_INDEX)
-                                    && (objectId <= IPowerlinkConstants.MANUFACTURER_PROFILE_END_INDEX)) {
-                                return false;
-                            }
-                        }
-
-                    } else if (element instanceof SubObjectTypeImpl) {
-                        SubObjectTypeImpl subObj = (SubObjectTypeImpl) element;
-                        validRpdoTObjectMapping = XDDUtilities.getValidMappingTypes(TObjectPDOMapping.RPDO);
-
-                        validTpdoTObjectMapping = XDDUtilities.getValidMappingTypes(TObjectPDOMapping.TPDO);
-                        if (!nonMappableObjectsVisible) {
-                            if (!XDDUtilities.isMappableSubObject(subObj, validTpdoTObjectMapping)
-                                    && !XDDUtilities.isMappableSubObject(subObj, validRpdoTObjectMapping)) {
-                                return false;
-                            }
-                        }
-                    }
-
-                } catch (Exception exc) {
-                    exc.printStackTrace();
                 }
-                return true;
-            }
-        });
+            });
+
+            listViewer.addFilter(new ViewerFilter() {
+
+                @Override
+                public boolean select(Viewer viewer, Object parentElement, Object element) {
+                    try {
+                        if (element instanceof TObjectImpl) {
+                            TObjectImpl obj = (TObjectImpl) element;
+                            byte[] index = obj.getIndex();
+                            String indexValue = DatatypeConverter.printHexBinary(index);
+                            Integer objectId = Integer.parseInt(indexValue, 16);
+                            if (!communicationProfileObjectsVisible) {
+                                if ((objectId >= IPowerlinkConstants.COMMUNICATION_PROFILE_START_INDEX)
+                                        && (objectId < IPowerlinkConstants.MANUFACTURER_PROFILE_START_INDEX)) {
+                                    return false;
+                                }
+
+                            }
+
+                            if (!standardisedDeviceProfileObjectsVisible) {
+                                if ((objectId >= IPowerlinkConstants.STANDARDISED_DEVICE_PROFILE_START_INDEX)
+                                        && (objectId <= IPowerlinkConstants.STANDARDISED_DEVICE_PROFILE_END_INDEX)) {
+                                    return false;
+                                }
+                            }
+
+                            validRpdoTObjectMapping = XDDUtilities.getValidMappingTypes(TObjectPDOMapping.RPDO);
+
+                            validTpdoTObjectMapping = XDDUtilities.getValidMappingTypes(TObjectPDOMapping.TPDO);
+
+                            Map<Integer, SubObjectType> tpdoMappableSubObjects = XDDUtilities.getMappingSubObjects(obj,
+                                    validTpdoTObjectMapping);
+                            Map<Integer, SubObjectType> rpdoMappableSubObjects = XDDUtilities.getMappingSubObjects(obj,
+                                    validRpdoTObjectMapping);
+
+                            if (!nonMappableObjectsVisible) {
+                                if (!XDDUtilities.isMappableObject(obj, validTpdoTObjectMapping)
+                                        && !XDDUtilities.isMappableObject(obj, validRpdoTObjectMapping)
+                                        && tpdoMappableSubObjects.isEmpty() && rpdoMappableSubObjects.isEmpty()) {
+                                    return false;
+                                }
+                            }
+
+                            if (!userdefinedObjectsVisisble) {
+                                if ((objectId >= IPowerlinkConstants.MANUFACTURER_PROFILE_START_INDEX)
+                                        && (objectId <= IPowerlinkConstants.MANUFACTURER_PROFILE_END_INDEX)) {
+                                    return false;
+                                }
+                            }
+
+                        } else if (element instanceof SubObjectTypeImpl) {
+                            SubObjectTypeImpl subObj = (SubObjectTypeImpl) element;
+                            validRpdoTObjectMapping = XDDUtilities.getValidMappingTypes(TObjectPDOMapping.RPDO);
+
+                            validTpdoTObjectMapping = XDDUtilities.getValidMappingTypes(TObjectPDOMapping.TPDO);
+                            if (!nonMappableObjectsVisible) {
+                                if (!XDDUtilities.isMappableSubObject(subObj, validTpdoTObjectMapping)
+                                        && !XDDUtilities.isMappableSubObject(subObj, validRpdoTObjectMapping)) {
+                                    return false;
+                                }
+                            }
+                        }
+
+                    } catch (Exception exc) {
+                        exc.printStackTrace();
+                    }
+                    return true;
+                }
+            });
+        }
 
         addListenerstoControls();
 
         ToolBarManager toolBarManager = new ToolBarManager(SWT.NONE);
-        org.eclipse.swt.widgets.ToolBar toolbar = toolBarManager.createControl(deviceFirmwareSection);
+        org.eclipse.swt.widgets.ToolBar toolbar = toolBarManager.createControl(objectDictionarySection);
         final org.eclipse.swt.graphics.Cursor handCursor = Display.getCurrent().getSystemCursor(SWT.CURSOR_HAND);
         toolbar.setCursor(handCursor);
 
@@ -715,7 +660,7 @@ public final class ObjectDictionaryEditorPage extends FormPage {
         toolBarManager.add(hideNonMappableObjects);
         toolBarManager.add(hideUserDefinedObjects);
         toolBarManager.update(true);
-        deviceFirmwareSection.setTextClient(toolbar);
+        objectDictionarySection.setTextClient(toolbar);
 
     }
 
@@ -811,7 +756,7 @@ public final class ObjectDictionaryEditorPage extends FormPage {
     }
 
     private void addListenerstoControls() {
-        addPathSettingsButton.addSelectionListener(addObjectWizardSelectionAdapter);
+        addObjectButton.addSelectionListener(addObjectWizardSelectionAdapter);
 
     }
 
@@ -835,9 +780,6 @@ public final class ObjectDictionaryEditorPage extends FormPage {
     @Override
     public void doSave(IProgressMonitor monitor) {
 
-        if (isDirty()) {
-
-        }
         setDirty(false);
         super.doSave(monitor);
     }
@@ -880,21 +822,5 @@ public final class ObjectDictionaryEditorPage extends FormPage {
             getEditor().editorDirtyStateChanged();
         }
     }
-
-    // @Override
-    // public void selectionChanged(SelectionChangedEvent event) {
-    // ISelection selection = event.getSelection();
-    //// if (selection instanceof IStructuredSelection &&
-    // ((IStructuredSelection)selection).size() == 1) {
-    //// Object object = ((IStructuredSelection)selection).getFirstElement();
-    //// if(object instanceof TObjectImpl){
-    //// updateSections(deviceFirmwareSection);
-    //// }else if (object instanceof SubObjectTypeImpl) {
-    //// updateSubObjectSections(deviceFirmwareSection);
-    //// }
-    ////
-    //// }
-    //
-    // }
 
 }

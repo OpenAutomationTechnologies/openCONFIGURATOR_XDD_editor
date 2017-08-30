@@ -1,7 +1,7 @@
 /*******************************************************************************
  * @file   Activator.java
  *
- * @author Sree Hari Vignesh, Kalycito Infotech Private Limited.
+ * @author Sree Hari Vignesh B, Kalycito Infotech Private Limited.
  *
  * @copyright (c) 2017, Kalycito Infotech Private Limited
  *                    All rights reserved.
@@ -109,7 +109,6 @@ public class Activator extends AbstractUIPlugin {
         return AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, path);
     }
 
-    private Tailer tailer = null;
 
     /**
      * The constructor
@@ -128,12 +127,6 @@ public class Activator extends AbstractUIPlugin {
         super.start(context);
         Activator.plugin = this;
 
-        // Read the log files written by the library and update in the console
-        // String logPath =
-        // ResourcesPlugin.getWorkspace().getRoot().getLocation()
-        // .toString() + IOpenConfiguratorResource.LIBRARY_LOG_FILE_PATH;
-        // tailer = Tailer.create(new File(logPath), new LogFileTailListener(),
-        // 1000);
     }
 
     /*
@@ -145,7 +138,6 @@ public class Activator extends AbstractUIPlugin {
     @Override
     public void stop(BundleContext context) throws Exception {
         Activator.plugin = null;
-        tailer.stop();
-        super.stop(context);
+                super.stop(context);
     }
 }

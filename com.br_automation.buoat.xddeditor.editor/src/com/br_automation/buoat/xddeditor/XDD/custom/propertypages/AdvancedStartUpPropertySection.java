@@ -35,12 +35,12 @@ import com.br_automation.buoat.xddeditor.XDD.provider.TObjectItemProvider;
 
 /**
  * @brief PropertySection for StartUp object with index 0x1F80.
- * 
+ *
  *        Shows checkboxes for StartUpObject and calculates a default value
  *        based on user selection.
- * 
+ *
  * @author Joris Lückenga
- * */
+ */
 public class AdvancedStartUpPropertySection extends AbstractPropertySection {
 
     private AdapterFactory adapterFactory;
@@ -56,26 +56,25 @@ public class AdvancedStartUpPropertySection extends AbstractPropertySection {
             String strDefaultValue;
             try {
                 AdvancedStartUpPropertySection.this.defaultValue = Integer
-                    .decode(AdvancedStartUpPropertySection.this.tobject.getDefaultValue());
+                        .decode(AdvancedStartUpPropertySection.this.tobject.getDefaultValue());
             } catch (NumberFormatException f) {
                 AdvancedStartUpPropertySection.this.defaultValue = 0;
             }
             if (((Button) e.getSource()).getSelection())
                 AdvancedStartUpPropertySection.this.defaultValue = AdvancedStartUpPropertySection.this.defaultValue
-                    | (1 << AdvancedStartUpPropertySection.this.buttonMap.get(e.getSource())
-                        .intValue());
+                        | (1 << AdvancedStartUpPropertySection.this.buttonMap.get(e.getSource()).intValue());
             else
                 AdvancedStartUpPropertySection.this.defaultValue = AdvancedStartUpPropertySection.this.defaultValue
-                    & ~(1 << AdvancedStartUpPropertySection.this.buttonMap.get(e.getSource())
-                        .intValue());
+                        & ~(1 << AdvancedStartUpPropertySection.this.buttonMap.get(e.getSource()).intValue());
 
-            strDefaultValue = "0x" + Integer.toHexString(AdvancedStartUpPropertySection.this.defaultValue).toUpperCase(); //$NON-NLS-1$
-            AdvancedStartUpPropertySection.this.tObjectProvider.setPropertyValue(
-                AdvancedStartUpPropertySection.this.tobject, "defaultValue", strDefaultValue); //$NON-NLS-1$
+            strDefaultValue = "0x" //$NON-NLS-1$
+                    + Integer.toHexString(AdvancedStartUpPropertySection.this.defaultValue).toUpperCase();
+            AdvancedStartUpPropertySection.this.tObjectProvider
+                    .setPropertyValue(AdvancedStartUpPropertySection.this.tobject, "defaultValue", strDefaultValue); //$NON-NLS-1$
             AdvancedStartUpPropertySection.this.lblDefaultValueValue.setText(strDefaultValue);
 
         }
-    }; //SelectionListener
+    }; // SelectionListener
 
     private TObject tobject;
     private TObjectComposite tObjectComposite;
@@ -94,7 +93,7 @@ public class AdvancedStartUpPropertySection extends AbstractPropertySection {
         data.top = new FormAttachment(0, 0);
         this.tObjectComposite.setLayoutData(data);
 
-        //lblDefaultValueValue Label
+        // lblDefaultValueValue Label
         this.lblDefaultValueValue = this.getWidgetFactory().createCLabel(composite, ""); //$NON-NLS-1$
         data = new FormData();
         data.top = new FormAttachment(this.tObjectComposite, 0);
@@ -108,13 +107,12 @@ public class AdvancedStartUpPropertySection extends AbstractPropertySection {
         data.left = new FormAttachment(0, 7);
         lblDefaultValue.setLayoutData(data);
 
-        //--Checkbox-Section
+        // --Checkbox-Section
 
-        //btnStartCNsMode
-        Button btnStartCNsMode = this.getWidgetFactory().createButton(
-            composite, Messages.advancedStartUpPropertySection_btn_startBroadcastCN, SWT.CHECK);
-        btnStartCNsMode
-            .setToolTipText(Messages.advancedStartUpPropertySection_tooltip_startexplicitCN);
+        // btnStartCNsMode
+        Button btnStartCNsMode = this.getWidgetFactory().createButton(composite,
+                Messages.advancedStartUpPropertySection_btn_startBroadcastCN, SWT.CHECK);
+        btnStartCNsMode.setToolTipText(Messages.advancedStartUpPropertySection_tooltip_startexplicitCN);
         data = new FormData();
         data.top = new FormAttachment(lblDefaultValue, 0);
         data.left = new FormAttachment(0, 7);
@@ -122,11 +120,10 @@ public class AdvancedStartUpPropertySection extends AbstractPropertySection {
         btnStartCNsMode.addSelectionListener(this.selectionListener);
         this.buttonMap.put(btnStartCNsMode, 1);
 
-        //btnAutoOperationalState
-        Button btnAutoOperationalState = this.getWidgetFactory().createButton(
-            composite, Messages.advancedStartUpPropertySection_btn_NoAutoNMTOperational, SWT.CHECK);
-        btnAutoOperationalState
-            .setToolTipText(Messages.advancedStartUpPropertySection_tooltip_autoNMTOperational);
+        // btnAutoOperationalState
+        Button btnAutoOperationalState = this.getWidgetFactory().createButton(composite,
+                Messages.advancedStartUpPropertySection_btn_NoAutoNMTOperational, SWT.CHECK);
+        btnAutoOperationalState.setToolTipText(Messages.advancedStartUpPropertySection_tooltip_autoNMTOperational);
         data = new FormData();
         data.top = new FormAttachment(btnStartCNsMode, -5);
         data.left = new FormAttachment(0, 7);
@@ -134,11 +131,10 @@ public class AdvancedStartUpPropertySection extends AbstractPropertySection {
         btnAutoOperationalState.addSelectionListener(this.selectionListener);
         this.buttonMap.put(btnAutoOperationalState, 2);
 
-        //btnNMTStartNode
-        Button btnNMTStartNode = this.getWidgetFactory().createButton(
-            composite, Messages.advancedStartUpPropertySection_btn_applicationCNStart, SWT.CHECK);
-        btnNMTStartNode
-            .setToolTipText(Messages.advancedStartUpPropertySection_tooltip_allowCNstartup);
+        // btnNMTStartNode
+        Button btnNMTStartNode = this.getWidgetFactory().createButton(composite,
+                Messages.advancedStartUpPropertySection_btn_applicationCNStart, SWT.CHECK);
+        btnNMTStartNode.setToolTipText(Messages.advancedStartUpPropertySection_tooltip_allowCNstartup);
         data = new FormData();
         data.top = new FormAttachment(btnAutoOperationalState, -5);
         data.left = new FormAttachment(0, 7);
@@ -146,12 +142,10 @@ public class AdvancedStartUpPropertySection extends AbstractPropertySection {
         btnNMTStartNode.addSelectionListener(this.selectionListener);
         this.buttonMap.put(btnNMTStartNode, 3);
 
-        //btnNMTResetNodeTrigger
-        Button btnNMTResetNode = this.getWidgetFactory().createButton(
-            composite, Messages.advancedStartUpPropertySection_btn_resetNodeWithBroadcast,
-            SWT.CHECK);
-        btnNMTResetNode
-            .setToolTipText(Messages.advancedStartUpPropertySection_tooltip_individualOnError);
+        // btnNMTResetNodeTrigger
+        Button btnNMTResetNode = this.getWidgetFactory().createButton(composite,
+                Messages.advancedStartUpPropertySection_btn_resetNodeWithBroadcast, SWT.CHECK);
+        btnNMTResetNode.setToolTipText(Messages.advancedStartUpPropertySection_tooltip_individualOnError);
         data = new FormData();
         data.top = new FormAttachment(btnNMTStartNode, -5);
         data.left = new FormAttachment(0, 7);
@@ -159,12 +153,10 @@ public class AdvancedStartUpPropertySection extends AbstractPropertySection {
         btnNMTResetNode.addSelectionListener(this.selectionListener);
         this.buttonMap.put(btnNMTResetNode, 4);
 
-        //btnNTMStopNode
-        Button btnNMTStopNode = this.getWidgetFactory().createButton(
-            composite, Messages.advancedStartUpPropertySection_btn_dealStopNodeWithBroadcast,
-            SWT.CHECK);
-        btnNMTStopNode
-            .setToolTipText(Messages.advancedStartUpPropertySection_tooltip_dealCNaccordingBit4);
+        // btnNTMStopNode
+        Button btnNMTStopNode = this.getWidgetFactory().createButton(composite,
+                Messages.advancedStartUpPropertySection_btn_dealStopNodeWithBroadcast, SWT.CHECK);
+        btnNMTStopNode.setToolTipText(Messages.advancedStartUpPropertySection_tooltip_dealCNaccordingBit4);
         data = new FormData();
         data.top = new FormAttachment(btnNMTResetNode, -5);
         data.left = new FormAttachment(0, 7);
@@ -172,12 +164,10 @@ public class AdvancedStartUpPropertySection extends AbstractPropertySection {
         btnNMTStopNode.addSelectionListener(this.selectionListener);
         this.buttonMap.put(btnNMTStopNode, 6);
 
-        //btnPreOperational2
-        Button btnNMTPreOperational2 = this.getWidgetFactory().createButton(
-            composite, Messages.advancedStartUpPropertySection_btn_enterPreOp2ByApplication,
-            SWT.CHECK);
-        btnNMTPreOperational2
-            .setToolTipText(Messages.advancedStartUpPropertySection_tooltip_enterPreOperational2);
+        // btnPreOperational2
+        Button btnNMTPreOperational2 = this.getWidgetFactory().createButton(composite,
+                Messages.advancedStartUpPropertySection_btn_enterPreOp2ByApplication, SWT.CHECK);
+        btnNMTPreOperational2.setToolTipText(Messages.advancedStartUpPropertySection_tooltip_enterPreOperational2);
         data = new FormData();
         data.top = new FormAttachment(btnNMTStopNode, -5);
         data.left = new FormAttachment(0, 7);
@@ -185,11 +175,10 @@ public class AdvancedStartUpPropertySection extends AbstractPropertySection {
         btnNMTPreOperational2.addSelectionListener(this.selectionListener);
         this.buttonMap.put(btnNMTPreOperational2, 7);
 
-        //btnMSReadyToOperate
-        Button btnMSReadyToOperate = this.getWidgetFactory().createButton(
-            composite, Messages.advancedStartUpPropertySection_btn_appDecide_ReadyState, SWT.CHECK);
-        btnMSReadyToOperate
-            .setToolTipText(Messages.advancedStartUpPropertySection_tooltip_setReadyToOperate);
+        // btnMSReadyToOperate
+        Button btnMSReadyToOperate = this.getWidgetFactory().createButton(composite,
+                Messages.advancedStartUpPropertySection_btn_appDecide_ReadyState, SWT.CHECK);
+        btnMSReadyToOperate.setToolTipText(Messages.advancedStartUpPropertySection_tooltip_setReadyToOperate);
         data = new FormData();
         data.top = new FormAttachment(lblDefaultValue, 0);
         data.left = new FormAttachment(btnStartCNsMode, 120);
@@ -197,11 +186,10 @@ public class AdvancedStartUpPropertySection extends AbstractPropertySection {
         btnMSReadyToOperate.addSelectionListener(this.selectionListener);
         this.buttonMap.put(btnMSReadyToOperate, 8);
 
-        //btnCompleteCNIdCheck
-        Button btnCompleteCNIdCheck = this.getWidgetFactory().createButton(
-            composite, Messages.advancedStartUpPropertySection_btn_VerifyAllCNIds, SWT.CHECK);
-        btnCompleteCNIdCheck
-            .setToolTipText(Messages.advancedStartUpPropertySection_tooltip_LimitVerifyAllCNIds);
+        // btnCompleteCNIdCheck
+        Button btnCompleteCNIdCheck = this.getWidgetFactory().createButton(composite,
+                Messages.advancedStartUpPropertySection_btn_VerifyAllCNIds, SWT.CHECK);
+        btnCompleteCNIdCheck.setToolTipText(Messages.advancedStartUpPropertySection_tooltip_LimitVerifyAllCNIds);
         data = new FormData();
         data.top = new FormAttachment(btnMSReadyToOperate, -5);
         data.left = new FormAttachment(btnStartCNsMode, 120);
@@ -209,11 +197,10 @@ public class AdvancedStartUpPropertySection extends AbstractPropertySection {
         btnCompleteCNIdCheck.addSelectionListener(this.selectionListener);
         this.buttonMap.put(btnCompleteCNIdCheck, 9);
 
-        //btnCheckSWVersion
-        Button btnCheckSWVersion = this.getWidgetFactory().createButton(
-            composite, Messages.advancedStartUpPropertySection_btn_checkSWVersion, SWT.CHECK);
-        btnCheckSWVersion
-            .setToolTipText(Messages.advancedStartUpPropertySection_tooltip_doNotCheckSW);
+        // btnCheckSWVersion
+        Button btnCheckSWVersion = this.getWidgetFactory().createButton(composite,
+                Messages.advancedStartUpPropertySection_btn_checkSWVersion, SWT.CHECK);
+        btnCheckSWVersion.setToolTipText(Messages.advancedStartUpPropertySection_tooltip_doNotCheckSW);
         data = new FormData();
         data.top = new FormAttachment(btnCompleteCNIdCheck, -5);
         data.left = new FormAttachment(btnStartCNsMode, 120);
@@ -221,11 +208,10 @@ public class AdvancedStartUpPropertySection extends AbstractPropertySection {
         btnCheckSWVersion.addSelectionListener(this.selectionListener);
         this.buttonMap.put(btnCheckSWVersion, 10);
 
-        //btnCheckConfig
-        Button btnCheckConfig = this.getWidgetFactory().createButton(
-            composite, Messages.advancedStartUpPropertySection_btn_checkCNConfig, SWT.CHECK);
-        btnCheckConfig
-            .setToolTipText(Messages.advancedStartUpPropertySection_tooltip_doNotCheckConfig);
+        // btnCheckConfig
+        Button btnCheckConfig = this.getWidgetFactory().createButton(composite,
+                Messages.advancedStartUpPropertySection_btn_checkCNConfig, SWT.CHECK);
+        btnCheckConfig.setToolTipText(Messages.advancedStartUpPropertySection_tooltip_doNotCheckConfig);
         data = new FormData();
         data.top = new FormAttachment(btnCheckSWVersion, -5);
         data.left = new FormAttachment(btnStartCNsMode, 120);
@@ -233,12 +219,10 @@ public class AdvancedStartUpPropertySection extends AbstractPropertySection {
         btnCheckConfig.addSelectionListener(this.selectionListener);
         this.buttonMap.put(btnCheckConfig, 11);
 
-        //btnReturnOperational1
-        Button btnReturnOperational1 = this.getWidgetFactory().createButton(
-            composite, Messages.advancedStartUpPropertySection_btn_AppDecideChangeToPreOp,
-            SWT.CHECK);
-        btnReturnOperational1
-            .setToolTipText(Messages.advancedStartUpPropertySection_tooltip_autoChangeToPreOp);
+        // btnReturnOperational1
+        Button btnReturnOperational1 = this.getWidgetFactory().createButton(composite,
+                Messages.advancedStartUpPropertySection_btn_AppDecideChangeToPreOp, SWT.CHECK);
+        btnReturnOperational1.setToolTipText(Messages.advancedStartUpPropertySection_tooltip_autoChangeToPreOp);
         data = new FormData();
         data.top = new FormAttachment(btnCheckConfig, -5);
         data.left = new FormAttachment(btnStartCNsMode, 120);
@@ -246,12 +230,10 @@ public class AdvancedStartUpPropertySection extends AbstractPropertySection {
         btnReturnOperational1.addSelectionListener(this.selectionListener);
         this.buttonMap.put(btnReturnOperational1, 12);
 
-        //btnChangeToBasicEth
-        Button btnChangeToBasicEth = this.getWidgetFactory().createButton(
-            composite, Messages.advancedStartUpPropertySection_btn_ChangeNotActiveToBaiscEthernet,
-            SWT.CHECK);
-        btnChangeToBasicEth
-            .setToolTipText(Messages.advancedStartUpPropertySection_tooltip_notActiveBasicEthState);
+        // btnChangeToBasicEth
+        Button btnChangeToBasicEth = this.getWidgetFactory().createButton(composite,
+                Messages.advancedStartUpPropertySection_btn_ChangeNotActiveToBaiscEthernet, SWT.CHECK);
+        btnChangeToBasicEth.setToolTipText(Messages.advancedStartUpPropertySection_tooltip_notActiveBasicEthState);
         data = new FormData();
         data.top = new FormAttachment(btnReturnOperational1, -5);
         data.left = new FormAttachment(btnStartCNsMode, 120);
@@ -259,21 +241,21 @@ public class AdvancedStartUpPropertySection extends AbstractPropertySection {
         btnChangeToBasicEth.addSelectionListener(this.selectionListener);
         this.buttonMap.put(btnChangeToBasicEth, 13);
 
-        //----ERRORLABEL
+        // ----ERRORLABEL
 
-        this.lblError = this.getWidgetFactory().createCLabel(
-            composite, "                                                  "); //$NON-NLS-1$
+        this.lblError = this.getWidgetFactory().createCLabel(composite,
+                "                                                  "); //$NON-NLS-1$
         data = new FormData();
         data.top = new FormAttachment(btnNMTPreOperational2, 0);
         data.left = new FormAttachment(0, 7);
         this.lblError.setLayoutData(data);
         this.lblError.setForeground(XDDUtilities.getRed(Display.getCurrent()));
 
-    } //createControls
+    } // createControls
 
     /**
      * @return AdapterFactory for ItemProviders.
-     * */
+     */
     public AdapterFactory getAdapterFactory() {
         if (this.adapterFactory == null)
             this.adapterFactory = EEFRuntimePlugin.getDefault().getAdapterFactory();
@@ -289,30 +271,43 @@ public class AdvancedStartUpPropertySection extends AbstractPropertySection {
         super.setInput(part, selection);
         Object input = ((IStructuredSelection) selection).getFirstElement();
         this.tobject = (TObject) input;
-        this.lblError.setText(""); //$NON-NLS-1$
-
-        this.tObjectComposite.setObject(this.tobject);
-        this.lblDefaultValueValue.setText(this.tobject.getDefaultValue());
+        if (lblError != null) {
+            this.lblError.setText(""); //$NON-NLS-1$
+        }
+        if (tObjectComposite != null) {
+            this.tObjectComposite.setObject(this.tobject);
+        }
+        if (lblDefaultValueValue != null) {
+            this.lblDefaultValueValue.setText(this.tobject.getDefaultValue());
+        }
         Set<Entry<Button, Integer>> buttonSet = this.buttonMap.entrySet();
 
         try {
             int currentDefaultValue = 0;
-            if (this.tobject.getDefaultValue() != null
-                && this.tobject.getDefaultValue().length() > 0) {
+            if (this.tobject.getDefaultValue() != null && this.tobject.getDefaultValue().length() > 0) {
 
                 currentDefaultValue = Integer.decode(this.tobject.getDefaultValue());
 
                 for (Entry<Button, Integer> entry : buttonSet) {
                     int btnValue = entry.getValue().intValue();
-                    if ((currentDefaultValue & (1 << btnValue)) != 0) //Check if Bit of Button is set
-                        entry.getKey().setSelection(true); //if yes, set the selection to true
+                    if ((currentDefaultValue & (1 << btnValue)) != 0) // Check
+                                                                        // if
+                                                                        // Bit
+                                                                        // of
+                                                                        // Button
+                                                                        // is
+                                                                        // set
+                        entry.getKey().setSelection(true); // if yes, set the
+                                                            // selection to true
                     else
                         entry.getKey().setSelection(false);
                 }
             }
-            if (currentDefaultValue != 0 //Checks if any reserved bits are set in defaultValue (Bit 0, Bit 5, all Bits > 13)
-                && (currentDefaultValue > 0x3FDE || ((currentDefaultValue & (1 << 5)) != 0))
-                || (currentDefaultValue & (1 << 0)) != 0) {
+            if (currentDefaultValue != 0 // Checks if any reserved bits are set
+                                            // in defaultValue (Bit 0, Bit 5,
+                                            // all Bits > 13)
+                    && (currentDefaultValue > 0x3FDE || ((currentDefaultValue & (1 << 5)) != 0))
+                    || (currentDefaultValue & (1 << 0)) != 0) {
                 this.lblError.setText(Messages.general_error_defaultValueInvalid);
                 for (Entry<Button, Integer> entry : buttonSet)
                     entry.getKey().setSelection(false);
@@ -320,6 +315,6 @@ public class AdvancedStartUpPropertySection extends AbstractPropertySection {
         } catch (NumberFormatException e) {
             this.lblError.setText(Messages.general_error_defaultValueInvalid);
         }
-    } //setInput
+    } // setInput
 
-} //AdvancedStartUpPropertySection
+} // AdvancedStartUpPropertySection

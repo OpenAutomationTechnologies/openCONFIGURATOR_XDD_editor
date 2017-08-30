@@ -39,7 +39,7 @@ public interface ObjectListType extends EObject {
      * clear, there really should be more of a description here...
      * </p>
      * <!-- end-user-doc -->
-     * 
+     *
      * @return the value of the '<em>Object</em>' containment reference list.
      * @see com.br_automation.buoat.xddeditor.XDD.XDDPackage#getObjectListType_Object()
      * @model containment="true" required="true" upper="65535"
@@ -57,7 +57,7 @@ public interface ObjectListType extends EObject {
      * there really should be more of a description here...
      * </p>
      * <!-- end-user-doc -->
-     * 
+     *
      * @return the value of the '<em>Mandatory Objects</em>' attribute.
      * @see #isSetMandatoryObjects()
      * @see #unsetMandatoryObjects()
@@ -75,7 +75,7 @@ public interface ObjectListType extends EObject {
      * '{@link com.br_automation.buoat.xddeditor.XDD.ObjectListType#getMandatoryObjects
      * <em>Mandatory Objects</em>}' attribute. <!-- begin-user-doc --> <!--
      * end-user-doc -->
-     * 
+     *
      * @param value
      *            the new value of the '<em>Mandatory Objects</em>' attribute.
      * @see #isSetMandatoryObjects()
@@ -90,7 +90,7 @@ public interface ObjectListType extends EObject {
      * '{@link com.br_automation.buoat.xddeditor.XDD.ObjectListType#getMandatoryObjects
      * <em>Mandatory Objects</em>}' attribute. <!-- begin-user-doc --> <!--
      * end-user-doc -->
-     * 
+     *
      * @see #isSetMandatoryObjects()
      * @see #getMandatoryObjects()
      * @see #setMandatoryObjects(long)
@@ -103,7 +103,7 @@ public interface ObjectListType extends EObject {
      * '{@link com.br_automation.buoat.xddeditor.XDD.ObjectListType#getMandatoryObjects
      * <em>Mandatory Objects</em>}' attribute is set. <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @return whether the value of the '<em>Mandatory Objects</em>' attribute
      *         is set.
      * @see #unsetMandatoryObjects()
@@ -121,7 +121,7 @@ public interface ObjectListType extends EObject {
      * clear, there really should be more of a description here...
      * </p>
      * <!-- end-user-doc -->
-     * 
+     *
      * @return the value of the '<em>Manufacturer Objects</em>' attribute.
      * @see #isSetManufacturerObjects()
      * @see #unsetManufacturerObjects()
@@ -139,7 +139,7 @@ public interface ObjectListType extends EObject {
      * '{@link com.br_automation.buoat.xddeditor.XDD.ObjectListType#getManufacturerObjects
      * <em>Manufacturer Objects</em>}' attribute. <!-- begin-user-doc --> <!--
      * end-user-doc -->
-     * 
+     *
      * @param value
      *            the new value of the '<em>Manufacturer Objects</em>'
      *            attribute.
@@ -155,7 +155,7 @@ public interface ObjectListType extends EObject {
      * '{@link com.br_automation.buoat.xddeditor.XDD.ObjectListType#getManufacturerObjects
      * <em>Manufacturer Objects</em>}' attribute. <!-- begin-user-doc --> <!--
      * end-user-doc -->
-     * 
+     *
      * @see #isSetManufacturerObjects()
      * @see #getManufacturerObjects()
      * @see #setManufacturerObjects(long)
@@ -168,7 +168,7 @@ public interface ObjectListType extends EObject {
      * '{@link com.br_automation.buoat.xddeditor.XDD.ObjectListType#getManufacturerObjects
      * <em>Manufacturer Objects</em>}' attribute is set. <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @return whether the value of the '<em>Manufacturer Objects</em>'
      *         attribute is set.
      * @see #unsetManufacturerObjects()
@@ -186,7 +186,7 @@ public interface ObjectListType extends EObject {
      * there really should be more of a description here...
      * </p>
      * <!-- end-user-doc -->
-     * 
+     *
      * @return the value of the '<em>Optional Objects</em>' attribute.
      * @see #isSetOptionalObjects()
      * @see #unsetOptionalObjects()
@@ -204,7 +204,7 @@ public interface ObjectListType extends EObject {
      * '{@link com.br_automation.buoat.xddeditor.XDD.ObjectListType#getOptionalObjects
      * <em>Optional Objects</em>}' attribute. <!-- begin-user-doc --> <!--
      * end-user-doc -->
-     * 
+     *
      * @param value
      *            the new value of the '<em>Optional Objects</em>' attribute.
      * @see #isSetOptionalObjects()
@@ -219,7 +219,7 @@ public interface ObjectListType extends EObject {
      * '{@link com.br_automation.buoat.xddeditor.XDD.ObjectListType#getOptionalObjects
      * <em>Optional Objects</em>}' attribute. <!-- begin-user-doc --> <!--
      * end-user-doc -->
-     * 
+     *
      * @see #isSetOptionalObjects()
      * @see #getOptionalObjects()
      * @see #setOptionalObjects(long)
@@ -232,7 +232,7 @@ public interface ObjectListType extends EObject {
      * '{@link com.br_automation.buoat.xddeditor.XDD.ObjectListType#getOptionalObjects
      * <em>Optional Objects</em>}' attribute is set. <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @return whether the value of the '<em>Optional Objects</em>' attribute is
      *         set.
      * @see #unsetOptionalObjects()

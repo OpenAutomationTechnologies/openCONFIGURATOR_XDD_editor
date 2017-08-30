@@ -1,7 +1,7 @@
 /*******************************************************************************
  * @file   StoreParamSubObjectDetailsPage.java
  *
- * @author Sree Hari Vignesh B, Kalycito Infotech Private Limited.
+ * @author Sree Hari Vignesh, Kalycito Infotech Private Limited.
  *
  * @copyright (c) 2017, Kalycito Infotech Private Limited
  *                    All rights reserved.
@@ -79,6 +79,7 @@ import com.br_automation.buoat.xddeditor.XDD.custom.propertypages.TObjectComposi
 
 import com.br_automation.buoat.xddeditor.XDD.impl.SubObjectTypeImpl;
 import com.br_automation.buoat.xddeditor.XDD.provider.SubObjectTypeItemProvider;
+import com.br_automation.buoat.xddeditor.XDD.resources.IPowerlinkConstants;
 
 /**
  * Class to populate the details page of store param subobject
@@ -90,32 +91,19 @@ public class StoreParamSubObjectDetailsPage extends EEFAdvancedPropertySection i
 
     private IManagedForm managedForm;
 
-    private Text accessTypeText;
-
-    private Text actualValueText;
-
-    private Text dataTypeText;
-
-    private Text defaultValueText;
-    private Text denotationText;
-    private Text highLimitText;
-    // private Text indexText;
-    private Text lowLimitText;
     private Text nameText;
     private Text objTypeText;
-    private Text objFlagsText;
-    private Text pdoMappingText;
+
     private Text subIndexText;
-    private Text uniqueIdRefText;
+
     private SubObjectTypeImpl subObject;
     private DocumentRoot docRoot;
     private DeviceDescriptionFileEditor editor;
 
-    private Label lblDefaultvalValue;
+    private Label valueOfLabelDefaultValue;
     private Label lblIndexValue;
     private StoreParamComposite storeparam;
-    private SubObjectTypeItemProvider subObjectItemProvider;
-    private TObjectComposite tObjectComposite;
+
 
     public StoreParamSubObjectDetailsPage(SubObjectTypeImpl subObject, DocumentRoot docRoot,
             DeviceDescriptionFileEditor editor) {
@@ -183,64 +171,29 @@ public class StoreParamSubObjectDetailsPage extends EEFAdvancedPropertySection i
         subObject = (SubObjectTypeImpl) obj;
         tobject = (TObject) subObject.eContainer();
 
-        this.lblIndexValue.setText("0x1010 (" + tobject.getName() + ")"); //$NON-NLS-1$ //$NON-NLS-2$
-        this.storeparam.setSubObject(subObject, this.subObjectItemProvider, this.lblDefaultvalValue);
-
-        // if (obj.getAccessType() != null) {
-        // accessTypeText.setText(obj.getAccessType().getName());
-        // }
-        //
-        // if (obj.getActualValue() != null) {
-        // actualValueText.setText(obj.getActualValue());
-        // }
-        //
-        // if (obj.getDataType() != null) {
-        // String dataType =
-        // DatatypeConverter.printHexBinary(obj.getDataType());
-        // dataTypeText.setText(dataType);
-        // }
-        //
-        // if (obj.getDefaultValue() != null) {
-        // defaultValueText.setText(obj.getDefaultValue());
-        // }
-        //
-        // if (obj.getDenotation() != null) {
-        // denotationText.setText(obj.getDenotation());
-        // }
-        //
-        // if (obj.getHighLimit() != null) {
-        // highLimitText.setText(obj.getHighLimit());
-        // }
+        if(lblIndexValue != null) {
+        this.lblIndexValue.setText("0x1010 (" + tobject.getName() + ")"); //$NON-NLS-1$
+        }
 
         if (obj.getSubIndex() != null) {
             String index = DatatypeConverter.printHexBinary(obj.getSubIndex());
             index = "0x" + index;
+            if(subIndexText != null) {
             subIndexText.setText(index);
+            }
         }
 
-        // if (obj.getLowLimit() != null) {
-        // lowLimitText.setText(obj.getLowLimit());
-        // }
-
         if (obj.getName() != null) {
+        	if(nameText != null) {
             nameText.setText(obj.getName());
+        	}
         }
 
         if (obj.getObjectType() != 0) {
+        	if(objTypeText != null) {
             objTypeText.setText(String.valueOf(obj.getObjectType()));
+        	}
         }
-
-        // if (obj.getObjFlags() != null) {
-        // objFlagsText.setText(obj.getObjFlags().toString());
-        // }
-        //
-        // if (obj.getPDOmapping() != null) {
-        // pdoMappingText.setText(obj.getPDOmapping().getName());
-        // }
-        //
-        // if (obj.getUniqueIDRef() != null) {
-        // uniqueIdRefText.setText(obj.getUniqueIDRef());
-        // }
 
     }
 
@@ -330,11 +283,11 @@ public class StoreParamSubObjectDetailsPage extends EEFAdvancedPropertySection i
          *            Is generated depending on selected radio-button.
          */
         private void setDefaultValue(int settedValue) {
-            lblDefaultvalValue.setForeground(XDDUtilities.getBlack(Display.getCurrent()));
+            valueOfLabelDefaultValue.setForeground(XDDUtilities.getBlack(Display.getCurrent()));
             this.lblError.setVisible(false);
             subObject.setDefaultValue(("0x" + String.format(String.format("%08x", settedValue))));
             updateDocument(docRoot);
-            lblDefaultvalValue.setText(this.subobject.getDefaultValue());
+            valueOfLabelDefaultValue.setText(this.subobject.getDefaultValue());
         }
 
         public boolean updateDocument(DocumentRoot documentRoot) {
@@ -428,20 +381,20 @@ public class StoreParamSubObjectDetailsPage extends EEFAdvancedPropertySection i
 
         parent.setLayout(layout);
         layout.marginWidth = 20;
-        Section deviceFirmwareSection = managedForm.getToolkit().createSection(parent, ExpandableComposite.EXPANDED
+        Section storeParamSection = managedForm.getToolkit().createSection(parent, ExpandableComposite.EXPANDED
                 | Section.DESCRIPTION | ExpandableComposite.TWISTIE | ExpandableComposite.TITLE_BAR);
-        managedForm.getToolkit().paintBordersFor(deviceFirmwareSection);
-        deviceFirmwareSection.setText(ObjectDictionaryEditorPage.SUB_OBJECT_DICTIONARY_DETAILS_HEADING);
-        deviceFirmwareSection.setDescription(ObjectDictionaryEditorPage.OBJECT_DICTIONARY_HEADING_DESCRIPTION);
+        managedForm.getToolkit().paintBordersFor(storeParamSection);
+        storeParamSection.setText(ObjectDictionaryEditorPage.SUB_OBJECT_DICTIONARY_DETAILS_HEADING);
+        storeParamSection.setDescription(ObjectDictionaryEditorPage.OBJECT_DICTIONARY_HEADING_DESCRIPTION);
 
-        Composite clientComposite = managedForm.getToolkit().createComposite(deviceFirmwareSection, SWT.WRAP);
+        Composite clientComposite = managedForm.getToolkit().createComposite(storeParamSection, SWT.WRAP);
         GridLayout layouts = new GridLayout(1, true);
         layouts.marginWidth = 2;
         layouts.marginHeight = 2;
         clientComposite.setLayout(layouts);
         managedForm.getToolkit().paintBordersFor(clientComposite);
 
-        deviceFirmwareSection.setClient(clientComposite);
+        storeParamSection.setClient(clientComposite);
 
         Composite groupComposite = new Composite(clientComposite, SWT.NONE);
         groupComposite.setLayout(new GridLayout(1, false));
@@ -450,12 +403,12 @@ public class StoreParamSubObjectDetailsPage extends EEFAdvancedPropertySection i
         GridData gd_grpConfigurationFile = new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1);
         gd_grpConfigurationFile.widthHint = 558;
         grpMandatoryData.setLayoutData(gd_grpConfigurationFile);
-        grpMandatoryData.setText("Mandatory Data");
+        grpMandatoryData.setText(IPowerlinkConstants.MANDATORY_DATA_GROUP);
         grpMandatoryData.setLayout(new GridLayout(6, false));
 
         Label nameLabel = new Label(grpMandatoryData, SWT.NONE);
         nameLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
-        nameLabel.setText("Name:");
+        nameLabel.setText(IPowerlinkConstants.OBJECT_NAME);
         managedForm.getToolkit().adapt(nameLabel, true, true);
         nameLabel.setForeground(managedForm.getToolkit().getColors().getColor(IFormColors.TITLE));
 
@@ -466,7 +419,7 @@ public class StoreParamSubObjectDetailsPage extends EEFAdvancedPropertySection i
 
         Label objTypelabel = new Label(grpMandatoryData, SWT.NONE);
         objTypelabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
-        objTypelabel.setText("Object Type:");
+        objTypelabel.setText(IPowerlinkConstants.OBJECT_TYPE);
         managedForm.getToolkit().adapt(objTypelabel, true, true);
         objTypelabel.setForeground(managedForm.getToolkit().getColors().getColor(IFormColors.TITLE));
 
@@ -477,7 +430,7 @@ public class StoreParamSubObjectDetailsPage extends EEFAdvancedPropertySection i
 
         Label indexLabel = new Label(grpMandatoryData, SWT.NONE);
         indexLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
-        indexLabel.setText("Sub Index:");
+        indexLabel.setText(IPowerlinkConstants.SUB_OBJECT_INDEX);
         managedForm.getToolkit().adapt(indexLabel, true, true);
         indexLabel.setForeground(managedForm.getToolkit().getColors().getColor(IFormColors.TITLE));
 
@@ -493,15 +446,14 @@ public class StoreParamSubObjectDetailsPage extends EEFAdvancedPropertySection i
         GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1);
         gridData.widthHint = 558;
         grpOptionalData.setLayoutData(gridData);
-        grpOptionalData.setText("Optional Feature Flags");
+        grpOptionalData.setText(IPowerlinkConstants.OPTIONAL_GROUP);
         grpOptionalData.setLayout(new GridLayout(2, false));
 
         // Checkbox-Buttons -------------------------------------------
-        FormData data;
 
         // Index Label (from Parent!)
         Label lblIndex = managedForm.getToolkit().createLabel(grpOptionalData, "Index:"); //$NON-NLS-1$
-        data = new FormData();
+
         lblIndex.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
 
         // Index Value (from Parent!)
@@ -517,183 +469,14 @@ public class StoreParamSubObjectDetailsPage extends EEFAdvancedPropertySection i
         lblDefaultValue.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
 
         // lblDefaultValueValue Label (Actual value)
-        this.lblDefaultvalValue = managedForm.getToolkit().createLabel(grpOptionalData,
+        this.valueOfLabelDefaultValue = managedForm.getToolkit().createLabel(grpOptionalData,
                 Messages.advancedMappingObjectPropertySection_No_Value_Set);
 
-        this.lblDefaultvalValue.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+        this.valueOfLabelDefaultValue.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
 
         this.storeparam = new StoreParamComposite(grpOptionalData, 0);
 
         this.storeparam.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
-
-        // Label accessTypeLabel = new Label(clientComposite, SWT.NONE);
-        // accessTypeLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER,
-        // false, false, 1, 1));
-        // accessTypeLabel.setText("Access Type:");
-        // managedForm.getToolkit().adapt(accessTypeLabel, true, true);
-        // accessTypeLabel.setForeground(managedForm.getToolkit().getColors().getColor(IFormColors.TITLE));
-        //
-        // accessTypeText = new Text(clientComposite, SWT.BORDER | SWT.WRAP);
-        // accessTypeText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
-        // false, 5, 1));
-        // managedForm.getToolkit().adapt(accessTypeText, true, true);
-        //
-        // Label actualValueLabel = new Label(clientComposite, SWT.NONE);
-        // actualValueLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER,
-        // false, false, 1, 1));
-        // actualValueLabel.setText("Actual Value:");
-        // managedForm.getToolkit().adapt(actualValueLabel, true, true);
-        // actualValueLabel.setForeground(managedForm.getToolkit().getColors().getColor(IFormColors.TITLE));
-        //
-        // actualValueText = new Text(clientComposite, SWT.BORDER | SWT.WRAP);
-        // actualValueText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
-        // true, false, 5, 1));
-        // managedForm.getToolkit().adapt(actualValueText, true, true);
-        //
-        // Label dataTypeLabel = new Label(clientComposite, SWT.NONE);
-        // dataTypeLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false,
-        // false, 1, 1));
-        // dataTypeLabel.setText("Data Type:");
-        // managedForm.getToolkit().adapt(dataTypeLabel, true, true);
-        // dataTypeLabel.setForeground(managedForm.getToolkit().getColors().getColor(IFormColors.TITLE));
-        //
-        // dataTypeText = new Text(clientComposite, SWT.BORDER | SWT.WRAP);
-        // dataTypeText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
-        // false, 5, 1));
-        // managedForm.getToolkit().adapt(dataTypeText, true, true);
-        //
-        // Label defaultValueLabel = new Label(clientComposite, SWT.NONE);
-        // defaultValueLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER,
-        // false, false, 1, 1));
-        // defaultValueLabel.setText("Default Value:");
-        // managedForm.getToolkit().adapt(defaultValueLabel, true, true);
-        // defaultValueLabel.setForeground(managedForm.getToolkit().getColors().getColor(IFormColors.TITLE));
-        //
-        // defaultValueText = new Text(clientComposite, SWT.BORDER | SWT.WRAP);
-        // defaultValueText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
-        // true, false, 5, 1));
-        // managedForm.getToolkit().adapt(defaultValueText, true, true);
-        //
-        // Label denotationLabel = new Label(clientComposite, SWT.NONE);
-        // denotationLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER,
-        // false, false, 1, 1));
-        // denotationLabel.setText("Denotation:");
-        // managedForm.getToolkit().adapt(denotationLabel, true, true);
-        // denotationLabel.setForeground(managedForm.getToolkit().getColors().getColor(IFormColors.TITLE));
-        //
-        // denotationText = new Text(clientComposite, SWT.BORDER | SWT.WRAP);
-        // denotationText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
-        // false, 5, 1));
-        // managedForm.getToolkit().adapt(denotationText, true, true);
-        //
-        // Label highLimitLabel = new Label(clientComposite, SWT.NONE);
-        // highLimitLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER,
-        // false, false, 1, 1));
-        // highLimitLabel.setText("High Limit:");
-        // managedForm.getToolkit().adapt(highLimitLabel, true, true);
-        // highLimitLabel.setForeground(managedForm.getToolkit().getColors().getColor(IFormColors.TITLE));
-        //
-        // highLimitText = new Text(clientComposite, SWT.BORDER | SWT.WRAP);
-        // highLimitText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
-        // false, 5, 1));
-        // managedForm.getToolkit().adapt(highLimitText, true, true);
-        //
-        // // Label indexLabel = new Label(clientComposite, SWT.NONE);
-        // // indexLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER,
-        // // false, false, 1, 1));
-        // // indexLabel.setText("Index:");
-        // // managedForm.getToolkit().adapt(indexLabel, true, true);
-        // //
-        // indexLabel.setForeground(managedForm.getToolkit().getColors().getColor(IFormColors.TITLE));
-        // //
-        // // indexText = new Text(clientComposite, SWT.BORDER | SWT.WRAP);
-        // // indexText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
-        // // false, 5, 1));
-        // // managedForm.getToolkit().adapt(indexText, true, true);
-        //
-        // Label lowLimitlabel = new Label(clientComposite, SWT.NONE);
-        // lowLimitlabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false,
-        // false, 1, 1));
-        // lowLimitlabel.setText("Low Limit:");
-        // managedForm.getToolkit().adapt(lowLimitlabel, true, true);
-        // lowLimitlabel.setForeground(managedForm.getToolkit().getColors().getColor(IFormColors.TITLE));
-        //
-        // lowLimitText = new Text(clientComposite, SWT.BORDER | SWT.WRAP);
-        // lowLimitText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
-        // false, 5, 1));
-        // managedForm.getToolkit().adapt(lowLimitText, true, true);
-        //
-        // Label nameLabel = new Label(clientComposite, SWT.NONE);
-        // nameLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false,
-        // false, 1, 1));
-        // nameLabel.setText("Name:");
-        // managedForm.getToolkit().adapt(nameLabel, true, true);
-        // nameLabel.setForeground(managedForm.getToolkit().getColors().getColor(IFormColors.TITLE));
-        //
-        // nameText = new Text(clientComposite, SWT.BORDER | SWT.WRAP);
-        // nameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
-        // false, 5, 1));
-        // managedForm.getToolkit().adapt(nameText, true, true);
-        //
-        // Label objTypelabel = new Label(clientComposite, SWT.NONE);
-        // objTypelabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false,
-        // false, 1, 1));
-        // objTypelabel.setText("Object Type:");
-        // managedForm.getToolkit().adapt(objTypelabel, true, true);
-        // objTypelabel.setForeground(managedForm.getToolkit().getColors().getColor(IFormColors.TITLE));
-        //
-        // objTypeText = new Text(clientComposite, SWT.BORDER | SWT.WRAP);
-        // objTypeText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
-        // false, 5, 1));
-        // managedForm.getToolkit().adapt(objTypeText, true, true);
-        //
-        // Label objFlagsLabel = new Label(clientComposite, SWT.NONE);
-        // objFlagsLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false,
-        // false, 1, 1));
-        // objFlagsLabel.setText("Object Flags:");
-        // managedForm.getToolkit().adapt(objFlagsLabel, true, true);
-        // objFlagsLabel.setForeground(managedForm.getToolkit().getColors().getColor(IFormColors.TITLE));
-        //
-        // objFlagsText = new Text(clientComposite, SWT.BORDER | SWT.WRAP);
-        // objFlagsText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
-        // false, 5, 1));
-        // managedForm.getToolkit().adapt(objFlagsText, true, true);
-        //
-        // Label pdoMappingLabel = new Label(clientComposite, SWT.NONE);
-        // pdoMappingLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER,
-        // false, false, 1, 1));
-        // pdoMappingLabel.setText("PDO Mapping:");
-        // managedForm.getToolkit().adapt(pdoMappingLabel, true, true);
-        // pdoMappingLabel.setForeground(managedForm.getToolkit().getColors().getColor(IFormColors.TITLE));
-        //
-        // pdoMappingText = new Text(clientComposite, SWT.BORDER | SWT.WRAP);
-        // pdoMappingText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
-        // false, 5, 1));
-        // managedForm.getToolkit().adapt(pdoMappingText, true, true);
-        //
-        // Label subNumberLabel = new Label(clientComposite, SWT.NONE);
-        // subNumberLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER,
-        // false, false, 1, 1));
-        // subNumberLabel.setText("Sub Index:");
-        // managedForm.getToolkit().adapt(subNumberLabel, true, true);
-        // subNumberLabel.setForeground(managedForm.getToolkit().getColors().getColor(IFormColors.TITLE));
-        //
-        // subIndexText = new Text(clientComposite, SWT.BORDER | SWT.WRAP);
-        // subIndexText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
-        // false, 5, 1));
-        // managedForm.getToolkit().adapt(subIndexText, true, true);
-        //
-        // Label uniqueIdRefLabel = new Label(clientComposite, SWT.NONE);
-        // uniqueIdRefLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER,
-        // false, false, 1, 1));
-        // uniqueIdRefLabel.setText("UniqueID Ref:");
-        // managedForm.getToolkit().adapt(uniqueIdRefLabel, true, true);
-        // uniqueIdRefLabel.setForeground(managedForm.getToolkit().getColors().getColor(IFormColors.TITLE));
-        //
-        // uniqueIdRefText = new Text(clientComposite, SWT.BORDER | SWT.WRAP);
-        // uniqueIdRefText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
-        // true, false, 5, 1));
-        // managedForm.getToolkit().adapt(uniqueIdRefText, true, true);
 
     }
 

@@ -39,7 +39,7 @@ import org.eclipse.swt.widgets.Text;
 /**
  * Verify listener to validate the special characters entered in the text widget
  *
- * @author Sree hari
+ * @author Sree hari Vignesh
  *
  */
 public class NameVerifyListener implements VerifyListener {

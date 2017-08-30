@@ -215,11 +215,14 @@ public class XDDModelWizard extends Wizard implements INewWizard {
      */
     protected EObject createInitialModel() {
         EClass eClass = ExtendedMetaData.INSTANCE.getDocumentRoot(xddPackage);
+        if(initialObjectCreationPage != null) {
         EStructuralFeature eStructuralFeature = eClass
                 .getEStructuralFeature(initialObjectCreationPage.getInitialObjectName());
         EObject rootObject = xddFactory.create(eClass);
         rootObject.eSet(eStructuralFeature, EcoreUtil.create((EClass) eStructuralFeature.getEType()));
         return rootObject;
+        }
+		return eClass;
     }
 
     /**
@@ -263,8 +266,10 @@ public class XDDModelWizard extends Wizard implements INewWizard {
                         // Save the contents of the resource to the file system.
                         //
                         Map<Object, Object> options = new HashMap<Object, Object>();
+                        if(initialObjectCreationPage != null) {
                         options.put(XMLResource.OPTION_ENCODING, initialObjectCreationPage.getEncoding());
                         resource.save(options);
+                        }
                     } catch (Exception exception) {
                         XDDEditorPlugin.INSTANCE.log(exception);
                     } finally {
@@ -491,6 +496,7 @@ public class XDDModelWizard extends Wizard implements INewWizard {
         public void setVisible(boolean visible) {
             super.setVisible(visible);
             if (visible) {
+            	if(initialObjectField != null) {
                 if (initialObjectField.getItemCount() == 1) {
                     initialObjectField.clearSelection();
                     encodingField.setFocus();
@@ -498,6 +504,7 @@ public class XDDModelWizard extends Wizard implements INewWizard {
                     encodingField.clearSelection();
                     initialObjectField.setFocus();
                 }
+            	}
             }
         }
 
@@ -507,6 +514,7 @@ public class XDDModelWizard extends Wizard implements INewWizard {
          * @generated
          */
         public String getInitialObjectName() {
+        	if(initialObjectField != null) {
             String label = initialObjectField.getText();
 
             for (String name : getInitialObjectNames()) {
@@ -514,6 +522,7 @@ public class XDDModelWizard extends Wizard implements INewWizard {
                     return name;
                 }
             }
+        	}
             return null;
         }
 
@@ -624,7 +633,10 @@ public class XDDModelWizard extends Wizard implements INewWizard {
      * @generated
      */
     public IFile getModelFile() {
+    	if(newFileCreationPage != null) {
         return newFileCreationPage.getModelFile();
+    	}
+		return null;
     }
 
 }

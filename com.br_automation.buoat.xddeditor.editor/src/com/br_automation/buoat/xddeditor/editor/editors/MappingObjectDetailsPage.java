@@ -1,7 +1,7 @@
 /*******************************************************************************
  * @file   MappingObjectDetailsPage.java
  *
- * @author Sree Hari Vignesh B, Kalycito Infotech Private Limited.
+ * @author Sree Hari Vignesh, Kalycito Infotech Private Limited.
  *
  * @copyright (c) 2017, Kalycito Infotech Private Limited
  *                    All rights reserved.
@@ -51,6 +51,7 @@ import org.eclipse.emf.eef.runtime.ui.properties.sections.EEFAdvancedPropertySec
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.pde.internal.core.plugin.IdentifiablePluginObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.CLabel;
@@ -86,6 +87,7 @@ import com.br_automation.buoat.xddeditor.XDD.custom.XDDUtilities;
 import com.br_automation.buoat.xddeditor.XDD.custom.propertypages.AdvancedMappingObjectPropertySection;
 import com.br_automation.buoat.xddeditor.XDD.custom.propertypages.TObjectComposite;
 import com.br_automation.buoat.xddeditor.XDD.impl.SubObjectTypeImpl;
+import com.br_automation.buoat.xddeditor.XDD.resources.IPowerlinkConstants;
 
 /**
  * Class to populate the details page of mapping subobjects
@@ -97,23 +99,10 @@ public class MappingObjectDetailsPage extends EEFAdvancedPropertySection impleme
 
     private IManagedForm managedForm;
 
-    private Text accessTypeText;
-
-    private Text actualValueText;
-
-    private Text dataTypeText;
-
-    private Text defaultValueText;
-    private Text denotationText;
-    private Text highLimitText;
-    // private Text indexText;
-    private Text lowLimitText;
     private Text nameText;
     private Text objTypeText;
-    private Text objFlagsText;
-    private Text pdoMappingText;
     private Text subIndexText;
-    private Text uniqueIdRefText;
+
     private SubObjectTypeImpl subObject;
     private DocumentRoot docRoot;
     private DeviceDescriptionFileEditor editor;
@@ -201,7 +190,6 @@ public class MappingObjectDetailsPage extends EEFAdvancedPropertySection impleme
 
     }
 
-    private TObjectComposite tobjectComposite;
     private SubObjectType tsubObject;
 
     private Map<Integer, SubObjectType> validSubObjectTypes;
@@ -284,8 +272,7 @@ public class MappingObjectDetailsPage extends EEFAdvancedPropertySection impleme
         this.lblError.setText("");
         subObject.setDefaultValue(newValue);
         updateDocument(docRoot);
-        // this.subObjectItemProvider.setPropertyValue(this.tsubObject,
-        // "defaultValue", newValue); //$NON-NLS-1$
+
         this.lblDefaultValueValue.setText(newValue);
 
     } // setDefaultValue
@@ -311,14 +298,15 @@ public class MappingObjectDetailsPage extends EEFAdvancedPropertySection impleme
         this.lengthValue = (currentValue & AdvancedMappingObjectPropertySection.MASK_LENGTH_VALUE) >> 48;
         this.offsetValue = (currentValue & AdvancedMappingObjectPropertySection.MASK_OFFSET_VALUE) >> 32;
         this.subindexValue = (currentValue & AdvancedMappingObjectPropertySection.MASK_SUBINDEX_VALUE) >> 16;
-        this.indexValue = (int) (currentValue & AdvancedMappingObjectPropertySection.MASK_INDEX_VALUE);
+        this.indexValue = (long) (currentValue & AdvancedMappingObjectPropertySection.MASK_INDEX_VALUE);
         boolean subObjectset = false;
         boolean tObjectset = false;
         TObject selectedObject = null;
         SubObjectType selectedSubObject = null;
 
         if (this.indexValue != 0) { // If IndexValue is set...find the index
-            selectedObject = this.validTObjects.get(this.indexValue);
+            Long index = this.indexValue;
+            selectedObject = this.validTObjects.get(index.intValue());
             if (selectedObject != null) {
                 this.cmbIndex.select(this.cmbIndex.indexOf(selectedObject.getName()));
                 this.setError(0);
@@ -442,9 +430,7 @@ public class MappingObjectDetailsPage extends EEFAdvancedPropertySection impleme
             if (!indexSelection.isEmpty()) {
                 // choose the object selected
                 object = (TObject) cmbSelected.getData(indexSelection);
-                // AdvancedMappingObjectPropertySection.this.subObjectItemProvider.setPropertyValue(
-                // AdvancedMappingObjectPropertySection.this.tsubObject,
-                // "defaultValue", "0x0");
+
                 // If Subobjects NOT empty...modify the Subindex-Combobox
                 if (!object.getSubObject().isEmpty()) {
                     // Get Subobjects & Enable Combobox
@@ -496,7 +482,7 @@ public class MappingObjectDetailsPage extends EEFAdvancedPropertySection impleme
 
         this.tsubObject = (SubObjectType) obj;
         TObject tobject = (TObject) this.tsubObject.eContainer();
-        // this.tobjectComposite.setObject(this.tsubObject);
+
         this.indexValue = 0;
         this.subindexValue = 0;
         this.offsetValue = 0;
@@ -536,41 +522,11 @@ public class MappingObjectDetailsPage extends EEFAdvancedPropertySection impleme
                 this.setError(9);
             }
 
-        // if (obj.getAccessType() != null) {
-        // accessTypeText.setText(obj.getAccessType().getName());
-        // }
-        //
-        // if (obj.getActualValue() != null) {
-        // actualValueText.setText(obj.getActualValue());
-        // }
-        //
-        // if (obj.getDataType() != null) {
-        // String dataType =
-        // DatatypeConverter.printHexBinary(obj.getDataType());
-        // dataTypeText.setText(dataType);
-        // }
-        //
-        // if (obj.getDefaultValue() != null) {
-        // defaultValueText.setText(obj.getDefaultValue());
-        // }
-        //
-        // if (obj.getDenotation() != null) {
-        // denotationText.setText(obj.getDenotation());
-        // }
-        //
-        // if (obj.getHighLimit() != null) {
-        // highLimitText.setText(obj.getHighLimit());
-        // }
-
         if (obj.getSubIndex() != null) {
             String index = DatatypeConverter.printHexBinary(obj.getSubIndex());
             index = "0x" + index;
             subIndexText.setText(index);
         }
-
-        // if (obj.getLowLimit() != null) {
-        // lowLimitText.setText(obj.getLowLimit());
-        // }
 
         if (obj.getName() != null) {
             nameText.setText(obj.getName());
@@ -579,18 +535,6 @@ public class MappingObjectDetailsPage extends EEFAdvancedPropertySection impleme
         if (obj.getObjectType() != 0) {
             objTypeText.setText(String.valueOf(obj.getObjectType()));
         }
-
-        // if (obj.getObjFlags() != null) {
-        // objFlagsText.setText(obj.getObjFlags().toString());
-        // }
-        //
-        // if (obj.getPDOmapping() != null) {
-        // pdoMappingText.setText(obj.getPDOmapping().getName());
-        // }
-        //
-        // if (obj.getUniqueIDRef() != null) {
-        // uniqueIdRefText.setText(obj.getUniqueIDRef());
-        // }
 
     }
 
@@ -614,20 +558,20 @@ public class MappingObjectDetailsPage extends EEFAdvancedPropertySection impleme
 
         parent.setLayout(layout);
         layout.marginWidth = 20;
-        Section deviceFirmwareSection = managedForm.getToolkit().createSection(parent, ExpandableComposite.EXPANDED
+        Section mappingObjectSection = managedForm.getToolkit().createSection(parent, ExpandableComposite.EXPANDED
                 | Section.DESCRIPTION | ExpandableComposite.TWISTIE | ExpandableComposite.TITLE_BAR);
-        managedForm.getToolkit().paintBordersFor(deviceFirmwareSection);
-        deviceFirmwareSection.setText(ObjectDictionaryEditorPage.SUB_OBJECT_DICTIONARY_DETAILS_HEADING);
-        deviceFirmwareSection.setDescription(ObjectDictionaryEditorPage.OBJECT_DICTIONARY_HEADING_DESCRIPTION);
+        managedForm.getToolkit().paintBordersFor(mappingObjectSection);
+        mappingObjectSection.setText(ObjectDictionaryEditorPage.SUB_OBJECT_DICTIONARY_DETAILS_HEADING);
+        mappingObjectSection.setDescription(ObjectDictionaryEditorPage.OBJECT_DICTIONARY_HEADING_DESCRIPTION);
 
-        Composite clientComposite = managedForm.getToolkit().createComposite(deviceFirmwareSection, SWT.WRAP);
+        Composite clientComposite = managedForm.getToolkit().createComposite(mappingObjectSection, SWT.WRAP);
         GridLayout layouts = new GridLayout(1, true);
         layouts.marginWidth = 2;
         layouts.marginHeight = 2;
         clientComposite.setLayout(layouts);
         managedForm.getToolkit().paintBordersFor(clientComposite);
 
-        deviceFirmwareSection.setClient(clientComposite);
+        mappingObjectSection.setClient(clientComposite);
 
         Composite groupComposite = new Composite(clientComposite, SWT.NONE);
         groupComposite.setLayout(new GridLayout(1, false));
@@ -636,12 +580,12 @@ public class MappingObjectDetailsPage extends EEFAdvancedPropertySection impleme
         GridData gd_grpConfigurationFile = new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1);
         gd_grpConfigurationFile.widthHint = 558;
         grpMandatoryData.setLayoutData(gd_grpConfigurationFile);
-        grpMandatoryData.setText("Mandatory Data");
+        grpMandatoryData.setText(IPowerlinkConstants.MANDATORY_DATA_GROUP);
         grpMandatoryData.setLayout(new GridLayout(6, false));
 
         Label nameLabel = new Label(grpMandatoryData, SWT.NONE);
         nameLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
-        nameLabel.setText("Name:");
+        nameLabel.setText(IPowerlinkConstants.OBJECT_NAME);
         managedForm.getToolkit().adapt(nameLabel, true, true);
         nameLabel.setForeground(managedForm.getToolkit().getColors().getColor(IFormColors.TITLE));
 
@@ -652,7 +596,7 @@ public class MappingObjectDetailsPage extends EEFAdvancedPropertySection impleme
 
         Label objTypelabel = new Label(grpMandatoryData, SWT.NONE);
         objTypelabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
-        objTypelabel.setText("Object Type:");
+        objTypelabel.setText(IPowerlinkConstants.OBJECT_TYPE);
         managedForm.getToolkit().adapt(objTypelabel, true, true);
         objTypelabel.setForeground(managedForm.getToolkit().getColors().getColor(IFormColors.TITLE));
 
@@ -663,7 +607,7 @@ public class MappingObjectDetailsPage extends EEFAdvancedPropertySection impleme
 
         Label indexLabel = new Label(grpMandatoryData, SWT.NONE);
         indexLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
-        indexLabel.setText("Sub Index:");
+        indexLabel.setText(IPowerlinkConstants.SUB_OBJECT_INDEX);
         managedForm.getToolkit().adapt(indexLabel, true, true);
         indexLabel.setForeground(managedForm.getToolkit().getColors().getColor(IFormColors.TITLE));
 
@@ -679,21 +623,18 @@ public class MappingObjectDetailsPage extends EEFAdvancedPropertySection impleme
         GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1);
         gridData.widthHint = 558;
         grpOptionalData.setLayoutData(gridData);
-        grpOptionalData.setText("Optional Data");
+        grpOptionalData.setText(IPowerlinkConstants.DEFAULT_VALUE);
         grpOptionalData.setLayout(new GridLayout(2, false));
-
-        FormData data;
 
         // lblDefaultvalue
         this.lblDefaultValue = managedForm.getToolkit().createLabel(grpOptionalData,
                 Messages.advancedMappingObjectPropertySection_lbl_Default_Value);
-        data = new FormData();
+
         this.lblDefaultValue.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
 
         // lblDefaultValueValue Label (Actual value)
         this.lblDefaultValueValue = managedForm.getToolkit().createLabel(grpOptionalData,
                 Messages.advancedMappingObjectPropertySection_No_Value_Set);
-        data = new FormData();
 
         this.lblDefaultValueValue.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
 
