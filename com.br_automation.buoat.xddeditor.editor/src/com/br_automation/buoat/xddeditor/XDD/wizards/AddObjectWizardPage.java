@@ -213,7 +213,6 @@ public class AddObjectWizardPage extends WizardPage {
 
         });
         txtLowLimit.addVerifyListener(nameVerifyListener);
-        txtLowLimit.setFocus();
 
         txtHighLimit = new Text(grpAddObjectAdvancedOptions, SWT.BORDER);
         txtHighLimit.setText(Messages.addObjectWizardPage_txtHighLimit); // $NON-NLS-1$
@@ -233,7 +232,7 @@ public class AddObjectWizardPage extends WizardPage {
 
         });
         txtHighLimit.addVerifyListener(nameVerifyListener);
-        txtHighLimit.setFocus();
+
 
         Label lblAccessType = new Label(grpAddObjectAdvancedOptions, SWT.NONE);
         lblAccessType.setText(Messages.addObjectWizardPage_lblAccess_type);
@@ -283,7 +282,6 @@ public class AddObjectWizardPage extends WizardPage {
 
         });
         txtDefaultValue.addVerifyListener(nameVerifyListener);
-        txtDefaultValue.setFocus();
 
         Label lblDefaultValue = new Label(grpAddObjectAdvancedOptions, SWT.NONE);
         lblDefaultValue.setText(Messages.addObjectWizardPage_lblDefault_value);
@@ -325,6 +323,7 @@ public class AddObjectWizardPage extends WizardPage {
         txtObjectIndexText = new Text(grpAddObjectBasicOptions, SWT.BORDER);
         txtObjectIndexText.setText(Messages.addObjectWizardPage_txtObject_index); // $NON-NLS-1$
         txtObjectIndexText.setBounds(107, 19, 140, 21);
+        txtObjectIndexText.setFocus();
         txtObjectIndexText.addModifyListener(new ModifyListener() {
             @Override
             public void modifyText(ModifyEvent e) {
@@ -337,7 +336,7 @@ public class AddObjectWizardPage extends WizardPage {
 
         });
         txtObjectIndexText.addVerifyListener(nameVerifyListener);
-        txtObjectIndexText.setFocus();
+
 
         txtObjectNameText = new Text(grpAddObjectBasicOptions, SWT.BORDER);
         txtObjectNameText.setText(Messages.addObjectWizardPage_txtObject_name);
@@ -438,6 +437,11 @@ public class AddObjectWizardPage extends WizardPage {
             return false;
         }
 
+        if(!isValueHex(index)){
+        	setErrorMessage("Enter Sub Object value in hexadecimal format");
+        	return false;
+        }
+
         if (!isValueValid(objIndex)) {
             setErrorMessage("Invalid value.");
             return false;
@@ -458,8 +462,451 @@ public class AddObjectWizardPage extends WizardPage {
             return false;
         }
 
+        String defaultVal = getTxtDefaultValue();
+        if(!isValidVal(defaultVal,"Default value")){
+        	return false;
+        }
+        String lowLimit = getTxtLowLimit();
+        if(!isValidVal(lowLimit,"low value")){
+        	return false;
+        }
+        String highLimit = getTxtHighLimit();
+        if(!isValidVal(highLimit,"high value")){
+        	return false;
+        }
+
         return true;
     }
+
+    private boolean isValidVal(String HighLowLimit,String str) {
+    	String dataType = comboDataType.getText();
+    	System.out.println(dataType);
+    	if(!HighLowLimit.isEmpty()){
+    		long llimit;
+    		switch(dataType) {
+            	case "Boolean":{
+            		try {
+            			llimit = Long.parseLong(HighLowLimit);
+                		if(llimit < DataTypeRange.Boolean_min || llimit > DataTypeRange.Boolean_max){
+                			setErrorMessage("Entered "+str+ " is improper to the "+dataType+" range (0 - 1).");
+                			return false;
+                		}
+                		else
+                			return true;
+					} catch (NumberFormatException e) {
+						// TODO: handle exception
+						setErrorMessage(dataType+" accepts only decimal value");
+					}
+            	}
+            	case "Integer8":{
+            		try {
+            			llimit = Long.parseLong(HighLowLimit);
+                		if(llimit < DataTypeRange.Integer8_min || llimit > DataTypeRange.Integer8_max){
+                			setErrorMessage("Entered "+str+ " is improper to the "+dataType+" range (-256 - 255).");
+                			return false;
+                		}
+                		else
+                			return true;
+					} catch (NumberFormatException e) {
+						// TODO: handle exception
+						setErrorMessage(dataType+" accepts only decimal value");
+					}
+            	}
+            	case "Integer16":{
+            		try {
+            			llimit = Long.parseLong(HighLowLimit);
+                		if(llimit < DataTypeRange.Integer16_min || llimit > DataTypeRange.Integer16_max){
+                			setErrorMessage("Entered "+str+ " is improper to the "+dataType+" range (-65,536 - 65,535 ).");
+                			return false;
+                		}
+                		else
+                			return true;
+					} catch (NumberFormatException e) {
+						// TODO: handle exception
+						setErrorMessage(dataType+" accepts only decimal value");
+					}
+            	}
+            	case "Integer32":{
+            		try {
+            			llimit = Long.parseLong(HighLowLimit);
+                		if(llimit < DataTypeRange.Integer32_min || llimit > DataTypeRange.Integer32_max){
+                			setErrorMessage("Entered "+str+ " is improper to the "+dataType+" range (-4,294,967,296 - 4,294,967,295).");
+                			return false;
+                		}
+                		else
+                			return true;
+					} catch (NumberFormatException e) {
+						// TODO: handle exception
+						setErrorMessage(dataType+" accepts only decimal value");
+					}
+            	}
+            	case "Unsigned8":{
+            		try {
+            			llimit = Long.parseLong(HighLowLimit);
+                		if(llimit < DataTypeRange.Unsigned8_min || llimit > DataTypeRange.Unsigned8_max){
+                			setErrorMessage("Entered "+str+ " is improper to the "+dataType+" range (0 - 255).");
+                			return false;
+                		}
+                		else
+                			return true;
+					} catch (NumberFormatException e) {
+						// TODO: handle exception
+						setErrorMessage(dataType+" accepts only decimal value");
+					}
+            	}
+            	case "Unsigned16":{
+            		try {
+            			llimit = Long.parseLong(HighLowLimit);
+                		if(llimit < DataTypeRange.Unsigned16_min || llimit > DataTypeRange.Unsigned16_max){
+                			setErrorMessage("Entered "+str+ " is improper to the "+dataType+" range (0 - 65,535).");
+                			return false;
+                		}
+                		else
+                			return true;
+					} catch (NumberFormatException e) {
+						// TODO: handle exception
+						setErrorMessage(dataType+" accepts only decimal value");
+					}
+            	}
+            	case "Unsigned32":{
+            		try {
+            			llimit = Long.parseLong(HighLowLimit);
+                		if(llimit < DataTypeRange.Unsigned32_min || llimit > DataTypeRange.Unsigned32_max){
+                			setErrorMessage("Entered "+str+ " is improper to the "+dataType+" range (0 - 4,294,967,295).");
+                			return false;
+                		}
+                		else
+                			return true;
+					} catch (NumberFormatException e) {
+						// TODO: handle exception
+						setErrorMessage(dataType+" accepts only decimal value");
+					}
+            	}
+            	case "Real32":{
+            		try {
+            			Double limit = Double.parseDouble(HighLowLimit);
+                		if(limit < DataTypeRange.Real32_min || limit > DataTypeRange.Real32_max){
+                			setErrorMessage("Entered "+str+ " is improper to the "+dataType+" range (1.2E-38 - 3.4E+38).");
+                			return false;
+                		}
+                		else
+                			return true;
+					} catch (NumberFormatException e) {
+						// TODO: handle exception
+						setErrorMessage(dataType+" accepts only decimal value");
+					}
+            	}
+            	case "Real64":{
+            		try {
+            			Double limit = Double.parseDouble(HighLowLimit);
+                		if(limit < DataTypeRange.Real64_min || limit > DataTypeRange.Real64_max){
+                			setErrorMessage("Entered "+str+ " is improper to the "+dataType+" range (2.3E-308 - 1.7E+308).");
+                			return false;
+                		}
+                		else
+                			return true;
+					} catch (NumberFormatException e) {
+						// TODO: handle exception
+						setErrorMessage(dataType+" accepts only decimal value");
+					}
+
+            	}
+            	case "Visible_String":{
+            		try {
+            			llimit = Long.parseLong(HighLowLimit);
+                		if(llimit < DataTypeRange.Unsigned16_min || llimit > DataTypeRange.Unsigned16_max){
+                			setErrorMessage("Entered "+str+ " is improper to the "+dataType+" range (0 - 65,535).");
+                			return false;
+                		}
+                		else
+                			return true;
+					} catch (NumberFormatException e) {
+						// TODO: handle exception
+						setErrorMessage(dataType+" accepts only decimal value");
+					}
+
+            	}
+            	case "Integer24":{
+            		try {
+            			llimit = Long.parseLong(HighLowLimit);
+                		if(llimit < DataTypeRange.Integer24_min || llimit > DataTypeRange.Integer24_max){
+                			setErrorMessage("Entered "+str+ " is improper to the "+dataType+" range (8,388,608 - 8,388,607).");
+                			return false;
+                		}
+                		else
+                			return true;
+					} catch (NumberFormatException e) {
+						// TODO: handle exception
+						setErrorMessage(dataType+" accepts only decimal value");
+					}
+
+            	}
+            	case "Integer40":{
+            		try {
+            			llimit = Long.parseLong(HighLowLimit);
+                		if(llimit < DataTypeRange.Integer40_min || llimit > DataTypeRange.Integer40_max){
+                			setErrorMessage("Entered "+str+ " is improper to the "+dataType+" range (-549,755,813,888 - 549,755,813,887).");
+                			return false;
+                		}
+                		else
+                			return true;
+					} catch (NumberFormatException e) {
+						// TODO: handle exception
+						setErrorMessage(dataType+" accepts only decimal value");
+					}
+
+            	}
+            	case "Integer48":{
+            		try {
+            			llimit = Long.parseLong(HighLowLimit);
+                		if(llimit < DataTypeRange.Integer48_min || llimit > DataTypeRange.Integer48_max){
+                			setErrorMessage("Entered "+str+ " is improper to the "+dataType+" range (-140,737,488,355,328 - 140,737,488,355,327).");
+                			return false;
+                		}
+                		else
+                			return true;
+					} catch (NumberFormatException e) {
+						// TODO: handle exception
+						setErrorMessage(dataType+" accepts only decimal value");
+					}
+
+            	}
+            	case "Integer56":{
+            		try {
+            			llimit = Long.parseLong(HighLowLimit);
+                		if(llimit < DataTypeRange.Integer56_min || llimit > DataTypeRange.Integer56_max){
+                			setErrorMessage("Entered "+str+ " is improper to the "+dataType+" range (-36,028,797,018,963,968 - 36,028,797,018,963,967).");
+                			return false;
+                		}
+                		else
+                			return true;
+					} catch (NumberFormatException e) {
+						// TODO: handle exception
+						setErrorMessage(dataType+" accepts only decimal value");
+					}
+
+            	}
+            	case "Integer64":{
+            		try {
+            			llimit = Long.parseLong(HighLowLimit);
+                		if(llimit < DataTypeRange.Integer64_min || llimit > DataTypeRange.Integer64_max){
+                			setErrorMessage("Entered "+str+ " is improper to the "+dataType+" range (-9,223,372,036,854,775,808 - 9,223,372,036,854,775,807).");
+                			return false;
+                		}
+                		else
+                			return true;
+					} catch (NumberFormatException e) {
+						// TODO: handle exception
+						setErrorMessage(dataType+" accepts only decimal value");
+					}
+
+            	}
+            	case "Octet_String":{
+            		try {
+            			llimit = Long.parseLong(HighLowLimit);
+                		if(llimit < DataTypeRange.Unsigned8_min || llimit > DataTypeRange.Unsigned8_max){
+                			setErrorMessage("Entered "+str+ " is improper to the "+dataType+" range (0 - 255).");
+                			return false;
+                		}
+                		else
+                			return true;
+					} catch (NumberFormatException e) {
+						// TODO: handle exception
+						setErrorMessage(dataType+" accepts only decimal value");
+					}
+            	}
+            	case "Unicode_String":{
+            		try {
+            			llimit = Long.parseLong(HighLowLimit);
+                		if(llimit < DataTypeRange.Unsigned16_min || llimit > DataTypeRange.Unsigned16_max){
+                			setErrorMessage("Entered "+str+ " is improper to the "+dataType+" range (0 - 65,535).");
+                			return false;
+                		}
+                		else
+                			return true;
+					} catch (NumberFormatException e) {
+						// TODO: handle exception
+						setErrorMessage(dataType+" accepts only decimal value");
+					}
+            	}
+            	case "Time_of_Day":{
+            		try {
+            			llimit = Long.parseLong(HighLowLimit);
+                		if(llimit < DataTypeRange.Unsigned48_min || llimit > DataTypeRange.Unsigned48_max){
+                			setErrorMessage("Entered "+str+ " is improper to the "+dataType+" range (0 - 281,474,976,710,655).");
+                			return false;
+                		}
+                		else
+                			return true;
+					} catch (NumberFormatException e) {
+						// TODO: handle exception
+						setErrorMessage(dataType+" accepts only decimal value");
+					}
+
+            	}
+            	case "Time_Diff":{
+            		try {
+            			llimit = Long.parseLong(HighLowLimit);
+                		if(llimit < DataTypeRange.Unsigned48_min || llimit > DataTypeRange.Unsigned48_max){
+                			setErrorMessage("Entered "+str+ " is improper to the "+dataType+" range (0 - 281,474,976,710,655).");
+                			return false;
+                		}
+                		else
+                			return true;
+					} catch (NumberFormatException e) {
+						// TODO: handle exception
+						setErrorMessage(dataType+" accepts only decimal value");
+					}
+
+            	}
+            	case "Domain":{
+            		try {
+            			llimit = Long.parseLong(HighLowLimit);
+                		if(llimit < DataTypeRange.Unsigned32_min || llimit > DataTypeRange.Unsigned32_max){
+                			setErrorMessage("Entered "+str+ " is improper to the "+dataType+" range (0 - 4,294,967,295).");
+                			return false;
+                		}
+                		else
+                			return true;
+					} catch (NumberFormatException e) {
+						// TODO: handle exception
+						setErrorMessage(dataType+" accepts only decimal value");
+					}
+            	}
+            	case "Unsigned24":{
+            		try {
+            			llimit = Long.parseLong(HighLowLimit);
+                		if(llimit < DataTypeRange.Unsigned24_min || llimit > DataTypeRange.Unsigned24_max){
+                			setErrorMessage("Entered "+str+ " is improper to the "+dataType+" range (0 - 16,777,215).");
+                			return false;
+                		}
+                		else
+                			return true;
+					} catch (NumberFormatException e) {
+						// TODO: handle exception
+						setErrorMessage(dataType+" accepts only decimal value");
+					}
+
+            	}
+            	case "Unsigned40":{
+            		try {
+            			llimit = Long.parseLong(HighLowLimit);
+                		if(llimit < DataTypeRange.Unsigned40_min || llimit > DataTypeRange.Unsigned40_max){
+                			setErrorMessage("Entered "+str+ " is improper to the "+dataType+" range (0 - 1,099,511,627,775).");
+                			return false;
+                		}
+                		else
+                			return true;
+					} catch (NumberFormatException e) {
+						// TODO: handle exception
+						setErrorMessage(dataType+" accepts only decimal value");
+					}
+
+            	}
+            	case "Unsigned48":{
+            		try {
+            			llimit = Long.parseLong(HighLowLimit);
+                		if(llimit < DataTypeRange.Unsigned48_min || llimit > DataTypeRange.Unsigned48_max){
+                			setErrorMessage("Entered "+str+ " is improper to the "+dataType+" range (0 - 281,474,976,710,655).");
+                			return false;
+                		}
+                		else
+                			return true;
+					} catch (NumberFormatException e) {
+						// TODO: handle exception
+						setErrorMessage(dataType+" accepts only decimal value");
+					}
+
+            	}
+            	case "Unsigned56":{
+            		try {
+            			llimit = Long.parseLong(HighLowLimit);
+                		if(llimit < DataTypeRange.Unsigned56_min || llimit > DataTypeRange.Unsigned56_max){
+                			setErrorMessage("Entered "+str+ " is improper to the "+dataType+" range (0 - 72,057,594,037,927,935).");
+                			return false;
+                		}
+                		else
+                			return true;
+					} catch (NumberFormatException e) {
+						// TODO: handle exception
+						setErrorMessage(dataType+" accepts only decimal value");
+					}
+
+            	}
+            	case "Unsigned64":{
+            		try {
+            			llimit = Long.parseLong(HighLowLimit);
+                		if(llimit < 0 || llimit > 1){
+                			setErrorMessage("Entered "+str+ " is improper to the "+dataType+" range (-).");
+                			return false;
+                		}
+                		else
+                			return true;
+					} catch (NumberFormatException e) {
+						// TODO: handle exception
+						setErrorMessage(dataType+" accepts only decimal value");
+					}
+
+            	}
+            	case "MAC_ADDRESS":{
+            		try {
+            			llimit = Long.parseLong(HighLowLimit);
+                		if(llimit < DataTypeRange.Unsigned48_min || llimit > DataTypeRange.Unsigned48_max){
+                			setErrorMessage("Entered "+str+ " is improper to the "+dataType+" range (0 - 281,474,976,710,655).");
+                			return false;
+                		}
+                		else
+                			return true;
+					} catch (NumberFormatException e) {
+						// TODO: handle exception
+						setErrorMessage(dataType+" accepts only decimal value");
+					}
+
+            	}
+            	case "IP_ADDRESS":{
+            		try {
+            			llimit = Long.parseLong(HighLowLimit);
+                		if(llimit < DataTypeRange.Unsigned32_min || llimit > DataTypeRange.Unsigned32_max){
+                			setErrorMessage("Entered "+str+ " is improper to the "+dataType+" range (0 - 4,294,967,295).");
+                			return false;
+                		}
+                		else
+                			return true;
+					} catch (NumberFormatException e) {
+						// TODO: handle exception
+						setErrorMessage(dataType+" accepts only decimal value");
+					}
+            	}
+            	case "NETTIME":{
+            		try {
+            			llimit = Long.parseLong(HighLowLimit);
+                		if(llimit < 0 || llimit > 1){
+                			setErrorMessage("Entered "+str+ " is improper to the "+dataType+" range (-).");
+                			return false;
+                		}
+                		else
+                			return true;
+					} catch (NumberFormatException e) {
+						// TODO: handle exception
+						setErrorMessage(dataType+" accepts only decimal value");
+					}
+
+            	}
+            	default:
+            		return true;
+            	}
+    	}
+    	else {
+    		return false;
+		}
+	}
+
+    private boolean isValueHex(String text) {
+    	if(text.contains("0x")) {
+			return true;
+		}
+    	return false;
+	}
 
     private boolean isObjectIndexAvailable(String objIndex) {
         List<TObject> tObjects = XDDUtilities.findEObjects(documentRoot, XDDPackage.eINSTANCE.getTObject());

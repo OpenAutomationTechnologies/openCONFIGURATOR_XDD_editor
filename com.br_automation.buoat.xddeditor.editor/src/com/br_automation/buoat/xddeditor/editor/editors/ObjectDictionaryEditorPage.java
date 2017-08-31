@@ -50,6 +50,7 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -101,6 +102,7 @@ import com.br_automation.buoat.xddeditor.XDD.impl.TObjectImpl;
 import com.br_automation.buoat.xddeditor.XDD.resources.IPluginImages;
 import com.br_automation.buoat.xddeditor.XDD.resources.IPowerlinkConstants;
 import com.br_automation.buoat.xddeditor.XDD.wizards.NewObjectWizard;
+import com.br_automation.buoat.xddeditor.XDD.wizards.NewSubObjectWizard;
 
 /**
  * The editor page to manipulate the object dictionary of device description
@@ -476,6 +478,9 @@ public final class ObjectDictionaryEditorPage extends FormPage {
 
     private FilteredTree filteredTree;
 
+    private TObjectImpl selectedObject;
+    private SubObjectTypeImpl selectedSubObject;
+
     /**
      * Creates the widgets and controls for the Object dictionary model.
      *
@@ -558,6 +563,7 @@ public final class ObjectDictionaryEditorPage extends FormPage {
             btn = new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1);
             addSubObjectButton.setLayoutData(btn);
             toolkit.adapt(addSubObjectButton, true, true);
+            addSubObjectButton.setEnabled(false);
 
             removeButton = toolkit.createButton(btnComposite, ObjectDictionaryEditorPage.REMOVE_BUTTON_LABEL, SWT.PUSH);
             btn = new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1);
@@ -572,6 +578,20 @@ public final class ObjectDictionaryEditorPage extends FormPage {
 
                 @Override
                 public void selectionChanged(SelectionChangedEvent event) {
+                    IStructuredSelection sel = (IStructuredSelection) event.getSelection();
+                    Object selectedElement = sel.getFirstElement();
+                    if (selectedElement instanceof TObjectImpl) {
+                        TObjectImpl obj = (TObjectImpl) selectedElement;
+                        selectedObject = obj;
+                        String index = DatatypeConverter.printHexBinary(obj.getIndex());
+                        addSubObjectButton.setEnabled(isObjectIndexValid(index));
+                    } else if (selectedElement instanceof SubObjectTypeImpl) {
+                        SubObjectTypeImpl subObj = (SubObjectTypeImpl) selectedElement;
+                        selectedSubObject = subObj;
+                        addSubObjectButton.setEnabled(false);
+                    } else {
+                        System.err.println("Invalid selection instance.");
+                    }
                     managedForm.fireSelectionChanged(spart, event.getSelection());
 
                 }
@@ -662,6 +682,18 @@ public final class ObjectDictionaryEditorPage extends FormPage {
         toolBarManager.update(true);
         objectDictionarySection.setTextClient(toolbar);
 
+    }
+
+    private boolean isObjectIndexValid(String text) {
+        if (!text.isEmpty()) {
+            Integer indexvalue = Integer.parseInt(text, 16);
+            if ((indexvalue < IPowerlinkConstants.MANUFACTURER_PROFILE_START_INDEX)
+                    || (indexvalue > IPowerlinkConstants.MANUFACTURER_PROFILE_END_INDEX)) {
+                return false;
+            } else
+                return true;
+        } else
+            return false;
     }
 
     private Action hideCommunicationProfileObjects;
@@ -757,8 +789,23 @@ public final class ObjectDictionaryEditorPage extends FormPage {
 
     private void addListenerstoControls() {
         addObjectButton.addSelectionListener(addObjectWizardSelectionAdapter);
+        addSubObjectButton.addSelectionListener(addSubObjectWizardSelectionAdapter);
 
     }
+
+    private SelectionAdapter addSubObjectWizardSelectionAdapter = new SelectionAdapter() {
+
+        @Override
+        public void widgetSelected(SelectionEvent e) {
+            NewSubObjectWizard objWizard = new NewSubObjectWizard(selectedObject,editor,docRoot);
+
+            WizardDialog dialog = new WizardDialog(Display.getDefault().getActiveShell(), objWizard);
+            dialog.setTitle(objWizard.getWindowTitle());
+            dialog.open();
+
+            listViewer.setInput(XDDPackage.eINSTANCE.getTObject());
+        }
+    };
 
     private SelectionAdapter addObjectWizardSelectionAdapter = new SelectionAdapter() {
 
