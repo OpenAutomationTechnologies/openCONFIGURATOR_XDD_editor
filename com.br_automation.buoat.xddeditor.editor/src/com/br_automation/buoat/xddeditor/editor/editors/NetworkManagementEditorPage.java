@@ -142,14 +142,18 @@ public final class NetworkManagementEditorPage extends FormPage {
 
     private static final String FORM_EDITOR_PAGE_TITLE = "Device Description File Editor";
 
-    public static final String INVALID_PREQ_TIME_VALUE = "Invalid PReq time value.";
-    public static final String INVALID_NETWORK_ERROR_ENTRIES = "Invalid network error entries.";
+    public static final String INVALID_PREQ_TIME_VALUE_EMPTY_ERROR = "PReq time cannot be empty.";
+    public static final String INVALID_NETWORK_EMPTY_ERROR_ENTRIES = "Network error entries cannot be empty.";
     public static final String INVALID_MAX_CYCLE_TIME = "Maximum cycle time value invalid.";
     public static final String INVALID_MIN_CYCLE_TIME = "Invalid minimum cycle time value.";
-    public static final String EMPTY_CYCLE_TIME_ERROR_MESSAGE = "The cycle time value cannot be empty.";
-    public static final String EMPTY_MIN_CYCLE_TIME_ERROR_MESSAGE = "The minimum cycle time value cannot be empty.";
-    public static final String EMPTY_NETWORK_BOOT_TIME_ERROR_MESSAGE = "The network boot time value cannot be empty.";
+    public static final String EMPTY_CYCLE_TIME_ERROR_MESSAGE = "Cycle time cannot be empty.";
+    public static final String EMPTY_MIN_CYCLE_TIME_ERROR_MESSAGE = "Minimum cycle time cannot be empty.";
+    public static final String EMPTY_NETWORK_BOOT_TIME_ERROR_MESSAGE = "Network boot time cannot be empty.";
     public static final String INVALID_NETWORK_BOOT_TIME = "Invalid network boot time value.";
+
+    private static final String INVALID_PREQ_TIME_SPACE_ERROR = "PReq time cannot start with spaces.";
+    private static final String INVALID_NETWORK_BOOT_TIME_SPACE_ERROR = "Network boot time cannot start with spaces.";
+    private static final String INVALID_NETWORK_ERROR_ENTRIES_SPACE_ERROR = "Network error entries cannot start with spaces.";
 
     /**
      * Form size
@@ -303,13 +307,13 @@ public final class NetworkManagementEditorPage extends FormPage {
     };
 
     private void setErrorMessage(String message) {
-    	if(form != null) {
-        form.setMessage(message, IMessageProvider.ERROR);
-        if (message == null) {
-            message = StringUtils.EMPTY;
-            form.setMessage(message, IMessageProvider.NONE);
+        if (form != null) {
+            form.setMessage(message, IMessageProvider.ERROR);
+            if (message == null) {
+                message = StringUtils.EMPTY;
+                form.setMessage(message, IMessageProvider.NONE);
+            }
         }
-    	}
     }
 
     private ModifyListener timeForPreqModifyListener = new ModifyListener() {
@@ -321,18 +325,18 @@ public final class NetworkManagementEditorPage extends FormPage {
             try {
 
                 if (timeforPreqText == null) {
-                    setErrorMessage(INVALID_PREQ_TIME_VALUE);
+                    setErrorMessage(INVALID_PREQ_TIME_VALUE_EMPTY_ERROR);
                     return;
                 }
 
                 if (timeforPreqText.length() <= 0) {
-                    setErrorMessage(INVALID_PREQ_TIME_VALUE);
+                    setErrorMessage(INVALID_PREQ_TIME_VALUE_EMPTY_ERROR);
                     return;
                 }
 
                 // Space as first character is not allowed. ppc:tNonEmptyString
                 if (timeforPreqText.contains(" ")) {
-                    setErrorMessage(INVALID_PREQ_TIME_VALUE);
+                    setErrorMessage(INVALID_PREQ_TIME_SPACE_ERROR);
                     return;
                 }
 
@@ -343,7 +347,7 @@ public final class NetworkManagementEditorPage extends FormPage {
                 updateDocument(documentRoot);
 
             } catch (NumberFormatException ex) {
-                setErrorMessage(INVALID_PREQ_TIME_VALUE);
+                setErrorMessage(INVALID_PREQ_TIME_VALUE_EMPTY_ERROR);
                 ex.printStackTrace();
                 return;
             }
@@ -360,18 +364,18 @@ public final class NetworkManagementEditorPage extends FormPage {
             try {
 
                 if (totalNetworkEntry == null) {
-                    setErrorMessage(INVALID_NETWORK_ERROR_ENTRIES);
+                    setErrorMessage(INVALID_NETWORK_EMPTY_ERROR_ENTRIES);
                     return;
                 }
 
                 if (totalNetworkEntry.length() <= 0) {
-                    setErrorMessage(INVALID_NETWORK_ERROR_ENTRIES);
+                    setErrorMessage(INVALID_NETWORK_EMPTY_ERROR_ENTRIES);
                     return;
                 }
 
                 // Space as first character is not allowed. ppc:tNonEmptyString
                 if (totalNetworkEntry.contains(" ")) {
-                    setErrorMessage(INVALID_NETWORK_ERROR_ENTRIES);
+                    setErrorMessage(INVALID_NETWORK_ERROR_ENTRIES_SPACE_ERROR);
                     return;
                 }
 
@@ -382,7 +386,7 @@ public final class NetworkManagementEditorPage extends FormPage {
                 updateDocument(documentRoot);
 
             } catch (NumberFormatException ex) {
-                setErrorMessage(INVALID_NETWORK_ERROR_ENTRIES);
+                setErrorMessage(INVALID_NETWORK_EMPTY_ERROR_ENTRIES);
                 ex.printStackTrace();
                 return;
             }
@@ -427,7 +431,7 @@ public final class NetworkManagementEditorPage extends FormPage {
             try {
 
                 if (maximumCycleTime == null) {
-                    setErrorMessage(INVALID_MAX_CYCLE_TIME);
+                    setErrorMessage(EMPTY_CYCLE_TIME_ERROR_MESSAGE);
                     return;
                 }
 
@@ -471,7 +475,7 @@ public final class NetworkManagementEditorPage extends FormPage {
                 }
 
                 if (minimumCycleTime.length() <= 0) {
-                    setErrorMessage(INVALID_MIN_CYCLE_TIME);
+                    setErrorMessage(EMPTY_MIN_CYCLE_TIME_ERROR_MESSAGE);
                     return;
                 }
 
@@ -511,13 +515,13 @@ public final class NetworkManagementEditorPage extends FormPage {
                 }
 
                 if (networkBootTime.length() <= 0) {
-                    setErrorMessage(INVALID_NETWORK_BOOT_TIME);
+                    setErrorMessage(EMPTY_NETWORK_BOOT_TIME_ERROR_MESSAGE);
                     return;
                 }
 
                 // Space as first character is not allowed. ppc:tNonEmptyString
                 if (networkBootTime.contains(" ")) {
-                    setErrorMessage(INVALID_NETWORK_BOOT_TIME);
+                    setErrorMessage(INVALID_NETWORK_BOOT_TIME_SPACE_ERROR);
                     return;
                 }
 
@@ -581,72 +585,77 @@ public final class NetworkManagementEditorPage extends FormPage {
      *            The parent form.
      */
     private void createGeneralFeaturesSection(final IManagedForm managedForm) {
-    	if(toolkit != null) {
-        Section generalFeaturesSection = toolkit.createSection(managedForm.getForm().getBody(),
-                ExpandableComposite.EXPANDED | Section.DESCRIPTION | ExpandableComposite.TWISTIE
-                        | ExpandableComposite.TITLE_BAR);
-        managedForm.getToolkit().paintBordersFor(generalFeaturesSection);
-        generalFeaturesSection.setText(NetworkManagementEditorPage.GENERAL_FEATURES_SECTION);
-        generalFeaturesSection.setDescription(NetworkManagementEditorPage.GENERAL_FEATURES_SECTION_HEADING_DESCRIPTION);
+        if (toolkit != null) {
+            Section generalFeaturesSection = toolkit.createSection(managedForm.getForm().getBody(),
+                    ExpandableComposite.EXPANDED | Section.DESCRIPTION | ExpandableComposite.TWISTIE
+                            | ExpandableComposite.TITLE_BAR);
+            managedForm.getToolkit().paintBordersFor(generalFeaturesSection);
+            generalFeaturesSection.setText(NetworkManagementEditorPage.GENERAL_FEATURES_SECTION);
+            generalFeaturesSection
+                    .setDescription(NetworkManagementEditorPage.GENERAL_FEATURES_SECTION_HEADING_DESCRIPTION);
 
-        Composite client = toolkit.createComposite(generalFeaturesSection, SWT.WRAP);
-        GridLayout layout = new GridLayout(3, false);
-        layout.marginWidth = 2;
-        layout.marginHeight = 2;
-        client.setLayout(layout);
-        toolkit.paintBordersFor(client);
-        generalFeaturesSection.setClient(client);
+            Composite client = toolkit.createComposite(generalFeaturesSection, SWT.WRAP);
+            GridLayout layout = new GridLayout(3, false);
+            layout.marginWidth = 2;
+            layout.marginHeight = 2;
+            client.setLayout(layout);
+            toolkit.paintBordersFor(client);
+            generalFeaturesSection.setClient(client);
 
-        Label networkBootTime = new Label(client, SWT.NONE);
-        networkBootTime.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
-        networkBootTime.setText(NetworkManagementEditorPage.NETWORK_BOOT_TIME_LABEL);
-        toolkit.adapt(networkBootTime, true, true);
-        networkBootTime.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
+            GridData gensec = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
+            gensec.heightHint = 20;
+            gensec.widthHint = 250;
 
-        networkBootTimeText = new Text(client, SWT.BORDER | SWT.WRAP);
-        networkBootTimeText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
-        toolkit.adapt(networkBootTimeText, true, true);
+            Label networkBootTime = new Label(client, SWT.NONE);
+            networkBootTime.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+            networkBootTime.setText(NetworkManagementEditorPage.NETWORK_BOOT_TIME_LABEL);
+            toolkit.adapt(networkBootTime, true, true);
+            networkBootTime.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
 
-        Label minimumCycleTime = new Label(client, SWT.NONE);
-        minimumCycleTime.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
-        minimumCycleTime.setText(NetworkManagementEditorPage.MINIMUM_CYCLE_TIME_LABEL);
-        toolkit.adapt(minimumCycleTime, true, true);
-        minimumCycleTime.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
+            networkBootTimeText = new Text(client, SWT.BORDER | SWT.WRAP);
+            networkBootTimeText.setLayoutData(gensec);
+            toolkit.adapt(networkBootTimeText, true, true);
 
-        minimumCycleTimeText = new Text(client, SWT.BORDER | SWT.WRAP);
-        minimumCycleTimeText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
-        toolkit.adapt(minimumCycleTimeText, true, true);
+            Label minimumCycleTime = new Label(client, SWT.NONE);
+            minimumCycleTime.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+            minimumCycleTime.setText(NetworkManagementEditorPage.MINIMUM_CYCLE_TIME_LABEL);
+            toolkit.adapt(minimumCycleTime, true, true);
+            minimumCycleTime.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
 
-        Label maximumCycleTimeLabel = new Label(client, SWT.NONE);
-        maximumCycleTimeLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
-        maximumCycleTimeLabel.setText(NetworkManagementEditorPage.MAXIMUM_CYCLE_TIME_LABEL);
-        toolkit.adapt(maximumCycleTimeLabel, true, true);
-        maximumCycleTimeLabel.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
+            minimumCycleTimeText = new Text(client, SWT.BORDER | SWT.WRAP);
+            minimumCycleTimeText.setLayoutData(gensec);
+            toolkit.adapt(minimumCycleTimeText, true, true);
 
-        maximumCycleTimeText = new Text(client, SWT.BORDER | SWT.WRAP);
-        maximumCycleTimeText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
-        toolkit.adapt(maximumCycleTimeText, true, true);
+            Label maximumCycleTimeLabel = new Label(client, SWT.NONE);
+            maximumCycleTimeLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+            maximumCycleTimeLabel.setText(NetworkManagementEditorPage.MAXIMUM_CYCLE_TIME_LABEL);
+            toolkit.adapt(maximumCycleTimeLabel, true, true);
+            maximumCycleTimeLabel.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
 
-        Label totalNetworkErrorEntries = new Label(client, SWT.NONE);
-        totalNetworkErrorEntries.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
-        totalNetworkErrorEntries.setText(NetworkManagementEditorPage.TOTAL_NETWORK_ERROR_ENTRIES_LABEL);
-        toolkit.adapt(totalNetworkErrorEntries, true, true);
-        totalNetworkErrorEntries.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
+            maximumCycleTimeText = new Text(client, SWT.BORDER | SWT.WRAP);
+            maximumCycleTimeText.setLayoutData(gensec);
+            toolkit.adapt(maximumCycleTimeText, true, true);
 
-        totalNetworkErrorEntriesText = new Text(client, SWT.BORDER | SWT.WRAP);
-        totalNetworkErrorEntriesText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
-        toolkit.adapt(totalNetworkErrorEntriesText, true, true);
+            Label totalNetworkErrorEntries = new Label(client, SWT.NONE);
+            totalNetworkErrorEntries.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+            totalNetworkErrorEntries.setText(NetworkManagementEditorPage.TOTAL_NETWORK_ERROR_ENTRIES_LABEL);
+            toolkit.adapt(totalNetworkErrorEntries, true, true);
+            totalNetworkErrorEntries.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
 
-        Label networkIpSupportLabel = new Label(client, SWT.NONE);
-        networkIpSupportLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
-        networkIpSupportLabel.setText(NetworkManagementEditorPage.NETWORK_IP_SUPPORT_LABEL);
-        toolkit.adapt(networkIpSupportLabel, true, true);
-        networkIpSupportLabel.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
+            totalNetworkErrorEntriesText = new Text(client, SWT.BORDER | SWT.WRAP);
+            totalNetworkErrorEntriesText.setLayoutData(gensec);
+            toolkit.adapt(totalNetworkErrorEntriesText, true, true);
 
-        networkIpButton = new Button(client, SWT.CHECK);
-        networkIpButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
-        toolkit.adapt(networkIpButton, true, true);
-    	}
+            Label networkIpSupportLabel = new Label(client, SWT.NONE);
+            networkIpSupportLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+            networkIpSupportLabel.setText(NetworkManagementEditorPage.NETWORK_IP_SUPPORT_LABEL);
+            toolkit.adapt(networkIpSupportLabel, true, true);
+            networkIpSupportLabel.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
+
+            networkIpButton = new Button(client, SWT.CHECK);
+            networkIpButton.setLayoutData(gensec);
+            toolkit.adapt(networkIpButton, true, true);
+        }
 
     }
 
@@ -658,55 +667,56 @@ public final class NetworkManagementEditorPage extends FormPage {
      *            The parent form.
      */
     private void createCnFeaturesSection(final IManagedForm managedForm) {
-    	if(toolkit != null) {
-        Section cnFeatureSection = toolkit.createSection(managedForm.getForm().getBody(), ExpandableComposite.EXPANDED
-                | Section.DESCRIPTION | ExpandableComposite.TWISTIE | ExpandableComposite.TITLE_BAR);
-        managedForm.getToolkit().paintBordersFor(cnFeatureSection);
-        cnFeatureSection.setText(NetworkManagementEditorPage.CN_FEATURES_SECTION);
-        cnFeatureSection.setDescription(NetworkManagementEditorPage.GENERAL_FEATURES_SECTION_HEADING_DESCRIPTION);
+        if (toolkit != null) {
+            Section cnFeatureSection = toolkit.createSection(managedForm.getForm().getBody(),
+                    ExpandableComposite.EXPANDED | Section.DESCRIPTION | ExpandableComposite.TWISTIE
+                            | ExpandableComposite.TITLE_BAR);
+            managedForm.getToolkit().paintBordersFor(cnFeatureSection);
+            cnFeatureSection.setText(NetworkManagementEditorPage.CN_FEATURES_SECTION);
+            cnFeatureSection.setDescription(NetworkManagementEditorPage.GENERAL_FEATURES_SECTION_HEADING_DESCRIPTION);
 
-        Composite client = toolkit.createComposite(cnFeatureSection, SWT.WRAP);
-        GridLayout layout = new GridLayout(3, false);
-        layout.marginWidth = 2;
-        layout.marginHeight = 2;
-        client.setLayout(layout);
-        toolkit.paintBordersFor(client);
-        cnFeatureSection.setClient(client);
+            Composite client = toolkit.createComposite(cnFeatureSection, SWT.WRAP);
+            GridLayout layout = new GridLayout(3, false);
+            layout.marginWidth = 2;
+            layout.marginHeight = 2;
+            client.setLayout(layout);
+            toolkit.paintBordersFor(client);
+            cnFeatureSection.setClient(client);
 
-        Label multiplexedCommunicationlabel = new Label(client, SWT.NONE);
-        multiplexedCommunicationlabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
-        multiplexedCommunicationlabel.setText(NetworkManagementEditorPage.MULTIPLEXED_COMMUNICATION_LABEL);
-        toolkit.adapt(multiplexedCommunicationlabel, true, true);
-        multiplexedCommunicationlabel.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
+            GridData cnsec = new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1);
+            cnsec.heightHint = 15;
+            cnsec.widthHint = 250;
 
-        multiplexedCommunicationChkBox = new Button(client, SWT.CHECK);
+            Label multiplexedCommunicationlabel = new Label(client, SWT.NONE);
+            multiplexedCommunicationlabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+            multiplexedCommunicationlabel.setText(NetworkManagementEditorPage.MULTIPLEXED_COMMUNICATION_LABEL);
+            toolkit.adapt(multiplexedCommunicationlabel, true, true);
+            multiplexedCommunicationlabel.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
 
-        multiplexedCommunicationChkBox.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1));
-        toolkit.adapt(multiplexedCommunicationChkBox, true, true);
+            multiplexedCommunicationChkBox = new Button(client, SWT.CHECK);
+            multiplexedCommunicationChkBox.setLayoutData(cnsec);
+            toolkit.adapt(multiplexedCommunicationChkBox, true, true);
 
-        new Label(client, SWT.NONE);
-        Label pollresponseChainLabel = new Label(client, SWT.NONE);
-        pollresponseChainLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
-        pollresponseChainLabel.setText(NetworkManagementEditorPage.POLL_RESPONSE_COMMUNICATION_LABEL);
-        toolkit.adapt(pollresponseChainLabel, true, true);
-        pollresponseChainLabel.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
+            Label pollresponseChainLabel = new Label(client, SWT.NONE);
+            pollresponseChainLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+            pollresponseChainLabel.setText(NetworkManagementEditorPage.POLL_RESPONSE_COMMUNICATION_LABEL);
+            toolkit.adapt(pollresponseChainLabel, true, true);
+            pollresponseChainLabel.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
 
-        pollResponseCommunication = new Button(client, SWT.CHECK);
-        pollResponseCommunication.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-        toolkit.adapt(pollResponseCommunication, true, true);
+            pollResponseCommunication = new Button(client, SWT.CHECK);
+            pollResponseCommunication.setLayoutData(cnsec);
+            toolkit.adapt(pollResponseCommunication, true, true);
 
-        new Label(client, SWT.NONE);
+            Label timeForPreq = new Label(client, SWT.NONE);
+            timeForPreq.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+            timeForPreq.setText(NetworkManagementEditorPage.TIME_FOR_PREQ_LABEL);
+            toolkit.adapt(timeForPreq, true, true);
+            timeForPreq.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
 
-        Label timeForPreq = new Label(client, SWT.NONE);
-        timeForPreq.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
-        timeForPreq.setText(NetworkManagementEditorPage.TIME_FOR_PREQ_LABEL);
-        toolkit.adapt(timeForPreq, true, true);
-        timeForPreq.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
-
-        timeForPreqText = new Text(client, SWT.BORDER | SWT.WRAP);
-        timeForPreqText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-        toolkit.adapt(timeForPreqText, true, true);
-    	}
+            timeForPreqText = new Text(client, SWT.BORDER | SWT.WRAP);
+            timeForPreqText.setLayoutData(cnsec);
+            toolkit.adapt(timeForPreqText, true, true);
+        }
 
     }
 

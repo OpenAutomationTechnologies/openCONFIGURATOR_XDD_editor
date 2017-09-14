@@ -51,7 +51,7 @@ import org.eclipse.emf.eef.runtime.ui.properties.sections.EEFAdvancedPropertySec
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.pde.internal.core.plugin.IdentifiablePluginObject;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.CLabel;

@@ -31,9 +31,11 @@
 
 package com.br_automation.buoat.xddeditor.editor.editors;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -42,12 +44,14 @@ import javax.xml.bind.DatatypeConverter;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.action.IMenuListener;
-import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -69,6 +73,13 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.IPageLayout;
+import org.eclipse.ui.IPartListener;
+import org.eclipse.ui.IPropertyListener;
+import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.FilteredTree;
 import org.eclipse.ui.dialogs.PatternFilter;
 import org.eclipse.ui.forms.DetailsPart;
@@ -84,25 +95,32 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.forms.widgets.TableWrapLayout;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.eclipse.ui.views.properties.PropertySheet;
 
 import com.br_automation.buoat.xddeditor.XDD.DocumentRoot;
+import com.br_automation.buoat.xddeditor.XDD.ISO15745ProfileType;
+import com.br_automation.buoat.xddeditor.XDD.ProfileBodyDataType;
 import com.br_automation.buoat.xddeditor.XDD.SubObjectType;
 import com.br_automation.buoat.xddeditor.XDD.TObject;
 import com.br_automation.buoat.xddeditor.XDD.TObjectPDOMapping;
 import com.br_automation.buoat.xddeditor.XDD.XDDPackage;
 import com.br_automation.buoat.xddeditor.XDD.custom.EPLGeneralConstants;
+import com.br_automation.buoat.xddeditor.XDD.custom.TObjectComparator;
 import com.br_automation.buoat.xddeditor.XDD.custom.XDDUtilities;
 import com.br_automation.buoat.xddeditor.XDD.custom.propertypages.filters.Index1000Filter;
 import com.br_automation.buoat.xddeditor.XDD.custom.propertypages.filters.Index1F80Filter;
 import com.br_automation.buoat.xddeditor.XDD.custom.propertypages.filters.Index1F82Filter;
 import com.br_automation.buoat.xddeditor.XDD.custom.propertypages.filters.MappingSubobjectsFilter;
 import com.br_automation.buoat.xddeditor.XDD.custom.propertypages.filters.StoreParamSubobjectsFilter;
+import com.br_automation.buoat.xddeditor.XDD.impl.ProfileBodyCommunicationNetworkPowerlinkImpl;
 import com.br_automation.buoat.xddeditor.XDD.impl.SubObjectTypeImpl;
+import com.br_automation.buoat.xddeditor.XDD.impl.TApplicationLayersImpl;
 import com.br_automation.buoat.xddeditor.XDD.impl.TObjectImpl;
 import com.br_automation.buoat.xddeditor.XDD.resources.IPluginImages;
 import com.br_automation.buoat.xddeditor.XDD.resources.IPowerlinkConstants;
 import com.br_automation.buoat.xddeditor.XDD.wizards.NewObjectWizard;
 import com.br_automation.buoat.xddeditor.XDD.wizards.NewSubObjectWizard;
+import com.br_automation.buoat.xddeditor.editor.adapters.AbstractObjectPropertySource;
 
 /**
  * The editor page to manipulate the object dictionary of device description
@@ -111,7 +129,7 @@ import com.br_automation.buoat.xddeditor.XDD.wizards.NewSubObjectWizard;
  * @author Sree Hari Vignesh
  *
  */
-public final class ObjectDictionaryEditorPage extends FormPage {
+public class ObjectDictionaryEditorPage extends FormPage implements IPropertyListener {
 
     /** Identifier */
     private static final String ID = "com.buoat.xddeditor.editors.objectDictionaryEditorPage";
@@ -217,7 +235,7 @@ public final class ObjectDictionaryEditorPage extends FormPage {
      * @author Sree Hari Vignesh
      *
      */
-    public class ObjectDictionaryBlock extends MasterDetailsBlock implements IDetailsPageProvider {
+    public class ObjectDictionaryBlock extends MasterDetailsBlock implements IDetailsPageProvider, IPropertyListener {
 
         private static final String OBJECT_INDEX_1F82 = "1F82";
         private static final String OBJECT_INDEX_1F80 = "1F80";
@@ -324,6 +342,12 @@ public final class ObjectDictionaryEditorPage extends FormPage {
             return null;
         }
 
+        @Override
+        public void propertyChanged(Object source, int propId) {
+            // TODO Auto-generated method stub
+
+        }
+
     }
 
     /**
@@ -380,6 +404,7 @@ public final class ObjectDictionaryEditorPage extends FormPage {
             if (inputElement instanceof EClass) {
                 EClass obj = (EClass) inputElement;
                 List<TObject> tObjects = XDDUtilities.findEObjects(docRoot, obj);
+                tObjects.sort(new TObjectComparator());
                 return tObjects.toArray();
             }
 
@@ -481,6 +506,62 @@ public final class ObjectDictionaryEditorPage extends FormPage {
     private TObjectImpl selectedObject;
     private SubObjectTypeImpl selectedSubObject;
 
+    private TObjectImpl object;
+
+    /**
+     * Source workbench part.
+     */
+    private IWorkbenchPart sourcePart;
+
+    /**
+     * Listener instance to listen to the changes in the source part.
+     */
+    private PartListener partListener = new PartListener();
+
+    /**
+     * Part listener to listen to the changes of the source part.
+     *
+     * @see IndustrialNetworkView
+     * @author Ramakrishnan P
+     *
+     */
+    private class PartListener implements IPartListener {
+        @Override
+        public void partActivated(IWorkbenchPart part) {
+        }
+
+        @Override
+        public void partBroughtToTop(IWorkbenchPart part) {
+        }
+
+        @Override
+        public void partClosed(IWorkbenchPart part) {
+            if (sourcePart == part) {
+                if (sourcePart != null) {
+                    sourcePart.getSite().getPage().removePartListener(partListener);
+                }
+                sourcePart = null;
+                if ((listViewer != null) && !listViewer.getControl().isDisposed()) {
+                    listViewer.setInput(new Object[0]);
+                }
+            }
+        }
+
+        @Override
+        public void partDeactivated(IWorkbenchPart part) {
+        }
+
+        @Override
+        public void partOpened(IWorkbenchPart part) {
+        }
+    }
+
+    @Override
+    public void setFocus() {
+        listViewer.getControl().setFocus();
+
+    }
+
     /**
      * Creates the widgets and controls for the Object dictionary model.
      *
@@ -574,26 +655,74 @@ public final class ObjectDictionaryEditorPage extends FormPage {
             final SectionPart spart = new SectionPart(objectDictionarySection);
             managedForm.addPart(spart);
 
+            getSite().setSelectionProvider(listViewer);
+
             listViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
                 @Override
                 public void selectionChanged(SelectionChangedEvent event) {
                     IStructuredSelection sel = (IStructuredSelection) event.getSelection();
                     Object selectedElement = sel.getFirstElement();
+
+                    if (listViewer == null) {
+                        return;
+                    }
+
+                    if (sourcePart != null) {
+                        sourcePart.getSite().getPage().removePartListener(partListener);
+                        sourcePart = null;
+                    }
+
                     if (selectedElement instanceof TObjectImpl) {
                         TObjectImpl obj = (TObjectImpl) selectedElement;
                         selectedObject = obj;
+                        AbstractObjectPropertySource objSource = new AbstractObjectPropertySource();
+                        objSource.setEditor(editor);
                         String index = DatatypeConverter.printHexBinary(obj.getIndex());
-                        addSubObjectButton.setEnabled(isObjectIndexValid(index));
+                        addSubObjectButton.setEnabled(isSubObjectAdded(index, selectedObject));
+                        removeButton.setEnabled(isObjectIndexValid(index));
+                        IViewPart[] viewList = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+                                .getViews();
+                        boolean isPropertyAvailable = false;
+                        for (IViewPart view : viewList) {
+                            if (view instanceof PropertySheet) {
+                                isPropertyAvailable = true;
+                            }
+                        }
+
+                        if (isPropertyAvailable) {
+                            PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+                                    .findView(IPageLayout.ID_PROP_SHEET);
+                        } else {
+                            try {
+                                PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+                                        .showView(IPageLayout.ID_PROP_SHEET);
+                            } catch (PartInitException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                            }
+                        }
+
                     } else if (selectedElement instanceof SubObjectTypeImpl) {
                         SubObjectTypeImpl subObj = (SubObjectTypeImpl) selectedElement;
                         selectedSubObject = subObj;
+                        AbstractObjectPropertySource objSource = new AbstractObjectPropertySource();
+                        objSource.setEditor(editor);
                         addSubObjectButton.setEnabled(false);
+                        object = (TObjectImpl) subObj.eContainer();
+                        String objIndex = DatatypeConverter.printHexBinary(object.getIndex());
+                        String subIndex = DatatypeConverter.printHexBinary(subObj.getSubIndex());
+                        if (isObjectIndexValid(objIndex)) {
+                            removeButton.setEnabled(true);
+                        }
                     } else {
                         System.err.println("Invalid selection instance.");
                     }
-                    managedForm.fireSelectionChanged(spart, event.getSelection());
 
+                    managedForm.fireSelectionChanged(spart, event.getSelection());
+                    if (sourcePart != null) {
+                        sourcePart.getSite().getPage().addPartListener(partListener);
+                    }
                 }
             });
 
@@ -696,10 +825,20 @@ public final class ObjectDictionaryEditorPage extends FormPage {
             return false;
     }
 
+    private boolean isSubObjectAdded(String objectIndex, TObjectImpl obj) {
+        if (isObjectIndexValid(objectIndex)) {
+            if (obj.getObjectType() != 7) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private Action hideCommunicationProfileObjects;
     private Action hideStandardisedDeviceProfileObjects;
     private Action hideNonMappableObjects;
     private Action hideUserDefinedObjects;
+    private Action propertiesAction;
     private Set<TObjectPDOMapping> validTpdoTObjectMapping;
     private Set<TObjectPDOMapping> validRpdoTObjectMapping;
 
@@ -732,9 +871,26 @@ public final class ObjectDictionaryEditorPage extends FormPage {
             }
         };
         hideNonMappableObjects.setToolTipText(HIDE_NON_MAPPABLE_OBJECTS);
-        hideNonMappableObjects.setImageDescriptor(AbstractUIPlugin
-                .imageDescriptorFromPlugin("com.br_automation.buoat.xddeditor.editor", IPluginImages.OBJECT_ICON));
+        hideNonMappableObjects.setImageDescriptor(AbstractUIPlugin.imageDescriptorFromPlugin(
+                "com.br_automation.buoat.xddeditor.editor", IPluginImages.HIDE_NON_MAPPABLE_OBJECT_ICON));
         hideNonMappableObjects.setChecked(false);
+
+        propertiesAction = new Action(OBJECT_PROPERTIES) {
+            @Override
+            public void run() {
+                super.run();
+                try {
+                    PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+                            .showView(IPageLayout.ID_PROP_SHEET);
+                    listViewer.setSelection(listViewer.getSelection());
+                } catch (PartInitException e) {
+                    e.printStackTrace();
+
+                }
+            }
+        };
+        propertiesAction.setImageDescriptor(AbstractUIPlugin.imageDescriptorFromPlugin(
+                "com.br_automation.buoat.xddeditor.editor", IPluginImages.HIDE_STANDARDIZED_PROFILE_ICON));
 
         hideCommunicationProfileObjects = new Action(HIDE_COMMUNICATION_PROFILE_AREA_OBJECTS, IAction.AS_CHECK_BOX) {
             @Override
@@ -748,8 +904,8 @@ public final class ObjectDictionaryEditorPage extends FormPage {
             }
         };
         hideCommunicationProfileObjects.setToolTipText(HIDE_COMMUNICATION_PROFILE_AREA_OBJECTS);
-        hideCommunicationProfileObjects.setImageDescriptor(AbstractUIPlugin
-                .imageDescriptorFromPlugin("com.br_automation.buoat.xddeditor.editor", IPluginImages.OBJECT_ICON));
+        hideCommunicationProfileObjects.setImageDescriptor(AbstractUIPlugin.imageDescriptorFromPlugin(
+                "com.br_automation.buoat.xddeditor.editor", IPluginImages.HIDE_COMMUNICATION_PROFILE_ICON));
         hideCommunicationProfileObjects.setChecked(false);
 
         hideStandardisedDeviceProfileObjects = new Action(HIDE_STANDARDISED_DEVICE_PROFILE_AREA_OBJECTS,
@@ -765,8 +921,8 @@ public final class ObjectDictionaryEditorPage extends FormPage {
             }
         };
         hideStandardisedDeviceProfileObjects.setToolTipText(HIDE_STANDARDISED_DEVICE_PROFILE_AREA_OBJECTS);
-        hideStandardisedDeviceProfileObjects.setImageDescriptor(AbstractUIPlugin
-                .imageDescriptorFromPlugin("com.br_automation.buoat.xddeditor.editor", IPluginImages.OBJECT_ICON));
+        hideStandardisedDeviceProfileObjects.setImageDescriptor(AbstractUIPlugin.imageDescriptorFromPlugin(
+                "com.br_automation.buoat.xddeditor.editor", IPluginImages.HIDE_STANDARDIZED_PROFILE_ICON));
         hideStandardisedDeviceProfileObjects.setChecked(false);
 
         hideUserDefinedObjects = new Action(HIDE_STANDARDISED_DEVICE_PROFILE_AREA_OBJECTS, IAction.AS_CHECK_BOX) {
@@ -781,8 +937,8 @@ public final class ObjectDictionaryEditorPage extends FormPage {
             }
         };
         hideUserDefinedObjects.setToolTipText(HIDE_USER_DEFINED_OBJECTS);
-        hideUserDefinedObjects.setImageDescriptor(AbstractUIPlugin
-                .imageDescriptorFromPlugin("com.br_automation.buoat.xddeditor.editor", IPluginImages.OBJECT_ICON));
+        hideUserDefinedObjects.setImageDescriptor(AbstractUIPlugin.imageDescriptorFromPlugin(
+                "com.br_automation.buoat.xddeditor.editor", IPluginImages.HIDE_USER_DEFINED_OBJECT_ICON));
         hideUserDefinedObjects.setChecked(false);
 
     }
@@ -790,6 +946,7 @@ public final class ObjectDictionaryEditorPage extends FormPage {
     private void addListenerstoControls() {
         addObjectButton.addSelectionListener(addObjectWizardSelectionAdapter);
         addSubObjectButton.addSelectionListener(addSubObjectWizardSelectionAdapter);
+        removeButton.addSelectionListener(removeObjectSelectionAdapter);
 
     }
 
@@ -797,7 +954,7 @@ public final class ObjectDictionaryEditorPage extends FormPage {
 
         @Override
         public void widgetSelected(SelectionEvent e) {
-            NewSubObjectWizard objWizard = new NewSubObjectWizard(selectedObject,editor,docRoot);
+            NewSubObjectWizard objWizard = new NewSubObjectWizard(selectedObject, editor, docRoot);
 
             WizardDialog dialog = new WizardDialog(Display.getDefault().getActiveShell(), objWizard);
             dialog.setTitle(objWizard.getWindowTitle());
@@ -806,6 +963,68 @@ public final class ObjectDictionaryEditorPage extends FormPage {
             listViewer.setInput(XDDPackage.eINSTANCE.getTObject());
         }
     };
+
+    private TApplicationLayersImpl getApplicationLayer() {
+        EList<ISO15745ProfileType> profiles = docRoot.getISO15745ProfileContainer().getISO15745Profile();
+        for (ISO15745ProfileType profile : profiles) {
+            ProfileBodyDataType profileBody = profile.getProfileBody();
+            if (profileBody instanceof ProfileBodyCommunicationNetworkPowerlinkImpl) {
+                EList<EObject> bodyContents = profileBody.eContents();
+                for (EObject object : bodyContents) {
+                    if (object instanceof TApplicationLayersImpl) {
+                        TApplicationLayersImpl applicationLayer = (TApplicationLayersImpl) object;
+                        return applicationLayer;
+                    }
+                }
+            }
+        }
+        return null;
+
+    }
+
+    private SelectionAdapter removeObjectSelectionAdapter = new SelectionAdapter() {
+
+        @Override
+        public void widgetSelected(SelectionEvent e) {
+
+            if (selectedObject != null) {
+                getApplicationLayer().getObjectList().getObject().remove(selectedObject);
+            }
+
+            object.getSubObject().remove(selectedSubObject);
+            updateDocument(docRoot);
+
+            listViewer.setInput(XDDPackage.eINSTANCE.getTObject());
+        }
+    };
+
+    public boolean updateDocument(DocumentRoot documentRoot) {
+        // Create a resource set
+        ResourceSet resourceSet = new ResourceSetImpl();
+
+        // Get the URI of the model file.
+        URI fileURI = URI.createPlatformResourceURI(editor.getModelFile().getFullPath().toString(), true);
+
+        // Create a resource for this file.
+        Resource resource = resourceSet.createResource(fileURI);
+
+        // Add the initial model object to the contents.
+        EObject rootObject = documentRoot;
+        if (rootObject != null)
+            resource.getContents().add(rootObject);
+
+        // Save the contents of the resource to the file system.
+        Map<Object, Object> options = new HashMap<Object, Object>();
+        // options.put(XMLResource.OPTION_ENCODING, "UTF-8");
+        try {
+            resource.save(options);
+            return true;
+        } catch (IOException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+        return false;
+    }
 
     private SelectionAdapter addObjectWizardSelectionAdapter = new SelectionAdapter() {
 
@@ -868,6 +1087,12 @@ public final class ObjectDictionaryEditorPage extends FormPage {
             dirty = value;
             getEditor().editorDirtyStateChanged();
         }
+    }
+
+    @Override
+    public void propertyChanged(Object source, int propId) {
+        // TODO Auto-generated method stub
+
     }
 
 }

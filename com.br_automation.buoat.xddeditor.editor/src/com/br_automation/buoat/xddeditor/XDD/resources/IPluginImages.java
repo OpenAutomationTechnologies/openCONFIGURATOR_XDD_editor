@@ -43,4 +43,11 @@ public interface IPluginImages {
     public final static String OBJECT_ICON = "icons/object.gif";
     public final static String SUB_OBJECT_ICON = "icons/subobject.gif";
 
+    public final static String HIDE_COMMUNICATION_PROFILE_ICON = "icons/hide_communication_device_profile.gif";
+    public final static String HIDE_USER_DEFINED_OBJECT_ICON = "icons/hide_user_defined.gif";
+    public final static String HIDE_STANDARDIZED_PROFILE_ICON = "icons/hide_standardized_device_profile.gif";
+    public final static String HIDE_NON_MAPPABLE_OBJECT_ICON = "icons/hide_non_mappable.gif";
+
+    public final static String FIRMWARE_ICON = "icons/firmware.gif";
+
 }

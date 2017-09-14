@@ -32,6 +32,11 @@
 package com.br_automation.buoat.xddeditor.editor.editors;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -138,22 +143,38 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
     private static final String EDIT_BUTTON_LABEL = "Edit...";
     private static final String DELETE_BUTTON_LABEL = "Delete";
 
+    private static final String PROJECT_INFORMATION_VENDOR_NAME = "Kalycito Infotech Private Limited & Bernecker + Rainer Industrie Elektronik Ges.m.b.H.";
+    private static final String PROJECT_INFORMATION_TOOL_NAME = "Ethernet POWERLINK XDD Editor";
+    private static final String PROJECT_INFORMATION_VERSION_NUMBER = "1.0";
+
     private static final String DEVICE_COMMUNICATION_INFORMATION_SECTION = "Communication";
     private static final String OBJECT_DICTIONARY_HYPERLINK_SECTION = "Object Dictionary";
     private static final String NETWORK_MANAGEMENT_HYPERLINK_SECTION = "Network Management";
 
     private static final String FORM_EDITOR_PAGE_TITLE = "Device Description File Editor";
 
-    private static final String INVALID_VENDOR_ID = "Invalid vendor ID value.";
-    private static final String INVALID_PRODUCT_NAME = "Invalid product name.";
-    private static final String INVALID_HARDWARE_VERSION_VALUE = "Invalid hardware version value.";
-    private static final String INVALID_SOFTWARE_VERSION_VALUE = "Invalid software version value.";
-    private static final String INVALID_FIRMWARE_VERSION_VALUE = "Invalid Firmware version value.";
-    private static final String INVALID_PRODUCT_ID_VALUE = "Invalid product ID value.";
-    private static final String INVALID_VENDOR_NAME = "Invalid vendor name.";
+    private static final String INVALID_VENDOR_ID = "Invalid vendor ID for the device.";
+    private static final String INVALID_PRODUCT_NAME_EMPTY_ERROR = "Product name cannot be empty.";
+    private static final String INVALID_HARDWARE_VERSION_VALUE = "Hardware version value {0} is invalid for the device.";
+    private static final String INVALID_SOFTWARE_VERSION_VALUE = "Software version value {0} is invalid for the device.";
+    private static final String INVALID_FIRMWARE_VERSION_VALUE = "Firmware version value {0} is invalid for the device.";
+    private static final String INVALID_PRODUCT_ID_VALUE = "Invalid product ID for the device.";
+    private static final String INVALID_VENDOR_NAME_EMPTY_ERROR = "Vendor name cannot be empty.";
+    private static final String INVALID_VENDOR_NAME_SPACE_ERROR = "Vendor name cannot start with spaces.";
+    private static final String INVALID_PRODUCT_NAME_SPACE_ERROR = "Product name cannot start with spaces.";
 
     private static final String OBJECT_DICTIONARY_HYPERLINK_DESCRIPTION = ": To edit the POWERLINK object dictionary of the device.";
     private static final String NETWORK_MANAGEMENT_HYPERLINK_DESCRIPTION = ": To configure network management properties.";
+
+    private static final String PROJECT_INFORMATION_SECTION_HEADING = "Project Information";
+    private static final String PROJECT_INFORMATION_SECTION_HEADING_DESCRIPTION = "Provides detailed project information.";
+    private static final String GENERATOR_SECTION_MODIFIED_BY_LABEL = "Modified By:";
+    private static final String GENERATOR_SECTION_CREATED_BY_LABEL = "Created By:";
+    private static final String GENERATOR_SECTION_MODIFIED_ON_LABEL = "Modified On:";
+    private static final String GENERATOR_SECTION_CREATED_ON_LABEL = "Created On:";
+    private static final String GENERATOR_SECTION_VERSION_LABEL = "Version:";
+    private static final String GENERATOR_SECTION_TOOL_NAME_LABEL = "Tool Name:";
+    private static final String GENERATOR_SECTION_VENDOR_NAME_LABEL = "Vendor:";
 
     /**
      * Name verify listener
@@ -204,6 +225,14 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
     private Button addImageSettingsButton;
     private Button editImageSettingsButton;
     private Button deleteImageSettingsButton;
+
+    private Text generatorToolNameText;
+    private Text generatorVendorText;
+    private Text generatorVersionText;
+    private Text generatorCreatedByText;
+    private Text generatorCreatedOnText;
+    private Text generatorModifiedOnText;
+    private Text generatorModifiedByText;
 
     /**
      * Controls for Firmware setting tag
@@ -306,10 +335,166 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
         body.setLayout(layout);
 
         createGeneralInfoWidgets(managedForm);
-        createHyperLinkSection(managedForm);
-        createDeviceFirmwwareSection(managedForm);
-        createDevImageSection(managedForm);
 
+        createProjectInformationSection(managedForm);
+        createHyperLinkSection(managedForm);
+        // createDeviceFirmwwareSection(managedForm);
+        // createDevImageSection(managedForm);
+
+    }
+
+    /**
+     * Creates the section for the project information details.
+     *
+     * @param managedForm
+     *            The parent form.
+     */
+    private void createProjectInformationSection(final IManagedForm managedForm) {
+        Section projectInformationSection = toolkit.createSection(managedForm.getForm().getBody(),
+                ExpandableComposite.EXPANDED | Section.DESCRIPTION | ExpandableComposite.TWISTIE
+                        | ExpandableComposite.TITLE_BAR);
+        managedForm.getToolkit().paintBordersFor(projectInformationSection);
+        projectInformationSection.setText(DeviceDescriptionFileEditorPage.PROJECT_INFORMATION_SECTION_HEADING);
+        projectInformationSection
+                .setDescription(DeviceDescriptionFileEditorPage.PROJECT_INFORMATION_SECTION_HEADING_DESCRIPTION);
+
+        Composite client = toolkit.createComposite(projectInformationSection, SWT.WRAP);
+        GridLayout layout = new GridLayout(2, false);
+        layout.marginWidth = 2;
+        layout.marginHeight = 2;
+        client.setLayout(layout);
+        toolkit.paintBordersFor(client);
+        projectInformationSection.setClient(client);
+
+        Label generatorvendor = new Label(client, SWT.NONE);
+        generatorvendor.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+        generatorvendor.setText(DeviceDescriptionFileEditorPage.GENERATOR_SECTION_VENDOR_NAME_LABEL);
+        toolkit.adapt(generatorvendor, true, true);
+        generatorvendor.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
+
+        generatorVendorText = new Text(client, SWT.BORDER | SWT.WRAP);
+        generatorVendorText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+        toolkit.adapt(generatorVendorText, true, true);
+        generatorVendorText.setEnabled(false);
+        generatorVendorText.setText(PROJECT_INFORMATION_VENDOR_NAME);
+
+        Label generatortoolName = new Label(client, SWT.NONE);
+        generatortoolName.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+        generatortoolName.setText(DeviceDescriptionFileEditorPage.GENERATOR_SECTION_TOOL_NAME_LABEL);
+        toolkit.adapt(generatortoolName, true, true);
+        generatortoolName.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
+
+        generatorToolNameText = new Text(client, SWT.BORDER | SWT.WRAP);
+        generatorToolNameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+        toolkit.adapt(generatorToolNameText, true, true);
+        generatorToolNameText.setEnabled(false);
+        generatorToolNameText.setText(PROJECT_INFORMATION_TOOL_NAME);
+
+        Label generatorVersion = new Label(client, SWT.NONE);
+        generatorVersion.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+        generatorVersion.setText(DeviceDescriptionFileEditorPage.GENERATOR_SECTION_VERSION_LABEL);
+        toolkit.adapt(generatorVersion, true, true);
+        generatorVersion.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
+
+        generatorVersionText = new Text(client, SWT.BORDER | SWT.WRAP);
+        generatorVersionText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+        toolkit.adapt(generatorVersionText, true, true);
+        generatorVersionText.setEnabled(false);
+        generatorVersionText.setText(PROJECT_INFORMATION_VERSION_NUMBER);
+
+        Label generatorCreatedOn = new Label(client, SWT.NONE);
+        generatorCreatedOn.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+        generatorCreatedOn.setText(DeviceDescriptionFileEditorPage.GENERATOR_SECTION_CREATED_ON_LABEL);
+        toolkit.adapt(generatorCreatedOn, true, true);
+        generatorCreatedOn.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
+
+        generatorCreatedOnText = new Text(client, SWT.BORDER | SWT.WRAP);
+        generatorCreatedOnText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+        toolkit.adapt(generatorCreatedOnText, true, true);
+        generatorCreatedOnText.setEnabled(false);
+
+        Label generatorModifiedOn = new Label(client, SWT.NONE);
+        generatorModifiedOn.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+        generatorModifiedOn.setText(DeviceDescriptionFileEditorPage.GENERATOR_SECTION_MODIFIED_ON_LABEL);
+        toolkit.adapt(generatorModifiedOn, true, true);
+        generatorModifiedOn.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
+
+        generatorModifiedOnText = new Text(client, SWT.BORDER | SWT.WRAP);
+        generatorModifiedOnText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+        toolkit.adapt(generatorModifiedOnText, true, true);
+        generatorModifiedOnText.setEnabled(false);
+
+        Label generatorCreatedBy = new Label(client, SWT.NONE);
+        generatorCreatedBy.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+        generatorCreatedBy.setText(DeviceDescriptionFileEditorPage.GENERATOR_SECTION_CREATED_BY_LABEL);
+        toolkit.adapt(generatorCreatedBy, true, true);
+        generatorCreatedBy.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
+
+        generatorCreatedByText = new Text(client, SWT.BORDER | SWT.WRAP);
+        generatorCreatedByText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+        toolkit.adapt(generatorCreatedByText, true, true);
+        generatorCreatedByText.setEnabled(false);
+
+        Label generatorModifiedBy = new Label(client, SWT.NONE);
+        generatorModifiedBy.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+        generatorModifiedBy.setText(DeviceDescriptionFileEditorPage.GENERATOR_SECTION_MODIFIED_BY_LABEL);
+        toolkit.adapt(generatorModifiedBy, true, true);
+        generatorModifiedBy.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
+
+        generatorModifiedByText = new Text(client, SWT.BORDER | SWT.WRAP);
+        generatorModifiedByText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+        toolkit.adapt(generatorModifiedByText, true, true);
+        generatorModifiedByText.setEnabled(false);
+
+        updateProjectInformation();
+
+    }
+
+    /**
+     * Updates the project information details.
+     */
+
+    private void updateProjectInformation() {
+
+        ProfileBodyDataType projectInformation = getProfileBody();
+        if (projectInformation.getFileCreationDate() != null) {
+            if (projectInformation.getFileCreationTime() != null) {
+                generatorCreatedOnText.setText((projectInformation.getFileCreationDate().toString())
+                        + (projectInformation.getFileCreationTime().toString()));
+            }
+        } else {
+            generatorCreatedOnText.setText(StringUtils.EMPTY);
+        }
+        if (projectInformation.getFileModificationDate() != null) {
+            if (projectInformation.getFileModificationTime() != null) {
+                generatorModifiedOnText.setText((projectInformation.getFileModificationDate().toString())
+                        + (projectInformation.getFileModificationTime().toString()));
+            }
+        } else {
+            generatorModifiedOnText.setText(StringUtils.EMPTY);
+
+        }
+        if (projectInformation.getFileCreator() != null) {
+            generatorCreatedByText.setText(projectInformation.getFileCreator());
+        } else {
+            generatorCreatedByText.setText(System.getProperty("user.name"));
+        }
+        if (projectInformation.getFileCreator() != null) {
+            generatorModifiedByText.setText(projectInformation.getFileModifiedBy());
+        } else {
+            generatorModifiedByText.setText(System.getProperty("user.name"));
+        }
+    }
+
+    /**
+     * Receives the project information details from the {@link DocumentRoot}.
+     */
+    public ProfileBodyDataType getProfileBody() {
+
+        EList<ISO15745ProfileType> profiles = documentRoot.getISO15745ProfileContainer().getISO15745Profile();
+        ISO15745ProfileType profile1 = profiles.get(0);
+        ProfileBodyDataType projectInformation = profile1.getProfileBody();
+        return projectInformation;
     }
 
     /**
@@ -509,18 +694,17 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
             try {
 
                 if (productName == null) {
-                    setErrorMessage(INVALID_PRODUCT_NAME);
+                    setErrorMessage(INVALID_PRODUCT_NAME_EMPTY_ERROR);
                     return;
                 }
 
                 if (productName.length() <= 0) {
-                    setErrorMessage(INVALID_PRODUCT_NAME);
+                    setErrorMessage(INVALID_PRODUCT_NAME_EMPTY_ERROR);
                     return;
                 }
 
-                // Space as first character is not allowed. ppc:tNonEmptyString
-                if (productName.contains(" ")) {
-                    setErrorMessage(INVALID_PRODUCT_NAME);
+                if (productName.substring(0, 2).contains(" ")) {
+                    setErrorMessage(INVALID_PRODUCT_NAME_SPACE_ERROR);
                     return;
                 }
 
@@ -533,7 +717,7 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
                 }
                 updateDocument(documentRoot);
             } catch (NumberFormatException ex) {
-                setErrorMessage(INVALID_PRODUCT_NAME);
+                setErrorMessage(INVALID_PRODUCT_NAME_EMPTY_ERROR);
                 ex.printStackTrace();
                 return;
             }
@@ -550,18 +734,24 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
             try {
 
                 if (hardwareVerText == null) {
-                    setErrorMessage(INVALID_HARDWARE_VERSION_VALUE);
+                    setErrorMessage(MessageFormat.format(INVALID_HARDWARE_VERSION_VALUE, "'" + hardwareVerText + "'"));
                     return;
                 }
 
                 if (hardwareVerText.length() <= 0) {
-                    setErrorMessage(INVALID_HARDWARE_VERSION_VALUE);
+                    setErrorMessage(MessageFormat.format(INVALID_HARDWARE_VERSION_VALUE, "'" + hardwareVerText + "'"));
+                    return;
+                }
+
+                Integer hardwareVersion = Integer.valueOf(hardwareVerText);
+                if (hardwareVersion < 0) {
+                    setErrorMessage(MessageFormat.format(INVALID_HARDWARE_VERSION_VALUE, "'" + hardwareVerText + "'"));
                     return;
                 }
 
                 // Space as first character is not allowed. ppc:tNonEmptyString
                 if (hardwareVerText.contains(" ")) {
-                    setErrorMessage(INVALID_HARDWARE_VERSION_VALUE);
+                    setErrorMessage(MessageFormat.format(INVALID_HARDWARE_VERSION_VALUE, "'" + hardwareVerText + "'"));
                     return;
                 }
 
@@ -578,13 +768,14 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
                         TVersion hwVersion = XDDFactory.eINSTANCE.createTVersion();
                         hwVersion.setVersionType(VersionTypeType.HW);
                         hwVersion.setValue(hardwareVerText);
+                        getDeviceIdentity().getVersion().add(hwVersion);
                     }
 
                 }
 
                 updateDocument(documentRoot);
             } catch (NumberFormatException ex) {
-                setErrorMessage(INVALID_HARDWARE_VERSION_VALUE);
+                setErrorMessage(MessageFormat.format(INVALID_HARDWARE_VERSION_VALUE, "'" + hardwareVerText + "'"));
                 ex.printStackTrace();
                 return;
             }
@@ -601,18 +792,24 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
             try {
 
                 if (softwareVerText == null) {
-                    setErrorMessage(INVALID_SOFTWARE_VERSION_VALUE);
+                    setErrorMessage(MessageFormat.format(INVALID_SOFTWARE_VERSION_VALUE, "'" + softwareVerText + "'"));
                     return;
                 }
 
                 if (softwareVerText.length() <= 0) {
-                    setErrorMessage(INVALID_SOFTWARE_VERSION_VALUE);
+                    setErrorMessage(MessageFormat.format(INVALID_SOFTWARE_VERSION_VALUE, "'" + softwareVerText + "'"));
                     return;
                 }
 
                 // Space as first character is not allowed. ppc:tNonEmptyString
                 if (softwareVerText.contains(" ")) {
-                    setErrorMessage(INVALID_SOFTWARE_VERSION_VALUE);
+                    setErrorMessage(MessageFormat.format(INVALID_SOFTWARE_VERSION_VALUE, "'" + softwareVerText + "'"));
+                    return;
+                }
+
+                Integer hardwareVersion = Integer.valueOf(softwareVerText);
+                if (hardwareVersion < 0) {
+                    setErrorMessage(MessageFormat.format(INVALID_SOFTWARE_VERSION_VALUE, "'" + softwareVerText + "'"));
                     return;
                 }
 
@@ -629,12 +826,13 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
                         TVersion hwVersion = XDDFactory.eINSTANCE.createTVersion();
                         hwVersion.setVersionType(VersionTypeType.SW);
                         hwVersion.setValue(softwareVerText);
+                        getDeviceIdentity().getVersion().add(hwVersion);
                     }
 
                 }
                 updateDocument(documentRoot);
             } catch (NumberFormatException ex) {
-                setErrorMessage(INVALID_SOFTWARE_VERSION_VALUE);
+                setErrorMessage(MessageFormat.format(INVALID_SOFTWARE_VERSION_VALUE, "'" + softwareVerText + "'"));
                 ex.printStackTrace();
                 return;
             }
@@ -651,18 +849,24 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
             try {
 
                 if (firmwareVerText == null) {
-                    setErrorMessage(INVALID_FIRMWARE_VERSION_VALUE);
+                    setErrorMessage(MessageFormat.format(INVALID_FIRMWARE_VERSION_VALUE, "'" + firmwareVerText + "'"));
                     return;
                 }
 
                 if (firmwareVerText.length() <= 0) {
-                    setErrorMessage(INVALID_FIRMWARE_VERSION_VALUE);
+                    setErrorMessage(MessageFormat.format(INVALID_FIRMWARE_VERSION_VALUE, "'" + firmwareVerText + "'"));
                     return;
                 }
 
                 // Space as first character is not allowed. ppc:tNonEmptyString
                 if (firmwareVerText.contains(" ")) {
-                    setErrorMessage(INVALID_FIRMWARE_VERSION_VALUE);
+                    setErrorMessage(MessageFormat.format(INVALID_FIRMWARE_VERSION_VALUE, "'" + firmwareVerText + "'"));
+                    return;
+                }
+
+                Integer hardwareVersion = Integer.valueOf(firmwareVerText);
+                if (hardwareVersion < 0) {
+                    setErrorMessage(MessageFormat.format(INVALID_FIRMWARE_VERSION_VALUE, "'" + firmwareVerText + "'"));
                     return;
                 }
 
@@ -679,12 +883,13 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
                         TVersion fwVersion = XDDFactory.eINSTANCE.createTVersion();
                         fwVersion.setVersionType(VersionTypeType.FW);
                         fwVersion.setValue(firmwareVerText);
+                        getDeviceIdentity().getVersion().add(fwVersion);
                     }
 
                 }
                 updateDocument(documentRoot);
             } catch (NumberFormatException ex) {
-                setErrorMessage(INVALID_FIRMWARE_VERSION_VALUE);
+                setErrorMessage(MessageFormat.format(INVALID_FIRMWARE_VERSION_VALUE, "'" + firmwareVerText + "'"));
                 ex.printStackTrace();
                 return;
             }
@@ -753,18 +958,17 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
             try {
 
                 if (vendorName == null) {
-                    setErrorMessage(INVALID_VENDOR_NAME);
+                    setErrorMessage(INVALID_VENDOR_NAME_EMPTY_ERROR);
                     return;
                 }
 
                 if (vendorName.length() <= 0) {
-                    setErrorMessage(INVALID_VENDOR_NAME);
+                    setErrorMessage(INVALID_VENDOR_NAME_EMPTY_ERROR);
                     return;
                 }
 
-                // Space as first character is not allowed. ppc:tNonEmptyString
-                if (vendorName.contains(" ")) {
-                    setErrorMessage(INVALID_VENDOR_NAME);
+                if (vendorName.substring(0, 2).contains(" ")) {
+                    setErrorMessage(INVALID_VENDOR_NAME_SPACE_ERROR);
                     return;
                 }
 
@@ -777,7 +981,7 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
                 }
                 updateDocument(documentRoot);
             } catch (NumberFormatException ex) {
-                setErrorMessage(INVALID_VENDOR_NAME);
+                setErrorMessage(INVALID_VENDOR_NAME_EMPTY_ERROR);
                 ex.printStackTrace();
                 return;
             }
@@ -791,7 +995,7 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
 
         // Get the URI of the model file.
         URI fileURI = URI.createPlatformResourceURI(editor.getModelFile().getFullPath().toString(), true);
-
+        System.err.println("URRkjdksn.." + editor.getModelFile().getFullPath());
         // Create a resource for this file.
         Resource resource = resourceSet.createResource(fileURI);
 
@@ -927,8 +1131,9 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
             firmwareListicon = AbstractUIPlugin
                     .imageDescriptorFromPlugin("com.br_automation.buoat.xddeditor.editor", IPluginImages.OBJECT_ICON)
                     .createImage();
-            firmwareIcon = AbstractUIPlugin.imageDescriptorFromPlugin("com.br_automation.buoat.xddeditor.editor",
-                    IPluginImages.SUB_OBJECT_ICON).createImage();
+            firmwareIcon = AbstractUIPlugin
+                    .imageDescriptorFromPlugin("com.br_automation.buoat.xddeditor.editor", IPluginImages.FIRMWARE_ICON)
+                    .createImage();
 
         }
 
@@ -1096,6 +1301,8 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
 
         @Override
         public void widgetSelected(SelectionEvent e) {
+
+            // Files.delete(Paths.get(node.getAbsolutePathToXdc()));
             getDeviceFunction().getFirmwareList().getFirmware().remove(firmwareObj);
             updateDocument(documentRoot);
             listViewer.setInput(XDDPackage.eINSTANCE.getTFirmwareList());
@@ -1122,23 +1329,6 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
         toolkit.paintBordersFor(client);
         hyperLinkSection.setClient(client);
 
-        Hyperlink objDictionaryLink = toolkit.createHyperlink(client,
-                DeviceDescriptionFileEditorPage.OBJECT_DICTIONARY_HYPERLINK_SECTION, SWT.RIGHT | SWT.WRAP);
-        objDictionaryLink.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, true, false, 1, 1));
-        toolkit.adapt(objDictionaryLink, true, true);
-        objDictionaryLink.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
-        objDictionaryLink.addHyperlinkListener(new HyperlinkAdapter() {
-            @Override
-            public void linkActivated(HyperlinkEvent e) {
-                editor.setActivePage("com.buoat.xddeditor.editors.objectDictionaryEditorPage");
-            }
-        });
-
-        Label obdLabel = new Label(client, SWT.WRAP);
-        obdLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1));
-        obdLabel.setText(OBJECT_DICTIONARY_HYPERLINK_DESCRIPTION);
-        toolkit.adapt(obdLabel, true, true);
-
         Hyperlink nwMgmtLink = toolkit.createHyperlink(client,
                 DeviceDescriptionFileEditorPage.NETWORK_MANAGEMENT_HYPERLINK_SECTION, SWT.LEFT | SWT.WRAP);
         nwMgmtLink.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, true, false, 1, 1));
@@ -1155,6 +1345,23 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
         nwMngmtLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1));
         nwMngmtLabel.setText(NETWORK_MANAGEMENT_HYPERLINK_DESCRIPTION);
         toolkit.adapt(nwMngmtLabel, true, true);
+
+        Hyperlink objDictionaryLink = toolkit.createHyperlink(client,
+                DeviceDescriptionFileEditorPage.OBJECT_DICTIONARY_HYPERLINK_SECTION, SWT.RIGHT | SWT.WRAP);
+        objDictionaryLink.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, true, false, 1, 1));
+        toolkit.adapt(objDictionaryLink, true, true);
+        objDictionaryLink.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
+        objDictionaryLink.addHyperlinkListener(new HyperlinkAdapter() {
+            @Override
+            public void linkActivated(HyperlinkEvent e) {
+                editor.setActivePage("com.buoat.xddeditor.editors.objectDictionaryEditorPage");
+            }
+        });
+
+        Label obdLabel = new Label(client, SWT.WRAP);
+        obdLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1));
+        obdLabel.setText(OBJECT_DICTIONARY_HYPERLINK_DESCRIPTION);
+        toolkit.adapt(obdLabel, true, true);
 
     }
 

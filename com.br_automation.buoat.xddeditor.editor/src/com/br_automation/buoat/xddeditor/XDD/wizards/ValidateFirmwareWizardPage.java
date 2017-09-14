@@ -127,18 +127,18 @@ public class ValidateFirmwareWizardPage extends WizardPage {
 
     private static final String DIALOG_PAGE_NAME = "ValidateFirmwarewizardPage";
     private static final String BROWSE_CONFIGURATION_LABEL = "Browse...";
-    private static final String IMPORT_FIRMWARE_FILE_DIALOG_LABEL = "Import firmware file for XDD/XDC.";
+    private static final String IMPORT_FIRMWARE_FILE_DIALOG_LABEL = "Import firmware file for the device.";
     private static final String ERROR_CHOOSE_VALID_FILE_MESSAGE = "Choose a valid firmware file.";
     private static final String ERROR_CHOOSE_VALID_PATH_MESSAGE = "Firmware file does not exist in the path: ";
-    private static final String VALID_FILE_MESSAGE = "Firmware file is valid for the device {0}.";
+    private static final String VALID_FILE_MESSAGE = "Firmware file {0} is valid for the device.";
 
     private static final String[] FIRMWARE_FILTER_EXTENSIONS = { "*.fw" };
 
     private static final String[] CONFIGURATION_FILTER_NAMES_EXTENSIONS = { "Firmware files (*.fw)" };
 
     private static final String ERROR_PRAM_VALIDATION_FAILED_HEADER = "{0} does not match.";
-    private static final String ERROR_PRAM_VALIDATION_FAILED_DETAIL_NODE = "Firmware file {0} with {1} {2} does not match with the {1} {4} value {3} of XDD/XDC.";
-    private static final String ERROR_XDD_PARAM_NOTFOUND = "Validation parameters missing from XDD.";
+    private static final String ERROR_PRAM_VALIDATION_FAILED_DETAIL_NODE = "Firmware file {0} with {1} {2} does not match with the {1} {4} value {3} of the device.";
+    private static final String ERROR_XDD_PARAM_NOTFOUND = "Validation parameter {0} is missing in the device.";
 
     private static final String VENDOR_ID = "vendor ID";
     private static final String PRODUCT_CODE = "product code";
@@ -348,7 +348,11 @@ public class ValidateFirmwareWizardPage extends WizardPage {
 
             return false;
         }
-        getErrorStyledText(ERROR_XDD_PARAM_NOTFOUND);
+        if (xddVendorId.isEmpty()) {
+            getErrorStyledText(MessageFormat.format(ERROR_XDD_PARAM_NOTFOUND, "'vendor ID'"));
+        } else if (xddProductCode.isEmpty()) {
+            getErrorStyledText(MessageFormat.format(ERROR_XDD_PARAM_NOTFOUND, "'product ID'"));
+        }
         return false;
 
     }
@@ -426,9 +430,9 @@ public class ValidateFirmwareWizardPage extends WizardPage {
                 }
                 e.printStackTrace();
             } finally {
-            	 if (outputStream != null) {
-            	outputStream.close();
-            	 }
+                if (outputStream != null) {
+                    outputStream.close();
+                }
             }
 
         } catch (IOException e) {
@@ -468,7 +472,7 @@ public class ValidateFirmwareWizardPage extends WizardPage {
                 return false;
             }
 
-            String validFileMssg = MessageFormat.format(VALID_FILE_MESSAGE, "'" + "File name to be updated" + "'");
+            String validFileMssg = MessageFormat.format(VALID_FILE_MESSAGE, "'" + firmwareFile.getName() + "'");
             getInfoStyledText(validFileMssg);
 
         } else {

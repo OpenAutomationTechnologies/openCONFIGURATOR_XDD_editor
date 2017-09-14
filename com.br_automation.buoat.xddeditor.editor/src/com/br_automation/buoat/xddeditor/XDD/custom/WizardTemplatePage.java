@@ -17,10 +17,10 @@ import org.eclipse.swt.widgets.Label;
 /**
  * @brief Wizard to choose Template and if the ConfigurationWizard should be
  *        used.
- * 
+ *
  *        Provides a combobox and checkbox to set template and ask if the
  *        advanced wizard should be used.
- * 
+ *
  * @author Joris Lückenga
  */
 public class WizardTemplatePage extends WizardPage {
@@ -61,6 +61,7 @@ public class WizardTemplatePage extends WizardPage {
         this.rbtnLoadEmptyXDD = new Button(composite, SWT.RADIO);
         this.rbtnLoadEmptyXDD.setBounds(10, 121, 149, 16);
         this.rbtnLoadEmptyXDD.setText("Create an empty XDD file");
+        rbtnLoadEmptyXDD.setVisible(false);
         //If Empty Project is loaded....
         this.rbtnLoadEmptyXDD.addSelectionListener(new SelectionAdapter() {
             @Override

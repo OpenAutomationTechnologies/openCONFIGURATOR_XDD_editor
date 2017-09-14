@@ -331,6 +331,7 @@ public final class DeviceDescriptionFileEditor extends FormEditor
 
     public DocumentRoot getDocumentRoot() {
         java.net.URI uri = projectFile.getLocationURI();
+        System.err.println("URI.. jav anet.." + uri);
         DocumentRoot root = null;
         try {
             URL url = uri.toURL();
@@ -427,7 +428,6 @@ public final class DeviceDescriptionFileEditor extends FormEditor
         // switch page
         super.pageChange(newPageIndex);
 
-
     }
 
     @Override
@@ -502,19 +502,14 @@ public final class DeviceDescriptionFileEditor extends FormEditor
                 closeEditor();
             }
             break;
-        case IResourceDelta.CHANGED:
-            if (oldDelta.getFlags() == IResourceDelta.CONTENT) {
-                setInput(new FileEditorInput(currentProjectFile));
-                Display.getDefault().asyncExec(new Runnable() {
-                    @Override
-                    public void run() {
-
-                    }
-                });
-
-            }
-
-            break;
+        // case IResourceDelta.CHANGED:
+        // if (oldDelta.getFlags() == IResourceDelta.CONTENT) {
+        // setInput(new FileEditorInput(currentProjectFile));
+        //
+        //
+        // }
+        //
+        // break;
         default:
             break;
         }
@@ -628,7 +623,6 @@ public final class DeviceDescriptionFileEditor extends FormEditor
             getSite().getShell().getDisplay().asyncExec(runnable);
         }
     }
-
 
     @Override
     public Object getAdapter(Class key) {
