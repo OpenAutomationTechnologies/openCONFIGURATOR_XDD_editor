@@ -72,6 +72,7 @@ import com.br_automation.buoat.xddeditor.XDD.custom.Messages;
 import com.br_automation.buoat.xddeditor.XDD.custom.XDDUtilities;
 import com.br_automation.buoat.xddeditor.XDD.impl.SubObjectTypeImpl;
 import com.br_automation.buoat.xddeditor.XDD.impl.TObjectImpl;
+import com.br_automation.buoat.xddeditor.XDD.resources.IPowerlinkConstants;
 
 /**
  * Class to create a wizard page to add sub object
@@ -98,6 +99,18 @@ public class AddSubObjectWizardPage extends WizardPage {
 
     public static final int MANUFACTURER_PROFILE_SUB_OBJ_START_INDEX = 0x00;
     public static final int MANUFACTURER_PROFILE_SUB_OBJ_END_INDEX = 0xFF;
+
+    private static final String[] DATA_TYPE_LIST = new String[] { "Boolean", "Integer8", "Integer16", "Integer32",
+            "Unsigned8", "Unsigned16", "Unsigned32", "Real32", "Visible_String", "Integer24", "Real64", "Integer40",
+            "Integer48", "Integer56", "Integer64", "Octet_String", "Unicode_String", "Time_of_Day", "Time_Diff",
+            "Domain", "Unsigned24", "Unsigned40", "Unsigned48", "Unsigned56", "Unsigned64", "MAC_ADDRESS", "IP_ADDRESS",
+            "NETTIME" };
+
+    private static final String[] PDO_MAPPING_TYPES = new String[] { "Non-mappable", "Mapped by default",
+            "Mapped optionally", "Trasmit process data objects", "Receive process data objects" };
+
+    private static final String[] ACCESS_TYPE_LIST = new String[] { "Constant", "Read only", "Write only",
+            "Read write" };
 
     /**
      * @param pageID
@@ -194,30 +207,15 @@ public class AddSubObjectWizardPage extends WizardPage {
         lblAccessType.setBounds(10, 51, 120, 21);
 
         comboAccessType = new Combo(grpAddObjectAdvancedOptions, SWT.NONE | SWT.READ_ONLY);
-        comboAccessType.setItems(new String[] { "Constant", "Read only", "Write only", "Read write" });
+        comboAccessType.setItems(ACCESS_TYPE_LIST);
         comboAccessType.setBounds(136, 51, 140, 25);
         comboAccessType.select(0);
+        comboAccessType.setText(ACCESS_TYPE_LIST[0]);
         comboAccessType.addSelectionListener(new SelectionAdapter() {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
                 subAccessType = comboAccessType.getText();
-            }
-        });
-
-        comboDataType = new Combo(grpAddObjectAdvancedOptions, SWT.NONE | SWT.READ_ONLY);
-        comboDataType.setItems(new String[] { "Boolean", "Integer8", "Integer16", "Integer32", "Unsigned8",
-                "Unsigned16", "Unsigned32", "Real32", "Visible_String", "Integer24", "Real64", "Integer40", "Integer48",
-                "Integer56", "Integer64", "Octet_String", "Unicode_String", "Time_of_Day", "Time_Diff", "Domain",
-                "Unsigned24", "Unsigned40", "Unsigned48", "Unsigned56", "Unsigned64", "MAC_ADDRESS", "IP_ADDRESS",
-                "NETTIME" });
-        comboDataType.setBounds(136, 22, 140, 25);
-        comboDataType.select(0);
-        comboDataType.addSelectionListener(new SelectionAdapter() {
-
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                subDataType = comboDataType.getText();
             }
         });
 
@@ -252,10 +250,10 @@ public class AddSubObjectWizardPage extends WizardPage {
         lblPdoMapping.setBounds(10, 80, 120, 21);
 
         comboPdoMapping = new Combo(grpAddObjectAdvancedOptions, SWT.NONE | SWT.READ_ONLY);
-        comboPdoMapping.setItems(new String[] { "Non-mappable", "Mapped by default", "Mapped optionally",
-                "Trasmit process data objects", "Receive process data objects" });
+        comboPdoMapping.setItems(PDO_MAPPING_TYPES);
         comboPdoMapping.setBounds(136, 78, 140, 23);
         comboPdoMapping.select(0);
+        comboPdoMapping.setText(PDO_MAPPING_TYPES[0]);
         comboPdoMapping.addSelectionListener(new SelectionAdapter() {
 
             @Override
@@ -355,9 +353,10 @@ public class AddSubObjectWizardPage extends WizardPage {
         });
 
         comboSubObjType = new Combo(grpSubObjDetails, SWT.NONE | SWT.READ_ONLY);
-        comboSubObjType.setItems(new String[] { "7- VAR", "8 - ARRAY", "9 - RECORD" });
+        comboSubObjType.setItems(IPowerlinkConstants.OBJECT_TYPES);
         comboSubObjType.setBounds(115, 67, 140, 23);
         comboSubObjType.select(0);
+        comboSubObjType.setText(IPowerlinkConstants.OBJECT_TYPES[0]);
         comboSubObjType.addSelectionListener(new SelectionAdapter() {
 
             @Override
@@ -365,6 +364,46 @@ public class AddSubObjectWizardPage extends WizardPage {
                 subObjectType = comboSubObjType.getText();
             }
         });
+
+        comboDataType = new Combo(grpAddObjectAdvancedOptions, SWT.NONE | SWT.READ_ONLY);
+        comboDataType.setItems(DATA_TYPE_LIST);
+        comboDataType.setBounds(136, 22, 140, 25);
+        comboDataType.select(0);
+        subDataType = comboDataType.getText();
+        comboDataType.setText(DATA_TYPE_LIST[0]);
+        if (subDataType.contentEquals("Boolean")) {
+            txtDefaultValue.setEnabled(false);
+            txtHighLimit.setEnabled(false);
+            txtLowLimit.setEnabled(false);
+        } else {
+            txtDefaultValue.setEnabled(true);
+            txtHighLimit.setEnabled(true);
+            txtLowLimit.setEnabled(true);
+        }
+        comboDataType.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                subDataType = comboDataType.getText();
+                if (subDataType.contentEquals("Boolean")) {
+                    txtDefaultValue.setEnabled(false);
+                    txtHighLimit.setEnabled(false);
+                    txtLowLimit.setEnabled(false);
+                } else {
+                    txtDefaultValue.setEnabled(true);
+                    txtHighLimit.setEnabled(true);
+                    txtLowLimit.setEnabled(true);
+                }
+
+                String defaultVal = txtDefaultValue.getText();
+                txtDefaultValue.setText(defaultVal);
+                String highLimit = txtHighLimit.getText();
+                txtHighLimit.setText(highLimit);
+                String lowLimit = txtLowLimit.getText();
+                txtLowLimit.setText(lowLimit);
+            }
+        });
+
     } // createControl
 
     private Combo comboSubObjType;
@@ -390,18 +429,29 @@ public class AddSubObjectWizardPage extends WizardPage {
         return subHighLimit;
     }
 
+    public String getObjectType(short objectType) {
+        if (objectType == 7) {
+            return IPowerlinkConstants.OBJECT_TYPES[0];
+        } else if (objectType == 8) {
+            return IPowerlinkConstants.OBJECT_TYPES[1];
+        } else if (objectType == 9) {
+            return IPowerlinkConstants.OBJECT_TYPES[2];
+        }
+        return StringUtils.EMPTY;
+    }
+
     public short getSubObjectType() {
 
-        if (subObjectType == null) {
+        if (subObjectType.isEmpty()) {
             subObjectType = comboSubObjType.getText();
         }
-        if (subObjectType.equalsIgnoreCase("Variable")) {
+        if (subObjectType.equalsIgnoreCase(IPowerlinkConstants.OBJECT_TYPES[0])) {
             return 7;
         }
-        if (subObjectType.equalsIgnoreCase("Array")) {
+        if (subObjectType.equalsIgnoreCase(IPowerlinkConstants.OBJECT_TYPES[1])) {
             return 8;
         }
-        if (subObjectType.equalsIgnoreCase("Record")) {
+        if (subObjectType.equalsIgnoreCase(IPowerlinkConstants.OBJECT_TYPES[2])) {
             return 9;
         }
         return 0;
@@ -430,20 +480,16 @@ public class AddSubObjectWizardPage extends WizardPage {
     }
 
     public byte[] getDataType() {
-        if (subDataType == null) {
+        if (subDataType.isEmpty()) {
             subDataType = comboDataType.getText();
         }
-        if (!subDataType.isEmpty()) {
-
-            return DatatypeConverter.parseHexBinary(getDatTypeValue(subDataType));
-        }
-        return null;
+        return DatatypeConverter.parseHexBinary(getDatTypeValue(subDataType));
     }
 
     public TObjectPDOMapping getPdoMapping() {
 
         subPdoMapping = comboPdoMapping.getText();
-        if (subPdoMapping == null) {
+        if (subPdoMapping.isEmpty()) {
             subPdoMapping = comboPdoMapping.getText();
         }
         if (subPdoMapping.equalsIgnoreCase("Non-mappable")) {
@@ -465,7 +511,7 @@ public class AddSubObjectWizardPage extends WizardPage {
     }
 
     public TObjectAccessType getAccessType() {
-        if (subAccessType == null) {
+        if (subAccessType.isEmpty()) {
             subAccessType = comboAccessType.getText();
         }
 
@@ -490,6 +536,105 @@ public class AddSubObjectWizardPage extends WizardPage {
 
     public XMLGregorianCalendar getCreationTimeXML() {
         return XDDUtilities.getXMLTime();
+    }
+
+    /**
+     * Gets the value of IEC data type
+     *
+     * @param dataType
+     *            Value of selected data type
+     * @return IEC value of data type
+     */
+    public String getDataTypeValue(String dataType) {
+        switch (dataType) {
+
+        case "0001":
+            return "Boolean";
+
+        case "0002":
+            return "Integer8";
+
+        case "0003":
+            return "Integer16";
+
+        case "0004":
+            return "Integer32";
+
+        case "0005":
+            return "Unsigned8";
+
+        case "0006":
+            return "Unsigned16";
+
+        case "0007":
+            return "Unsigned32";
+
+        case "0008":
+            return "Real32";
+
+        case "0009":
+            return "Visible_String";
+
+        case "0010":
+            return "Integer24";
+
+        case "0011":
+            return "Real64";
+
+        case "0012":
+            return "Integer40";
+
+        case "0013":
+            return "Integer48";
+
+        case "0014":
+            return "Integer56";
+
+        case "0015":
+            return "Integer64";
+
+        case "000A":
+            return "Octet_String";
+
+        case "000B":
+            return "Unicode_String";
+
+        case "000C":
+            return "Time_of_Day";
+
+        case "000D":
+            return "Time_Diff";
+
+        case "000F":
+            return "Domain";
+
+        case "0016":
+            return "Unsigned24";
+
+        case "0018":
+            return "Unsigned40";
+
+        case "0019":
+            return "Unsigned48";
+
+        case "001A":
+            return "Unsigned56";
+
+        case "001B":
+            return "Unsigned64";
+
+        case "0401":
+            return "MAC_ADDRESS";
+
+        case "0402":
+            return "IP_ADDRESS";
+
+        case "0403":
+            return "NETTIME";
+        default:
+            return "0000";
+        }
+
     }
 
     public String getDatTypeValue(String dataType) {
@@ -593,21 +738,60 @@ public class AddSubObjectWizardPage extends WizardPage {
         String defaultVal = getTxtDefaultValue();
         String lowLimit = getTxtLowLimit();
         String highLimit = getTxtHighLimit();
+        String dataType = getDatTypeValue(comboDataType.getText());
+        String objIndex = DatatypeConverter.printHexBinary(selObj.getIndex());
+        String pdoMapping = comboPdoMapping.getText();
+        String accessType = comboAccessType.getText();
+
+        if (selObj.getDataType() != null) {
+            if (selObj.getObjectType() == 8) {
+                String objDataType = DatatypeConverter.printHexBinary(selObj.getDataType());
+
+                int typeIndex = comboDataType.indexOf(getDataTypeValue(objDataType));
+                comboDataType.select(typeIndex);
+                comboDataType.setEnabled(false);
+            }
+        }
+
         setErrorMessage(null);
         if (index.isEmpty()) {
             setErrorMessage("Enter the hexadecimal sub object index value within the range (0x00 to 0xFF).");
             return false;
         }
-        if (!isValueHex(index)) {
-            setErrorMessage("Enter Sub Object value in hexadecimal format");
+
+        if (index.contains("0x")) {
+            if (index.length() > 4) {
+                setErrorMessage("Enter the hexadecimal sub object index value within the range (0x00 to 0xFF).");
+                return false;
+            }
+        } else {
+            if (index.length() > 2) {
+                setErrorMessage("Enter the sub-object index value within the range (0x00 to 0xFF).");
+                return false;
+            }
+        }
+
+        if (!isSubObjectIndexValid(index)) {
+            setErrorMessage("Sub-object index is out of range (0x00 to 0xFF).");
             return false;
         }
-        if (!isObjectIndexValid(index)) {
-            setErrorMessage("The index does not match the limit of user defined sub objects.");
+
+        if (!isSubObjectIndexIncremental(index)) {
+            setErrorMessage(
+                    "Sub-object index  '" + index + "' is invalid. Please enter the next valid sub-object index '"
+                            + Integer.toHexString(newSubIndex) + "'");
             return false;
         }
+
+        if (!isValidDataType(dataType)) {
+            setErrorMessage("Since the object type of object index  '" + objIndex + "' is '"
+                    + getObjectType(selObj.getObjectType()) + "'. Please select the data type as '"
+                    + getDataTypeValue(validDataType) + "'.");
+            return false;
+        }
+
         if (!isObjectIndexAvailable(index)) {
-            setErrorMessage("The Sub Object index '" + index + "' is already taken.");
+            setErrorMessage("Sub-object index '" + index + "' is already available.");
             return false;
         }
 
@@ -616,19 +800,109 @@ public class AddSubObjectWizardPage extends WizardPage {
             setErrorMessage("Enter the name of object.");
             return false;
         }
-        if (!isValidVal(defaultVal, "Default value")) {
+
+        if (!isPdoMappingValueValid(pdoMapping)) {
+            setErrorMessage("Sub-object with access type '" + accessType + "' does not allow '" + pdoMapping + "'.");
             return false;
         }
-        if (!isValidVal(lowLimit, "low value")) {
+
+        txtDefaultValue.setEnabled(true);
+        txtHighLimit.setEnabled(true);
+        txtLowLimit.setEnabled(true);
+
+        if (!defaultVal.isEmpty()) {
+            if (!isValidVal(defaultVal, "Default value")) {
+                return false;
+            }
+        }
+
+        if (!lowLimit.isEmpty()) {
+            if (!isValidVal(lowLimit, "low value")) {
+                return false;
+            }
+        }
+
+        if (!highLimit.isEmpty()) {
+            if (!isValidVal(highLimit, "high value")) {
+                return false;
+            }
+        }
+
+        if ((!highLimit.isEmpty()) && (!lowLimit.isEmpty()))
+            if (Integer.parseInt(lowLimit) > Integer.parseInt(highLimit)) {
+                setErrorMessage("Low limit cannot be greater than high limit.");
+                return false;
+            }
+        return true;
+    }
+
+    private String validDataType = StringUtils.EMPTY;
+
+    private boolean isValidDataType(String dataTypeVal) {
+        try {
+            if (selObj.getObjectType() == 8) {
+                List<SubObjectType> subObjList = selObj.getSubObject();
+                for (SubObjectType subObj : subObjList) {
+                    String subIndex = DatatypeConverter.printHexBinary(subObj.getSubIndex());
+                    if (subIndex.equalsIgnoreCase("01")) {
+                        validDataType = DatatypeConverter.printHexBinary(subObj.getDataType());
+
+                        if (validDataType.equalsIgnoreCase(dataTypeVal)) {
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+                return true;
+            }
+
+            return true;
+        } catch (NumberFormatException e) {
+
             return false;
         }
-        if (!isValidVal(highLimit, "high value")) {
-            return false;
+    }
+
+    /**
+     * Handles the PDO mapping value modifications.
+     *
+     * @param value
+     *            The value to be set.
+     * @return Returns a string indicating whether the given value is valid;
+     *         null means valid, and non-null means invalid, with the result
+     *         being the error message to display to the end user.
+     */
+    protected boolean isPdoMappingValueValid(String pdoMappingValue) {
+
+        TObjectAccessType accessType = getAccessType();
+        switch (pdoMappingValue) {
+        case "Non-mappable":
+            break;
+        case "Mapped by default":
+            break;
+        case "Mapped optionally":
+            break;
+        case "Trasmit process data objects":
+            if (accessType == TObjectAccessType.CONST) {
+                return false;
+            }
+            if (accessType == TObjectAccessType.RW) {
+                return false;
+            }
+            break;
+        case "Receive process data objects":
+            if (accessType == TObjectAccessType.CONST) {
+                return false;
+            }
+            if (accessType == TObjectAccessType.RO) {
+                return false;
+            }
+            break;
+        default:
+            break;
+
         }
-        if (Integer.parseInt(lowLimit) > Integer.parseInt(highLimit)) {
-            setErrorMessage("low value should not be greater than high value");
-            return false;
-        }
+
         return true;
     }
 
@@ -637,14 +911,14 @@ public class AddSubObjectWizardPage extends WizardPage {
             Integer val = Integer.parseInt(defVal);
             return true;
         } catch (NumberFormatException e) {
-            // TODO: handle exception
+
             return false;
         }
     }
 
     private boolean isValidVal(String highLowLimit, String str) {
         String dataType = comboDataType.getText();
-                if (!highLowLimit.isEmpty()) {
+        if (!highLowLimit.isEmpty()) {
             long llimit;
             switch (dataType) {
             case "Boolean": {
@@ -656,7 +930,7 @@ public class AddSubObjectWizardPage extends WizardPage {
                     } else
                         return true;
                 } catch (NumberFormatException e) {
-                    // TODO: handle exception
+
                     setErrorMessage(dataType + " accepts only decimal value");
                 }
             }
@@ -669,7 +943,7 @@ public class AddSubObjectWizardPage extends WizardPage {
                     } else
                         return true;
                 } catch (NumberFormatException e) {
-                    // TODO: handle exception
+
                     setErrorMessage(dataType + " accepts only decimal value");
                 }
             }
@@ -683,7 +957,7 @@ public class AddSubObjectWizardPage extends WizardPage {
                     } else
                         return true;
                 } catch (NumberFormatException e) {
-                    // TODO: handle exception
+
                     setErrorMessage(dataType + " accepts only decimal value");
                 }
             }
@@ -697,7 +971,7 @@ public class AddSubObjectWizardPage extends WizardPage {
                     } else
                         return true;
                 } catch (NumberFormatException e) {
-                    // TODO: handle exception
+
                     setErrorMessage(dataType + " accepts only decimal value");
                 }
             }
@@ -710,7 +984,7 @@ public class AddSubObjectWizardPage extends WizardPage {
                     } else
                         return true;
                 } catch (NumberFormatException e) {
-                    // TODO: handle exception
+
                     setErrorMessage(dataType + " accepts only decimal value");
                 }
             }
@@ -723,7 +997,7 @@ public class AddSubObjectWizardPage extends WizardPage {
                     } else
                         return true;
                 } catch (NumberFormatException e) {
-                    // TODO: handle exception
+
                     setErrorMessage(dataType + " accepts only decimal value");
                 }
             }
@@ -737,7 +1011,7 @@ public class AddSubObjectWizardPage extends WizardPage {
                     } else
                         return true;
                 } catch (NumberFormatException e) {
-                    // TODO: handle exception
+
                     setErrorMessage(dataType + " accepts only decimal value");
                 }
             }
@@ -751,7 +1025,7 @@ public class AddSubObjectWizardPage extends WizardPage {
                     } else
                         return true;
                 } catch (NumberFormatException e) {
-                    // TODO: handle exception
+
                     setErrorMessage(dataType + " accepts only decimal value");
                 }
             }
@@ -765,7 +1039,7 @@ public class AddSubObjectWizardPage extends WizardPage {
                     } else
                         return true;
                 } catch (NumberFormatException e) {
-                    // TODO: handle exception
+
                     setErrorMessage(dataType + " accepts only decimal value");
                 }
 
@@ -779,7 +1053,7 @@ public class AddSubObjectWizardPage extends WizardPage {
                     } else
                         return true;
                 } catch (NumberFormatException e) {
-                    // TODO: handle exception
+
                     setErrorMessage(dataType + " accepts only decimal value");
                 }
 
@@ -794,7 +1068,7 @@ public class AddSubObjectWizardPage extends WizardPage {
                     } else
                         return true;
                 } catch (NumberFormatException e) {
-                    // TODO: handle exception
+
                     setErrorMessage(dataType + " accepts only decimal value");
                 }
 
@@ -809,7 +1083,7 @@ public class AddSubObjectWizardPage extends WizardPage {
                     } else
                         return true;
                 } catch (NumberFormatException e) {
-                    // TODO: handle exception
+
                     setErrorMessage(dataType + " accepts only decimal value");
                 }
 
@@ -824,7 +1098,7 @@ public class AddSubObjectWizardPage extends WizardPage {
                     } else
                         return true;
                 } catch (NumberFormatException e) {
-                    // TODO: handle exception
+
                     setErrorMessage(dataType + " accepts only decimal value");
                 }
 
@@ -839,7 +1113,7 @@ public class AddSubObjectWizardPage extends WizardPage {
                     } else
                         return true;
                 } catch (NumberFormatException e) {
-                    // TODO: handle exception
+
                     setErrorMessage(dataType + " accepts only decimal value");
                 }
 
@@ -854,7 +1128,7 @@ public class AddSubObjectWizardPage extends WizardPage {
                     } else
                         return true;
                 } catch (NumberFormatException e) {
-                    // TODO: handle exception
+
                     setErrorMessage(dataType + " accepts only decimal value");
                 }
 
@@ -868,7 +1142,7 @@ public class AddSubObjectWizardPage extends WizardPage {
                     } else
                         return true;
                 } catch (NumberFormatException e) {
-                    // TODO: handle exception
+
                     setErrorMessage(dataType + " accepts only decimal value");
                 }
             }
@@ -881,7 +1155,7 @@ public class AddSubObjectWizardPage extends WizardPage {
                     } else
                         return true;
                 } catch (NumberFormatException e) {
-                    // TODO: handle exception
+
                     setErrorMessage(dataType + " accepts only decimal value");
                 }
             }
@@ -895,7 +1169,7 @@ public class AddSubObjectWizardPage extends WizardPage {
                     } else
                         return true;
                 } catch (NumberFormatException e) {
-                    // TODO: handle exception
+
                     setErrorMessage(dataType + " accepts only decimal value");
                 }
 
@@ -910,7 +1184,7 @@ public class AddSubObjectWizardPage extends WizardPage {
                     } else
                         return true;
                 } catch (NumberFormatException e) {
-                    // TODO: handle exception
+
                     setErrorMessage(dataType + " accepts only decimal value");
                 }
 
@@ -925,7 +1199,7 @@ public class AddSubObjectWizardPage extends WizardPage {
                     } else
                         return true;
                 } catch (NumberFormatException e) {
-                    // TODO: handle exception
+
                     setErrorMessage(dataType + " accepts only decimal value");
                 }
             }
@@ -939,7 +1213,7 @@ public class AddSubObjectWizardPage extends WizardPage {
                     } else
                         return true;
                 } catch (NumberFormatException e) {
-                    // TODO: handle exception
+
                     setErrorMessage(dataType + " accepts only decimal value");
                 }
 
@@ -954,7 +1228,7 @@ public class AddSubObjectWizardPage extends WizardPage {
                     } else
                         return true;
                 } catch (NumberFormatException e) {
-                    // TODO: handle exception
+
                     setErrorMessage(dataType + " accepts only decimal value");
                 }
 
@@ -969,7 +1243,7 @@ public class AddSubObjectWizardPage extends WizardPage {
                     } else
                         return true;
                 } catch (NumberFormatException e) {
-                    // TODO: handle exception
+
                     setErrorMessage(dataType + " accepts only decimal value");
                 }
 
@@ -984,7 +1258,7 @@ public class AddSubObjectWizardPage extends WizardPage {
                     } else
                         return true;
                 } catch (NumberFormatException e) {
-                    // TODO: handle exception
+
                     setErrorMessage(dataType + " accepts only decimal value");
                 }
 
@@ -998,7 +1272,7 @@ public class AddSubObjectWizardPage extends WizardPage {
                     } else
                         return true;
                 } catch (NumberFormatException e) {
-                    // TODO: handle exception
+
                     setErrorMessage(dataType + " accepts only decimal value");
                 }
 
@@ -1013,7 +1287,7 @@ public class AddSubObjectWizardPage extends WizardPage {
                     } else
                         return true;
                 } catch (NumberFormatException e) {
-                    // TODO: handle exception
+
                     setErrorMessage(dataType + " accepts only decimal value");
                 }
 
@@ -1028,7 +1302,7 @@ public class AddSubObjectWizardPage extends WizardPage {
                     } else
                         return true;
                 } catch (NumberFormatException e) {
-                    // TODO: handle exception
+
                     setErrorMessage(dataType + " accepts only decimal value");
                 }
             }
@@ -1041,7 +1315,7 @@ public class AddSubObjectWizardPage extends WizardPage {
                     } else
                         return true;
                 } catch (NumberFormatException e) {
-                    // TODO: handle exception
+
                     setErrorMessage(dataType + " accepts only decimal value");
                 }
 
@@ -1061,7 +1335,7 @@ public class AddSubObjectWizardPage extends WizardPage {
         return false;
     }
 
-    private boolean isObjectIndexValid(String text) {
+    private boolean isSubObjectIndexValid(String text) {
         if (!text.isEmpty()) {
             try {
                 if (text.contains("0x")) {
@@ -1072,7 +1346,7 @@ public class AddSubObjectWizardPage extends WizardPage {
                         return false;
                     }
                 } else {
-                    Integer val = Integer.valueOf(text);
+                    Integer val = Integer.parseInt(text, 16);
                     if ((val < MANUFACTURER_PROFILE_SUB_OBJ_START_INDEX)
                             || (val > MANUFACTURER_PROFILE_SUB_OBJ_END_INDEX)) {
                         return false;
@@ -1086,20 +1360,66 @@ public class AddSubObjectWizardPage extends WizardPage {
         return true;
     }
 
+    private int newSubIndex;
+
+    private String nextValidSubIndex() {
+        List<SubObjectType> subObjList = selObj.getSubObject();
+        int greaterSubIndex = 0;
+        for (SubObjectType subObj : subObjList) {
+            String availableSubIndex = DatatypeConverter.printHexBinary(subObj.getSubIndex());
+            greaterSubIndex = Integer.parseInt(availableSubIndex, 16);
+
+        }
+
+        if (greaterSubIndex != 0) {
+
+            newSubIndex = greaterSubIndex + 1;
+
+            return String.valueOf(newSubIndex);
+
+        }
+        return "00";
+    }
+
+    private boolean isSubObjectIndexIncremental(String indexText) {
+
+        List<SubObjectType> subObjList = selObj.getSubObject();
+        int greaterSubIndex = 0;
+        for (SubObjectType subObj : subObjList) {
+            String availableSubIndex = DatatypeConverter.printHexBinary(subObj.getSubIndex());
+            greaterSubIndex = Integer.parseInt(availableSubIndex, 16);
+
+        }
+
+        if (greaterSubIndex != 0) {
+            int enteredText = Integer.parseInt(indexText, 16);
+            newSubIndex = greaterSubIndex + 1;
+            if (enteredText != newSubIndex) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     private boolean isObjectIndexAvailable(String objIndex) {
 
         List<SubObjectType> subObjectList = selObj.getSubObject();
 
-        for (SubObjectType subObject : subObjectList) {
-            byte[] index = subObject.getSubIndex();
-            String indexValue = DatatypeConverter.printHexBinary(index);
-            if (objIndex.contains("0x")) {
-                objIndex = objIndex.substring(2);
-            }
-            if (indexValue.equalsIgnoreCase(objIndex)) {
-                return false;
-            }
+        if (!subObjectList.isEmpty()) {
+            for (SubObjectType subObject : subObjectList) {
+                byte[] index = subObject.getSubIndex();
+                String indexValue = DatatypeConverter.printHexBinary(index);
+                if (objIndex.contains("0x")) {
+                    objIndex = objIndex.substring(2);
+                }
+                if (objIndex.length() == 1) {
+                    objIndex = "0" + objIndex;
+                }
+                if (indexValue.equalsIgnoreCase(objIndex)) {
+                    return false;
+                }
 
+            }
         }
         return true;
     }
@@ -1122,13 +1442,19 @@ public class AddSubObjectWizardPage extends WizardPage {
         if (!index.isEmpty()) {
             if (index.contains("0x")) {
                 index = index.substring(2);
+                if (index.length() == 1) {
+                    index = "0" + index;
+                }
                 return DatatypeConverter.parseHexBinary(index);
+            } else {
+
+                if (index.length() == 1) {
+                    index = "0" + index;
+                }
+
+                return DatatypeConverter.parseHexBinary(index);
+
             }
-            // else{
-            // //Integer.toHexString(Integer.parseInt(index));
-            // System.out.println(index);
-            // index = index.toString();
-            // return DatatypeConverter.parseHexBinary(index);
         }
         return null;
     }
@@ -1143,7 +1469,6 @@ public class AddSubObjectWizardPage extends WizardPage {
             return Integer.parseInt(this.txtLowLimit.getText());
         return null;
     }
-
 
     /**
      * @return The NMTCycleTimeMax setted in the wizard as integer-value.

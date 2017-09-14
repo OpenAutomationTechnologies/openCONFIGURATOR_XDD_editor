@@ -1,63 +1,78 @@
+/*******************************************************************************
+ * @file   NewSubObjectWizard.java
+ *
+ * @author Sree Hari Vignesh, Kalycito Infotech Private Limited.
+ *
+ * @copyright (c) 2017, Kalycito Infotech Private Limited
+ *                    All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *   * Redistributions of source code must retain the above copyright
+ *     notice, this list of conditions and the following disclaimer.
+ *   * Redistributions in binary form must reproduce the above copyright
+ *     notice, this list of conditions and the following disclaimer in the
+ *     documentation and/or other materials provided with the distribution.
+ *   * Neither the name of the copyright holders nor the
+ *     names of its contributors may be used to endorse or promote products
+ *     derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDERS BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *******************************************************************************/
+
 package com.br_automation.buoat.xddeditor.XDD.wizards;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.emf.common.util.EList;
+import javax.xml.bind.DatatypeConverter;
+
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.Wizard;
 
 import com.br_automation.buoat.xddeditor.XDD.DocumentRoot;
-import com.br_automation.buoat.xddeditor.XDD.ISO15745ProfileType;
-import com.br_automation.buoat.xddeditor.XDD.ProfileBodyDataType;
-import com.br_automation.buoat.xddeditor.XDD.ProfileHeaderDataType;
 import com.br_automation.buoat.xddeditor.XDD.SubObjectType;
-import com.br_automation.buoat.xddeditor.XDD.TDeviceFunction;
-import com.br_automation.buoat.xddeditor.XDD.TFirmwareList;
-import com.br_automation.buoat.xddeditor.XDD.TGeneralFeatures;
-import com.br_automation.buoat.xddeditor.XDD.TObject;
+import com.br_automation.buoat.xddeditor.XDD.TObjectAccessType;
+import com.br_automation.buoat.xddeditor.XDD.TObjectPDOMapping;
 import com.br_automation.buoat.xddeditor.XDD.XDDFactory;
-import com.br_automation.buoat.xddeditor.XDD.impl.ProfileBodyCommunicationNetworkPowerlinkImpl;
-import com.br_automation.buoat.xddeditor.XDD.impl.TApplicationLayersImpl;
-import com.br_automation.buoat.xddeditor.XDD.impl.TNetworkManagementImpl;
 import com.br_automation.buoat.xddeditor.XDD.impl.TObjectImpl;
 import com.br_automation.buoat.xddeditor.editor.editors.DeviceDescriptionFileEditor;
 
-import FwSchema.util.FwSchemaResourceFactoryImpl;
-
+/**
+ * Wizard page to add new sub-object
+ *
+ * @author Sree Hari Vignesh
+ *
+ */
 public class NewSubObjectWizard extends Wizard {
-	
 
     /**
      * Add validateFirmwareWizardPage
      */
-	private static final String WINDOW_TITLE = "POWERLINK Sub Object wizard";
-	
-	private final AddSubObjectWizardPage addSubObjectWizardPage;
-	
-	private TObjectImpl selObj;
+    private static final String WINDOW_TITLE = "Add Sub-object";
 
-	private DeviceDescriptionFileEditor editor;
-	
+    private final AddSubObjectWizardPage addSubObjectWizardPage;
+
+    private TObjectImpl selObj;
+
+    private DeviceDescriptionFileEditor editor;
+
     private DocumentRoot documentRoot;
 
-
-	
     public NewSubObjectWizard(TObjectImpl selectedObject, DeviceDescriptionFileEditor editor, DocumentRoot docRoot) {
         if (selectedObject == null) {
             System.err.println("Invalid node selection");
@@ -68,7 +83,7 @@ public class NewSubObjectWizard extends Wizard {
         setWindowTitle(WINDOW_TITLE);
         addSubObjectWizardPage = new AddSubObjectWizardPage(WINDOW_TITLE, selectedObject);
     }
-    
+
     /**
      * Add wizard page
      */
@@ -91,53 +106,82 @@ public class NewSubObjectWizard extends Wizard {
     @Override
     public boolean performFinish() {
 
-    	if( selObj.getSubObject() != null) {
-    		SubObjectType subObj = XDDFactory.eINSTANCE.createSubObjectType();
+        if (selObj.getSubObject() != null) {
 
-    		subObj.setAccessType(addSubObjectWizardPage.getAccessType());
-    		
-    		subObj.setPDOmapping(addSubObjectWizardPage.getPdoMapping());
+            if (!addSubObjectWizardPage.getTxtSubObjIndex().equalsIgnoreCase("00")) {
+                if (!addSubObjectWizardPage.getTxtSubObjIndex().equalsIgnoreCase("0x00")) {
+                    if (selObj.getSubObject().isEmpty()) {
+                        SubObjectType subObj = XDDFactory.eINSTANCE.createSubObjectType();
 
-    		if(addSubObjectWizardPage != null) {
-    			subObj.setDataType(addSubObjectWizardPage.getDataType());
-    		}
+                        subObj.setAccessType(TObjectAccessType.CONST);
 
-    		if(!addSubObjectWizardPage.getTxtDefaultValue().isEmpty()) {
-    			subObj.setDefaultValue(addSubObjectWizardPage.getTxtDefaultValue());
-    		}
+                        subObj.setPDOmapping(TObjectPDOMapping.NO);
 
-    		//obj.setDenotation(addObjectWizardPage.getDenotation());
+                        if (addSubObjectWizardPage.getDataType() != null) {
+                            subObj.setDataType(DatatypeConverter
+                                    .parseHexBinary(addSubObjectWizardPage.getDatTypeValue("Unsigned8")));
+                        }
 
-    		if(!addSubObjectWizardPage.getTxtHighLimit().isEmpty()) {
-    			subObj.setHighLimit(addSubObjectWizardPage.getHighLimit());
-    		}
+                        if (addSubObjectWizardPage.getSubIndex() != null) {
+                            subObj.setSubIndex(DatatypeConverter.parseHexBinary("00"));
+                        }
 
-    		if(!addSubObjectWizardPage.getTxtLowLimit().isEmpty()) {
-    			subObj.setLowLimit(addSubObjectWizardPage.getLowLimit());
-    		}
+                        subObj.setObjectType((short) 7);
 
-    		if(addSubObjectWizardPage.getSubIndex() != null) {
-    			subObj.setSubIndex(addSubObjectWizardPage.getSubIndex());
-    		}
+                        subObj.setName("NumberOfEntries");
 
-    		subObj.setObjectType(addSubObjectWizardPage.getSubObjectType());
-    		
-    		subObj.setName(addSubObjectWizardPage.getTxtSubObjName());
+                        selObj.getSubObject().add(subObj);
+                    }
+                }
+            }
 
-    		selObj.getSubObject().add(subObj);
-    	}
+            SubObjectType subObj = XDDFactory.eINSTANCE.createSubObjectType();
+
+            subObj.setAccessType(addSubObjectWizardPage.getAccessType());
+
+            subObj.setPDOmapping(addSubObjectWizardPage.getPdoMapping());
+
+            if (addSubObjectWizardPage.getDataType() != null) {
+                subObj.setDataType(addSubObjectWizardPage.getDataType());
+            }
+
+            if (!addSubObjectWizardPage.getTxtDefaultValue().isEmpty()) {
+                subObj.setDefaultValue(addSubObjectWizardPage.getTxtDefaultValue());
+            }
+
+            if (!addSubObjectWizardPage.getTxtHighLimit().isEmpty()) {
+                subObj.setHighLimit(addSubObjectWizardPage.getHighLimit());
+            }
+
+            if (!addSubObjectWizardPage.getTxtLowLimit().isEmpty()) {
+                subObj.setLowLimit(addSubObjectWizardPage.getLowLimit());
+            }
+
+            if (addSubObjectWizardPage.getSubIndex() != null) {
+                subObj.setSubIndex(addSubObjectWizardPage.getSubIndex());
+            }
+
+            subObj.setObjectType(addSubObjectWizardPage.getSubObjectType());
+
+            subObj.setName(addSubObjectWizardPage.getTxtSubObjName());
+
+            selObj.getSubObject().add(subObj);
+
+        }
 
         updateDocument(documentRoot);
 
         return true;
     }
-    
+
     public boolean updateDocument(DocumentRoot documentRoot) {
         // Create a resource set
         ResourceSet resourceSet = new ResourceSetImpl();
 
         // Get the URI of the model file.
         URI fileURI = URI.createPlatformResourceURI(editor.getModelFile().getFullPath().toString(), true);
+
+        System.err.println("URI.." + fileURI);
 
         // Create a resource for this file.
         Resource resource = resourceSet.createResource(fileURI);
