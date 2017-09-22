@@ -38,8 +38,8 @@ import com.br_automation.buoat.xddeditor.XDD.SubObjectType;
 import com.br_automation.buoat.xddeditor.XDD.impl.TObjectImpl;
 
 /**
- * Factory implementation of property sources for POWERLNK Objects available for
- * any node.
+ * Factory implementation of property sources for POWERLNK Objects available in
+ * device description file.
  *
  * @author Sree Hari Vignesh
  *
@@ -56,15 +56,11 @@ public class ObjectAdapterFactory extends AbstractObjectPropertySource implement
      */
     private SubObjectPropertySource subObjectPropertySource;
 
-    private final int MINIMUM_ACTION_BAR_SIZE_OF_PROPERTIES_PAGE = 4;
-    private final int MAXIMUM_ACTION_BAR_SIZE_OF_PROPERTIES_PAGE = 5;
-
     @Override
     public Object getAdapter(final Object adaptableObject, @SuppressWarnings("rawtypes") Class adapterType) {
         if (adapterType == IPropertySource.class) {
 
             if (adaptableObject instanceof TObjectImpl) {
-                TObjectImpl plkObject = (TObjectImpl) adaptableObject;
 
                 if (objectPropertySource == null) {
                     objectPropertySource = new ObjectPropertySource((TObjectImpl) adaptableObject);
@@ -74,7 +70,6 @@ public class ObjectAdapterFactory extends AbstractObjectPropertySource implement
 
                 return objectPropertySource;
             } else if (adaptableObject instanceof SubObjectType) {
-                SubObjectType plksubObj = (SubObjectType) adaptableObject;
                 if (subObjectPropertySource == null) {
                     subObjectPropertySource = new SubObjectPropertySource((SubObjectType) adaptableObject);
                 } else {
@@ -83,7 +78,7 @@ public class ObjectAdapterFactory extends AbstractObjectPropertySource implement
 
                 return subObjectPropertySource;
             } else {
-                System.err.println("Not supported");
+                System.err.println("Invalid Selection adapter.");
             }
         }
         return null;
@@ -92,7 +87,6 @@ public class ObjectAdapterFactory extends AbstractObjectPropertySource implement
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public Class[] getAdapterList() {
-        System.err.println("Adapter list..");
         return new Class[] { IPropertySource.class };
     }
 }

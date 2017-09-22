@@ -23,10 +23,10 @@ import org.eclipse.wb.swt.SWTResourceManager;
 
 /**
  * @brief Advanced configurationPage for a new XDD Model.
- * 
+ *
  *        Provides different controls to set options and data in the
  *        "AdvancedWizard"-page.
- * 
+ *
  * @author Joris Lückenga
  */
 public class WizardConfigurationPage1 extends WizardPage {
@@ -37,14 +37,14 @@ public class WizardConfigurationPage1 extends WizardPage {
     private Button btnResponseChaining;
     private CustomXDDWizard mainwizard;
 
-    //Metadata
+    // Metadata
     private Text txtCreator;
     private Text txtDeviceName;
     private Text txtFileVersion;
     private Text txtFirmwareVersionNr;
     private Text txtHardwareVersNr;
     private Text txtNMTBootTimeNotActive;
-    //Feature-Settings
+    // Feature-Settings
     private Text txtNMTCNSoC2PReq;
     private Text txtNMTCycleTimeMax;
     private Text txtNMTCycleTimeMin;
@@ -53,7 +53,7 @@ public class WizardConfigurationPage1 extends WizardPage {
     private Text txtProductName;
     private Text txtSoftwareVersNr;
     private Text txtVendorID;
-    //Product/Vendor variables
+    // Product/Vendor variables
     private Text txtVendorName;
 
     /**
@@ -62,8 +62,7 @@ public class WizardConfigurationPage1 extends WizardPage {
      * @param wizard
      *            the parent-wizard.
      */
-    public WizardConfigurationPage1(String pageID,
-        CustomXDDWizard wizard) {
+    public WizardConfigurationPage1(String pageID, CustomXDDWizard wizard) {
         super(pageID);
         this.setTitle(Messages.wizardConfigurationPage1_adv_conf_page_title);
         this.setDescription(Messages.wizardConfigurationPage1_type_in_data_new_model_subheadline);
@@ -77,7 +76,7 @@ public class WizardConfigurationPage1 extends WizardPage {
      */
     @Override
     public void createControl(Composite parent) {
-        Composite container = new Composite(parent, SWT.NULL);
+        Composite container = new Composite(parent, SWT.NONE);
         this.setControl(container);
         SimpleDateFormat creationDate = new SimpleDateFormat("yyyy-MM-dd"); //$NON-NLS-1$
         String creationDateStr = creationDate.format(new Date());
@@ -88,14 +87,14 @@ public class WizardConfigurationPage1 extends WizardPage {
 
         Group grpMetadata = new Group(container, SWT.NONE);
         grpMetadata.setText(Messages.wizardConfigurationPage1_metadata_lbl);
-        grpMetadata.setBounds(10, 10, 267, 156);
+        grpMetadata.setBounds(297, 10, 242, 144);
 
         Label lblDeviceName = new Label(grpMetadata, SWT.NONE);
         lblDeviceName.setBounds(10, 91, 82, 15);
         lblDeviceName.setText(Messages.wizardConfigurationPage1_device_name_lbl);
 
         this.txtDeviceName = new Text(grpMetadata, SWT.BORDER);
-        this.txtDeviceName.setBounds(98, 88, 101, 21);
+        this.txtDeviceName.setBounds(98, 88, 134, 21);
         this.txtDeviceName.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
@@ -108,7 +107,7 @@ public class WizardConfigurationPage1 extends WizardPage {
         this.txtDeviceName.setText("New_Device"); //$NON-NLS-1$
 
         this.txtCreator = new Text(grpMetadata, SWT.BORDER);
-        this.txtCreator.setBounds(98, 64, 101, 21);
+        this.txtCreator.setBounds(98, 64, 134, 21);
         this.txtCreator.setText(System.getProperty("user.name")); //$NON-NLS-1$
 
         Label lblCreator = new Label(grpMetadata, SWT.NONE);
@@ -120,7 +119,7 @@ public class WizardConfigurationPage1 extends WizardPage {
         lblCreationTime.setText(Messages.wizardConfigurationPage1_creation_time_lbl);
 
         Label lblContentCreationTime = new Label(grpMetadata, SWT.NONE);
-        lblContentCreationTime.setBounds(98, 43, 159, 15);
+        lblContentCreationTime.setBounds(98, 43, 134, 15);
         lblContentCreationTime.setText(creationTimeStr);
 
         Label lblCreationDate = new Label(grpMetadata, SWT.NONE);
@@ -128,7 +127,7 @@ public class WizardConfigurationPage1 extends WizardPage {
         lblCreationDate.setText(Messages.wizardConfigurationPage1_creation_date_lbl);
 
         Label lblContentCreationDate = new Label(grpMetadata, SWT.NONE);
-        lblContentCreationDate.setBounds(98, 22, 154, 15);
+        lblContentCreationDate.setBounds(98, 22, 134, 15);
         lblContentCreationDate.setText(creationDateStr);
 
         Label lblFileVersion = new Label(grpMetadata, SWT.NONE);
@@ -136,12 +135,13 @@ public class WizardConfigurationPage1 extends WizardPage {
         lblFileVersion.setText(Messages.wizardConfigurationPage1_file_version_lbl);
 
         this.txtFileVersion = new Text(grpMetadata, SWT.BORDER);
-        this.txtFileVersion.setText("1.00"); // NOPMD by lueckengaj on 29.03.13 11:31 //$NON-NLS-1$
-        this.txtFileVersion.setBounds(98, 112, 101, 21);
+        this.txtFileVersion.setText("1.00"); // NOPMD by //$NON-NLS-1$
+                                                // lueckengaj on 29.03.13 11:31
+        this.txtFileVersion.setBounds(98, 112, 134, 21);
 
         Group grpAda = new Group(container, SWT.NONE);
         grpAda.setText(Messages.wizardConfigurationPage1_vendor_prod_info_lbl);
-        grpAda.setBounds(283, 10, 281, 199);
+        grpAda.setBounds(10, 10, 281, 199);
 
         Label lblVendorName = new Label(grpAda, SWT.NONE);
         lblVendorName.setBounds(10, 22, 91, 15);
@@ -201,17 +201,15 @@ public class WizardConfigurationPage1 extends WizardPage {
 
         Group grpCnFeatures = new Group(container, SWT.NONE);
         grpCnFeatures.setText("CN Features"); //$NON-NLS-1$
-        grpCnFeatures.setBounds(283, 215, 267, 113);
+        grpCnFeatures.setBounds(297, 225, 242, 113);
 
         this.btnCnMultiplexFeature = new Button(grpCnFeatures, SWT.CHECK);
-        this.btnCnMultiplexFeature
-            .setToolTipText(Messages.wizardConfigurationPage1_multiplex_feature_tooltip);
+        this.btnCnMultiplexFeature.setToolTipText(Messages.wizardConfigurationPage1_multiplex_feature_tooltip);
         this.btnCnMultiplexFeature.setBounds(10, 22, 146, 16);
         this.btnCnMultiplexFeature.setText("DLLCNFeatureMultiplex"); //$NON-NLS-1$
 
         this.btnResponseChaining = new Button(grpCnFeatures, SWT.CHECK);
-        this.btnResponseChaining
-            .setToolTipText(Messages.wizardConfigurationPage1_Response_chaining_tooltip);
+        this.btnResponseChaining.setToolTipText(Messages.wizardConfigurationPage1_Response_chaining_tooltip);
         this.btnResponseChaining.setBounds(10, 44, 146, 16);
         this.btnResponseChaining.setText("DLLCNPResChaining"); //$NON-NLS-1$
 
@@ -222,15 +220,14 @@ public class WizardConfigurationPage1 extends WizardPage {
 
         this.txtNMTCNSoC2PReq = new Text(grpCnFeatures, SWT.BORDER);
         this.txtNMTCNSoC2PReq.setText("25"); //$NON-NLS-1$
-        this.txtNMTCNSoC2PReq
-            .setToolTipText(Messages.wizardConfigurationPage1_time_for_CN_tro_process_SoC_tooltip);
-        this.txtNMTCNSoC2PReq.setBounds(140, 63, 76, 21);
+        this.txtNMTCNSoC2PReq.setToolTipText(Messages.wizardConfigurationPage1_time_for_CN_tro_process_SoC_tooltip);
+        this.txtNMTCNSoC2PReq.setBounds(140, 63, 92, 21);
 
         Group grpGeneralFeatures = new Group(container, SWT.SHADOW_OUT);
         grpGeneralFeatures.setFont(SWTResourceManager.getFont("Segoe UI", 9, SWT.NORMAL)); //$NON-NLS-1$
         grpGeneralFeatures.setBackground(SWTResourceManager.getColor(SWT.COLOR_WIDGET_BACKGROUND));
         grpGeneralFeatures.setText(Messages.wizardConfigurationPage1_general_features);
-        grpGeneralFeatures.setBounds(10, 172, 267, 156);
+        grpGeneralFeatures.setBounds(10, 225, 281, 156);
 
         Label lblNmtboottimenotactive = new Label(grpGeneralFeatures, SWT.NONE);
         lblNmtboottimenotactive.setBounds(10, 20, 163, 15);
@@ -251,33 +248,32 @@ public class WizardConfigurationPage1 extends WizardPage {
 
         this.txtNMTBootTimeNotActive = new Text(grpGeneralFeatures, SWT.BORDER);
         this.txtNMTBootTimeNotActive.setText("8000000"); //$NON-NLS-1$
-        this.txtNMTBootTimeNotActive.setBounds(179, 14, 76, 21);
+        this.txtNMTBootTimeNotActive.setBounds(179, 14, 92, 21);
 
         this.txtNMTCycleTimeMax = new Text(grpGeneralFeatures, SWT.BORDER);
         this.txtNMTCycleTimeMax.setText("1000000"); //$NON-NLS-1$
-        this.txtNMTCycleTimeMax.setBounds(179, 36, 76, 21);
+        this.txtNMTCycleTimeMax.setBounds(179, 36, 92, 21);
 
         this.txtNMTCycleTimeMin = new Text(grpGeneralFeatures, SWT.BORDER);
         this.txtNMTCycleTimeMin.setText("1000"); //$NON-NLS-1$
-        this.txtNMTCycleTimeMin.setBounds(179, 58, 76, 21);
+        this.txtNMTCycleTimeMin.setBounds(179, 58, 92, 21);
 
         this.txtNMTErrorEntries = new Text(grpGeneralFeatures, SWT.BORDER);
         this.txtNMTErrorEntries.setText("8"); //$NON-NLS-1$
-        this.txtNMTErrorEntries.setBounds(179, 80, 76, 21);
+        this.txtNMTErrorEntries.setBounds(179, 80, 92, 21);
 
         this.btnNWLIPSupport = new Button(grpGeneralFeatures, SWT.CHECK);
         this.btnNWLIPSupport.setBounds(10, 130, 146, 16);
-        this.btnNWLIPSupport
-            .setToolTipText(Messages.wizardConfigurationPage1_EnableDisableIPSupport); //$NON-NLS-1$
+        this.btnNWLIPSupport.setToolTipText(Messages.wizardConfigurationPage1_EnableDisableIPSupport); // $NON-NLS-1$
         this.btnNWLIPSupport.setText("NWLIPSupport");
 
         this.btnMultipleASnd = new Button(grpGeneralFeatures, SWT.CHECK);
         this.btnMultipleASnd.setToolTipText(Messages.wizardConfigurationPage1_btnMultiASnd_text);
         this.btnMultipleASnd.setText("IP Support");
         this.btnMultipleASnd.setBounds(10, 107, 146, 16);
-    } //createControl
+    } // createControl
 
-    //Metadata getters
+    // Metadata getters
 
     public XMLGregorianCalendar getCreationDateXML() {
         return XDDUtilities.getXMLDate();
@@ -303,7 +299,7 @@ public class WizardConfigurationPage1 extends WizardPage {
         return this.txtFileVersion.getText().trim();
     }
 
-    //Vendor/Product getters
+    // Vendor/Product getters
 
     public String getFirmwareversString() {
         return this.txtFirmwareVersionNr.getText().trim();
@@ -394,4 +390,4 @@ public class WizardConfigurationPage1 extends WizardPage {
     public boolean isResponseChaining() {
         return this.btnResponseChaining.getSelection();
     }
-} //WizardConfigurationPage1
+} // WizardConfigurationPage1

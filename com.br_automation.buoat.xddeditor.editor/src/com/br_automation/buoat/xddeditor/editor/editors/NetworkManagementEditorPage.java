@@ -111,6 +111,7 @@ import com.br_automation.buoat.xddeditor.XDD.custom.XDDUtilities;
 import com.br_automation.buoat.xddeditor.XDD.impl.ProfileBodyCommunicationNetworkPowerlinkImpl;
 import com.br_automation.buoat.xddeditor.XDD.impl.TNetworkManagementImpl;
 import com.br_automation.buoat.xddeditor.XDD.validation.NameVerifyListener;
+import com.br_automation.buoat.xddeditor.XDD.wizards.DataTypeRange;
 import com.br_automation.buoat.xddeditor.XDD.wizards.NewFirmwareWizard;
 
 /**
@@ -127,8 +128,9 @@ public final class NetworkManagementEditorPage extends FormPage {
 
     /** Editor label and error messages */
     private static final String GENERAL_FEATURES_SECTION = "General Features";
-    private static final String CN_FEATURES_SECTION = "Controlled Node Features";
-    private static final String GENERAL_FEATURES_SECTION_HEADING_DESCRIPTION = "Provides general information about device descripton file.";
+    private static final String CN_FEATURES_SECTION = "Node Features";
+    private static final String GENERAL_FEATURES_SECTION_HEADING_DESCRIPTION = "Provides information about the general network management features.";
+    private static final String CN_FEATURES_SECTION_HEADING_DESCRIPTION = "Provides information about the network management features of node.";
     private static final String TIME_FOR_PREQ_LABEL = "Time for PReq (ns):";
     private static final String NETWORK_IP_SUPPORT_LABEL = "Network IP Support:";
     private static final String TOTAL_NETWORK_ERROR_ENTRIES_LABEL = "Total Network Error Entries:";
@@ -271,6 +273,7 @@ public final class NetworkManagementEditorPage extends FormPage {
                     getGeneralFeatures().setNWLIPSupport(true);
                 }
             }
+            updateDocument(documentRoot);
         }
     };
 
@@ -287,6 +290,7 @@ public final class NetworkManagementEditorPage extends FormPage {
                     getCnFeatures().setDLLCNFeatureMultiplex(true);
                 }
             }
+            updateDocument(documentRoot);
         }
     };
 
@@ -303,6 +307,7 @@ public final class NetworkManagementEditorPage extends FormPage {
                     getCnFeatures().setDLLCNPResChaining(true);
                 }
             }
+            updateDocument(documentRoot);
         }
     };
 
@@ -312,6 +317,56 @@ public final class NetworkManagementEditorPage extends FormPage {
             if (message == null) {
                 message = StringUtils.EMPTY;
                 form.setMessage(message, IMessageProvider.NONE);
+            }
+
+            networkBootTimeText.setEditable(true);
+            maximumCycleTimeText.setEditable(true);
+            minimumCycleTimeText.setEditable(true);
+            totalNetworkErrorEntriesText.setEditable(true);
+            timeForPreqText.setEditable(true);
+        }
+    }
+
+    private void setErrorMessage(String message, String fieldLabel) {
+        if (form != null) {
+            form.setMessage(message, IMessageProvider.ERROR);
+            switch (fieldLabel) {
+            case MINIMUM_CYCLE_TIME_LABEL:
+
+                networkBootTimeText.setEditable(false);
+                maximumCycleTimeText.setEditable(false);
+                totalNetworkErrorEntriesText.setEditable(false);
+                timeForPreqText.setEditable(false);
+                break;
+            case MAXIMUM_CYCLE_TIME_LABEL:
+                minimumCycleTimeText.setEditable(false);
+                networkBootTimeText.setEditable(false);
+                totalNetworkErrorEntriesText.setEditable(false);
+                timeForPreqText.setEditable(false);
+                break;
+            case NETWORK_BOOT_TIME_LABEL:
+                minimumCycleTimeText.setEditable(false);
+                maximumCycleTimeText.setEditable(false);
+                totalNetworkErrorEntriesText.setEditable(false);
+                timeForPreqText.setEditable(false);
+                break;
+            case TOTAL_NETWORK_ERROR_ENTRIES_LABEL:
+                minimumCycleTimeText.setEditable(false);
+                networkBootTimeText.setEditable(false);
+                maximumCycleTimeText.setEditable(false);
+                timeForPreqText.setEditable(false);
+                break;
+            case TIME_FOR_PREQ_LABEL:
+                minimumCycleTimeText.setEditable(false);
+                networkBootTimeText.setEditable(false);
+                maximumCycleTimeText.setEditable(false);
+                totalNetworkErrorEntriesText.setEditable(false);
+
+                break;
+
+            default:
+                System.err.println("Invalid selection!");
+                break;
             }
         }
     }
@@ -325,19 +380,27 @@ public final class NetworkManagementEditorPage extends FormPage {
             try {
 
                 if (timeforPreqText == null) {
-                    setErrorMessage(INVALID_PREQ_TIME_VALUE_EMPTY_ERROR);
+                    setErrorMessage(INVALID_PREQ_TIME_VALUE_EMPTY_ERROR, TIME_FOR_PREQ_LABEL);
                     return;
                 }
 
                 if (timeforPreqText.length() <= 0) {
-                    setErrorMessage(INVALID_PREQ_TIME_VALUE_EMPTY_ERROR);
+                    setErrorMessage(INVALID_PREQ_TIME_VALUE_EMPTY_ERROR, TIME_FOR_PREQ_LABEL);
                     return;
                 }
 
                 // Space as first character is not allowed. ppc:tNonEmptyString
                 if (timeforPreqText.contains(" ")) {
-                    setErrorMessage(INVALID_PREQ_TIME_SPACE_ERROR);
+                    setErrorMessage(INVALID_PREQ_TIME_SPACE_ERROR, TIME_FOR_PREQ_LABEL);
                     return;
+                }
+
+                Long value = Long.parseLong(timeforPreqText);
+                if (value < DataTypeRange.Unsigned32_min || value > DataTypeRange.Unsigned32_max) {
+                    setErrorMessage("Time for PReq value '" + timeforPreqText
+                            + "' does not fit within the range (0 - 4,294,967,295) of data type 'Unsigned32'.");
+                    return;
+
                 }
 
                 if (getCnFeatures() != null) {
@@ -347,7 +410,7 @@ public final class NetworkManagementEditorPage extends FormPage {
                 updateDocument(documentRoot);
 
             } catch (NumberFormatException ex) {
-                setErrorMessage(INVALID_PREQ_TIME_VALUE_EMPTY_ERROR);
+                setErrorMessage(INVALID_PREQ_TIME_VALUE_EMPTY_ERROR, TIME_FOR_PREQ_LABEL);
                 ex.printStackTrace();
                 return;
             }
@@ -364,19 +427,27 @@ public final class NetworkManagementEditorPage extends FormPage {
             try {
 
                 if (totalNetworkEntry == null) {
-                    setErrorMessage(INVALID_NETWORK_EMPTY_ERROR_ENTRIES);
+                    setErrorMessage(INVALID_NETWORK_EMPTY_ERROR_ENTRIES, TOTAL_NETWORK_ERROR_ENTRIES_LABEL);
                     return;
                 }
 
                 if (totalNetworkEntry.length() <= 0) {
-                    setErrorMessage(INVALID_NETWORK_EMPTY_ERROR_ENTRIES);
+                    setErrorMessage(INVALID_NETWORK_EMPTY_ERROR_ENTRIES, TOTAL_NETWORK_ERROR_ENTRIES_LABEL);
                     return;
                 }
 
                 // Space as first character is not allowed. ppc:tNonEmptyString
                 if (totalNetworkEntry.contains(" ")) {
-                    setErrorMessage(INVALID_NETWORK_ERROR_ENTRIES_SPACE_ERROR);
+                    setErrorMessage(INVALID_NETWORK_ERROR_ENTRIES_SPACE_ERROR, TOTAL_NETWORK_ERROR_ENTRIES_LABEL);
                     return;
+                }
+
+                Long value = Long.parseLong(totalNetworkEntry);
+                if (value < DataTypeRange.Unsigned32_min || value > DataTypeRange.Unsigned32_max) {
+                    setErrorMessage("Total network error entries '" + totalNetworkEntry
+                            + "' does not fit within the range (0 - 4,294,967,295) of data type 'Unsigned32'.");
+                    return;
+
                 }
 
                 if (getGeneralFeatures() != null) {
@@ -386,7 +457,7 @@ public final class NetworkManagementEditorPage extends FormPage {
                 updateDocument(documentRoot);
 
             } catch (NumberFormatException ex) {
-                setErrorMessage(INVALID_NETWORK_EMPTY_ERROR_ENTRIES);
+                setErrorMessage(INVALID_NETWORK_EMPTY_ERROR_ENTRIES, TOTAL_NETWORK_ERROR_ENTRIES_LABEL);
                 ex.printStackTrace();
                 return;
             }
@@ -431,19 +502,27 @@ public final class NetworkManagementEditorPage extends FormPage {
             try {
 
                 if (maximumCycleTime == null) {
-                    setErrorMessage(EMPTY_CYCLE_TIME_ERROR_MESSAGE);
+                    setErrorMessage(EMPTY_CYCLE_TIME_ERROR_MESSAGE, MAXIMUM_CYCLE_TIME_LABEL);
                     return;
                 }
 
                 if (maximumCycleTime.length() <= 0) {
-                    setErrorMessage(EMPTY_CYCLE_TIME_ERROR_MESSAGE);
+                    setErrorMessage(EMPTY_CYCLE_TIME_ERROR_MESSAGE, MAXIMUM_CYCLE_TIME_LABEL);
                     return;
                 }
 
                 // Space as first character is not allowed. ppc:tNonEmptyString
                 if (maximumCycleTime.contains(" ")) {
-                    setErrorMessage(INVALID_MAX_CYCLE_TIME);
+                    setErrorMessage(INVALID_MAX_CYCLE_TIME, MAXIMUM_CYCLE_TIME_LABEL);
                     return;
+                }
+
+                Long value = Long.parseLong(maximumCycleTime);
+                if (value < DataTypeRange.Unsigned32_min || value > DataTypeRange.Unsigned32_max) {
+                    setErrorMessage("Maximum cycle time value '" + maximumCycleTime
+                            + "' does not fit within the range (0 - 4,294,967,295) of data type 'Unsigned32'.");
+                    return;
+
                 }
 
                 if (getGeneralFeatures() != null) {
@@ -453,7 +532,7 @@ public final class NetworkManagementEditorPage extends FormPage {
                 updateDocument(documentRoot);
 
             } catch (NumberFormatException ex) {
-                setErrorMessage(INVALID_MAX_CYCLE_TIME);
+                setErrorMessage(INVALID_MAX_CYCLE_TIME, MAXIMUM_CYCLE_TIME_LABEL);
                 ex.printStackTrace();
                 return;
             }
@@ -470,19 +549,27 @@ public final class NetworkManagementEditorPage extends FormPage {
             try {
 
                 if (minimumCycleTime == null) {
-                    setErrorMessage(EMPTY_MIN_CYCLE_TIME_ERROR_MESSAGE);
+                    setErrorMessage(EMPTY_MIN_CYCLE_TIME_ERROR_MESSAGE, MINIMUM_CYCLE_TIME_LABEL);
                     return;
                 }
 
                 if (minimumCycleTime.length() <= 0) {
-                    setErrorMessage(EMPTY_MIN_CYCLE_TIME_ERROR_MESSAGE);
+                    setErrorMessage(EMPTY_MIN_CYCLE_TIME_ERROR_MESSAGE, MINIMUM_CYCLE_TIME_LABEL);
                     return;
                 }
 
                 // Space as first character is not allowed. ppc:tNonEmptyString
                 if (minimumCycleTime.contains(" ")) {
-                    setErrorMessage(INVALID_MIN_CYCLE_TIME);
+                    setErrorMessage(INVALID_MIN_CYCLE_TIME, MINIMUM_CYCLE_TIME_LABEL);
                     return;
+                }
+
+                Long value = Long.parseLong(minimumCycleTime);
+                if (value < DataTypeRange.Unsigned32_min || value > DataTypeRange.Unsigned32_max) {
+                    setErrorMessage("Minimum cycle time value '" + minimumCycleTime
+                            + "' does not fit within the range (0 - 4,294,967,295) of data type 'Unsigned32'.");
+                    return;
+
                 }
 
                 if (getGeneralFeatures() != null) {
@@ -493,7 +580,7 @@ public final class NetworkManagementEditorPage extends FormPage {
                 updateDocument(documentRoot);
 
             } catch (NumberFormatException ex) {
-                setErrorMessage(INVALID_MIN_CYCLE_TIME);
+                setErrorMessage(INVALID_MIN_CYCLE_TIME, MINIMUM_CYCLE_TIME_LABEL);
                 ex.printStackTrace();
                 return;
             }
@@ -510,19 +597,27 @@ public final class NetworkManagementEditorPage extends FormPage {
             try {
 
                 if (networkBootTime == null) {
-                    setErrorMessage(EMPTY_NETWORK_BOOT_TIME_ERROR_MESSAGE);
+                    setErrorMessage(EMPTY_NETWORK_BOOT_TIME_ERROR_MESSAGE, NETWORK_BOOT_TIME_LABEL);
                     return;
                 }
 
                 if (networkBootTime.length() <= 0) {
-                    setErrorMessage(EMPTY_NETWORK_BOOT_TIME_ERROR_MESSAGE);
+                    setErrorMessage(EMPTY_NETWORK_BOOT_TIME_ERROR_MESSAGE, NETWORK_BOOT_TIME_LABEL);
                     return;
                 }
 
                 // Space as first character is not allowed. ppc:tNonEmptyString
                 if (networkBootTime.contains(" ")) {
-                    setErrorMessage(INVALID_NETWORK_BOOT_TIME_SPACE_ERROR);
+                    setErrorMessage(INVALID_NETWORK_BOOT_TIME_SPACE_ERROR, NETWORK_BOOT_TIME_LABEL);
                     return;
+                }
+
+                Long value = Long.parseLong(networkBootTime);
+                if (value < DataTypeRange.Unsigned32_min || value > DataTypeRange.Unsigned32_max) {
+                    setErrorMessage("Network boot time value '" + networkBootTime
+                            + "' does not fit within the range (0 - 4,294,967,295) of data type 'Unsigned32'.");
+                    return;
+
                 }
 
                 if (getGeneralFeatures() != null) {
@@ -533,7 +628,7 @@ public final class NetworkManagementEditorPage extends FormPage {
                 updateDocument(documentRoot);
 
             } catch (NumberFormatException ex) {
-                setErrorMessage(INVALID_NETWORK_BOOT_TIME);
+                setErrorMessage(INVALID_NETWORK_BOOT_TIME, NETWORK_BOOT_TIME_LABEL);
                 ex.printStackTrace();
                 return;
             }
@@ -655,6 +750,25 @@ public final class NetworkManagementEditorPage extends FormPage {
             networkIpButton = new Button(client, SWT.CHECK);
             networkIpButton.setLayoutData(gensec);
             toolkit.adapt(networkIpButton, true, true);
+
+            updateGeneralFeatureFields();
+        }
+
+    }
+
+    private void updateGeneralFeatureFields() {
+
+        if (getGeneralFeatures() != null) {
+            if (getGeneralFeatures().getNMTBootTimeNotActive() != 0) {
+                networkBootTimeText.setText(String.valueOf(getGeneralFeatures().getNMTBootTimeNotActive()));
+            }
+            minimumCycleTimeText.setText(String.valueOf(getGeneralFeatures().getNMTCycleTimeMin()));
+            maximumCycleTimeText.setText(String.valueOf(getGeneralFeatures().getNMTCycleTimeMax()));
+            totalNetworkErrorEntriesText.setText(String.valueOf(getGeneralFeatures().getNMTErrorEntries()));
+
+            if (getGeneralFeatures().isNWLIPSupport()) {
+                networkIpButton.setSelection(true);
+            }
         }
 
     }
@@ -673,7 +787,7 @@ public final class NetworkManagementEditorPage extends FormPage {
                             | ExpandableComposite.TITLE_BAR);
             managedForm.getToolkit().paintBordersFor(cnFeatureSection);
             cnFeatureSection.setText(NetworkManagementEditorPage.CN_FEATURES_SECTION);
-            cnFeatureSection.setDescription(NetworkManagementEditorPage.GENERAL_FEATURES_SECTION_HEADING_DESCRIPTION);
+            cnFeatureSection.setDescription(NetworkManagementEditorPage.CN_FEATURES_SECTION_HEADING_DESCRIPTION);
 
             Composite client = toolkit.createComposite(cnFeatureSection, SWT.WRAP);
             GridLayout layout = new GridLayout(3, false);
@@ -716,8 +830,22 @@ public final class NetworkManagementEditorPage extends FormPage {
             timeForPreqText = new Text(client, SWT.BORDER | SWT.WRAP);
             timeForPreqText.setLayoutData(cnsec);
             toolkit.adapt(timeForPreqText, true, true);
+
+            updateCnFeatureFields();
         }
 
+    }
+
+    private void updateCnFeatureFields() {
+        if (getCnFeatures() != null) {
+            if (getCnFeatures().isDLLCNFeatureMultiplex()) {
+                multiplexedCommunicationChkBox.setSelection(true);
+            }
+            if (getCnFeatures().isDLLCNPResChaining()) {
+                pollResponseCommunication.setSelection(true);
+            }
+            timeForPreqText.setText(String.valueOf(getCnFeatures().getNMTCNSoC2PReq()));
+        }
     }
 
     /**

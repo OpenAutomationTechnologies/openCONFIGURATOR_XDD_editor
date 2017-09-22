@@ -197,7 +197,7 @@ public class Index1F80DetailsPage implements IDetailsPage {
 
             strDefaultValue = "0x" + Integer.toHexString(defaultValue).toUpperCase(); //$NON-NLS-1$
 
-            lblDefaultValueValue.setText(strDefaultValue);
+            lblDefaultValueValue.setText(IPowerlinkConstants.DEFAULT_VALUE+" "+strDefaultValue);
             index1F80Object.setDefaultValue(strDefaultValue);
             updateDocument(docRoot);
 
@@ -216,7 +216,7 @@ public class Index1F80DetailsPage implements IDetailsPage {
             this.lblError.setText(""); //$NON-NLS-1$
         }
         if (lblDefaultValueValue != null) {
-            this.lblDefaultValueValue.setText(this.tobject.getDefaultValue());
+            this.lblDefaultValueValue.setText(IPowerlinkConstants.DEFAULT_VALUE+" "+this.tobject.getDefaultValue());
         }
         Set<Entry<Button, Integer>> buttonSet = this.buttonMap.entrySet();
 
@@ -304,7 +304,7 @@ public class Index1F80DetailsPage implements IDetailsPage {
                 | Section.DESCRIPTION | ExpandableComposite.TWISTIE | ExpandableComposite.TITLE_BAR);
         managedForm.getToolkit().paintBordersFor(index1F80Section);
         index1F80Section.setText(ObjectDictionaryEditorPage.OBJECT_DICTIONARY_DETAILS_HEADING);
-        index1F80Section.setDescription(ObjectDictionaryEditorPage.OBJECT_DICTIONARY_HEADING_DESCRIPTION);
+
 
         Composite clientComposite = managedForm.getToolkit().createComposite(index1F80Section, SWT.WRAP);
         GridLayout layouts = new GridLayout(1, true);
@@ -320,24 +320,25 @@ public class Index1F80DetailsPage implements IDetailsPage {
 
         Group grpMandatoryData = new Group(groupComposite, SWT.NONE);
         GridData gd_grpConfigurationFile = new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1);
-        gd_grpConfigurationFile.widthHint = 600;
+        gd_grpConfigurationFile.widthHint = 500;
         grpMandatoryData.setLayoutData(gd_grpConfigurationFile);
         grpMandatoryData.setText(IPowerlinkConstants.MANDATORY_DATA_GROUP);
         grpMandatoryData.setLayout(new GridLayout(6, false));
 
         Label nameLabel = new Label(grpMandatoryData, SWT.NONE);
-        nameLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
         nameLabel.setText(IPowerlinkConstants.OBJECT_NAME);
         managedForm.getToolkit().adapt(nameLabel, true, true);
         nameLabel.setForeground(managedForm.getToolkit().getColors().getColor(IFormColors.TITLE));
 
         nameText = new Text(grpMandatoryData, SWT.BORDER | SWT.WRAP);
-        nameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 5, 1));
+        GridData gd_nameText = new GridData(SWT.FILL, SWT.CENTER, true, false, 5, 1);
+        gd_nameText.widthHint = 450;
+        nameText.setLayoutData(gd_nameText);
         managedForm.getToolkit().adapt(nameText, true, true);
         nameText.setEditable(false);
+        nameText.setEnabled(false);
 
         Label objTypelabel = new Label(grpMandatoryData, SWT.NONE);
-        objTypelabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
         objTypelabel.setText(IPowerlinkConstants.OBJECT_TYPE);
         managedForm.getToolkit().adapt(objTypelabel, true, true);
         objTypelabel.setForeground(managedForm.getToolkit().getColors().getColor(IFormColors.TITLE));
@@ -346,9 +347,9 @@ public class Index1F80DetailsPage implements IDetailsPage {
         objTypeText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 5, 1));
         managedForm.getToolkit().adapt(objTypeText, true, true);
         objTypeText.setEditable(false);
+        objTypeText.setEnabled(false);
 
         Label indexLabel = new Label(grpMandatoryData, SWT.NONE);
-        indexLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
         indexLabel.setText(IPowerlinkConstants.OBJECT_INDEX);
         managedForm.getToolkit().adapt(indexLabel, true, true);
         indexLabel.setForeground(managedForm.getToolkit().getColors().getColor(IFormColors.TITLE));
@@ -357,25 +358,25 @@ public class Index1F80DetailsPage implements IDetailsPage {
         indexText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 5, 1));
         managedForm.getToolkit().adapt(indexText, true, true);
         indexText.setEditable(false);
+        indexText.setEnabled(false);
+        new Label(groupComposite, SWT.NONE);
 
         Composite groupComposite2 = new Composite(clientComposite, SWT.NONE);
         groupComposite2.setLayout(new GridLayout(2, false));
 
         Group grpOptionalData = new Group(groupComposite2, SWT.NONE);
         GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1);
-        gridData.widthHint = 600;
+        gridData.widthHint = 500;
         grpOptionalData.setLayoutData(gridData);
         grpOptionalData.setText(IPowerlinkConstants.OPTIONAL_GROUP);
-        grpOptionalData.setLayout(new GridLayout(2, false));
+        grpOptionalData.setLayout(new GridLayout(1, false));
 
-        Label lblDefaultValue = managedForm.getToolkit().createLabel(grpOptionalData,
-                IPowerlinkConstants.DEFAULT_VALUE); // $NON-NLS-1$
+//        Label lblDefaultValue = managedForm.getToolkit().createLabel(grpOptionalData,
+//                IPowerlinkConstants.DEFAULT_VALUE); // $NON-NLS-1$
+//
+//        lblDefaultValue.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
 
-        lblDefaultValue.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
-
-        this.lblDefaultValueValue = managedForm.getToolkit().createLabel(grpOptionalData, "               "); //$NON-NLS-1$
-
-        this.lblDefaultValueValue.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+        this.lblDefaultValueValue = managedForm.getToolkit().createLabel(grpOptionalData, "               ");
 
         // --Checkbox-Section
 
@@ -383,17 +384,13 @@ public class Index1F80DetailsPage implements IDetailsPage {
         Button btnStartCNsMode = managedForm.getToolkit().createButton(grpOptionalData,
                 Messages.advancedStartUpPropertySection_btn_startBroadcastCN, SWT.CHECK);
         btnStartCNsMode.setToolTipText(Messages.advancedStartUpPropertySection_tooltip_startexplicitCN);
-
-        btnStartCNsMode.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
         btnStartCNsMode.addSelectionListener(this.selectionListener);
         this.buttonMap.put(btnStartCNsMode, 1);
 
         // btnAutoOperationalState
         Button btnAutoOperationalState = managedForm.getToolkit().createButton(grpOptionalData,
-                Messages.advancedStartUpPropertySection_btn_NoAutoNMTOperational, SWT.CHECK);
+                Messages.advancedStartUpPropertySection_btn_NoAutoNMTOperational, SWT.CHECK | SWT.WRAP);
         btnAutoOperationalState.setToolTipText(Messages.advancedStartUpPropertySection_tooltip_autoNMTOperational);
-
-        btnAutoOperationalState.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
         btnAutoOperationalState.addSelectionListener(this.selectionListener);
         this.buttonMap.put(btnAutoOperationalState, 2);
 
@@ -401,8 +398,6 @@ public class Index1F80DetailsPage implements IDetailsPage {
         Button btnNMTStartNode = managedForm.getToolkit().createButton(grpOptionalData,
                 Messages.advancedStartUpPropertySection_btn_applicationCNStart, SWT.CHECK);
         btnNMTStartNode.setToolTipText(Messages.advancedStartUpPropertySection_tooltip_allowCNstartup);
-
-        btnNMTStartNode.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
         btnNMTStartNode.addSelectionListener(this.selectionListener);
         this.buttonMap.put(btnNMTStartNode, 3);
 
@@ -410,8 +405,6 @@ public class Index1F80DetailsPage implements IDetailsPage {
         Button btnNMTResetNode = managedForm.getToolkit().createButton(grpOptionalData,
                 Messages.advancedStartUpPropertySection_btn_resetNodeWithBroadcast, SWT.CHECK);
         btnNMTResetNode.setToolTipText(Messages.advancedStartUpPropertySection_tooltip_individualOnError);
-
-        btnNMTResetNode.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
         btnNMTResetNode.addSelectionListener(this.selectionListener);
         this.buttonMap.put(btnNMTResetNode, 4);
 
@@ -419,8 +412,6 @@ public class Index1F80DetailsPage implements IDetailsPage {
         Button btnNMTStopNode = managedForm.getToolkit().createButton(grpOptionalData,
                 Messages.advancedStartUpPropertySection_btn_dealStopNodeWithBroadcast, SWT.CHECK);
         btnNMTStopNode.setToolTipText(Messages.advancedStartUpPropertySection_tooltip_dealCNaccordingBit4);
-
-        btnNMTStopNode.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
         btnNMTStopNode.addSelectionListener(this.selectionListener);
         this.buttonMap.put(btnNMTStopNode, 6);
 
@@ -428,8 +419,6 @@ public class Index1F80DetailsPage implements IDetailsPage {
         Button btnNMTPreOperational2 = managedForm.getToolkit().createButton(grpOptionalData,
                 Messages.advancedStartUpPropertySection_btn_enterPreOp2ByApplication, SWT.CHECK);
         btnNMTPreOperational2.setToolTipText(Messages.advancedStartUpPropertySection_tooltip_enterPreOperational2);
-
-        btnNMTPreOperational2.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
         btnNMTPreOperational2.addSelectionListener(this.selectionListener);
         this.buttonMap.put(btnNMTPreOperational2, 7);
 
@@ -437,8 +426,6 @@ public class Index1F80DetailsPage implements IDetailsPage {
         Button btnMSReadyToOperate = managedForm.getToolkit().createButton(grpOptionalData,
                 Messages.advancedStartUpPropertySection_btn_appDecide_ReadyState, SWT.CHECK);
         btnMSReadyToOperate.setToolTipText(Messages.advancedStartUpPropertySection_tooltip_setReadyToOperate);
-
-        btnMSReadyToOperate.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
         btnMSReadyToOperate.addSelectionListener(this.selectionListener);
         this.buttonMap.put(btnMSReadyToOperate, 8);
 
@@ -446,8 +433,6 @@ public class Index1F80DetailsPage implements IDetailsPage {
         Button btnCompleteCNIdCheck = managedForm.getToolkit().createButton(grpOptionalData,
                 Messages.advancedStartUpPropertySection_btn_VerifyAllCNIds, SWT.CHECK);
         btnCompleteCNIdCheck.setToolTipText(Messages.advancedStartUpPropertySection_tooltip_LimitVerifyAllCNIds);
-
-        btnCompleteCNIdCheck.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
         btnCompleteCNIdCheck.addSelectionListener(this.selectionListener);
         this.buttonMap.put(btnCompleteCNIdCheck, 9);
 
@@ -455,8 +440,6 @@ public class Index1F80DetailsPage implements IDetailsPage {
         Button btnCheckSWVersion = managedForm.getToolkit().createButton(grpOptionalData,
                 Messages.advancedStartUpPropertySection_btn_checkSWVersion, SWT.CHECK);
         btnCheckSWVersion.setToolTipText(Messages.advancedStartUpPropertySection_tooltip_doNotCheckSW);
-
-        btnCheckSWVersion.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
         btnCheckSWVersion.addSelectionListener(this.selectionListener);
         this.buttonMap.put(btnCheckSWVersion, 10);
 
@@ -464,8 +447,6 @@ public class Index1F80DetailsPage implements IDetailsPage {
         Button btnCheckConfig = managedForm.getToolkit().createButton(grpOptionalData,
                 Messages.advancedStartUpPropertySection_btn_checkCNConfig, SWT.CHECK);
         btnCheckConfig.setToolTipText(Messages.advancedStartUpPropertySection_tooltip_doNotCheckConfig);
-
-        btnCheckConfig.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
         btnCheckConfig.addSelectionListener(this.selectionListener);
         this.buttonMap.put(btnCheckConfig, 11);
 
@@ -473,8 +454,6 @@ public class Index1F80DetailsPage implements IDetailsPage {
         Button btnReturnOperational1 = managedForm.getToolkit().createButton(grpOptionalData,
                 Messages.advancedStartUpPropertySection_btn_AppDecideChangeToPreOp, SWT.CHECK);
         btnReturnOperational1.setToolTipText(Messages.advancedStartUpPropertySection_tooltip_autoChangeToPreOp);
-
-        btnReturnOperational1.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
         btnReturnOperational1.addSelectionListener(this.selectionListener);
         this.buttonMap.put(btnReturnOperational1, 12);
 
@@ -482,17 +461,15 @@ public class Index1F80DetailsPage implements IDetailsPage {
         Button btnChangeToBasicEth = managedForm.getToolkit().createButton(grpOptionalData,
                 Messages.advancedStartUpPropertySection_btn_ChangeNotActiveToBaiscEthernet, SWT.CHECK);
         btnChangeToBasicEth.setToolTipText(Messages.advancedStartUpPropertySection_tooltip_notActiveBasicEthState);
-
-        btnChangeToBasicEth.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
         btnChangeToBasicEth.addSelectionListener(this.selectionListener);
         this.buttonMap.put(btnChangeToBasicEth, 13);
 
         // ----ERRORLABEL
 
         this.lblError = managedForm.getToolkit().createLabel(grpOptionalData,
-                "                                                  "); //$NON-NLS-1$
-        this.lblError.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+                "                                                  ");
         this.lblError.setForeground(XDDUtilities.getRed(Display.getCurrent()));
+        new Label(groupComposite2, SWT.NONE);
 
     }
 

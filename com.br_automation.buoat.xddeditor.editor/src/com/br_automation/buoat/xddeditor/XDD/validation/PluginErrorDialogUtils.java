@@ -1,5 +1,5 @@
 /*******************************************************************************
- * @file   PluginUtils.java
+ * @file   PluginErrorDialogUtils.java
  *
  * @author Sree Hari Vignesh, Kalycito Infotech Private Limited.
  *
@@ -66,10 +66,8 @@ public final class PluginErrorDialogUtils {
      *         pressed, or Dialog.CANCEL if this dialog's close window
      *         decoration or the ESC key was used.
      */
-    public static int displayErrorMessageDialog(final String errorMessage,
-    		final Throwable exception) {
-        IStatus errorStatus = new Status(IStatus.ERROR,
-        		Activator.PLUGIN_ID, 1, errorMessage, exception);
+    public static int displayErrorMessageDialog(final String errorMessage, final Throwable exception) {
+        IStatus errorStatus = new Status(IStatus.ERROR, Activator.PLUGIN_ID, 1, errorMessage, exception);
         return ErrorDialog.openError(Display.getDefault().getActiveShell(),
                 PluginErrorDialogUtils.INTERNAL_ERROR_MESSAGE, null, errorStatus);
     }
@@ -104,9 +102,7 @@ public final class PluginErrorDialogUtils {
      * @param projectName
      *            The name of the project.
      */
-    public static void showMessageWindow(int messageType,
-    		String message, String projectName) {
-        MessageDialog.open(messageType, Display.getDefault().getActiveShell(),
-        		"Error", message, SWT.NONE);
+    public static void showMessageWindow(int messageType, String message, String projectName) {
+        MessageDialog.open(messageType, Display.getDefault().getActiveShell(), "Error", message, SWT.NONE);
     }
 }

@@ -60,9 +60,6 @@ import com.br_automation.buoat.xddeditor.editor.editors.DeviceDescriptionFileEdi
  */
 public class NewSubObjectWizard extends Wizard {
 
-    /**
-     * Add validateFirmwareWizardPage
-     */
     private static final String WINDOW_TITLE = "Add Sub-object";
 
     private final AddSubObjectWizardPage addSubObjectWizardPage;
@@ -74,9 +71,7 @@ public class NewSubObjectWizard extends Wizard {
     private DocumentRoot documentRoot;
 
     public NewSubObjectWizard(TObjectImpl selectedObject, DeviceDescriptionFileEditor editor, DocumentRoot docRoot) {
-        if (selectedObject == null) {
-            System.err.println("Invalid node selection");
-        }
+
         documentRoot = docRoot;
         this.editor = editor;
         selObj = selectedObject;
@@ -180,8 +175,6 @@ public class NewSubObjectWizard extends Wizard {
 
         // Get the URI of the model file.
         URI fileURI = URI.createPlatformResourceURI(editor.getModelFile().getFullPath().toString(), true);
-
-        System.err.println("URI.." + fileURI);
 
         // Create a resource for this file.
         Resource resource = resourceSet.createResource(fileURI);

@@ -63,11 +63,16 @@ import org.eclipse.emf.query.statements.FROM;
 import org.eclipse.emf.query.statements.IQueryResult;
 import org.eclipse.emf.query.statements.SELECT;
 import org.eclipse.emf.query.statements.WHERE;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PlatformUI;
 
 import com.br_automation.buoat.xddeditor.XDD.DocumentRoot;
 import com.br_automation.buoat.xddeditor.XDD.ObjectListType;
@@ -639,11 +644,35 @@ public final class XDDUtilities {
         // get new Resource
         ResourceSet resSet = new ResourceSetImpl();
         resSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xdd", new XDDResourceFactoryImpl()); //$NON-NLS-1$
-
+        resSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("XDD", new XDDResourceFactoryImpl()); //$NON-NLS-1$
+        resSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xdc", new XDDResourceFactoryImpl()); //$NON-NLS-1$
+        resSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("XDC", new XDDResourceFactoryImpl()); //$NON-NLS-1$
         // Get the File and root object
         URI fileuri = URI.createURI(resourcePath.toString());
-        Resource resource = resSet.getResource(fileuri, true);
-        return (DocumentRoot) resource.getContents().get(0);
+
+        try {
+            Resource resource = resSet.getResource(fileuri, true);
+            return (DocumentRoot) resource.getContents().get(0);
+        } catch (Exception e) {
+            Display.getDefault().asyncExec(new Runnable() {
+
+                @Override
+                public void run() {
+
+                    IEditorPart editorPart = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+                            .getActiveEditor();
+                    IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+                    IEditorInput input = editorPart.getEditorInput();
+
+                    page.closeEditor(editorPart, true);
+                    MessageDialog.openError(Display.getDefault().getActiveShell(), "Invalid File", "The file cannot be opened in XDD Editor V1.0.");
+                }
+
+            });
+
+        }
+        throw new IllegalArgumentException("Parameter 'resourcePath ' must not be null.");
+
     }
 
     /**

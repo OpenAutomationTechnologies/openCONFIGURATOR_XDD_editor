@@ -81,7 +81,7 @@ public class AbstractObjectPropertySource {
     private static final String OBJ_INDEX_LABEL = "Object ID"; //$NON-NLS-1$
     private static final String OBJ_NAME_LABEL = "Name";
     private static final String OBJ_TYPE_LABEL = "Object Type";
-    private static final String OBJ_DATATYPE_LABEL = "DataType";
+    private static final String OBJ_DATATYPE_LABEL = "Data Type";
     private static final String OBJ_LOW_LIMIT_LABEL = "Low Limit";
     private static final String OBJ_HIGH_LIMIT_LABEL = "High Limit";
     private static final String OBJ_ACCESS_TYPE_LABEL = "Access Type";
@@ -89,7 +89,7 @@ public class AbstractObjectPropertySource {
     private static final String OBJ_ACTUAL_VALUE_LABEL = "Actual Value";
     private static final String OBJ_FORCE_ACTUAL_VALUE_LABEL = "Force Actual Value";
     private static final String OBJ_DENOTATION_LABEL = "Denotation";
-    private static final String OBJ_PDO_MAPPING_LABEL = "PDOmapping";
+    private static final String OBJ_PDO_MAPPING_LABEL = "PDO Mapping";
     private static final String OBJ_OBJFLAGS_LABEL = "Object Flags";
     private static final String OBJ_UNIQUEIDREF_LABEL = "UniqueIDRef";
 
@@ -102,7 +102,7 @@ public class AbstractObjectPropertySource {
     protected static final String[] OBJECT_TYPES = { "7 - VAR", "8 - ARRAY", "9 - RECORD" };
 
     protected static final String[] PDO_MAPPING_TYPES = { "Non-mappable", "Mapped by default", "Mapped optionally",
-            "Trasmit process data objects", "Receive process data objects", "" };
+            "Transmit process data objects", "Receive process data objects", "" };
 
     protected static final String[] ACCESS_TYPE_LIST = { "Constant", "Read only", "Write only", "Read write", "" };
 

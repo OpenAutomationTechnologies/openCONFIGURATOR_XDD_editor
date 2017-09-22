@@ -160,14 +160,6 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
 
         actualValueReadOnlyDescriptor.setCategory(IPropertySourceSupport.INITIAL_VALUE_CATEGORY);
         actualValueEditableDescriptor.setCategory(IPropertySourceSupport.INITIAL_VALUE_CATEGORY);
-        actualValueEditableDescriptor.setValidator(new ICellEditorValidator() {
-
-            @Override
-            public String isValid(Object value) {
-
-                return handleActualValue(value);
-            }
-        });
 
         denotationDescriptor.setCategory(IPropertySourceSupport.OBJECT_ATTRIBUTES_CATEGORY);
         editDenotationDescriptor.setCategory(IPropertySourceSupport.OBJECT_ATTRIBUTES_CATEGORY);
@@ -202,7 +194,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
             }
 
         } else {
-            System.err.println("handleObjectName: Invalid value type:" + name);
+            System.err.println("HandleObjectName: Invalid value type:" + name);
         }
         return null;
     }
@@ -211,7 +203,6 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
 
         propertyList.add(objectIdDescriptor);
         propertyList.add(subObjectIdDescriptor);
-        // propertyList.add(objectIdDescriptor);
         plkObject = (TObjectImpl) plkSubObject.eContainer();
         if (plkObject.getIndex() != null) {
             String index = DatatypeConverter.printHexBinary(plkObject.getIndex());
@@ -236,7 +227,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
                 propertyList.add(editAccessTypeDescriptor);
                 propertyList.add(editDefaultValueDescriptor);
                 propertyList.add(editPdoMappingDescriptor);
-                propertyList.add(editDenotationDescriptor);
+
             } else {
                 propertyList.add(nameDescriptor);
                 propertyList.add(objectTypeDescriptor);
@@ -246,7 +237,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
                 propertyList.add(accessTypeDescriptor);
                 propertyList.add(defaultValueDescriptor);
                 propertyList.add(pdoMappingDescriptor);
-                propertyList.add(denotationDescriptor);
+
             }
         }
 
@@ -578,39 +569,6 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
     }
 
     /**
-     * Handles the actual value modifications.
-     *
-     * @param value
-     *            The value to be set.
-     * @return Returns a string indicating whether the given value is valid;
-     *         null means valid, and non-null means invalid, with the result
-     *         being the error message to display to the end user.
-     */
-    protected String handleActualValue(Object value) {
-        // if (isModuleSubObject()) {
-        // long newObjectIndex = OpenConfiguratorLibraryUtils
-        // .getModuleObjectsIndex(plkSubObject.getModule(),
-        // plkSubObject.getObject().getId());
-        // int newSubObjectIndex = OpenConfiguratorLibraryUtils
-        // .getModuleObjectsSubIndex(plkSubObject.getModule(),
-        // plkSubObject, plkSubObject.getObject().getId());
-        // Result res = OpenConfiguratorLibraryUtils
-        // .validateModuleSubobjectActualValue(plkSubObject,
-        // (String) value, newObjectIndex, newSubObjectIndex);
-        // if (!res.IsSuccessful()) {
-        // return OpenConfiguratorLibraryUtils.getErrorMessage(res);
-        // }
-        // } else {
-        // Result res = OpenConfiguratorLibraryUtils
-        // .validateSubobjectActualValue(plkSubObject, (String) value);
-        // if (!res.IsSuccessful()) {
-        // return OpenConfiguratorLibraryUtils.getErrorMessage(res);
-        // }
-        // }
-        return null;
-    }
-
-    /**
      * Handles the low limit value modifications.
      *
      * @param value
@@ -622,12 +580,16 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
     protected String handleLowLimitValue(Object value) {
         String lowLimit = (String) value;
         String highLimit = plkSubObject.getHighLimit();
-        if (highLimit != null) {
-            if ((!highLimit.isEmpty()) && (!lowLimit.isEmpty()))
-                if (Integer.parseInt(lowLimit) > Integer.parseInt(highLimit)) {
-                    return "Low limit cannot be greater than high limit.";
+        try {
+            if (highLimit != null) {
+                if ((!highLimit.isEmpty()) && (!lowLimit.isEmpty()))
+                    if (Integer.parseInt(lowLimit) > Integer.parseInt(highLimit)) {
+                        return "Low limit cannot be greater than high limit.";
 
-                }
+                    }
+            }
+        } catch (NumberFormatException ex) {
+            return "The value '" + lowLimit + "' is invalid.";
         }
 
         return isValidVal(lowLimit, "low value");
@@ -653,7 +615,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
                 break;
             case "Mapped optionally":
                 break;
-            case "Trasmit process data objects":
+            case "Transmit process data objects":
                 if (accessType == TObjectAccessType.CONST) {
                     return "Sub-object with access type 'const' does not allow TPDO mapping";
                 }
@@ -689,16 +651,39 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
     protected String handleHighLimitValue(Object value) {
         String highLimit = (String) value;
         String lowLimit = plkSubObject.getHighLimit();
-        if (lowLimit != null) {
-            if ((!highLimit.isEmpty()) && (!lowLimit.isEmpty()))
-                if (Integer.parseInt(lowLimit) > Integer.parseInt(highLimit)) {
-                    return "Low limit cannot be greater than high limit.";
+        try {
+            if (lowLimit != null) {
+                if ((!highLimit.isEmpty()) && (!lowLimit.isEmpty()))
+                    if (Integer.parseInt(lowLimit) > Integer.parseInt(highLimit)) {
+                        return "Low limit cannot be greater than high limit.";
 
-                }
+                    }
+            }
+        } catch (NumberFormatException ex) {
+            return "The value '" + highLimit + "' is invalid.";
         }
 
         return isValidVal(highLimit, "high value");
 
+    }
+
+    private boolean isValueValid(String value) {
+        if (!value.isEmpty()) {
+            try {
+                if (value.contains("0x")) {
+                    value = value.substring(2);
+                    Integer val = Integer.valueOf(value);
+                    if (val < 0) {
+                        return false;
+                    }
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -711,8 +696,16 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
      *         being the error message to display to the end user.
      */
     protected String handleDefaultValue(Object value) {
-        String defaultVal = (String) value;
+        String defaultVal = StringUtils.EMPTY;
+        try {
+            defaultVal = (String) value;
+            if (!isValueValid(defaultVal)) {
+                return "The value '" + defaultVal + "' is invalid.";
+            }
 
+        } catch (NumberFormatException ex) {
+            return "The value '" + defaultVal + "' is invalid.";
+        }
         return isValidVal(defaultVal, "Default value");
     }
 
@@ -735,6 +728,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
                     return dataType + " accepts only decimal value";
                 }
             }
+                break;
             case "Integer8": {
                 try {
                     llimit = Long.parseLong(highLowLimit);
@@ -748,6 +742,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
                     return dataType + " accepts only decimal value";
                 }
             }
+                break;
             case "Integer16": {
                 try {
                     llimit = Long.parseLong(highLowLimit);
@@ -761,6 +756,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
                     return dataType + " accepts only decimal value";
                 }
             }
+                break;
             case "Integer32": {
                 try {
                     llimit = Long.parseLong(highLowLimit);
@@ -775,6 +771,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
                     return dataType + " accepts only decimal value";
                 }
             }
+                break;
             case "Unsigned8": {
                 try {
                     llimit = Long.parseLong(highLowLimit);
@@ -788,6 +785,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
                     return dataType + " accepts only decimal value";
                 }
             }
+                break;
             case "Unsigned16": {
                 try {
                     llimit = Long.parseLong(highLowLimit);
@@ -801,6 +799,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
                     return dataType + " accepts only decimal value";
                 }
             }
+                break;
             case "Unsigned32": {
                 try {
                     llimit = Long.parseLong(highLowLimit);
@@ -814,6 +813,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
                     return dataType + " accepts only decimal value";
                 }
             }
+                break;
             case "Real32": {
                 try {
                     Double limit = Double.parseDouble(highLowLimit);
@@ -827,6 +827,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
                     return dataType + " accepts only decimal value";
                 }
             }
+                break;
             case "Real64": {
                 try {
                     Double limit = Double.parseDouble(highLowLimit);
@@ -841,6 +842,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
                 }
 
             }
+                break;
             case "Visible_String": {
                 try {
                     llimit = Long.parseLong(highLowLimit);
@@ -855,6 +857,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
                 }
 
             }
+                break;
             case "Integer24": {
                 try {
                     llimit = Long.parseLong(highLowLimit);
@@ -869,6 +872,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
                 }
 
             }
+                break;
             case "Integer40": {
                 try {
                     llimit = Long.parseLong(highLowLimit);
@@ -884,6 +888,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
                 }
 
             }
+                break;
             case "Integer48": {
                 try {
                     llimit = Long.parseLong(highLowLimit);
@@ -899,6 +904,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
                 }
 
             }
+                break;
             case "Integer56": {
                 try {
                     llimit = Long.parseLong(highLowLimit);
@@ -914,6 +920,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
                 }
 
             }
+                break;
             case "Integer64": {
                 try {
                     llimit = Long.parseLong(highLowLimit);
@@ -929,6 +936,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
                 }
 
             }
+                break;
             case "Octet_String": {
                 try {
                     llimit = Long.parseLong(highLowLimit);
@@ -942,6 +950,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
                     return dataType + " accepts only decimal value";
                 }
             }
+                break;
             case "Unicode_String": {
                 try {
                     llimit = Long.parseLong(highLowLimit);
@@ -955,6 +964,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
                     return dataType + " accepts only decimal value";
                 }
             }
+                break;
             case "Time_of_Day": {
                 try {
                     llimit = Long.parseLong(highLowLimit);
@@ -970,6 +980,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
                 }
 
             }
+                break;
             case "Time_Diff": {
                 try {
                     llimit = Long.parseLong(highLowLimit);
@@ -985,6 +996,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
                 }
 
             }
+                break;
             case "Domain": {
                 try {
                     llimit = Long.parseLong(highLowLimit);
@@ -998,6 +1010,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
                     return dataType + " accepts only decimal value";
                 }
             }
+                break;
             case "Unsigned24": {
                 try {
                     llimit = Long.parseLong(highLowLimit);
@@ -1012,6 +1025,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
                 }
 
             }
+                break;
             case "Unsigned40": {
                 try {
                     llimit = Long.parseLong(highLowLimit);
@@ -1026,6 +1040,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
                 }
 
             }
+                break;
             case "Unsigned48": {
                 try {
                     llimit = Long.parseLong(highLowLimit);
@@ -1041,6 +1056,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
                 }
 
             }
+                break;
             case "Unsigned56": {
                 try {
                     llimit = Long.parseLong(highLowLimit);
@@ -1056,6 +1072,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
                 }
 
             }
+                break;
             case "Unsigned64": {
                 try {
                     llimit = Long.parseLong(highLowLimit);
@@ -1070,6 +1087,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
                 }
 
             }
+                break;
             case "MAC_ADDRESS": {
                 try {
                     llimit = Long.parseLong(highLowLimit);
@@ -1085,6 +1103,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
                 }
 
             }
+                break;
             case "IP_ADDRESS": {
                 try {
                     llimit = Long.parseLong(highLowLimit);
@@ -1098,6 +1117,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
                     return dataType + " accepts only decimal value";
                 }
             }
+                break;
             case "NETTIME": {
                 try {
                     llimit = Long.parseLong(highLowLimit);
@@ -1112,13 +1132,14 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
                 }
 
             }
+                break;
             default:
-
+                break;
             }
         } else {
 
         }
-        return StringUtils.EMPTY;
+        return null;
     }
 
     private boolean isActualValueEditable() {
@@ -1135,13 +1156,6 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
         if (plkSubObject.getAccessType() == null) {
             return retVal;
         }
-
-        // String accessType = plkSubObject.getAccessType().value();
-        // Only RW and WO types are allowed to be edited.
-        // if (!(accessType.equalsIgnoreCase(TObjectAccessType.WO.value())
-        // || accessType.equalsIgnoreCase(TObjectAccessType.RW.value()))) {
-        // return retVal;
-        // }
 
         retVal = true;
         return retVal;
@@ -1165,39 +1179,6 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
      */
     @Override
     public boolean isPropertySet(Object id) {
-        // try {
-        //
-        // if (id instanceof String) {
-        // String objectId = (String) id;
-        // switch (objectId) {
-        // case OBJ_ACTUAL_VALUE_EDITABLE_ID: {
-        // String defaultValue = plkSubObject.getDefaultValue();
-        // Result res = OpenConfiguratorLibraryUtils
-        // .setSubObjectActualValue(plkSubObject,
-        // defaultValue);
-        // if (!res.IsSuccessful()) {
-        // OpenConfiguratorMessageConsole.getInstance()
-        // .printLibraryErrorMessage(res);
-        // } else {
-        // // Success - update the OBD
-        // plkSubObject.setActualValue(defaultValue, true);
-        // }
-        // break;
-        // }
-        //
-        // default:
-        // // others are not editable.
-        // break;
-        // }
-        // }
-        //
-        // } catch (RuntimeException e) {
-        // throw e;
-        // } catch (Exception e) {
-        // OpenConfiguratorMessageConsole.getInstance().printErrorMessage(
-        // e.getMessage(),
-        // plkSubObject.getNode().getProject().getName());
-        // }
         return true;
     }
 
@@ -1210,61 +1191,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
      */
     @Override
     public void resetPropertyValue(Object id) {
-        // try {
-        //
-        // if (id instanceof String) {
-        // String objectId = (String) id;
-        // switch (objectId) {
-        // case OBJ_ACTUAL_VALUE_EDITABLE_ID: {
-        // String defaultValue = plkSubObject.getDefaultValue();
-        // if (isModuleSubObject()) {
-        // long newObjectIndex = OpenConfiguratorLibraryUtils
-        // .getModuleObjectsIndex(
-        // plkSubObject.getModule(),
-        // plkSubObject.getObject().getId());
-        // int newSubObjectIndex = OpenConfiguratorLibraryUtils
-        // .getModuleObjectSubIndex(
-        // plkSubObject.getModule(),
-        // plkSubObject);
-        // Result res = OpenConfiguratorLibraryUtils
-        // .setModuleSubObjectActualValue(plkSubObject,
-        // defaultValue, newObjectIndex,
-        // newSubObjectIndex);
-        // if (!res.IsSuccessful()) {
-        // OpenConfiguratorMessageConsole.getInstance()
-        // .printLibraryErrorMessage(res);
-        // } else {
-        // // Success - update the OBD
-        // plkSubObject.setActualValue(defaultValue, true);
-        // }
-        // } else {
-        // Result res = OpenConfiguratorLibraryUtils
-        // .setSubObjectActualValue(plkSubObject,
-        // defaultValue);
-        // if (!res.IsSuccessful()) {
-        // OpenConfiguratorMessageConsole.getInstance()
-        // .printLibraryErrorMessage(res);
-        // } else {
-        // // Success - update the OBD
-        // plkSubObject.setActualValue(defaultValue, true);
-        // }
-        // }
-        // break;
-        // }
-        //
-        // default:
-        // // others are not editable.
-        // break;
-        // }
-        // }
-        //
-        // } catch (RuntimeException e) {
-        // throw e;
-        // } catch (Exception e) {
-        // OpenConfiguratorMessageConsole.getInstance().printErrorMessage(
-        // e.getMessage(),
-        // plkSubObject.getNode().getProject().getName());
-        // }
+        // TODO: Implement reset default value property.
     }
 
     public short getObjectType(String objectTypeText) {
@@ -1310,7 +1237,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
         if (pdoMapping.equalsIgnoreCase("Mapped optionally")) {
             return TObjectPDOMapping.OPTIONAL;
         }
-        if (pdoMapping.equalsIgnoreCase("Trasmit process data objects")) {
+        if (pdoMapping.equalsIgnoreCase("Transmit process data objects")) {
             return TObjectPDOMapping.TPDO;
         }
         if (pdoMapping.equalsIgnoreCase("Receive process data objects")) {
@@ -1404,46 +1331,46 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
                 switch (objectId) {
                 case OBJ_NAME_EDITABLE_ID:
                     String objValue = (String) value;
-                    plkObject.setName(objValue);
+                    plkSubObject.setName(objValue);
                     break;
                 case OBJ_TYPE_EDITABLE_ID:
                     if (value instanceof Integer) {
                         String val = IPowerlinkConstants.OBJECT_TYPES[(int) value];
                         short objectType = getObjectType(val);
-                        plkObject.setObjectType(objectType);
+                        plkSubObject.setObjectType(objectType);
                     }
                     break;
                 case OBJ_DATATYPE_EDITABLE_ID:
                     if (value instanceof Integer) {
                         String val = DATA_TYPE_LIST[(int) value];
                         byte[] dataType = DatatypeConverter.parseHexBinary(getDataType(val));
-                        plkObject.setDataType(dataType);
+                        plkSubObject.setDataType(dataType);
                     }
                     break;
                 case OBJ_LOW_LIMIT_EDITABLE_ID:
-                    plkObject.setLowLimit((String) value);
+                    plkSubObject.setLowLimit((String) value);
                     break;
                 case OBJ_HIGH_LIMIT_EDITABLE_ID:
-                    plkObject.setHighLimit((String) value);
+                    plkSubObject.setHighLimit((String) value);
                     break;
                 case OBJ_ACCESS_TYPE_EDITABLE_ID:
                     if (value instanceof Integer) {
                         String val = ACCESS_TYPE_LIST[(int) value];
                         TObjectAccessType accessType = getAccessType(val);
-                        plkObject.setAccessType(accessType);
+                        plkSubObject.setAccessType(accessType);
                     }
                     break;
                 case OBJ_DEFAULT_VALUE_EDITABLE_ID:
-                    plkObject.setDefaultValue((String) value);
+                    plkSubObject.setDefaultValue((String) value);
                     break;
                 case OBJ_DENOTATION_EDITABLE_ID:
-                    plkObject.setDenotation((String) value);
+                    plkSubObject.setDenotation((String) value);
                     break;
                 case OBJ_PDO_MAPPING_EDITABLE_ID:
                     if (value instanceof Integer) {
                         String val = PDO_MAPPING_TYPES[(int) value];
                         TObjectPDOMapping pdoMapping = getPdoMapping(val);
-                        plkObject.setPDOmapping(pdoMapping);
+                        plkSubObject.setPDOmapping(pdoMapping);
                     }
                     break;
 
@@ -1462,7 +1389,6 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
             // run time to avoid unnecessary caught of exceptions.
             throw e;
         } catch (Exception e) {
-            System.err.println("The proerty of sub object.." + e.getMessage());
             e.printStackTrace();
         }
 

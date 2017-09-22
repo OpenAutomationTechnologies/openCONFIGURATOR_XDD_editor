@@ -60,6 +60,8 @@ import com.br_automation.buoat.xddeditor.XDD.resources.IPowerlinkConstants;
  *
  */
 public class SubObjectDetailsPage extends EEFAdvancedPropertySection implements IDetailsPage {
+    public SubObjectDetailsPage() {
+    }
 
     private IManagedForm managedForm;
 
@@ -125,21 +127,21 @@ public class SubObjectDetailsPage extends EEFAdvancedPropertySection implements 
         if (obj.getSubIndex() != null) {
             String index = DatatypeConverter.printHexBinary(obj.getSubIndex());
             index = "0x" + index;
-            if(subIndexText != null) {
-            subIndexText.setText(index);
+            if (subIndexText != null) {
+                subIndexText.setText(index);
             }
         }
 
         if (obj.getName() != null) {
-        	if(nameText != null) {
-            nameText.setText(obj.getName());
-        	}
+            if (nameText != null) {
+                nameText.setText(obj.getName());
+            }
         }
 
         if (obj.getObjectType() != 0) {
-        	if(objTypeText != null) {
-            objTypeText.setText(String.valueOf(obj.getObjectType()));
-        	}
+            if (objTypeText != null) {
+                objTypeText.setText(String.valueOf(obj.getObjectType()));
+            }
         }
 
     }
@@ -147,34 +149,34 @@ public class SubObjectDetailsPage extends EEFAdvancedPropertySection implements 
     @Override
     public void createContents(Composite parent) {
 
-        GridLayout layout = new GridLayout(3, true);
-
+        GridLayout layout = new GridLayout(2, false);
         parent.setLayout(layout);
         layout.marginWidth = 20;
-        Section subObjectDetailSection = managedForm.getToolkit().createSection(parent, ExpandableComposite.EXPANDED
-                | Section.DESCRIPTION | ExpandableComposite.TWISTIE | ExpandableComposite.TITLE_BAR);
+        Section subObjectDetailSection = managedForm.getToolkit().createSection(parent,
+                ExpandableComposite.EXPANDED | Section.DESCRIPTION | ExpandableComposite.TWISTIE
+                        | ExpandableComposite.TITLE_BAR | ExpandableComposite.COMPACT);
         managedForm.getToolkit().paintBordersFor(subObjectDetailSection);
         subObjectDetailSection.setText(ObjectDictionaryEditorPage.SUB_OBJECT_DICTIONARY_DETAILS_HEADING);
-        subObjectDetailSection.setDescription(ObjectDictionaryEditorPage.OBJECT_DICTIONARY_HEADING_DESCRIPTION);
 
         Composite clientComposite = managedForm.getToolkit().createComposite(subObjectDetailSection, SWT.WRAP);
-        GridLayout layouts = new GridLayout(6, true);
-        layouts.marginWidth = 2;
-        layouts.marginHeight = 2;
+        GridLayout layouts = new GridLayout(6, false);
+        layouts.marginWidth = 5;
         clientComposite.setLayout(layouts);
         managedForm.getToolkit().paintBordersFor(clientComposite);
 
         subObjectDetailSection.setClient(clientComposite);
 
-        Composite groupComposite = new Composite(clientComposite, SWT.NONE);
-        groupComposite.setLayout(new GridLayout(1, false));
-
-        Group grpMandatoryData = new Group(groupComposite, SWT.NONE);
-        GridData gd_grpConfigurationFile = new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1);
-        gd_grpConfigurationFile.widthHint = 558;
-        grpMandatoryData.setLayoutData(gd_grpConfigurationFile);
+        Group grpMandatoryData = new Group(clientComposite, SWT.NONE);
         grpMandatoryData.setText(IPowerlinkConstants.MANDATORY_DATA_GROUP);
-        grpMandatoryData.setLayout(new GridLayout(6, false));
+        grpMandatoryData.setLayout(layouts);
+
+        GridData gd_grpConfigurationFile = new GridData(SWT.FILL, SWT.FILL, true, false, 6, 1);
+        gd_grpConfigurationFile.widthHint = 500;
+        grpMandatoryData.setLayoutData(gd_grpConfigurationFile);
+
+        GridData mandatoryvalsec = new GridData(SWT.FILL, SWT.CENTER, true, false, 5, 1);
+        mandatoryvalsec.heightHint = 15;
+        mandatoryvalsec.widthHint = 250;
 
         Label nameLabel = new Label(grpMandatoryData, SWT.NONE);
         nameLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
@@ -183,7 +185,7 @@ public class SubObjectDetailsPage extends EEFAdvancedPropertySection implements 
         nameLabel.setForeground(managedForm.getToolkit().getColors().getColor(IFormColors.TITLE));
 
         nameText = new Text(grpMandatoryData, SWT.BORDER | SWT.WRAP);
-        nameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 5, 1));
+        nameText.setLayoutData(mandatoryvalsec);
         managedForm.getToolkit().adapt(nameText, true, true);
         nameText.setEditable(false);
 
@@ -194,7 +196,7 @@ public class SubObjectDetailsPage extends EEFAdvancedPropertySection implements 
         objTypelabel.setForeground(managedForm.getToolkit().getColors().getColor(IFormColors.TITLE));
 
         objTypeText = new Text(grpMandatoryData, SWT.BORDER | SWT.WRAP);
-        objTypeText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 5, 1));
+        objTypeText.setLayoutData(mandatoryvalsec);
         managedForm.getToolkit().adapt(objTypeText, true, true);
         objTypeText.setEditable(false);
 
@@ -205,7 +207,7 @@ public class SubObjectDetailsPage extends EEFAdvancedPropertySection implements 
         indexLabel.setForeground(managedForm.getToolkit().getColors().getColor(IFormColors.TITLE));
 
         subIndexText = new Text(grpMandatoryData, SWT.BORDER | SWT.WRAP);
-        subIndexText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 5, 1));
+        subIndexText.setLayoutData(mandatoryvalsec);
         managedForm.getToolkit().adapt(subIndexText, true, true);
         subIndexText.setEditable(false);
 

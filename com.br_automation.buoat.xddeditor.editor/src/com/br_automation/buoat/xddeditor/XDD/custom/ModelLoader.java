@@ -173,8 +173,10 @@ public final class ModelLoader {
      *            set.
      */
     public static void setMultiplexFeatureObjects(boolean status, DocumentRoot root) {
-        List<TCNFeatures> tCNfeaturesList = XDDUtilities.findEObjects(root, XDDPackage.eINSTANCE.getTCNFeatures());
-        List<ObjectListType> objectsList = XDDUtilities.findEObjects(root, XDDPackage.eINSTANCE.getObjectListType());
+        List<TCNFeatures> tCNfeaturesList = XDDUtilities.
+                findEObjects(root, XDDPackage.eINSTANCE.getTCNFeatures());
+        List<ObjectListType> objectsList = XDDUtilities.
+                findEObjects(root, XDDPackage.eINSTANCE.getObjectListType());
 
         if (objectsList.isEmpty() || tCNfeaturesList.isEmpty())
             return;

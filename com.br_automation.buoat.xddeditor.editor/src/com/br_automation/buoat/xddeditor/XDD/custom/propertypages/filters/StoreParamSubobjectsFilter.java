@@ -51,8 +51,7 @@ public class StoreParamSubobjectsFilter implements IFilter {
             TObject parentObject = (TObject) subObject.eContainer();
 
             if (parentObject.getIndex() != null) {
-                if (new BigInteger(1, parentObject.getIndex()).intValue() ==
-                		EPLGeneralConstants.NMT_STOREPARAM_REC) { // NOPMD
+                if (new BigInteger(1, parentObject.getIndex()).intValue() == EPLGeneralConstants.NMT_STOREPARAM_REC) { // NOPMD
                                                                                                                         // by
                                                                                                                         // lueckengaj
                                                                                                                         // on

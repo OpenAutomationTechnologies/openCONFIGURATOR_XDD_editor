@@ -4,6 +4,9 @@
  *
  * @copyright (c) 2017, Bernecker + Rainer Industrie Elektronik Ges.m.b.H.
  *
+ * @copyright (c) 2017, Kalycito Infotech Private Limited
+ *             All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *   * Redistributions of source code must retain the above copyright

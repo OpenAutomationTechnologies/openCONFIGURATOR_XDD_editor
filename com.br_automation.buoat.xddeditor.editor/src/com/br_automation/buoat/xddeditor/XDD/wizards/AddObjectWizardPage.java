@@ -31,12 +31,9 @@
 
 package com.br_automation.buoat.xddeditor.XDD.wizards;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 import javax.xml.bind.DatatypeConverter;
-import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jface.wizard.WizardPage;
@@ -45,22 +42,19 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.wb.swt.SWTResourceManager;
-import org.omg.CORBA.DATA_CONVERSION;
 
 import com.br_automation.buoat.xddeditor.XDD.DocumentRoot;
 import com.br_automation.buoat.xddeditor.XDD.TObject;
 import com.br_automation.buoat.xddeditor.XDD.TObjectAccessType;
 import com.br_automation.buoat.xddeditor.XDD.TObjectPDOMapping;
 import com.br_automation.buoat.xddeditor.XDD.XDDPackage;
-import com.br_automation.buoat.xddeditor.XDD.custom.DataType;
 import com.br_automation.buoat.xddeditor.XDD.custom.Messages;
 import com.br_automation.buoat.xddeditor.XDD.custom.XDDUtilities;
 import com.br_automation.buoat.xddeditor.XDD.resources.IPowerlinkConstants;
@@ -83,21 +77,21 @@ public class AddObjectWizardPage extends WizardPage {
 
     private DocumentRoot documentRoot;
 
-    private static final String WINDOW_TITLE = "POWERLINK Object Wizard";
-
     public static final int MANUFACTURER_PROFILE_START_INDEX = 0x2000;
     public static final int MANUFACTURER_PROFILE_END_INDEX = 0x5FFF;
 
     public static final String DIALOG_DESCRIPTION = "Configure the attributes for the new object.";
     public static final String DIALOG_PAGE_LABEL = "Object";
 
-    private static final String DIALOG_PAGE_NAME = "AddObjectWizardPage";
-
     /**
-     * @param pageID
-     *            ID of the page.
-     * @param wizard
-     *            the parent-wizard.
+     * Constructor to initialize the document instance.
+     *
+     * @param pageName
+     *            Name of the wizard page.
+     * @param documentRoot
+     *            the instance of device description file document.
+     * @param editor
+     *            the instance of editor.
      */
     protected AddObjectWizardPage(String pageName, DocumentRoot documentRoot, DeviceDescriptionFileEditor editor) {
         super(pageName);
@@ -146,7 +140,9 @@ public class AddObjectWizardPage extends WizardPage {
     private static final String[] OBJECT_TYPES = new String[] { "7 - VAR", "8 - ARRAY", "9 - RECORD" };
 
     private static final String[] PDO_MAPPING_TYPES = new String[] { "Non-mappable", "Mapped by default",
-            "Mapped optionally", "Trasmit process data objects", "Receive process data objects" };
+            "Mapped optionally", "Transmit process data objects", "Receive process data objects" };
+
+    private static final String INVALID_VALUE = "Invalid value.";
 
     private boolean isValueValid(String value) {
         if (!value.isEmpty()) {
@@ -160,7 +156,7 @@ public class AddObjectWizardPage extends WizardPage {
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
-                setErrorMessage("Invalid value.");
+                setErrorMessage(INVALID_VALUE);
                 return false;
             }
         }
@@ -199,40 +195,13 @@ public class AddObjectWizardPage extends WizardPage {
         txtLowLimit = new Text(grpAddObjectAdvancedOptions, SWT.BORDER);
         txtLowLimit.setText(Messages.addObjectWizardPage_txtLowLimit); // $NON-NLS-1$
         txtLowLimit.setBounds(136, 136, 140, 23);
-        txtLowLimit.addModifyListener(new ModifyListener() {
-            @Override
-            public void modifyText(ModifyEvent e) {
-                setErrorMessage(null);
-                setPageComplete(true);
-                lowLimit = txtLowLimit.getText();
-                if (!isValueValid(lowLimit)) {
-                    setErrorMessage("Invalid value.");
-                    setPageComplete(false);
-                }
-
-                getWizard().getContainer().updateButtons();
-            }
-
-        });
+        txtLowLimit.addModifyListener(txtLowLimitModifyListener);
         txtLowLimit.addVerifyListener(nameVerifyListener);
 
         txtHighLimit = new Text(grpAddObjectAdvancedOptions, SWT.BORDER);
         txtHighLimit.setText(Messages.addObjectWizardPage_txtHighLimit); // $NON-NLS-1$
         txtHighLimit.setBounds(136, 164, 140, 23);
-        txtHighLimit.addModifyListener(new ModifyListener() {
-            @Override
-            public void modifyText(ModifyEvent e) {
-                setErrorMessage(null);
-                setPageComplete(true);
-                highLimit = txtHighLimit.getText();
-                if (!isValueValid(highLimit)) {
-                    setErrorMessage("Invalid value.");
-                    setPageComplete(false);
-                }
-                getWizard().getContainer().updateButtons();
-            }
-
-        });
+        txtHighLimit.addModifyListener(txthighLimitModifyListener);
         txtHighLimit.addVerifyListener(nameVerifyListener);
 
         Label lblAccessType = new Label(grpAddObjectAdvancedOptions, SWT.NONE);
@@ -255,20 +224,7 @@ public class AddObjectWizardPage extends WizardPage {
         txtDefaultValue = new Text(grpAddObjectAdvancedOptions, SWT.BORDER);
         txtDefaultValue.setText(Messages.addObjectWizardPage_txtDefaultValue);
         txtDefaultValue.setBounds(136, 107, 140, 23);
-        txtDefaultValue.addModifyListener(new ModifyListener() {
-            @Override
-            public void modifyText(ModifyEvent e) {
-                setErrorMessage(null);
-                setPageComplete(true);
-                defaultValue = txtDefaultValue.getText();
-                if (!isValueValid(defaultValue)) {
-                    setErrorMessage("Invalid value.");
-                    setPageComplete(false);
-                }
-                getWizard().getContainer().updateButtons();
-            }
-
-        });
+        txtDefaultValue.addModifyListener(txtdefaultValueModifyListener);
         txtDefaultValue.addVerifyListener(nameVerifyListener);
 
         Label lblDefaultValue = new Label(grpAddObjectAdvancedOptions, SWT.NONE);
@@ -312,36 +268,13 @@ public class AddObjectWizardPage extends WizardPage {
         txtObjectIndexText.setText(Messages.addObjectWizardPage_txtObject_index); // $NON-NLS-1$
         txtObjectIndexText.setBounds(107, 19, 140, 21);
         txtObjectIndexText.setFocus();
-        txtObjectIndexText.addModifyListener(new ModifyListener() {
-            @Override
-            public void modifyText(ModifyEvent e) {
-                setErrorMessage(null);
-                setPageComplete(true);
-                objIndex = txtObjectIndexText.getText();
-
-                getWizard().getContainer().updateButtons();
-            }
-
-        });
+        txtObjectIndexText.addModifyListener(objectIndexModifyListener);
         txtObjectIndexText.addVerifyListener(nameVerifyListener);
 
         txtObjectNameText = new Text(grpAddObjectBasicOptions, SWT.BORDER);
         txtObjectNameText.setText(Messages.addObjectWizardPage_txtObject_name);
         txtObjectNameText.setBounds(107, 43, 140, 21);
-        txtObjectNameText.addModifyListener(new ModifyListener() {
-            @Override
-            public void modifyText(ModifyEvent e) {
-                setErrorMessage(null);
-                setPageComplete(true);
-                objName = txtObjectNameText.getText();
-                if (!isValueValid(objName)) {
-                    setErrorMessage("Invalid value.");
-                    setPageComplete(false);
-                }
-                getWizard().getContainer().updateButtons();
-            }
-
-        });
+        txtObjectNameText.addModifyListener(objectNameModifyListener);
         txtObjectNameText.addVerifyListener(nameVerifyListener);
 
         comboObjectType = new Combo(grpAddObjectBasicOptions, SWT.NONE | SWT.READ_ONLY);
@@ -372,85 +305,125 @@ public class AddObjectWizardPage extends WizardPage {
             txtHighLimit.setEnabled(true);
             txtLowLimit.setEnabled(true);
         }
-        comboDataType.addSelectionListener(new SelectionAdapter() {
-
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                dataType = comboDataType.getText();
-
-                txtDefaultValue.addModifyListener(new ModifyListener() {
-                    @Override
-                    public void modifyText(ModifyEvent e) {
-                        setErrorMessage(null);
-                        setPageComplete(true);
-                        defaultValue = txtDefaultValue.getText();
-                        if (!isValueValid(defaultValue)) {
-                            setErrorMessage("Invalid value.");
-                            setPageComplete(false);
-                        }
-                        getWizard().getContainer().updateButtons();
-                    }
-
-                });
-
-                txtHighLimit.addModifyListener(new ModifyListener() {
-                    @Override
-                    public void modifyText(ModifyEvent e) {
-                        setErrorMessage(null);
-                        setPageComplete(true);
-                        highLimit = txtHighLimit.getText();
-                        if (!isValueValid(highLimit)) {
-                            setErrorMessage("Invalid value.");
-                            setPageComplete(false);
-                        }
-                        getWizard().getContainer().updateButtons();
-                    }
-
-                });
-
-                txtLowLimit.addModifyListener(new ModifyListener() {
-                    @Override
-                    public void modifyText(ModifyEvent e) {
-                        setErrorMessage(null);
-                        setPageComplete(true);
-                        lowLimit = txtLowLimit.getText();
-                        if (!isValueValid(lowLimit)) {
-                            setErrorMessage("Invalid value.");
-                            setPageComplete(false);
-                        }
-
-                        getWizard().getContainer().updateButtons();
-                    }
-
-                });
-                String defaultVal = getTxtDefaultValue();
-                if (!defaultVal.isEmpty()) {
-                    if (!isValidVal(defaultVal, "Default value")) {
-                        setPageComplete(false);
-                    }
-                }
-                String lowLimit = getTxtLowLimit();
-                if (!lowLimit.isEmpty()) {
-                    if (!isValidVal(lowLimit, "low value")) {
-                        setPageComplete(false);
-                    }
-                }
-                String highLimit = getTxtHighLimit();
-                if (!highLimit.isEmpty()) {
-                    if (!isValidVal(highLimit, "high value")) {
-                        setPageComplete(false);
-                    }
-                }
-                if ((!highLimit.isEmpty()) && (!lowLimit.isEmpty()))
-                    if (Integer.parseInt(lowLimit) > Integer.parseInt(highLimit)) {
-                        setErrorMessage("Low limit cannot be greater than high limit.");
-                        setPageComplete(false);
-                    }
-
-            }
-        });
+        comboDataType.addSelectionListener(dataTypeSelectionListener);
 
     } // createControl
+
+    private SelectionListener dataTypeSelectionListener = new SelectionAdapter() {
+
+        @Override
+        public void widgetSelected(SelectionEvent e) {
+            dataType = comboDataType.getText();
+
+            txtDefaultValue.addModifyListener(txtdefaultValueModifyListener);
+
+            txtHighLimit.addModifyListener(txthighLimitModifyListener);
+
+            txtLowLimit.addModifyListener(txtLowLimitModifyListener);
+
+            String defaultVal = getTxtDefaultValue();
+            if (!defaultVal.isEmpty()) {
+                if (!isValidVal(defaultVal, "Default value")) {
+                    setPageComplete(false);
+                }
+            }
+            String lowLimit = getTxtLowLimit();
+            if (!lowLimit.isEmpty()) {
+                if (!isValidVal(lowLimit, "low value")) {
+                    setPageComplete(false);
+                }
+            }
+            String highLimit = getTxtHighLimit();
+            if (!highLimit.isEmpty()) {
+                if (!isValidVal(highLimit, "high value")) {
+                    setPageComplete(false);
+                }
+            }
+            if ((!highLimit.isEmpty()) && (!lowLimit.isEmpty()))
+                if (Integer.parseInt(lowLimit) > Integer.parseInt(highLimit)) {
+                    setErrorMessage("Low limit cannot be greater than high limit.");
+                    setPageComplete(false);
+                }
+
+        }
+    };
+
+    private ModifyListener txtLowLimitModifyListener = new ModifyListener() {
+
+        @Override
+        public void modifyText(ModifyEvent e) {
+            setErrorMessage(null);
+            setPageComplete(true);
+            lowLimit = txtLowLimit.getText();
+            if (!isValueValid(lowLimit)) {
+                setErrorMessage(INVALID_VALUE);
+                setPageComplete(false);
+            }
+
+            getWizard().getContainer().updateButtons();
+
+        }
+    };
+
+    private ModifyListener objectNameModifyListener = new ModifyListener() {
+
+        @Override
+        public void modifyText(ModifyEvent e) {
+            setErrorMessage(null);
+            setPageComplete(true);
+            objName = txtObjectNameText.getText();
+            if (!isValueValid(objName)) {
+                setErrorMessage(INVALID_VALUE);
+                setPageComplete(false);
+            }
+            getWizard().getContainer().updateButtons();
+
+        }
+    };
+
+    private ModifyListener objectIndexModifyListener = new ModifyListener() {
+
+        @Override
+        public void modifyText(ModifyEvent e) {
+            setErrorMessage(null);
+            setPageComplete(true);
+            objIndex = txtObjectIndexText.getText();
+
+            getWizard().getContainer().updateButtons();
+
+        }
+    };
+
+    private ModifyListener txthighLimitModifyListener = new ModifyListener() {
+
+        @Override
+        public void modifyText(ModifyEvent e) {
+            setErrorMessage(null);
+            setPageComplete(true);
+            highLimit = txtHighLimit.getText();
+            if (!isValueValid(highLimit)) {
+                setErrorMessage(INVALID_VALUE);
+                setPageComplete(false);
+            }
+            getWizard().getContainer().updateButtons();
+
+        }
+    };
+
+    private ModifyListener txtdefaultValueModifyListener = new ModifyListener() {
+
+        @Override
+        public void modifyText(ModifyEvent e) {
+            setErrorMessage(null);
+            setPageComplete(true);
+            defaultValue = txtDefaultValue.getText();
+            if (!isValueValid(defaultValue)) {
+                setErrorMessage(INVALID_VALUE);
+                setPageComplete(false);
+            }
+            getWizard().getContainer().updateButtons();
+        }
+    };
 
     private boolean isObjectIndexValid(String text) {
         if (!text.isEmpty()) {
@@ -526,13 +499,8 @@ public class AddObjectWizardPage extends WizardPage {
             return false;
         }
 
-        // if(!isValueHex(index)){
-        // setErrorMessage("Enter Object value in hexadecimal format");
-        // return false;
-        // }
-
         if (!isValueValid(objIndex)) {
-            setErrorMessage("Invalid value.");
+            setErrorMessage(INVALID_VALUE);
             return false;
         }
         if (!isObjectIndexValid(objIndex)) {
@@ -616,6 +584,7 @@ public class AddObjectWizardPage extends WizardPage {
                     setErrorMessage(dataType + " accepts only decimal value");
                 }
             }
+                break;
             case "Integer8": {
                 try {
                     llimit = Long.parseLong(HighLowLimit);
@@ -629,6 +598,7 @@ public class AddObjectWizardPage extends WizardPage {
                     setErrorMessage(dataType + " accepts only decimal value");
                 }
             }
+                break;
             case "Integer16": {
                 try {
                     llimit = Long.parseLong(HighLowLimit);
@@ -642,6 +612,7 @@ public class AddObjectWizardPage extends WizardPage {
                     setErrorMessage(dataType + " accepts only decimal value");
                 }
             }
+                break;
             case "Integer32": {
                 try {
                     llimit = Long.parseLong(HighLowLimit);
@@ -655,6 +626,7 @@ public class AddObjectWizardPage extends WizardPage {
                     setErrorMessage(dataType + " accepts only decimal value");
                 }
             }
+                break;
             case "Unsigned8": {
                 try {
                     llimit = Long.parseLong(HighLowLimit);
@@ -668,6 +640,7 @@ public class AddObjectWizardPage extends WizardPage {
                     setErrorMessage(dataType + " accepts only decimal value");
                 }
             }
+                break;
             case "Unsigned16": {
                 try {
                     llimit = Long.parseLong(HighLowLimit);
@@ -681,6 +654,7 @@ public class AddObjectWizardPage extends WizardPage {
                     setErrorMessage(dataType + " accepts only decimal value");
                 }
             }
+                break;
             case "Unsigned32": {
                 try {
                     llimit = Long.parseLong(HighLowLimit);
@@ -694,6 +668,7 @@ public class AddObjectWizardPage extends WizardPage {
                     setErrorMessage(dataType + " accepts only decimal value");
                 }
             }
+                break;
             case "Real32": {
                 try {
                     Double limit = Double.parseDouble(HighLowLimit);
@@ -707,6 +682,7 @@ public class AddObjectWizardPage extends WizardPage {
                     setErrorMessage(dataType + " accepts only decimal value");
                 }
             }
+                break;
             case "Real64": {
                 try {
                     Double limit = Double.parseDouble(HighLowLimit);
@@ -721,6 +697,7 @@ public class AddObjectWizardPage extends WizardPage {
                 }
 
             }
+                break;
             case "Visible_String": {
                 try {
                     llimit = Long.parseLong(HighLowLimit);
@@ -735,6 +712,7 @@ public class AddObjectWizardPage extends WizardPage {
                 }
 
             }
+                break;
             case "Integer24": {
                 try {
                     llimit = Long.parseLong(HighLowLimit);
@@ -749,6 +727,7 @@ public class AddObjectWizardPage extends WizardPage {
                 }
 
             }
+                break;
             case "Integer40": {
                 try {
                     llimit = Long.parseLong(HighLowLimit);
@@ -763,6 +742,7 @@ public class AddObjectWizardPage extends WizardPage {
                 }
 
             }
+                break;
             case "Integer48": {
                 try {
                     llimit = Long.parseLong(HighLowLimit);
@@ -777,6 +757,7 @@ public class AddObjectWizardPage extends WizardPage {
                 }
 
             }
+                break;
             case "Integer56": {
                 try {
                     llimit = Long.parseLong(HighLowLimit);
@@ -791,6 +772,7 @@ public class AddObjectWizardPage extends WizardPage {
                 }
 
             }
+                break;
             case "Integer64": {
                 try {
                     llimit = Long.parseLong(HighLowLimit);
@@ -806,6 +788,7 @@ public class AddObjectWizardPage extends WizardPage {
                 }
 
             }
+                break;
             case "Octet_String": {
                 try {
                     llimit = Long.parseLong(HighLowLimit);
@@ -819,6 +802,7 @@ public class AddObjectWizardPage extends WizardPage {
                     setErrorMessage(dataType + " accepts only decimal value");
                 }
             }
+                break;
             case "Unicode_String": {
                 try {
                     llimit = Long.parseLong(HighLowLimit);
@@ -832,6 +816,7 @@ public class AddObjectWizardPage extends WizardPage {
                     setErrorMessage(dataType + " accepts only decimal value");
                 }
             }
+                break;
             case "Time_of_Day": {
                 try {
                     llimit = Long.parseLong(HighLowLimit);
@@ -846,6 +831,7 @@ public class AddObjectWizardPage extends WizardPage {
                 }
 
             }
+                break;
             case "Time_Diff": {
                 try {
                     llimit = Long.parseLong(HighLowLimit);
@@ -860,6 +846,7 @@ public class AddObjectWizardPage extends WizardPage {
                 }
 
             }
+                break;
             case "Domain": {
                 try {
                     llimit = Long.parseLong(HighLowLimit);
@@ -873,6 +860,7 @@ public class AddObjectWizardPage extends WizardPage {
                     setErrorMessage(dataType + " accepts only decimal value");
                 }
             }
+                break;
             case "Unsigned24": {
                 try {
                     llimit = Long.parseLong(HighLowLimit);
@@ -887,6 +875,7 @@ public class AddObjectWizardPage extends WizardPage {
                 }
 
             }
+                break;
             case "Unsigned40": {
                 try {
                     llimit = Long.parseLong(HighLowLimit);
@@ -901,6 +890,7 @@ public class AddObjectWizardPage extends WizardPage {
                 }
 
             }
+                break;
             case "Unsigned48": {
                 try {
                     llimit = Long.parseLong(HighLowLimit);
@@ -915,6 +905,7 @@ public class AddObjectWizardPage extends WizardPage {
                 }
 
             }
+                break;
             case "Unsigned56": {
                 try {
                     llimit = Long.parseLong(HighLowLimit);
@@ -929,6 +920,7 @@ public class AddObjectWizardPage extends WizardPage {
                 }
 
             }
+                break;
             case "Unsigned64": {
                 try {
                     llimit = Long.parseLong(HighLowLimit);
@@ -943,6 +935,7 @@ public class AddObjectWizardPage extends WizardPage {
                 }
 
             }
+                break;
             case "MAC_ADDRESS": {
                 try {
                     llimit = Long.parseLong(HighLowLimit);
@@ -957,6 +950,7 @@ public class AddObjectWizardPage extends WizardPage {
                 }
 
             }
+                break;
             case "IP_ADDRESS": {
                 try {
                     llimit = Long.parseLong(HighLowLimit);
@@ -970,6 +964,7 @@ public class AddObjectWizardPage extends WizardPage {
                     setErrorMessage(dataType + " accepts only decimal value");
                 }
             }
+                break;
             case "NETTIME": {
                 try {
                     llimit = Long.parseLong(HighLowLimit);
@@ -984,17 +979,12 @@ public class AddObjectWizardPage extends WizardPage {
                 }
 
             }
+                break;
             default:
                 return true;
             }
         } else {
             return false;
-        }
-    }
-
-    private boolean isValueHex(String text) {
-        if (text.contains("0x")) {
-            return true;
         }
         return false;
     }
@@ -1202,7 +1192,7 @@ public class AddObjectWizardPage extends WizardPage {
         if (pdoMapping.equalsIgnoreCase("Mapped optionally")) {
             return TObjectPDOMapping.OPTIONAL;
         }
-        if (pdoMapping.equalsIgnoreCase("Trasmit process data objects")) {
+        if (pdoMapping.equalsIgnoreCase("Transmit process data objects")) {
             return TObjectPDOMapping.TPDO;
         }
         if (pdoMapping.equalsIgnoreCase("Receive process data objects")) {
@@ -1212,13 +1202,12 @@ public class AddObjectWizardPage extends WizardPage {
     }
 
     /**
-     * Handles the PDO mapping value modifications.
+     * Verifies the valid PDOMapping
      *
-     * @param value
-     *            The value to be set.
-     * @return Returns a string indicating whether the given value is valid;
-     *         null means valid, and non-null means invalid, with the result
-     *         being the error message to display to the end user.
+     * @param pdoMappingValue
+     *            value to be verified.
+     * @return Returns <code>true</code> if the value is valid,
+     *         <code>false</code> otherwise.
      */
     protected boolean isPdoMappingValueValid(String pdoMappingValue) {
 
@@ -1230,7 +1219,7 @@ public class AddObjectWizardPage extends WizardPage {
             break;
         case "Mapped optionally":
             break;
-        case "Trasmit process data objects":
+        case "Transmit process data objects":
             if (accessType == TObjectAccessType.CONST) {
                 return false;
             }

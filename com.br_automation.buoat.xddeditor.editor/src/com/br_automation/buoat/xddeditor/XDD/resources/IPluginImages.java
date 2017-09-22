@@ -48,6 +48,6 @@ public interface IPluginImages {
     public final static String HIDE_STANDARDIZED_PROFILE_ICON = "icons/hide_standardized_device_profile.gif";
     public final static String HIDE_NON_MAPPABLE_OBJECT_ICON = "icons/hide_non_mappable.gif";
 
-    public final static String FIRMWARE_ICON = "icons/firmware.gif";
+//    public final static String FIRMWARE_ICON = "icons/firmware.gif";
 
 }

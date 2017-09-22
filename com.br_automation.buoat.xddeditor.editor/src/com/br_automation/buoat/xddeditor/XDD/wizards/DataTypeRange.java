@@ -65,7 +65,7 @@ public interface DataTypeRange {
     public static long Unsigned56_min = 0;
     public static long Unsigned56_max = 72057594037927935L;
     public static long Unsigned64_min = 0;
-    // public static long Unsigned64_max = 18446744073709551615L;
+    public static long Unsigned64_max = Long.MAX_VALUE;
     public static double Real32_min = 1.2E-38;
     public static double Real32_max = 3.4E+38;
     public static double Real64_min = 2.3E-308;

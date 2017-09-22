@@ -1,7 +1,7 @@
 /*******************************************************************************
  * @file   Activator.java
  *
- * @author Sree Hari Vignesh B, Kalycito Infotech Private Limited.
+ * @author Sree Hari Vignesh, Kalycito Infotech Private Limited.
  *
  * @copyright (c) 2017, Kalycito Infotech Private Limited
  *                    All rights reserved.
@@ -109,7 +109,6 @@ public class Activator extends AbstractUIPlugin {
         return AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, path);
     }
 
-
     /**
      * The constructor
      */
@@ -138,6 +137,6 @@ public class Activator extends AbstractUIPlugin {
     @Override
     public void stop(BundleContext context) throws Exception {
         Activator.plugin = null;
-                super.stop(context);
+        super.stop(context);
     }
 }

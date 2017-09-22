@@ -84,7 +84,7 @@ import com.br_automation.buoat.xddeditor.XDD.resources.IPowerlinkConstants;
 /**
  * Class to populate the details page of store param subobject
  *
- * @author Sree hari Vignesh
+ * @author Sree Hari Vignesh
  *
  */
 public class StoreParamSubObjectDetailsPage extends EEFAdvancedPropertySection implements IDetailsPage {
@@ -103,7 +103,6 @@ public class StoreParamSubObjectDetailsPage extends EEFAdvancedPropertySection i
     private Label valueOfLabelDefaultValue;
     private Label lblIndexValue;
     private StoreParamComposite storeparam;
-
 
     public StoreParamSubObjectDetailsPage(SubObjectTypeImpl subObject, DocumentRoot docRoot,
             DeviceDescriptionFileEditor editor) {
@@ -171,28 +170,28 @@ public class StoreParamSubObjectDetailsPage extends EEFAdvancedPropertySection i
         subObject = (SubObjectTypeImpl) obj;
         tobject = (TObject) subObject.eContainer();
 
-        if(lblIndexValue != null) {
-        this.lblIndexValue.setText("0x1010 (" + tobject.getName() + ")"); //$NON-NLS-1$
+        if (lblIndexValue != null) {
+            this.lblIndexValue.setText("0x1010 (" + tobject.getName() + ")"); //$NON-NLS-1$
         }
 
         if (obj.getSubIndex() != null) {
             String index = DatatypeConverter.printHexBinary(obj.getSubIndex());
             index = "0x" + index;
-            if(subIndexText != null) {
-            subIndexText.setText(index);
+            if (subIndexText != null) {
+                subIndexText.setText(index);
             }
         }
 
         if (obj.getName() != null) {
-        	if(nameText != null) {
-            nameText.setText(obj.getName());
-        	}
+            if (nameText != null) {
+                nameText.setText(obj.getName());
+            }
         }
 
         if (obj.getObjectType() != 0) {
-        	if(objTypeText != null) {
-            objTypeText.setText(String.valueOf(obj.getObjectType()));
-        	}
+            if (objTypeText != null) {
+                objTypeText.setText(String.valueOf(obj.getObjectType()));
+            }
         }
 
     }
@@ -203,7 +202,7 @@ public class StoreParamSubObjectDetailsPage extends EEFAdvancedPropertySection i
      *
      *        Generates a default value based on the selection.
      *
-     * @author Joris Lückenga
+     * @author Sree Hari Vignesh
      */
     private class StoreParamComposite extends Composite {
 
@@ -378,17 +377,19 @@ public class StoreParamSubObjectDetailsPage extends EEFAdvancedPropertySection i
     public void createContents(Composite parent) {
 
         GridLayout layout = new GridLayout(1, true);
-
         parent.setLayout(layout);
         layout.marginWidth = 20;
         Section storeParamSection = managedForm.getToolkit().createSection(parent, ExpandableComposite.EXPANDED
                 | Section.DESCRIPTION | ExpandableComposite.TWISTIE | ExpandableComposite.TITLE_BAR);
+
+        GridData gd_index1F82Section = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+        gd_index1F82Section.widthHint = 558;
+        storeParamSection.setLayoutData(gd_index1F82Section);
         managedForm.getToolkit().paintBordersFor(storeParamSection);
         storeParamSection.setText(ObjectDictionaryEditorPage.SUB_OBJECT_DICTIONARY_DETAILS_HEADING);
-        storeParamSection.setDescription(ObjectDictionaryEditorPage.OBJECT_DICTIONARY_HEADING_DESCRIPTION);
 
         Composite clientComposite = managedForm.getToolkit().createComposite(storeParamSection, SWT.WRAP);
-        GridLayout layouts = new GridLayout(1, true);
+        GridLayout layouts = new GridLayout(6, false);
         layouts.marginWidth = 2;
         layouts.marginHeight = 2;
         clientComposite.setLayout(layouts);
@@ -396,15 +397,18 @@ public class StoreParamSubObjectDetailsPage extends EEFAdvancedPropertySection i
 
         storeParamSection.setClient(clientComposite);
 
-        Composite groupComposite = new Composite(clientComposite, SWT.NONE);
-        groupComposite.setLayout(new GridLayout(1, false));
-
-        Group grpMandatoryData = new Group(groupComposite, SWT.NONE);
-        GridData gd_grpConfigurationFile = new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1);
-        gd_grpConfigurationFile.widthHint = 558;
-        grpMandatoryData.setLayoutData(gd_grpConfigurationFile);
+        Group grpMandatoryData = new Group(clientComposite, SWT.NONE);
         grpMandatoryData.setText(IPowerlinkConstants.MANDATORY_DATA_GROUP);
-        grpMandatoryData.setLayout(new GridLayout(6, false));
+        grpMandatoryData.setLayout(layouts);
+
+        GridData gd_grpConfigurationFile = new GridData(SWT.LEFT, SWT.FILL, true, false, 6, 1);
+        gd_grpConfigurationFile.widthHint = 500;
+
+        grpMandatoryData.setLayoutData(gd_grpConfigurationFile);
+
+        GridData mandatoryvalsec = new GridData(SWT.LEFT, SWT.CENTER, true, false, 5, 1);
+        mandatoryvalsec.heightHint = 15;
+        mandatoryvalsec.widthHint = 420;
 
         Label nameLabel = new Label(grpMandatoryData, SWT.NONE);
         nameLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
@@ -413,9 +417,10 @@ public class StoreParamSubObjectDetailsPage extends EEFAdvancedPropertySection i
         nameLabel.setForeground(managedForm.getToolkit().getColors().getColor(IFormColors.TITLE));
 
         nameText = new Text(grpMandatoryData, SWT.BORDER | SWT.WRAP);
-        nameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 5, 1));
+        nameText.setLayoutData(mandatoryvalsec);
         managedForm.getToolkit().adapt(nameText, true, true);
         nameText.setEditable(false);
+        nameText.setEnabled(false);
 
         Label objTypelabel = new Label(grpMandatoryData, SWT.NONE);
         objTypelabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
@@ -424,9 +429,10 @@ public class StoreParamSubObjectDetailsPage extends EEFAdvancedPropertySection i
         objTypelabel.setForeground(managedForm.getToolkit().getColors().getColor(IFormColors.TITLE));
 
         objTypeText = new Text(grpMandatoryData, SWT.BORDER | SWT.WRAP);
-        objTypeText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 5, 1));
+        objTypeText.setLayoutData(mandatoryvalsec);
         managedForm.getToolkit().adapt(objTypeText, true, true);
         objTypeText.setEditable(false);
+        objTypeText.setEnabled(false);
 
         Label indexLabel = new Label(grpMandatoryData, SWT.NONE);
         indexLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
@@ -435,16 +441,17 @@ public class StoreParamSubObjectDetailsPage extends EEFAdvancedPropertySection i
         indexLabel.setForeground(managedForm.getToolkit().getColors().getColor(IFormColors.TITLE));
 
         subIndexText = new Text(grpMandatoryData, SWT.BORDER | SWT.WRAP);
-        subIndexText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 5, 1));
+        subIndexText.setLayoutData(mandatoryvalsec);
         managedForm.getToolkit().adapt(subIndexText, true, true);
         subIndexText.setEditable(false);
+        subIndexText.setEnabled(false);
 
         Composite groupComposite2 = new Composite(clientComposite, SWT.NONE);
         groupComposite2.setLayout(new GridLayout(2, false));
 
         Group grpOptionalData = new Group(groupComposite2, SWT.NONE);
         GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1);
-        gridData.widthHint = 558;
+        gridData.widthHint = 500;
         grpOptionalData.setLayoutData(gridData);
         grpOptionalData.setText(IPowerlinkConstants.OPTIONAL_GROUP);
         grpOptionalData.setLayout(new GridLayout(2, false));

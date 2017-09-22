@@ -31,21 +31,11 @@
 
 package com.br_automation.buoat.xddeditor.editor.editors;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.EventObject;
 import java.util.HashMap;
-import java.util.List;
-
-import javax.xml.bind.JAXBException;
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
@@ -58,17 +48,13 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.emf.common.command.BasicCommandStack;
 import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.common.command.CommandStack;
 import org.eclipse.emf.common.command.CommandStackListener;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.edit.domain.AdapterFactoryEditingDomain;
@@ -77,50 +63,25 @@ import org.eclipse.emf.edit.provider.ReflectiveItemProviderAdapterFactory;
 import org.eclipse.emf.edit.provider.resource.ResourceItemProviderAdapterFactory;
 import org.eclipse.emf.edit.ui.action.EditingDomainActionBarContributor;
 import org.eclipse.jface.dialogs.ErrorDialog;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
-import org.eclipse.ui.IPartListener;
-import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.editor.FormEditor;
-import org.eclipse.ui.forms.editor.IFormPage;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.ide.IGotoMarker;
 import org.eclipse.ui.part.FileEditorInput;
-import org.eclipse.ui.texteditor.IDocumentProvider;
-import org.eclipse.ui.views.contentoutline.ContentOutline;
-import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
-import org.eclipse.ui.views.properties.IPropertySheetPage;
-import org.eclipse.ui.views.properties.PropertySheet;
-import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributor;
-import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
-import org.xml.sax.SAXException;
-
 import com.br_automation.buoat.xddeditor.XDD.DocumentRoot;
-import com.br_automation.buoat.xddeditor.XDD.ISO15745ProfileContainerType;
 import com.br_automation.buoat.xddeditor.XDD.ISO15745ProfileType;
 import com.br_automation.buoat.xddeditor.XDD.ProfileBodyDataType;
-import com.br_automation.buoat.xddeditor.XDD.ProfileHeaderDataType;
-import com.br_automation.buoat.xddeditor.XDD.TDeviceFunction;
 import com.br_automation.buoat.xddeditor.XDD.TDeviceIdentity;
-import com.br_automation.buoat.xddeditor.XDD.TObject;
-import com.br_automation.buoat.xddeditor.XDD.XDDPackage;
-import com.br_automation.buoat.xddeditor.XDD.custom.ModelLoader;
 import com.br_automation.buoat.xddeditor.XDD.custom.XDDUtilities;
-import com.br_automation.buoat.xddeditor.XDD.presentation.XDDEditor;
 import com.br_automation.buoat.xddeditor.XDD.provider.XDDItemProviderAdapterFactory;
 
 /**
@@ -237,7 +198,7 @@ public final class DeviceDescriptionFileEditor extends FormEditor
     }
 
     /**
-     * Creates the NetworkManagement editor page
+     * Creates the Network Management editor page
      *
      * @see NetworkManagementEditorPage
      */
@@ -331,7 +292,6 @@ public final class DeviceDescriptionFileEditor extends FormEditor
 
     public DocumentRoot getDocumentRoot() {
         java.net.URI uri = projectFile.getLocationURI();
-        System.err.println("URI.. jav anet.." + uri);
         DocumentRoot root = null;
         try {
             URL url = uri.toURL();
@@ -502,14 +462,6 @@ public final class DeviceDescriptionFileEditor extends FormEditor
                 closeEditor();
             }
             break;
-        // case IResourceDelta.CHANGED:
-        // if (oldDelta.getFlags() == IResourceDelta.CONTENT) {
-        // setInput(new FileEditorInput(currentProjectFile));
-        //
-        //
-        // }
-        //
-        // break;
         default:
             break;
         }

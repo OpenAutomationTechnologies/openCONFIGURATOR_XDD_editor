@@ -53,6 +53,7 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.ToolBarManager;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -70,6 +71,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
@@ -137,8 +139,6 @@ public class ObjectDictionaryEditorPage extends FormPage implements IPropertyLis
     private static final String OBJECT_DICTIONARY_HEADING = "Object Dictionary";
     public static final String OBJECT_DICTIONARY_DETAILS_HEADING = "Object Details";
     public static final String SUB_OBJECT_DICTIONARY_DETAILS_HEADING = "Sub-Object Details";
-    public static final String OBJECT_DICTIONARY_HEADING_DESCRIPTION = "Provides POWERLINK object dictionary of the device.";
-    public static final String SUB_OBJECT_DICTIONARY_HEADING_DESCRIPTION = "Provides POWERLINK subobject dictionary of the device.";
 
     private static final String ADD_OBJECT_BUTTON_LABEL = "Add object...";
     private static final String ADD_SUB_OBJECT_BUTTON_LABEL = "Add sub-object...";
@@ -157,6 +157,35 @@ public class ObjectDictionaryEditorPage extends FormPage implements IPropertyLis
     private static final int FORM_BODY_VERTICAL_SPACING = 17;
     private static final int FORM_BODY_NUMBER_OF_COLUMNS = 2;
 
+    public static final String OBJECT_PROPERTIES = "Properties";
+
+    private FilteredTree filteredTree;
+
+    private TObjectImpl selectedObject;
+    private SubObjectTypeImpl selectedSubObject;
+
+    private TObjectImpl object;
+
+    private Action hideCommunicationProfileObjects;
+    private Action hideStandardisedDeviceProfileObjects;
+    private Action hideNonMappableObjects;
+    private Action hideUserDefinedObjects;
+    private Action propertiesAction;
+    private Set<TObjectPDOMapping> validTpdoTObjectMapping;
+    private Set<TObjectPDOMapping> validRpdoTObjectMapping;
+
+    private boolean communicationProfileObjectsVisible = true;
+    private boolean standardisedDeviceProfileObjectsVisible = true;
+    private boolean nonMappableObjectsVisible = true;
+    private boolean userdefinedObjectsVisisble = true;
+
+    public static final String HIDE_NON_MAPPABLE_OBJECTS = "Hide Non Mappable Objects";
+
+    public static final String HIDE_COMMUNICATION_PROFILE_AREA_OBJECTS = "Hide Communication Profile Area Objects(0x1000-0x1FFF)";
+    public static final String HIDE_STANDARDISED_DEVICE_PROFILE_AREA_OBJECTS = "Hide Standardised Device Profile Area Objects(0x6000-0x9FFF)";
+    public static final String HIDE_USER_DEFINED_OBJECTS = "Hide User Defined Objects(0x2000-0x5FFF)";
+    public static final String HIDE_NON_FORCED_OBJECTS = "Hide NonForced Objects";
+
     /**
      * Editor dirty flag for this page.
      */
@@ -168,6 +197,8 @@ public class ObjectDictionaryEditorPage extends FormPage implements IPropertyLis
     private ScrolledForm form;
 
     private static DocumentRoot docRoot;
+
+    private TreeViewer listViewer;
 
     /**
      * Toolkit for the form editor.
@@ -230,7 +261,7 @@ public class ObjectDictionaryEditorPage extends FormPage implements IPropertyLis
     }
 
     /**
-     * Class to list the details of objects and sub objects in the list viewer
+     * Class to list the details of objects and sub-objects in the list viewer
      *
      * @author Sree Hari Vignesh
      *
@@ -353,6 +384,8 @@ public class ObjectDictionaryEditorPage extends FormPage implements IPropertyLis
     /**
      * PatternFilter class to always show sub-objects after filtering of
      * objects.
+     *
+     * @author Sree Hari Vignesh
      */
     private static class PowerlinkObjectPatternFilter extends PatternFilter {
 
@@ -493,20 +526,9 @@ public class ObjectDictionaryEditorPage extends FormPage implements IPropertyLis
 
     }
 
-    private TreeViewer listViewer;
-
     public TreeViewer getViewer() {
         return listViewer;
     }
-
-    public static final String OBJECT_PROPERTIES = "Properties";
-
-    private FilteredTree filteredTree;
-
-    private TObjectImpl selectedObject;
-    private SubObjectTypeImpl selectedSubObject;
-
-    private TObjectImpl object;
 
     /**
      * Source workbench part.
@@ -582,14 +604,13 @@ public class ObjectDictionaryEditorPage extends FormPage implements IPropertyLis
         layout.horizontalSpacing = ObjectDictionaryEditorPage.FORM_BODY_HORIZONTAL_SPACING;
         layout.verticalSpacing = ObjectDictionaryEditorPage.FORM_BODY_VERTICAL_SPACING;
         layout.makeColumnsEqualWidth = true;
-        layout.numColumns = 2;
+        layout.numColumns = FORM_BODY_NUMBER_OF_COLUMNS;
         parent.setLayout(layout);
 
         objectDictionarySection = toolKit.createSection(parent, ExpandableComposite.EXPANDED | Section.DESCRIPTION
                 | ExpandableComposite.TWISTIE | ExpandableComposite.TITLE_BAR);
         managedForm.getToolkit().paintBordersFor(objectDictionarySection);
         objectDictionarySection.setText(ObjectDictionaryEditorPage.OBJECT_DICTIONARY_HEADING);
-        objectDictionarySection.setDescription(ObjectDictionaryEditorPage.OBJECT_DICTIONARY_HEADING_DESCRIPTION);
 
         if (toolkit != null) {
             Composite clientComposite = toolkit.createComposite(objectDictionarySection, SWT.WRAP);
@@ -607,8 +628,8 @@ public class ObjectDictionaryEditorPage extends FormPage implements IPropertyLis
             toolkit.paintBordersFor(listComposite);
 
             GridData pst = new GridData(SWT.TOP, SWT.TOP, false, false, 1, 1);
-            pst.heightHint = 400;
-            pst.widthHint = 500;
+            pst.heightHint = 450;
+            pst.widthHint = 350;
 
             Composite btnComposite = toolkit.createComposite(clientComposite, SWT.ON_TOP | SWT.TOP);
             GridLayout btnLayout = new GridLayout(1, false);
@@ -616,10 +637,6 @@ public class ObjectDictionaryEditorPage extends FormPage implements IPropertyLis
             btnLayout.marginBottom = 2;
             btnComposite.setLayout(btnLayout);
             toolkit.paintBordersFor(btnComposite);
-
-            GridData btn = new GridData(SWT.TOP, SWT.TOP, false, false, 1, 1);
-            btn.heightHint = 5;
-            btn.widthHint = 5;
 
             PatternFilter filter = new PowerlinkObjectPatternFilter();
             filter.setIncludeLeadingWildcard(true);
@@ -633,24 +650,44 @@ public class ObjectDictionaryEditorPage extends FormPage implements IPropertyLis
             listViewer.setLabelProvider(new ObjectDictionaryLabelProvider());
             listViewer.setInput(XDDPackage.eINSTANCE.getTObject());
 
+            GridData btn = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
+            btn.heightHint = 25;
+            btn.widthHint = 150;
+
             addObjectButton = toolkit.createButton(btnComposite, ObjectDictionaryEditorPage.ADD_OBJECT_BUTTON_LABEL,
                     SWT.PUSH);
-            btn = new GridData(SWT.FILL, SWT.BEGINNING, false, false, 1, 1);
             addObjectButton.setLayoutData(btn);
             toolkit.adapt(addObjectButton, true, true);
 
             addSubObjectButton = toolkit.createButton(btnComposite,
                     ObjectDictionaryEditorPage.ADD_SUB_OBJECT_BUTTON_LABEL, SWT.PUSH);
-            btn = new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1);
+
             addSubObjectButton.setLayoutData(btn);
             toolkit.adapt(addSubObjectButton, true, true);
             addSubObjectButton.setEnabled(false);
 
             removeButton = toolkit.createButton(btnComposite, ObjectDictionaryEditorPage.REMOVE_BUTTON_LABEL, SWT.PUSH);
-            btn = new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1);
             removeButton.setLayoutData(btn);
             removeButton.setEnabled(false);
             toolkit.adapt(removeButton, true, true);
+
+            new Label(btnComposite, SWT.NONE);
+            new Label(btnComposite, SWT.NONE);
+            new Label(btnComposite, SWT.NONE);
+            new Label(btnComposite, SWT.NONE);
+            new Label(btnComposite, SWT.NONE);
+            new Label(btnComposite, SWT.NONE);
+            new Label(btnComposite, SWT.NONE);
+            new Label(btnComposite, SWT.NONE);
+            new Label(btnComposite, SWT.NONE);
+            new Label(btnComposite, SWT.NONE);
+            new Label(btnComposite, SWT.NONE);
+            new Label(btnComposite, SWT.NONE);
+            new Label(btnComposite, SWT.NONE);
+            new Label(btnComposite, SWT.NONE);
+            new Label(btnComposite, SWT.NONE);
+            new Label(btnComposite, SWT.NONE);
+            new Label(btnComposite, SWT.NONE);
 
             final SectionPart spart = new SectionPart(objectDictionarySection);
             managedForm.addPart(spart);
@@ -676,6 +713,7 @@ public class ObjectDictionaryEditorPage extends FormPage implements IPropertyLis
                     if (selectedElement instanceof TObjectImpl) {
                         TObjectImpl obj = (TObjectImpl) selectedElement;
                         selectedObject = obj;
+                        selectedSubObject = null;
                         AbstractObjectPropertySource objSource = new AbstractObjectPropertySource();
                         objSource.setEditor(editor);
                         String index = DatatypeConverter.printHexBinary(obj.getIndex());
@@ -705,6 +743,7 @@ public class ObjectDictionaryEditorPage extends FormPage implements IPropertyLis
 
                     } else if (selectedElement instanceof SubObjectTypeImpl) {
                         SubObjectTypeImpl subObj = (SubObjectTypeImpl) selectedElement;
+                        selectedObject = null;
                         selectedSubObject = subObj;
                         AbstractObjectPropertySource objSource = new AbstractObjectPropertySource();
                         objSource.setEditor(editor);
@@ -833,26 +872,6 @@ public class ObjectDictionaryEditorPage extends FormPage implements IPropertyLis
         }
         return false;
     }
-
-    private Action hideCommunicationProfileObjects;
-    private Action hideStandardisedDeviceProfileObjects;
-    private Action hideNonMappableObjects;
-    private Action hideUserDefinedObjects;
-    private Action propertiesAction;
-    private Set<TObjectPDOMapping> validTpdoTObjectMapping;
-    private Set<TObjectPDOMapping> validRpdoTObjectMapping;
-
-    private boolean communicationProfileObjectsVisible = true;
-    private boolean standardisedDeviceProfileObjectsVisible = true;
-    private boolean nonMappableObjectsVisible = true;
-    private boolean userdefinedObjectsVisisble = true;
-
-    public static final String HIDE_NON_MAPPABLE_OBJECTS = "Hide Non Mappable Objects";
-
-    public static final String HIDE_COMMUNICATION_PROFILE_AREA_OBJECTS = "Hide Communication Profile Area Objects(0x1000-0x1FFF)";
-    public static final String HIDE_STANDARDISED_DEVICE_PROFILE_AREA_OBJECTS = "Hide Standardised Device Profile Area Objects(0x6000-0x9FFF)";
-    public static final String HIDE_USER_DEFINED_OBJECTS = "Hide User Defined Objects(0x2000-0x5FFF)";
-    public static final String HIDE_NON_FORCED_OBJECTS = "Hide NonForced Objects";
 
     /**
      * Create the actions.
@@ -988,10 +1007,29 @@ public class ObjectDictionaryEditorPage extends FormPage implements IPropertyLis
         public void widgetSelected(SelectionEvent e) {
 
             if (selectedObject != null) {
-                getApplicationLayer().getObjectList().getObject().remove(selectedObject);
+                MessageDialog dialog = new MessageDialog(null, "Delete Object", null,
+                        "Are you sure you want to delete the object '" + selectedObject.getName() + "'",
+                        MessageDialog.QUESTION, new String[] { "Yes", "No" }, 1);
+
+                int result = dialog.open();
+                if (result == 0) {
+
+                    getApplicationLayer().getObjectList().getObject().remove(selectedObject);
+                }
             }
 
-            object.getSubObject().remove(selectedSubObject);
+            if (selectedSubObject != null) {
+                MessageDialog dialog = new MessageDialog(null, "Delete Sub-object", null,
+                        "Are you sure you want to delete the Sub-object '" + selectedSubObject.getName() + "'",
+                        MessageDialog.QUESTION, new String[] { "Yes", "No" }, 1);
+
+                int result = dialog.open();
+                if (result == 0) {
+
+                    object.getSubObject().remove(selectedSubObject);
+                }
+
+            }
             updateDocument(docRoot);
 
             listViewer.setInput(XDDPackage.eINSTANCE.getTObject());

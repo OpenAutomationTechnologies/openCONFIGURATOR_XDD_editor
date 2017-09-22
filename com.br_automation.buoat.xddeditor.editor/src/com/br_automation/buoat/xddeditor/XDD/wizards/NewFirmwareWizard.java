@@ -137,8 +137,7 @@ public class NewFirmwareWizard extends Wizard {
         ResourceSet resourceSet = new ResourceSetImpl();
 
         // Get the URI of the model file.
-        URI fileURI = URI.createPlatformResourceURI(editor.getModelFile().getFullPath().toString(),
-        		true);
+        URI fileURI = URI.createPlatformResourceURI(editor.getModelFile().getFullPath().toString(), true);
 
         // Create a resource for this file.
         Resource resource = resourceSet.createResource(fileURI);
@@ -184,8 +183,8 @@ public class NewFirmwareWizard extends Wizard {
         String fileName = StringUtils.EMPTY;
 
         if (firmwareFilePath != null) {
-        	firmwareFile = firmwareFilePath.toFile();
-        	fileName = firmwareFile.getName();
+            firmwareFile = firmwareFilePath.toFile();
+            fileName = firmwareFile.getName();
 
         }
         if (!editFirmware) {
