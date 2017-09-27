@@ -31,6 +31,7 @@
 
 package com.br_automation.buoat.xddeditor.XDD.wizards;
 
+import java.text.MessageFormat;
 import java.util.List;
 
 import javax.xml.bind.DatatypeConverter;
@@ -43,6 +44,7 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.internal.LONG;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
@@ -77,8 +79,8 @@ public class AddObjectWizardPage extends WizardPage {
 
     private DocumentRoot documentRoot;
 
-    public static final int MANUFACTURER_PROFILE_START_INDEX = 0x2000;
-    public static final int MANUFACTURER_PROFILE_END_INDEX = 0x5FFF;
+    public static final int MANUFACTURER_PROFILE_START_INDEX = 0x1000;
+    public static final int MANUFACTURER_PROFILE_END_INDEX = 0x9FFF;
 
     public static final String DIALOG_DESCRIPTION = "Configure the attributes for the new object.";
     public static final String DIALOG_PAGE_LABEL = "Object";
@@ -130,6 +132,8 @@ public class AddObjectWizardPage extends WizardPage {
     private String objName = StringUtils.EMPTY;
 
     private String dataType;
+
+    protected static final String INVALID_DATA_TYPE_VALUE = "Invalid value for data type {0}.";
 
     private static final String[] DATA_TYPE_LIST = new String[] { "Boolean", "Integer8", "Integer16", "Integer32",
             "Unsigned8", "Unsigned16", "Unsigned32", "Real32", "Visible_String", "Integer24", "Real64", "Integer40",
@@ -196,13 +200,11 @@ public class AddObjectWizardPage extends WizardPage {
         txtLowLimit.setText(Messages.addObjectWizardPage_txtLowLimit); // $NON-NLS-1$
         txtLowLimit.setBounds(136, 136, 140, 23);
         txtLowLimit.addModifyListener(txtLowLimitModifyListener);
-        txtLowLimit.addVerifyListener(nameVerifyListener);
 
         txtHighLimit = new Text(grpAddObjectAdvancedOptions, SWT.BORDER);
         txtHighLimit.setText(Messages.addObjectWizardPage_txtHighLimit); // $NON-NLS-1$
         txtHighLimit.setBounds(136, 164, 140, 23);
         txtHighLimit.addModifyListener(txthighLimitModifyListener);
-        txtHighLimit.addVerifyListener(nameVerifyListener);
 
         Label lblAccessType = new Label(grpAddObjectAdvancedOptions, SWT.NONE);
         lblAccessType.setText(Messages.addObjectWizardPage_lblAccess_type);
@@ -218,6 +220,14 @@ public class AddObjectWizardPage extends WizardPage {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 accessType = comboAccessType.getText();
+                if (!isPdoMappingValueValid(pdoMapping)) {
+                    setErrorMessage(
+                            "Object with access type '" + accessType + "' does not allow '" + pdoMapping + "'.");
+                    setPageComplete(false);
+                } else {
+                    setErrorMessage(null);
+                    setPageComplete(true);
+                }
             }
         });
 
@@ -225,7 +235,6 @@ public class AddObjectWizardPage extends WizardPage {
         txtDefaultValue.setText(Messages.addObjectWizardPage_txtDefaultValue);
         txtDefaultValue.setBounds(136, 107, 140, 23);
         txtDefaultValue.addModifyListener(txtdefaultValueModifyListener);
-        txtDefaultValue.addVerifyListener(nameVerifyListener);
 
         Label lblDefaultValue = new Label(grpAddObjectAdvancedOptions, SWT.NONE);
         lblDefaultValue.setText(Messages.addObjectWizardPage_lblDefault_value);
@@ -245,6 +254,14 @@ public class AddObjectWizardPage extends WizardPage {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 pdoMapping = comboPdoMapping.getText();
+                if (!isPdoMappingValueValid(pdoMapping)) {
+                    setErrorMessage(
+                            "Object with access type '" + accessType + "' does not allow '" + pdoMapping + "'.");
+                    setPageComplete(false);
+                } else {
+                    setErrorMessage(null);
+                    setPageComplete(true);
+                }
             }
         });
 
@@ -275,7 +292,6 @@ public class AddObjectWizardPage extends WizardPage {
         txtObjectNameText.setText(Messages.addObjectWizardPage_txtObject_name);
         txtObjectNameText.setBounds(107, 43, 140, 21);
         txtObjectNameText.addModifyListener(objectNameModifyListener);
-        txtObjectNameText.addVerifyListener(nameVerifyListener);
 
         comboObjectType = new Combo(grpAddObjectBasicOptions, SWT.NONE | SWT.READ_ONLY);
         comboObjectType.setItems(OBJECT_TYPES);
@@ -490,12 +506,12 @@ public class AddObjectWizardPage extends WizardPage {
 
     private boolean validateObjectModel() {
         String index = getTxtObjectIndexText();
-        String pdoMapping = comboPdoMapping.getText();
-        String accessType = comboAccessType.getText();
+        String pdoMappingVal = comboPdoMapping.getText();
+        String accessTypeVal = comboAccessType.getText();
 
         setErrorMessage(null);
         if (index.isEmpty()) {
-            setErrorMessage("Enter the object index value within the range (0x2000 to 0x5FFF).");
+            setErrorMessage("Enter the object index value within the range (0x1000 to 0x9FFF).");
             return false;
         }
 
@@ -504,23 +520,24 @@ public class AddObjectWizardPage extends WizardPage {
             return false;
         }
         if (!isObjectIndexValid(objIndex)) {
-            setErrorMessage("Object index is out of range (0x2000 to 0x5FFF).");
+            setErrorMessage("Object index is out of range (0x1000 to 0x9FFF).");
             return false;
         }
         if (index.contains("0x")) {
             if (index.length() > 6) {
-                setErrorMessage("Enter the object index value within the range (0x2000 to 0x5FFF).");
+                setErrorMessage("Enter the object index value within the range (0x1000 to 0x9FFF).");
                 return false;
             }
         } else {
             if (index.length() > 4) {
-                setErrorMessage("Enter the object index value within the range (0x2000 to 0x5FFF).");
+                setErrorMessage("Enter the object index value within the range (0x1000 to 0x9FFF).");
                 return false;
             }
         }
 
         if (!isObjectIndexAvailable(objIndex)) {
-            setErrorMessage("Object index '" + objIndex + "' already available.");
+            setErrorMessage("Object index '" + objIndex + "' already exists in the file '"
+                    + editor.getActiveEditor().getTitle() + "'.");
             return false;
         }
 
@@ -530,8 +547,8 @@ public class AddObjectWizardPage extends WizardPage {
             return false;
         }
 
-        if (!isPdoMappingValueValid(pdoMapping)) {
-            setErrorMessage("Object with access type '" + accessType + "' does not allow '" + pdoMapping + "'.");
+        if (!isPdoMappingValueValid(pdoMappingVal)) {
+            setErrorMessage("Object with access type '" + accessTypeVal + "' does not allow '" + pdoMapping + "'.");
             return false;
         }
 
@@ -557,11 +574,32 @@ public class AddObjectWizardPage extends WizardPage {
                 return false;
             }
         }
-        if ((!highLimit.isEmpty()) && (!lowLimit.isEmpty()))
+        if ((!highLimit.isEmpty()) && (!lowLimit.isEmpty())) {
             if (Integer.parseInt(lowLimit) > Integer.parseInt(highLimit)) {
                 setErrorMessage("Low limit cannot be greater than high limit.");
                 return false;
             }
+        }
+
+        if (!highLimit.isEmpty() && (!defaultVal.isEmpty())) {
+            Integer highlimitVal = Integer.valueOf(highLimit);
+            Integer defaultValue = Integer.valueOf(defaultVal);
+            if (defaultValue > highlimitVal) {
+                setErrorMessage(
+                        "Default value '" + defaultValue + "' exceeds the high limit value '" + highlimitVal + "'.");
+                return false;
+            }
+        }
+
+        if (!lowLimit.isEmpty() && (!defaultVal.isEmpty())) {
+            Integer lowLimitVal = Integer.valueOf(lowLimit);
+            Integer defaultValue = Integer.valueOf(defaultVal);
+            if (defaultValue < lowLimitVal) {
+                setErrorMessage("Default value '" + defaultValue + "' cannot be lesser than low limit value '"
+                        + lowLimitVal + "'.");
+                return false;
+            }
+        }
 
         return true;
     }
@@ -580,8 +618,7 @@ public class AddObjectWizardPage extends WizardPage {
                     } else
                         return true;
                 } catch (NumberFormatException e) {
-                    // TODO: handle exception
-                    setErrorMessage(dataType + " accepts only decimal value");
+                    setErrorMessage(MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
                 }
             }
                 break;
@@ -594,8 +631,7 @@ public class AddObjectWizardPage extends WizardPage {
                     } else
                         return true;
                 } catch (NumberFormatException e) {
-                    // TODO: handle exception
-                    setErrorMessage(dataType + " accepts only decimal value");
+                    setErrorMessage(MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
                 }
             }
                 break;
@@ -608,8 +644,7 @@ public class AddObjectWizardPage extends WizardPage {
                     } else
                         return true;
                 } catch (NumberFormatException e) {
-                    // TODO: handle exception
-                    setErrorMessage(dataType + " accepts only decimal value");
+                    setErrorMessage(MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
                 }
             }
                 break;
@@ -622,8 +657,7 @@ public class AddObjectWizardPage extends WizardPage {
                     } else
                         return true;
                 } catch (NumberFormatException e) {
-                    // TODO: handle exception
-                    setErrorMessage(dataType + " accepts only decimal value");
+                    setErrorMessage("Datatype '" + dataType + " accepts only decimal value");
                 }
             }
                 break;
@@ -636,8 +670,7 @@ public class AddObjectWizardPage extends WizardPage {
                     } else
                         return true;
                 } catch (NumberFormatException e) {
-                    // TODO: handle exception
-                    setErrorMessage(dataType + " accepts only decimal value");
+                    setErrorMessage("Datatype '" + dataType + " accepts only decimal value");
                 }
             }
                 break;
@@ -650,8 +683,7 @@ public class AddObjectWizardPage extends WizardPage {
                     } else
                         return true;
                 } catch (NumberFormatException e) {
-                    // TODO: handle exception
-                    setErrorMessage(dataType + " accepts only decimal value");
+                    setErrorMessage(MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
                 }
             }
                 break;
@@ -664,8 +696,7 @@ public class AddObjectWizardPage extends WizardPage {
                     } else
                         return true;
                 } catch (NumberFormatException e) {
-                    // TODO: handle exception
-                    setErrorMessage(dataType + " accepts only decimal value");
+                    setErrorMessage(MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
                 }
             }
                 break;
@@ -678,8 +709,7 @@ public class AddObjectWizardPage extends WizardPage {
                     } else
                         return true;
                 } catch (NumberFormatException e) {
-                    // TODO: handle exception
-                    setErrorMessage(dataType + " accepts only decimal value");
+                    setErrorMessage(MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
                 }
             }
                 break;
@@ -692,8 +722,7 @@ public class AddObjectWizardPage extends WizardPage {
                     } else
                         return true;
                 } catch (NumberFormatException e) {
-                    // TODO: handle exception
-                    setErrorMessage(dataType + " accepts only decimal value");
+                    setErrorMessage(MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
                 }
 
             }
@@ -707,8 +736,7 @@ public class AddObjectWizardPage extends WizardPage {
                     } else
                         return true;
                 } catch (NumberFormatException e) {
-                    // TODO: handle exception
-                    setErrorMessage(dataType + " accepts only decimal value");
+                    setErrorMessage(MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
                 }
 
             }
@@ -722,8 +750,7 @@ public class AddObjectWizardPage extends WizardPage {
                     } else
                         return true;
                 } catch (NumberFormatException e) {
-                    // TODO: handle exception
-                    setErrorMessage(dataType + " accepts only decimal value");
+                    setErrorMessage(MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
                 }
 
             }
@@ -737,8 +764,7 @@ public class AddObjectWizardPage extends WizardPage {
                     } else
                         return true;
                 } catch (NumberFormatException e) {
-                    // TODO: handle exception
-                    setErrorMessage(dataType + " accepts only decimal value");
+                    setErrorMessage(MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
                 }
 
             }
@@ -752,8 +778,7 @@ public class AddObjectWizardPage extends WizardPage {
                     } else
                         return true;
                 } catch (NumberFormatException e) {
-                    // TODO: handle exception
-                    setErrorMessage(dataType + " accepts only decimal value");
+                    setErrorMessage(MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
                 }
 
             }
@@ -767,8 +792,7 @@ public class AddObjectWizardPage extends WizardPage {
                     } else
                         return true;
                 } catch (NumberFormatException e) {
-                    // TODO: handle exception
-                    setErrorMessage(dataType + " accepts only decimal value");
+                    setErrorMessage("Datatype '" + dataType + " accepts only decimal value");
                 }
 
             }
@@ -783,8 +807,7 @@ public class AddObjectWizardPage extends WizardPage {
                     } else
                         return true;
                 } catch (NumberFormatException e) {
-                    // TODO: handle exception
-                    setErrorMessage(dataType + " accepts only decimal value");
+                    setErrorMessage("Datatype '" + dataType + " accepts only decimal value");
                 }
 
             }
@@ -798,8 +821,7 @@ public class AddObjectWizardPage extends WizardPage {
                     } else
                         return true;
                 } catch (NumberFormatException e) {
-                    // TODO: handle exception
-                    setErrorMessage(dataType + " accepts only decimal value");
+                    setErrorMessage(MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
                 }
             }
                 break;
@@ -812,8 +834,7 @@ public class AddObjectWizardPage extends WizardPage {
                     } else
                         return true;
                 } catch (NumberFormatException e) {
-                    // TODO: handle exception
-                    setErrorMessage(dataType + " accepts only decimal value");
+                    setErrorMessage(MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
                 }
             }
                 break;
@@ -826,8 +847,7 @@ public class AddObjectWizardPage extends WizardPage {
                     } else
                         return true;
                 } catch (NumberFormatException e) {
-                    // TODO: handle exception
-                    setErrorMessage(dataType + " accepts only decimal value");
+                    setErrorMessage(MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
                 }
 
             }
@@ -841,8 +861,7 @@ public class AddObjectWizardPage extends WizardPage {
                     } else
                         return true;
                 } catch (NumberFormatException e) {
-                    // TODO: handle exception
-                    setErrorMessage(dataType + " accepts only decimal value");
+                    setErrorMessage(MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
                 }
 
             }
@@ -856,8 +875,7 @@ public class AddObjectWizardPage extends WizardPage {
                     } else
                         return true;
                 } catch (NumberFormatException e) {
-                    // TODO: handle exception
-                    setErrorMessage(dataType + " accepts only decimal value");
+                    setErrorMessage(MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
                 }
             }
                 break;
@@ -870,8 +888,7 @@ public class AddObjectWizardPage extends WizardPage {
                     } else
                         return true;
                 } catch (NumberFormatException e) {
-                    // TODO: handle exception
-                    setErrorMessage(dataType + " accepts only decimal value");
+                    setErrorMessage(MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
                 }
 
             }
@@ -885,8 +902,7 @@ public class AddObjectWizardPage extends WizardPage {
                     } else
                         return true;
                 } catch (NumberFormatException e) {
-                    // TODO: handle exception
-                    setErrorMessage(dataType + " accepts only decimal value");
+                    setErrorMessage(MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
                 }
 
             }
@@ -900,8 +916,7 @@ public class AddObjectWizardPage extends WizardPage {
                     } else
                         return true;
                 } catch (NumberFormatException e) {
-                    // TODO: handle exception
-                    setErrorMessage(dataType + " accepts only decimal value");
+                    setErrorMessage(MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
                 }
 
             }
@@ -915,8 +930,7 @@ public class AddObjectWizardPage extends WizardPage {
                     } else
                         return true;
                 } catch (NumberFormatException e) {
-                    // TODO: handle exception
-                    setErrorMessage(dataType + " accepts only decimal value");
+                    setErrorMessage(MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
                 }
 
             }
@@ -924,14 +938,13 @@ public class AddObjectWizardPage extends WizardPage {
             case "Unsigned64": {
                 try {
                     llimit = Long.parseLong(HighLowLimit);
-                    if (llimit < 0 || llimit > 1) {
-                        setErrorMessage(str + " out of range (-).");
+                    if (llimit < 0 || llimit > Long.MAX_VALUE) {
+                        setErrorMessage(str + " out of range (0 to " + Long.MAX_VALUE + ").");
                         return false;
                     } else
                         return true;
                 } catch (NumberFormatException e) {
-                    // TODO: handle exception
-                    setErrorMessage(dataType + " accepts only decimal value");
+                    setErrorMessage(MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
                 }
 
             }
@@ -945,8 +958,7 @@ public class AddObjectWizardPage extends WizardPage {
                     } else
                         return true;
                 } catch (NumberFormatException e) {
-                    // TODO: handle exception
-                    setErrorMessage(dataType + " accepts only decimal value");
+                    setErrorMessage(MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
                 }
 
             }
@@ -960,8 +972,7 @@ public class AddObjectWizardPage extends WizardPage {
                     } else
                         return true;
                 } catch (NumberFormatException e) {
-                    // TODO: handle exception
-                    setErrorMessage(dataType + " accepts only decimal value");
+                    setErrorMessage(MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
                 }
             }
                 break;
@@ -974,8 +985,7 @@ public class AddObjectWizardPage extends WizardPage {
                     } else
                         return true;
                 } catch (NumberFormatException e) {
-                    // TODO: handle exception
-                    setErrorMessage(dataType + " accepts only decimal value");
+                    setErrorMessage(MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
                 }
 
             }
@@ -1210,34 +1220,39 @@ public class AddObjectWizardPage extends WizardPage {
      *         <code>false</code> otherwise.
      */
     protected boolean isPdoMappingValueValid(String pdoMappingValue) {
-
+        System.err.println("Acess type.." + getAccessType());
         TObjectAccessType accessType = getAccessType();
-        switch (pdoMappingValue) {
-        case "Non-mappable":
-            break;
-        case "Mapped by default":
-            break;
-        case "Mapped optionally":
-            break;
-        case "Transmit process data objects":
-            if (accessType == TObjectAccessType.CONST) {
-                return false;
-            }
-            if (accessType == TObjectAccessType.RW) {
-                return false;
-            }
-            break;
-        case "Receive process data objects":
-            if (accessType == TObjectAccessType.CONST) {
-                return false;
-            }
-            if (accessType == TObjectAccessType.RO) {
-                return false;
-            }
-            break;
-        default:
-            break;
+        if (pdoMappingValue != null) {
+            switch (pdoMappingValue) {
+            case "Non-mappable":
+                break;
+            case "Mapped by default":
+                break;
+            case "Mapped optionally":
+                if (accessType == TObjectAccessType.CONST) {
+                    return false;
+                }
+                break;
+            case "Transmit process data objects":
+                if (accessType == TObjectAccessType.CONST) {
+                    return false;
+                }
+                if (accessType == TObjectAccessType.RW) {
+                    return false;
+                }
+                break;
+            case "Receive process data objects":
+                if (accessType == TObjectAccessType.CONST) {
+                    return false;
+                }
+                if (accessType == TObjectAccessType.RO) {
+                    return false;
+                }
+                break;
+            default:
+                break;
 
+            }
         }
 
         return true;

@@ -637,41 +637,47 @@ public final class XDDUtilities {
      */
 
     public static DocumentRoot loadXDD(URL resourcePath) {
-        if (resourcePath == null)
+        if (resourcePath == null) {
             throw new IllegalArgumentException("Parameter 'resourcePath ' must not be null.");
+        }
         Map<Object, Object> options = new HashMap<Object, Object>();
         options.put(XMLResource.OPTION_ENCODING, "UTF-8"); //$NON-NLS-1$
         // get new Resource
         ResourceSet resSet = new ResourceSetImpl();
         resSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xdd", new XDDResourceFactoryImpl()); //$NON-NLS-1$
-        resSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("XDD", new XDDResourceFactoryImpl()); //$NON-NLS-1$
-        resSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xdc", new XDDResourceFactoryImpl()); //$NON-NLS-1$
-        resSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("XDC", new XDDResourceFactoryImpl()); //$NON-NLS-1$
+        resSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("XDD", new XDDResourceFactoryImpl()); // $NON-NLS-1$
+        resSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xdc", new XDDResourceFactoryImpl()); // $NON-NLS-1$
+        resSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("XDC", new XDDResourceFactoryImpl()); // $NON-NLS-1$
         // Get the File and root object
         URI fileuri = URI.createURI(resourcePath.toString());
 
         try {
+            System.err.println("File Uri..." + fileuri);
             Resource resource = resSet.getResource(fileuri, true);
+            System.err.println("Resource..." + resource.getContents());
             return (DocumentRoot) resource.getContents().get(0);
         } catch (Exception e) {
             Display.getDefault().asyncExec(new Runnable() {
 
                 @Override
                 public void run() {
-
+//                    e.printStackTrace();
                     IEditorPart editorPart = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
                             .getActiveEditor();
                     IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
                     IEditorInput input = editorPart.getEditorInput();
 
                     page.closeEditor(editorPart, true);
-                    MessageDialog.openError(Display.getDefault().getActiveShell(), "Invalid File", "The file cannot be opened in XDD Editor V1.0.");
+                    MessageDialog.openError(Display.getDefault().getActiveShell(), "File cannot be opened", "The file '"
+                            + input.getName() + "' is either corrupted or not supported in XDD Editor V1.0.");
                 }
 
             });
 
         }
-        throw new IllegalArgumentException("Parameter 'resourcePath ' must not be null.");
+        // throw new IllegalArgumentException("Parameter 'resourcePath ' must
+        // not be null.");
+        return null;
 
     }
 

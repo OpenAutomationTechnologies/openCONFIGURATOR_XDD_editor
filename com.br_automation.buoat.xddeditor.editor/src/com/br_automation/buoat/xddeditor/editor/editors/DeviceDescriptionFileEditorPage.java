@@ -109,6 +109,7 @@ import com.br_automation.buoat.xddeditor.XDD.impl.FirmwareTypeImpl;
 import com.br_automation.buoat.xddeditor.XDD.resources.IPluginImages;
 import com.br_automation.buoat.xddeditor.XDD.resources.IPowerlinkConstants;
 import com.br_automation.buoat.xddeditor.XDD.validation.NameVerifyListener;
+import com.br_automation.buoat.xddeditor.XDD.wizards.DataTypeRange;
 import com.br_automation.buoat.xddeditor.XDD.wizards.NewFirmwareWizard;
 
 /**
@@ -155,6 +156,8 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
     private static final String FORM_EDITOR_PAGE_TITLE = "Device Description File Editor";
 
     private static final String INVALID_VENDOR_ID = "Invalid vendor ID for the device.";
+    private static final String INVALID_VENDOR_ID_NULL_ERROR = "Vendor ID cannot be empty";
+    private static final String INVALID_PRODUCT_ID_NULL_ERROR = "Product ID cannot be empty";
     private static final String INVALID_PRODUCT_NAME_EMPTY_ERROR = "Product name cannot be empty.";
     private static final String INVALID_HARDWARE_VERSION_VALUE = "Hardware version value {0} is invalid for the device.";
     private static final String INVALID_SOFTWARE_VERSION_VALUE = "Software version value {0} is invalid for the device.";
@@ -585,9 +588,10 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
         toolkit.adapt(productIdlabel, true, true);
         productIdlabel.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
 
-        productIdText = new Text(client, SWT.BORDER | SWT.WRAP);
+        productIdText = new Text(client, SWT.BORDER | SWT.WRAP | SWT.SEARCH);
         productIdText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         toolkit.adapt(productIdText, true, true);
+        productIdText.setMessage("Ex: 0x00000001");
 
         updateGeneralInfoFields();
         addListenersToControls();
@@ -598,18 +602,14 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
         vendorIdText.addModifyListener(vendorIdModifyListener);
         vendorIdText.addVerifyListener(nameVerifyListener);
 
-        vendorNameText.addVerifyListener(nameVerifyListener);
         vendorNameText.addModifyListener(vendorNameModifyListener);
         productIdText.addVerifyListener(nameVerifyListener);
-        productNameText.addVerifyListener(nameVerifyListener);
+
         productIdText.addModifyListener(productIdModifyListener);
         productNameText.addModifyListener(productNameModifyListener);
         hwVersionText.addModifyListener(hardwareVerModifyListener);
         swVersionText.addModifyListener(softwareVerModifyListener);
         fwVersionText.addModifyListener(firmwareVerModifyListener);
-        hwVersionText.addVerifyListener(nameVerifyListener);
-        swVersionText.addVerifyListener(nameVerifyListener);
-        fwVersionText.addVerifyListener(nameVerifyListener);
 
     }
 
@@ -640,6 +640,7 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
                 swVersionText.setEditable(false);
                 fwVersionText.setEditable(false);
                 vendorNameText.setEditable(false);
+
                 break;
             case VENDOR_NAME_LABEL:
                 vendorIdText.setEditable(false);
@@ -721,12 +722,12 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
             try {
 
                 if (vendorId == null) {
-                    setErrorMessage(INVALID_VENDOR_ID, VENDOR_ID_LABEL);
+                    setErrorMessage(INVALID_VENDOR_ID_NULL_ERROR, VENDOR_ID_LABEL);
                     return;
                 }
 
                 if (vendorId.length() <= 0) {
-                    setErrorMessage(INVALID_VENDOR_ID, VENDOR_ID_LABEL);
+                    setErrorMessage(INVALID_VENDOR_ID_NULL_ERROR, VENDOR_ID_LABEL);
                     return;
                 }
 
@@ -738,11 +739,19 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
 
                 if (vendorId.contains("0x")) {
                     String val = vendorId.substring(2);
-                    long vendorIdValue = Long.valueOf(val);
+
                     if (vendorId.length() > 10) {
                         setErrorMessage(INVALID_VENDOR_ID, VENDOR_ID_LABEL);
-
                         return;
+                    }
+                    if (!val.isEmpty()) {
+                        long vendorIdVal = Long.parseLong(val, 16);
+                        if (vendorIdVal < DataTypeRange.Unsigned32_min || vendorIdVal > DataTypeRange.Unsigned32_max) {
+                            setErrorMessage("Vendor ID value '" + vendorIdVal
+                                    + "' does not fit within the range (0 - 4,294,967,295) of data type 'Unsigned32'.");
+                            return;
+
+                        }
                     }
                 } else {
                     setErrorMessage(INVALID_VENDOR_ID, VENDOR_ID_LABEL);
@@ -777,18 +786,13 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
             String productName = productNameText.getText();
             try {
 
-                if (productName == null) {
-                    setErrorMessage(INVALID_PRODUCT_NAME_EMPTY_ERROR, PRODUCT_ID_LABEL);
+                if (productName.isEmpty()) {
+                    setErrorMessage(INVALID_PRODUCT_NAME_EMPTY_ERROR, PRODUCT_NAME_LABEL);
                     return;
                 }
 
                 if (productName.length() <= 0) {
-                    setErrorMessage(INVALID_PRODUCT_NAME_EMPTY_ERROR, PRODUCT_ID_LABEL);
-                    return;
-                }
-
-                if (productName.substring(0, 2).contains(" ")) {
-                    setErrorMessage(INVALID_PRODUCT_NAME_SPACE_ERROR, PRODUCT_ID_LABEL);
+                    setErrorMessage(INVALID_PRODUCT_NAME_EMPTY_ERROR, PRODUCT_NAME_LABEL);
                     return;
                 }
 
@@ -801,7 +805,7 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
                 }
                 updateDocument(documentRoot);
             } catch (NumberFormatException ex) {
-                setErrorMessage(INVALID_PRODUCT_NAME_EMPTY_ERROR, PRODUCT_ID_LABEL);
+                setErrorMessage(INVALID_PRODUCT_NAME_EMPTY_ERROR, PRODUCT_NAME_LABEL);
                 ex.printStackTrace();
                 return;
             }
@@ -819,37 +823,12 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
             String hardwareVerText = hwVersionText.getText();
             try {
 
-                if (hardwareVerText == null) {
-                    setErrorMessage(MessageFormat.format(INVALID_HARDWARE_VERSION_VALUE, "'" + hardwareVerText + "'"),
-                            HARDWARE_VERSION_LABEL);
-                    return;
-                }
-
-                if (hardwareVerText.length() <= 0) {
-                    setErrorMessage(MessageFormat.format(INVALID_HARDWARE_VERSION_VALUE, "'" + hardwareVerText + "'"),
-                            HARDWARE_VERSION_LABEL);
-                    return;
-                }
-
-                if (hardwareVerText.contains("-")) {
-                    setErrorMessage(MessageFormat.format(INVALID_HARDWARE_VERSION_VALUE, "'" + hardwareVerText + "'"),
-                            HARDWARE_VERSION_LABEL);
-                    return;
-                }
-
-                // Space as first character is not allowed. ppc:tNonEmptyString
-                if (hardwareVerText.contains(" ")) {
-                    setErrorMessage(MessageFormat.format(INVALID_HARDWARE_VERSION_VALUE, "'" + hardwareVerText + "'"),
-                            HARDWARE_VERSION_LABEL);
-                    return;
-                }
-
                 if (getDeviceIdentity().getVersion() != null) {
                     List<TVersion> deviceIdentityVersion = getDeviceIdentity().getVersion();
                     boolean hwVersionAvailable = false;
                     for (TVersion version : deviceIdentityVersion) {
                         if (version.getVersionType().getName().equalsIgnoreCase("HW")) {
-                            getDeviceIdentity().getVersion().get(0).setValue(hardwareVerText);
+                            version.setValue(hardwareVerText);
                             hwVersionAvailable = true;
                         }
                     }
@@ -883,37 +862,12 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
             String softwareVerText = swVersionText.getText();
             try {
 
-                if (softwareVerText == null) {
-                    setErrorMessage(MessageFormat.format(INVALID_SOFTWARE_VERSION_VALUE, "'" + softwareVerText + "'"),
-                            SOFTWARE_VERSION_LABEL);
-                    return;
-                }
-
-                if (softwareVerText.length() <= 0) {
-                    setErrorMessage(MessageFormat.format(INVALID_SOFTWARE_VERSION_VALUE, "'" + softwareVerText + "'"),
-                            SOFTWARE_VERSION_LABEL);
-                    return;
-                }
-
-                // Space as first character is not allowed. ppc:tNonEmptyString
-                if (softwareVerText.contains(" ")) {
-                    setErrorMessage(MessageFormat.format(INVALID_SOFTWARE_VERSION_VALUE, "'" + softwareVerText + "'"),
-                            SOFTWARE_VERSION_LABEL);
-                    return;
-                }
-
-                if (softwareVerText.contains("-")) {
-                    setErrorMessage(MessageFormat.format(INVALID_SOFTWARE_VERSION_VALUE, "'" + softwareVerText + "'"),
-                            SOFTWARE_VERSION_LABEL);
-                    return;
-                }
-
                 if (getDeviceIdentity().getVersion() != null) {
                     List<TVersion> deviceIdentityVersion = getDeviceIdentity().getVersion();
                     boolean swVersionAvailable = false;
                     for (TVersion version : deviceIdentityVersion) {
                         if (version.getVersionType().getName().equalsIgnoreCase("SW")) {
-                            getDeviceIdentity().getVersion().get(0).setValue(softwareVerText);
+                            version.setValue(softwareVerText);
                             swVersionAvailable = true;
                         }
                     }
@@ -946,37 +900,12 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
             String firmwareVerText = fwVersionText.getText();
             try {
 
-                if (firmwareVerText == null) {
-                    setErrorMessage(MessageFormat.format(INVALID_FIRMWARE_VERSION_VALUE, "'" + firmwareVerText + "'"),
-                            FIRMWARE_VERSION_LABEL);
-                    return;
-                }
-
-                if (firmwareVerText.length() <= 0) {
-                    setErrorMessage(MessageFormat.format(INVALID_FIRMWARE_VERSION_VALUE, "'" + firmwareVerText + "'"),
-                            FIRMWARE_VERSION_LABEL);
-                    return;
-                }
-
-                // Space as first character is not allowed. ppc:tNonEmptyString
-                if (firmwareVerText.contains(" ")) {
-                    setErrorMessage(MessageFormat.format(INVALID_FIRMWARE_VERSION_VALUE, "'" + firmwareVerText + "'"),
-                            FIRMWARE_VERSION_LABEL);
-                    return;
-                }
-
-                if (firmwareVerText.contains("-")) {
-                    setErrorMessage(MessageFormat.format(INVALID_FIRMWARE_VERSION_VALUE, "'" + firmwareVerText + "'"),
-                            FIRMWARE_VERSION_LABEL);
-                    return;
-                }
-
                 if (getDeviceIdentity().getVersion() != null) {
                     List<TVersion> deviceIdentityVersion = getDeviceIdentity().getVersion();
                     boolean swVersionAvailable = false;
                     for (TVersion version : deviceIdentityVersion) {
                         if (version.getVersionType().getName().equalsIgnoreCase("FW")) {
-                            getDeviceIdentity().getVersion().get(0).setValue(firmwareVerText);
+                            version.setValue(firmwareVerText);
                             swVersionAvailable = true;
                         }
                     }
@@ -1009,13 +938,13 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
             String productId = productIdText.getText();
             try {
 
-                if (productId == null) {
-                    setErrorMessage(INVALID_PRODUCT_ID_VALUE, PRODUCT_ID_LABEL);
+                if (productId.isEmpty()) {
+                    setErrorMessage(INVALID_PRODUCT_ID_NULL_ERROR, PRODUCT_ID_LABEL);
                     return;
                 }
 
                 if (productId.length() <= 0) {
-                    setErrorMessage(INVALID_PRODUCT_ID_VALUE, PRODUCT_ID_LABEL);
+                    setErrorMessage(INVALID_PRODUCT_ID_NULL_ERROR, PRODUCT_ID_LABEL);
                     return;
                 }
 
@@ -1030,6 +959,16 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
                     if (productId.length() > 10) {
                         setErrorMessage(INVALID_PRODUCT_ID_VALUE, PRODUCT_ID_LABEL);
                         return;
+                    }
+                    if (!val.isEmpty()) {
+                        long productIdVal = Long.parseLong(val, 16);
+                        if (productIdVal < DataTypeRange.Unsigned32_min
+                                || productIdVal > DataTypeRange.Unsigned32_max) {
+                            setErrorMessage("Product ID value '" + productIdVal
+                                    + "' does not fit within the range (0 - 4,294,967,295) of data type 'Unsigned32'.");
+                            return;
+
+                        }
                     }
                 } else {
                     setErrorMessage(INVALID_PRODUCT_ID_VALUE, PRODUCT_ID_LABEL);
@@ -1064,7 +1003,7 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
             String vendorName = vendorNameText.getText();
             try {
 
-                if (vendorName == null) {
+                if (vendorName.isEmpty()) {
                     setErrorMessage(INVALID_VENDOR_NAME_EMPTY_ERROR, VENDOR_NAME_LABEL);
                     return;
                 }
@@ -1074,10 +1013,6 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
                     return;
                 }
 
-                if (vendorName.substring(0, 2).contains(" ")) {
-                    setErrorMessage(INVALID_VENDOR_NAME_SPACE_ERROR, VENDOR_NAME_LABEL);
-                    return;
-                }
 
                 if (getDeviceIdentity().getVendorName() != null) {
                     getDeviceIdentity().getVendorName().setValue(vendorName);

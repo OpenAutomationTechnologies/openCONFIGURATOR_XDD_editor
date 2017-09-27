@@ -35,6 +35,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -43,6 +44,7 @@ import java.util.Map;
 import javax.xml.bind.DatatypeConverter;
 
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -53,6 +55,9 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.xmi.XMLResource;
 import org.eclipse.jface.viewers.ICellEditorValidator;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
@@ -203,6 +208,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
 
         propertyList.add(objectIdDescriptor);
         propertyList.add(subObjectIdDescriptor);
+        propertyList.add(objectTypeDescriptor);
         plkObject = (TObjectImpl) plkSubObject.eContainer();
         if (plkObject.getIndex() != null) {
             String index = DatatypeConverter.printHexBinary(plkObject.getIndex());
@@ -210,7 +216,6 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
             if ((objectId >= IPowerlinkConstants.MANUFACTURER_PROFILE_START_INDEX)
                     && (objectId <= IPowerlinkConstants.MANUFACTURER_PROFILE_END_INDEX)) {
                 propertyList.add(editNameDescriptor);
-                propertyList.add(editObjectTypeDescriptor);
 
                 if (plkObject.getDataType() != null) {
                     if (plkObject.getObjectType() == 8) {
@@ -230,7 +235,6 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
 
             } else {
                 propertyList.add(nameDescriptor);
-                propertyList.add(objectTypeDescriptor);
                 propertyList.add(dataTypeDescriptor);
                 propertyList.add(lowLimitDescriptor);
                 propertyList.add(highLimitDescriptor);
@@ -614,6 +618,9 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
             case "Mapped by default":
                 break;
             case "Mapped optionally":
+                if (accessType == TObjectAccessType.CONST) {
+                    return "Sub-object with access type 'const' does not allow optional mapping";
+                }
                 break;
             case "Transmit process data objects":
                 if (accessType == TObjectAccessType.CONST) {
@@ -628,7 +635,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
                     return "Sub-object with access type 'const' does not allow RPDO mapping";
                 }
                 if (accessType == TObjectAccessType.RO) {
-                    return "Sub-object with access type 'ro' does not allow TPDO mapping";
+                    return "Sub-object with access type 'ro' does not allow RPDO mapping";
                 }
                 break;
             default:
@@ -670,7 +677,9 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
     private boolean isValueValid(String value) {
         if (!value.isEmpty()) {
             try {
+
                 if (value.contains("0x")) {
+                    System.err.println("Value.." + value);
                     value = value.substring(2);
                     Integer val = Integer.valueOf(value);
                     if (val < 0) {
@@ -703,6 +712,31 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
                 return "The value '" + defaultVal + "' is invalid.";
             }
 
+            if (defaultVal.contains("0x")) {
+                defaultVal = defaultVal.substring(2);
+            }
+            Integer defaultValue = Integer.valueOf(defaultVal);
+
+            if (plkSubObject.getHighLimit() != null) {
+                if (!plkSubObject.getHighLimit().isEmpty()) {
+                    Integer highlimitVal = Integer.valueOf(plkSubObject.getHighLimit());
+                    if (defaultValue > highlimitVal) {
+                        return "Default value '" + defaultValue + "' exceeds the high limit value '" + highlimitVal
+                                + "'.";
+                    }
+                }
+            }
+
+            if (plkSubObject.getLowLimit() != null) {
+                if (!plkSubObject.getLowLimit().isEmpty()) {
+                    Integer lowLimitVal = Integer.valueOf(plkSubObject.getLowLimit());
+                    if (defaultValue < lowLimitVal) {
+                        return "Default value '" + defaultValue + "' cannot be lesser than low limit value '"
+                                + lowLimitVal + "'.";
+                    }
+                }
+            }
+
         } catch (NumberFormatException ex) {
             return "The value '" + defaultVal + "' is invalid.";
         }
@@ -725,7 +759,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
                     }
                 } catch (NumberFormatException e) {
 
-                    return dataType + " accepts only decimal value";
+                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
                 }
             }
                 break;
@@ -739,7 +773,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
 
                 } catch (NumberFormatException e) {
 
-                    return dataType + " accepts only decimal value";
+                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
                 }
             }
                 break;
@@ -753,7 +787,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
 
                 } catch (NumberFormatException e) {
 
-                    return dataType + " accepts only decimal value";
+                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
                 }
             }
                 break;
@@ -768,7 +802,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
 
                 } catch (NumberFormatException e) {
 
-                    return dataType + " accepts only decimal value";
+                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
                 }
             }
                 break;
@@ -782,7 +816,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
 
                 } catch (NumberFormatException e) {
 
-                    return dataType + " accepts only decimal value";
+                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
                 }
             }
                 break;
@@ -796,7 +830,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
 
                 } catch (NumberFormatException e) {
 
-                    return dataType + " accepts only decimal value";
+                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
                 }
             }
                 break;
@@ -810,7 +844,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
 
                 } catch (NumberFormatException e) {
 
-                    return dataType + " accepts only decimal value";
+                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
                 }
             }
                 break;
@@ -824,7 +858,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
 
                 } catch (NumberFormatException e) {
 
-                    return dataType + " accepts only decimal value";
+                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
                 }
             }
                 break;
@@ -838,7 +872,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
 
                 } catch (NumberFormatException e) {
 
-                    return dataType + " accepts only decimal value";
+                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
                 }
 
             }
@@ -853,7 +887,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
 
                 } catch (NumberFormatException e) {
 
-                    return dataType + " accepts only decimal value";
+                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
                 }
 
             }
@@ -868,7 +902,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
 
                 } catch (NumberFormatException e) {
 
-                    return dataType + " accepts only decimal value";
+                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
                 }
 
             }
@@ -884,7 +918,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
 
                 } catch (NumberFormatException e) {
 
-                    return dataType + " accepts only decimal value";
+                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
                 }
 
             }
@@ -900,7 +934,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
 
                 } catch (NumberFormatException e) {
 
-                    return dataType + " accepts only decimal value";
+                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
                 }
 
             }
@@ -916,7 +950,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
 
                 } catch (NumberFormatException e) {
 
-                    return dataType + " accepts only decimal value";
+                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
                 }
 
             }
@@ -932,7 +966,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
 
                 } catch (NumberFormatException e) {
 
-                    return dataType + " accepts only decimal value";
+                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
                 }
 
             }
@@ -947,7 +981,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
 
                 } catch (NumberFormatException e) {
 
-                    return dataType + " accepts only decimal value";
+                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
                 }
             }
                 break;
@@ -961,7 +995,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
 
                 } catch (NumberFormatException e) {
 
-                    return dataType + " accepts only decimal value";
+                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
                 }
             }
                 break;
@@ -976,7 +1010,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
 
                 } catch (NumberFormatException e) {
 
-                    return dataType + " accepts only decimal value";
+                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
                 }
 
             }
@@ -992,7 +1026,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
 
                 } catch (NumberFormatException e) {
 
-                    return dataType + " accepts only decimal value";
+                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
                 }
 
             }
@@ -1007,7 +1041,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
 
                 } catch (NumberFormatException e) {
 
-                    return dataType + " accepts only decimal value";
+                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
                 }
             }
                 break;
@@ -1021,7 +1055,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
 
                 } catch (NumberFormatException e) {
 
-                    return dataType + " accepts only decimal value";
+                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
                 }
 
             }
@@ -1036,7 +1070,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
 
                 } catch (NumberFormatException e) {
 
-                    return dataType + " accepts only decimal value";
+                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
                 }
 
             }
@@ -1052,7 +1086,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
 
                 } catch (NumberFormatException e) {
 
-                    return dataType + " accepts only decimal value";
+                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
                 }
 
             }
@@ -1068,7 +1102,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
 
                 } catch (NumberFormatException e) {
 
-                    return dataType + " accepts only decimal value";
+                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
                 }
 
             }
@@ -1083,7 +1117,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
 
                 } catch (NumberFormatException e) {
 
-                    return dataType + " accepts only decimal value";
+                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
                 }
 
             }
@@ -1099,7 +1133,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
 
                 } catch (NumberFormatException e) {
 
-                    return dataType + " accepts only decimal value";
+                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
                 }
 
             }
@@ -1114,7 +1148,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
 
                 } catch (NumberFormatException e) {
 
-                    return dataType + " accepts only decimal value";
+                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
                 }
             }
                 break;
@@ -1128,7 +1162,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
 
                 } catch (NumberFormatException e) {
 
-                    return dataType + " accepts only decimal value";
+                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
                 }
 
             }
@@ -1395,12 +1429,18 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
     }
 
     public DocumentRoot getDocumentRoot() {
-        URI uri = plkSubObject.eResource().getURI();
+
+        IEditorPart editorPart = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+
+        IEditorInput input = editorPart.getEditorInput();
+
+        IFileEditorInput fileInput = (IFileEditorInput) input;
+        IFile projectFile = fileInput.getFile();
+
         DocumentRoot root = null;
         try {
-            String devicePath = uri.devicePath();
-            File xddFile = new File(devicePath);
-            URL url = xddFile.toURL();
+
+            URL url = projectFile.getLocationURI().toURL();
             root = XDDUtilities.loadXDD(url);
 
         } catch (MalformedURLException e1) {

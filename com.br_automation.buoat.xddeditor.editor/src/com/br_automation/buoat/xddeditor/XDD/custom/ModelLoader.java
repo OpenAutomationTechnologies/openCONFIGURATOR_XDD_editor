@@ -84,9 +84,9 @@ public final class ModelLoader {
             WizardConfigurationPage1 wizardConfigurationPage1) {
         // check which Template is used (static etc.)
         String resourceName;
-        if (wizardTemplatePage.getLoadEmpty())
-            return ModelLoader.getEmptyModel();
-        else {
+//        if (wizardTemplatePage.getLoadEmpty())
+//            return ModelLoader.getEmptyModel();
+//        else {
             String choice = wizardTemplatePage.getTemplateCombo().getText();
             if (choice.contentEquals("Default device")) //$NON-NLS-1$
                 resourceName = Messages.modelLoader_resourceTemplate_XDDdefault;
@@ -94,7 +94,7 @@ public final class ModelLoader {
                 resourceName = Messages.modelLoader_resourceTemplate_XDDextended;
             else
                 resourceName = Messages.modelLoader_resourceTemplate_XDDstatic;
-        }
+//        }
         DocumentRoot root = XDDUtilities.loadXDD(ModelLoader.class.getResource(resourceName));
 
         if (wizardTemplatePage.isConfigurationWizardStatus())

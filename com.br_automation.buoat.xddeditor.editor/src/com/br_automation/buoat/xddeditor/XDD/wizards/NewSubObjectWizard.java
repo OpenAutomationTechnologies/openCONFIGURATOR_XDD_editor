@@ -76,7 +76,7 @@ public class NewSubObjectWizard extends Wizard {
         this.editor = editor;
         selObj = selectedObject;
         setWindowTitle(WINDOW_TITLE);
-        addSubObjectWizardPage = new AddSubObjectWizardPage(WINDOW_TITLE, selectedObject);
+        addSubObjectWizardPage = new AddSubObjectWizardPage(WINDOW_TITLE, selectedObject, editor);
     }
 
     /**

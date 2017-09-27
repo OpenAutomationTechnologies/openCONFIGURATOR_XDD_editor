@@ -7,7 +7,7 @@ package com.br_automation.buoat.xddeditor.XDD.custom;
 
 /**
  * @brief Representation of CANopen device-profiles.
- * 
+ *
  * @author Joris Lückenga
  * */
 public enum CiADeviceProfile {
@@ -28,7 +28,7 @@ public enum CiADeviceProfile {
     CIA418(418, "CiA 418", "Battery Modules"),
     CIA419(419, "CiA 419", "Battery Chargers"),
     CIA420(420, "CiA 420", "Extruder Downstream Devices"),
-    CIA422(422, "CiA 422", "Municipal Vehicles – CleANopen"),
+    CIA422(422, "CiA 422", "Municipal Vehicles CleANopen"),
     CIA423(423, "CiA 423", "Railway Diesel Control Systems"),
     CIA424(424, "CiA 424", "Rail Vehicle Door Control Systems"),
     CIA425(425, "CiA 425", "Medical Diagnostic Add-on Modules"),

@@ -86,7 +86,7 @@ public class WizardTemplatePage extends WizardPage {
         Composite composite = new Composite(container, SWT.NONE);
         composite.setBounds(10, 10, 387, 147);
 
-        this.cmbTemplate = new Combo(composite, SWT.NONE);
+        this.cmbTemplate = new Combo(composite, SWT.READ_ONLY);
         this.cmbTemplate.setBounds(30, 56, 186, 23);
         this.cmbTemplate
                 .setItems(new String[] { "Default device", "Default extended device", "Default static device" });
@@ -128,7 +128,7 @@ public class WizardTemplatePage extends WizardPage {
             }
         });
         this.cbtnUseConfigurationWizard.setBounds(30, 85, 304, 16);
-        this.cbtnUseConfigurationWizard.setText("Use the Configuration Wizard to modify the Template");
+        this.cbtnUseConfigurationWizard.setText("Use the configuration wizard to modify the template");
     } // createControl
 
     /**

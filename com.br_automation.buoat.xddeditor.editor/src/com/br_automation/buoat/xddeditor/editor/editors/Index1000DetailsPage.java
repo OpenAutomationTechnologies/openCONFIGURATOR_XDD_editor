@@ -90,7 +90,6 @@ public class Index1000DetailsPage implements IDetailsPage {
 
     private IManagedForm managedForm;
 
-
     private Text indexText;
 
     private Text nameText;

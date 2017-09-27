@@ -40,7 +40,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.bind.DatatypeConverter;
+
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -52,15 +56,23 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PlatformUI;
 
 import com.br_automation.buoat.xddeditor.XDD.DocumentRoot;
 import com.br_automation.buoat.xddeditor.XDD.ISO15745ProfileType;
 import com.br_automation.buoat.xddeditor.XDD.ProfileBodyDataType;
 import com.br_automation.buoat.xddeditor.XDD.ProfileHeaderDataType;
+import com.br_automation.buoat.xddeditor.XDD.SubObjectType;
 import com.br_automation.buoat.xddeditor.XDD.TDeviceFunction;
 import com.br_automation.buoat.xddeditor.XDD.TFirmwareList;
 import com.br_automation.buoat.xddeditor.XDD.TGeneralFeatures;
 import com.br_automation.buoat.xddeditor.XDD.TObject;
+import com.br_automation.buoat.xddeditor.XDD.TObjectAccessType;
+import com.br_automation.buoat.xddeditor.XDD.TObjectPDOMapping;
 import com.br_automation.buoat.xddeditor.XDD.XDDFactory;
 import com.br_automation.buoat.xddeditor.XDD.impl.ProfileBodyCommunicationNetworkPowerlinkImpl;
 import com.br_automation.buoat.xddeditor.XDD.impl.TApplicationLayersImpl;
@@ -203,6 +215,24 @@ public class NewObjectWizard extends Wizard {
             obj.setName(addObjectWizardPage.getObjectName());
 
             getApplicationLayer().getObjectList().getObject().add(obj);
+
+            if (obj.getObjectType() != 7) {
+                SubObjectType subObj = XDDFactory.eINSTANCE.createSubObjectType();
+
+                subObj.setAccessType(TObjectAccessType.CONST);
+
+                subObj.setPDOmapping(TObjectPDOMapping.NO);
+
+                subObj.setDataType(DatatypeConverter.parseHexBinary(addObjectWizardPage.getDataTypeValue("Unsigned8")));
+
+                subObj.setSubIndex(DatatypeConverter.parseHexBinary("00"));
+
+                subObj.setObjectType((short) 7);
+
+                subObj.setName("NumberOfEntries");
+
+                obj.getSubObject().add(subObj);
+            }
         }
 
         updateDocument(documentRoot);

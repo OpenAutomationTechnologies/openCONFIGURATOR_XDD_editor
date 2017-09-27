@@ -83,7 +83,7 @@ import com.br_automation.buoat.xddeditor.XDD.impl.SubObjectTypeImpl;
 import com.br_automation.buoat.xddeditor.XDD.resources.IPowerlinkConstants;
 
 /**
- * Class to populate the details page of mapping subobjects
+ * Class to populate the details page of mapping sub-objects
  *
  * @author Sree Hari Vignesh
  *
@@ -472,7 +472,7 @@ public class MappingObjectDetailsPage extends EEFAdvancedPropertySection impleme
 				}
 				indexValue = new BigInteger(1, object.getIndex()).intValue();
 				setNewDefaultValue();
-				lblDefaultValueValue.setText(tsubObject.getDefaultValue());
+				lblDefaultValueValue.setText(subObject.getDefaultValue());
 			} // If selection is not empty!
 		} // widgetSelected
 	}; // SelectionAdapter

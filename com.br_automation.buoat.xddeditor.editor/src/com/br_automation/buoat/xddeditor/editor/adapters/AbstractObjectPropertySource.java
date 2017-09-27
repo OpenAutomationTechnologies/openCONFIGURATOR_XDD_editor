@@ -118,6 +118,8 @@ public class AbstractObjectPropertySource {
     protected PropertyDescriptor accessTypeDescriptor = new PropertyDescriptor(OBJ_ACCESS_TYPE_ID,
             OBJ_ACCESS_TYPE_LABEL);
 
+    protected static final String INVALID_DATA_TYPE_VALUE = "Invalid value for data type {0}.";
+
     protected PropertyDescriptor defaultValueDescriptor = new PropertyDescriptor(OBJ_DEFAULT_VALUE_ID,
             OBJ_DEFAULT_VALUE_LABEL);
     protected PropertyDescriptor actualValueReadOnlyDescriptor = new PropertyDescriptor(OBJ_ACTUAL_VALUE_READ_ONLY_ID,

@@ -35,6 +35,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -57,7 +58,11 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.XMLResource;
 import org.eclipse.jface.viewers.ICellEditorValidator;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
@@ -114,6 +119,38 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
 
         objectTypeDescriptor.setCategory(IPropertySourceSupport.OBJECT_ATTRIBUTES_CATEGORY);
         editObjectTypeDescriptor.setCategory(IPropertySourceSupport.OBJECT_ATTRIBUTES_CATEGORY);
+        editObjectTypeDescriptor.setValidator(new ICellEditorValidator() {
+
+            @Override
+            public String isValid(Object value) {
+
+                return handleObjectType(value);
+            }
+
+            private String handleObjectType(Object value) {
+                if (value instanceof Integer) {
+                    String objectType = IPowerlinkConstants.OBJECT_TYPES[(int) value];
+
+                    switch (objectType) {
+                    case "7 - VAR":
+                        if (!plkObject.getSubObject().isEmpty()) {
+                            return "Object type cannot be '7 - VAR' for object '" + plkObject.getName()
+                                    + "' with sub-objects.";
+                        }
+                        break;
+                    case "8 - ARRAY":
+                        break;
+                    case "9 - RECORD":
+                        break;
+
+                    default:
+                        break;
+
+                    }
+                }
+                return StringUtils.EMPTY;
+            }
+        });
 
         dataTypeDescriptor.setCategory(IPropertySourceSupport.INITIAL_VALUE_CATEGORY);
         editDataTypeDescriptor.setCategory(IPropertySourceSupport.INITIAL_VALUE_CATEGORY);
@@ -156,7 +193,6 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
 
         actualValueReadOnlyDescriptor.setCategory(IPropertySourceSupport.INITIAL_VALUE_CATEGORY);
         actualValueEditableDescriptor.setCategory(IPropertySourceSupport.INITIAL_VALUE_CATEGORY);
-
 
         denotationDescriptor.setCategory(IPropertySourceSupport.OBJECT_ATTRIBUTES_CATEGORY);
         editDenotationDescriptor.setCategory(IPropertySourceSupport.OBJECT_ATTRIBUTES_CATEGORY);
@@ -202,8 +238,8 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
         if (plkObject.getIndex() != null) {
             String index = DatatypeConverter.printHexBinary(plkObject.getIndex());
             Integer objectId = Integer.parseInt(index, 16);
-            if ((objectId >= IPowerlinkConstants.MANUFACTURER_PROFILE_START_INDEX)
-                    && (objectId <= IPowerlinkConstants.MANUFACTURER_PROFILE_END_INDEX)) {
+            if ((objectId >= IPowerlinkConstants.COMMUNICATION_PROFILE_START_INDEX)
+                    && (objectId <= IPowerlinkConstants.STANDARDISED_DEVICE_PROFILE_END_INDEX)) {
                 propertyList.add(editableobjectIdDescriptor);
                 propertyList.add(editNameDescriptor);
                 propertyList.add(editObjectTypeDescriptor);
@@ -303,14 +339,14 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
                 if (text.contains("0x")) {
                     text = text.substring(2);
                     Integer val = Integer.parseInt(text, 16);
-                    if ((val < IPowerlinkConstants.MANUFACTURER_PROFILE_START_INDEX)
-                            || (val > IPowerlinkConstants.MANUFACTURER_PROFILE_END_INDEX)) {
+                    if ((val < IPowerlinkConstants.COMMUNICATION_PROFILE_START_INDEX)
+                            || (val > IPowerlinkConstants.STANDARDISED_DEVICE_PROFILE_END_INDEX)) {
                         return false;
                     }
                 } else {
                     Integer val = Integer.parseInt(text, 16);
-                    if ((val < IPowerlinkConstants.MANUFACTURER_PROFILE_START_INDEX)
-                            || (val > IPowerlinkConstants.MANUFACTURER_PROFILE_END_INDEX)) {
+                    if ((val < IPowerlinkConstants.COMMUNICATION_PROFILE_START_INDEX)
+                            || (val > IPowerlinkConstants.COMMUNICATION_PROFILE_START_INDEX)) {
                         return false;
                     }
                 }
@@ -409,6 +445,31 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
             if (!isValueValid(defaultVal)) {
                 return "The value '" + defaultVal + "' is invalid.";
             }
+
+            if (defaultVal.contains("0x")) {
+                defaultVal = defaultVal.substring(2);
+            }
+            Integer defaultValue = Integer.valueOf(defaultVal);
+
+            if (plkObject.getHighLimit() != null) {
+                if (!plkObject.getHighLimit().isEmpty()) {
+                    Integer highlimitVal = Integer.valueOf(plkObject.getHighLimit());
+                    if (defaultValue > highlimitVal) {
+                        return "Default value '" + defaultValue + "' exceeds the high limit value '" + highlimitVal
+                                + "'.";
+                    }
+                }
+            }
+
+            if (plkObject.getLowLimit() != null) {
+                if (!plkObject.getLowLimit().isEmpty()) {
+                    Integer lowLimitVal = Integer.valueOf(plkObject.getLowLimit());
+                    if (defaultValue < lowLimitVal) {
+                        return "Default value '" + defaultValue + "' cannot be lesser than low limit value '"
+                                + lowLimitVal + "'.";
+                    }
+                }
+            }
         } catch (NumberFormatException ex) {
             return "The value '" + defaultVal + "' is invalid.";
         }
@@ -434,21 +495,24 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
             case "Mapped by default":
                 break;
             case "Mapped optionally":
+                if (accessType == TObjectAccessType.CONST) {
+                    return "Object with access type 'const' does not allow optional mapping";
+                }
                 break;
             case "Transmit process data objects":
                 if (accessType == TObjectAccessType.CONST) {
-                    return "Sub-object with access type 'const' does not allow TPDO mapping";
+                    return "Object with access type 'const' does not allow TPDO mapping";
                 }
                 if (accessType == TObjectAccessType.RW) {
-                    return "Sub-object with access type 'rw' does not allow TPDO mapping";
+                    return "Object with access type 'rw' does not allow TPDO mapping";
                 }
                 break;
             case "Receive process data objects":
                 if (accessType == TObjectAccessType.CONST) {
-                    return "Sub-object with access type 'const' does not allow RPDO mapping";
+                    return "Object with access type 'const' does not allow RPDO mapping";
                 }
                 if (accessType == TObjectAccessType.RO) {
-                    return "Sub-object with access type 'ro' does not allow TPDO mapping";
+                    return "Object with access type 'ro' does not allow RPDO mapping";
                 }
                 break;
             default:
@@ -461,8 +525,14 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
 
     private String isValidVal(String highLowLimit, String str) {
 
-        String dataTypeVal = DatatypeConverter.printHexBinary(plkObject.getDataType());
-        String dataType = getDataTypeValue(dataTypeVal);
+        String dataTypeVal = StringUtils.EMPTY;
+        String dataType = StringUtils.EMPTY;
+
+        if (plkObject.getDataType() != null) {
+            dataTypeVal = DatatypeConverter.printHexBinary(plkObject.getDataType());
+            dataType = getDataTypeValue(dataTypeVal);
+        }
+
         if (!highLowLimit.isEmpty()) {
             long llimit;
             switch (dataType) {
@@ -475,7 +545,7 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
                     }
                 } catch (NumberFormatException e) {
 
-                    return "Datatype '" + dataType + "' accepts only decimal value";
+                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
                 }
             }
                 break;
@@ -489,7 +559,7 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
 
                 } catch (NumberFormatException e) {
 
-                    return "Datatype '" + dataType + "' accepts only decimal value";
+                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
                 }
             }
                 break;
@@ -503,7 +573,7 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
 
                 } catch (NumberFormatException e) {
 
-                    return "Datatype '" + dataType + "' accepts only decimal value";
+                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
                 }
             }
                 break;
@@ -518,7 +588,7 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
 
                 } catch (NumberFormatException e) {
 
-                    return dataType + " accepts only decimal value";
+                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
                 }
             }
                 break;
@@ -532,7 +602,7 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
 
                 } catch (NumberFormatException e) {
 
-                    return dataType + " accepts only decimal value";
+                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
                 }
             }
                 break;
@@ -546,7 +616,7 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
 
                 } catch (NumberFormatException e) {
 
-                    return dataType + " accepts only decimal value";
+                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
                 }
             }
                 break;
@@ -560,7 +630,7 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
 
                 } catch (NumberFormatException e) {
 
-                    return dataType + " accepts only decimal value";
+                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
                 }
             }
                 break;
@@ -574,7 +644,7 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
 
                 } catch (NumberFormatException e) {
 
-                    return dataType + " accepts only decimal value";
+                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
                 }
             }
                 break;
@@ -588,7 +658,7 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
 
                 } catch (NumberFormatException e) {
 
-                    return dataType + " accepts only decimal value";
+                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
                 }
 
             }
@@ -603,7 +673,7 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
 
                 } catch (NumberFormatException e) {
 
-                    return dataType + " accepts only decimal value";
+                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
                 }
 
             }
@@ -618,7 +688,7 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
 
                 } catch (NumberFormatException e) {
 
-                    return dataType + " accepts only decimal value";
+                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
                 }
 
             }
@@ -634,7 +704,7 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
 
                 } catch (NumberFormatException e) {
 
-                    return dataType + " accepts only decimal value";
+                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
                 }
 
             }
@@ -650,7 +720,7 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
 
                 } catch (NumberFormatException e) {
 
-                    return dataType + " accepts only decimal value";
+                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
                 }
 
             }
@@ -666,7 +736,7 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
 
                 } catch (NumberFormatException e) {
 
-                    return dataType + " accepts only decimal value";
+                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
                 }
 
             }
@@ -682,7 +752,7 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
 
                 } catch (NumberFormatException e) {
 
-                    return dataType + " accepts only decimal value";
+                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
                 }
 
             }
@@ -697,7 +767,7 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
 
                 } catch (NumberFormatException e) {
 
-                    return dataType + " accepts only decimal value";
+                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
                 }
             }
                 break;
@@ -711,7 +781,7 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
 
                 } catch (NumberFormatException e) {
 
-                    return dataType + " accepts only decimal value";
+                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
                 }
             }
                 break;
@@ -726,7 +796,7 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
 
                 } catch (NumberFormatException e) {
 
-                    return dataType + " accepts only decimal value";
+                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
                 }
 
             }
@@ -742,7 +812,7 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
 
                 } catch (NumberFormatException e) {
 
-                    return dataType + " accepts only decimal value";
+                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
                 }
 
             }
@@ -757,7 +827,7 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
 
                 } catch (NumberFormatException e) {
 
-                    return dataType + " accepts only decimal value";
+                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
                 }
             }
                 break;
@@ -771,7 +841,7 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
 
                 } catch (NumberFormatException e) {
 
-                    return dataType + " accepts only decimal value";
+                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
                 }
 
             }
@@ -786,7 +856,7 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
 
                 } catch (NumberFormatException e) {
 
-                    return dataType + " accepts only decimal value";
+                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
                 }
 
             }
@@ -802,7 +872,7 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
 
                 } catch (NumberFormatException e) {
 
-                    return dataType + " accepts only decimal value";
+                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
                 }
 
             }
@@ -818,7 +888,7 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
 
                 } catch (NumberFormatException e) {
 
-                    return dataType + " accepts only decimal value";
+                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
                 }
 
             }
@@ -833,7 +903,7 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
 
                 } catch (NumberFormatException e) {
 
-                    return dataType + " accepts only decimal value";
+                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
                 }
 
             }
@@ -849,7 +919,7 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
 
                 } catch (NumberFormatException e) {
 
-                    return dataType + " accepts only decimal value";
+                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
                 }
 
             }
@@ -864,7 +934,7 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
 
                 } catch (NumberFormatException e) {
 
-                    return dataType + " accepts only decimal value";
+                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
                 }
             }
                 break;
@@ -878,7 +948,7 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
 
                 } catch (NumberFormatException e) {
 
-                    return dataType + " accepts only decimal value";
+                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
                 }
 
             }
@@ -1082,7 +1152,6 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
         return retObj;
     }
 
-
     /**
      * Verifies the object belonging to module.
      *
@@ -1186,7 +1255,7 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
      */
     @Override
     public void resetPropertyValue(Object id) {
-       //TODO: Implement reset default value property.
+        // TODO: Implement reset default value property.
     }
 
     /**
@@ -1440,12 +1509,18 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
     }
 
     public DocumentRoot getDocumentRoot() {
-        URI uri = plkObject.eResource().getURI();
+
+        IEditorPart editorPart = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+
+        IEditorInput input = editorPart.getEditorInput();
+
+        IFileEditorInput fileInput = (IFileEditorInput) input;
+        IFile projectFile = fileInput.getFile();
+
         DocumentRoot root = null;
         try {
-            String devicePath = uri.devicePath();
-            File xddFile = new File(devicePath);
-            URL url = xddFile.toURL();
+
+            URL url = projectFile.getLocationURI().toURL();
             root = XDDUtilities.loadXDD(url);
 
         } catch (MalformedURLException e1) {

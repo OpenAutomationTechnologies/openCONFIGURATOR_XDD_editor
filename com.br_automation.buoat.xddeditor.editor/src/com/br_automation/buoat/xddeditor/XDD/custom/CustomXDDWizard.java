@@ -124,6 +124,20 @@ public class CustomXDDWizard extends XDDModelWizard {
         this.wizardConfigurationPage1 = new WizardConfigurationPage1("wizardConfigurationPage1", this);
         this.addPage(this.wizardConfigurationPage1);
 
+
+
+    }
+
+
+
+    @Override
+    public boolean canFinish() {
+
+        if (!wizardConfigurationPage1.isPageComplete()) {
+            return false;
+        }
+
+        return true;
     }
 
     /**

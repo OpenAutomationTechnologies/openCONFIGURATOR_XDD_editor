@@ -44,7 +44,7 @@ public interface DataTypeRange {
     public static long Unsigned8_max = 255L;
     public static long Unsigned16_min = 0;
     public static long Unsigned16_max = 65535L;
-    public static long Unsigned32_min = -4294967296L;
+    public static long Unsigned32_min = 0;
     public static long Unsigned32_max = 4294967295L;
     public static long Integer24_min = -8388608L;
     public static long Integer24_max = 8388607L;

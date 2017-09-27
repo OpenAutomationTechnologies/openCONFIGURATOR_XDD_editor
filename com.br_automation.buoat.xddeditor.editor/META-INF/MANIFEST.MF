@@ -37,10 +37,9 @@ Require-Bundle: com.br_automation.buoat.xddeditor.edit;visibility:=reexport,
  org.eclipse.ui,
  org.eclipse.ui.views.properties.tabbed,
  org.eclipse.emf.eef.runtime;visibility:=reexport,
- org.eclipse.pde;bundle-version="3.12.3",
- org.eclipse.pde.core;bundle-version="3.11.1",
  org.eclipse.jface.text,
  org.eclipse.ui.editors,
- org.eclipse.pde.ui;bundle-version="3.9.100",
- org.eclipse.ui.forms
+ org.eclipse.ui.forms,
+ org.eclipse.pde;visibility:=reexport,
+ org.eclipse.pde.core;visibility:=reexport
 Bundle-ActivationPolicy: lazy

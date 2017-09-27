@@ -140,7 +140,7 @@ public final class NetworkManagementEditorPage extends FormPage {
     private static final String NETWORK_BOOT_TIME_LABEL = "Network Boot Time  (\u00B5s):";
 
     private static final String MULTIPLEXED_COMMUNICATION_LABEL = "Multiplexed Communication";
-    private static final String POLL_RESPONSE_COMMUNICATION_LABEL = "Poll Response Communication";
+    private static final String POLL_RESPONSE_COMMUNICATION_LABEL = "Poll Response Chaining Communication";
 
     private static final String FORM_EDITOR_PAGE_TITLE = "Device Description File Editor";
 
@@ -499,6 +499,7 @@ public final class NetworkManagementEditorPage extends FormPage {
         public void modifyText(ModifyEvent e) {
             setErrorMessage(null);
             String maximumCycleTime = maximumCycleTimeText.getText();
+            String minimumCycleTime = minimumCycleTimeText.getText();
             try {
 
                 if (maximumCycleTime == null) {
@@ -525,6 +526,14 @@ public final class NetworkManagementEditorPage extends FormPage {
 
                 }
 
+                if (!minimumCycleTime.isEmpty()) {
+                    Long minValue = Long.parseLong(minimumCycleTime);
+                    if (value < minValue) {
+                        setErrorMessage("Maximum cycle time value '" + value
+                                + "' cannot be lesser than minimum cycle time value '" + minimumCycleTime + "'.");
+                    }
+                }
+
                 if (getGeneralFeatures() != null) {
                     Long maxCycleTimeValue = Long.parseLong(maximumCycleTime);
                     getGeneralFeatures().setNMTCycleTimeMax(maxCycleTimeValue);
@@ -546,6 +555,7 @@ public final class NetworkManagementEditorPage extends FormPage {
         public void modifyText(ModifyEvent e) {
             setErrorMessage(null);
             String minimumCycleTime = minimumCycleTimeText.getText();
+            String maximumCycleTime = maximumCycleTimeText.getText();
             try {
 
                 if (minimumCycleTime == null) {
@@ -570,6 +580,14 @@ public final class NetworkManagementEditorPage extends FormPage {
                             + "' does not fit within the range (0 - 4,294,967,295) of data type 'Unsigned32'.");
                     return;
 
+                }
+
+                if (!maximumCycleTime.isEmpty()) {
+                    Long maxValue = Long.parseLong(maximumCycleTime);
+                    if (value > maxValue) {
+                        setErrorMessage("Minimum cycle time value '" + value
+                                + "' cannot be greater than maximum cycle time value '" + maximumCycleTime + "'.");
+                    }
                 }
 
                 if (getGeneralFeatures() != null) {
