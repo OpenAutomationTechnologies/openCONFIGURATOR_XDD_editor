@@ -31,11 +31,9 @@
 
 package com.br_automation.buoat.xddeditor.editor.adapters;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -48,33 +46,29 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.xmi.XMLResource;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ICellEditorValidator;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
-import org.eclipse.ui.IViewPart;
-import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySheetEntry;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
+import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 
 import com.br_automation.buoat.xddeditor.XDD.DocumentRoot;
 import com.br_automation.buoat.xddeditor.XDD.SubObjectType;
 import com.br_automation.buoat.xddeditor.XDD.TObjectAccessType;
 import com.br_automation.buoat.xddeditor.XDD.TObjectPDOMapping;
 import com.br_automation.buoat.xddeditor.XDD.custom.XDDUtilities;
-import com.br_automation.buoat.xddeditor.XDD.impl.SubObjectTypeImpl;
 import com.br_automation.buoat.xddeditor.XDD.impl.TObjectImpl;
 import com.br_automation.buoat.xddeditor.XDD.resources.IPowerlinkConstants;
-import com.br_automation.buoat.xddeditor.XDD.wizards.DataTypeRange;
 
 /**
  * Describes the properties for a POWERLINK sub-object.
@@ -87,13 +81,17 @@ import com.br_automation.buoat.xddeditor.XDD.wizards.DataTypeRange;
 public class SubObjectPropertySource extends AbstractObjectPropertySource implements IPropertySource {
 
     public static final String OBJ_SUB_INDEX_ID = "Obj.SubIndexId"; //$NON-NLS-1$
+    public static final String OBJ_EDITABLE_SUB_INDEX_ID = "Obj.SubIndexId.Editable"; //$NON-NLS-1$
     public static final String OBJ_SUB_INDEX_LABEL = "Sub-Object ID"; //$NON-NLS-1$
     private static final PropertyDescriptor subObjectIdDescriptor = new PropertyDescriptor(OBJ_SUB_INDEX_ID,
             OBJ_SUB_INDEX_LABEL);
+    private static final TextPropertyDescriptor subObjectIdEditableDescriptor = new TextPropertyDescriptor(
+            OBJ_EDITABLE_SUB_INDEX_ID, OBJ_SUB_INDEX_LABEL);
     private static final String[] EXPERT_FILTER_FLAG = { IPropertySheetEntry.FILTER_ID_EXPERT };
 
     static {
         subObjectIdDescriptor.setCategory(IPropertySourceSupport.INITIAL_VALUE_CATEGORY);
+        subObjectIdEditableDescriptor.setCategory(IPropertySourceSupport.INITIAL_VALUE_CATEGORY);
     }
 
     private SubObjectType plkSubObject;
@@ -110,6 +108,14 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
         setSubObjectData(plkSubObject);
 
         objectIdDescriptor.setCategory(IPropertySourceSupport.INITIAL_VALUE_CATEGORY);
+        subObjectIdEditableDescriptor.setValidator(new ICellEditorValidator() {
+
+            @Override
+            public String isValid(Object value) {
+
+                return handleSubObjectIndexValue(value);
+            }
+        });
 
         nameDescriptor.setCategory(IPropertySourceSupport.INITIAL_VALUE_CATEGORY);
         editNameDescriptor.setCategory(IPropertySourceSupport.INITIAL_VALUE_CATEGORY);
@@ -207,14 +213,22 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
     private void addSubObjectPropertyDescriptors(List<IPropertyDescriptor> propertyList) {
 
         propertyList.add(objectIdDescriptor);
-        propertyList.add(subObjectIdDescriptor);
+        if (plkSubObject.getSubIndex() != null) {
+            String index = DatatypeConverter.printHexBinary(plkSubObject.getSubIndex());
+            int subObjeIndexVal = Integer.valueOf(index);
+            if (subObjeIndexVal != 0) {
+                propertyList.add(subObjectIdEditableDescriptor);
+            } else {
+                propertyList.add(subObjectIdDescriptor);
+            }
+        }
         propertyList.add(objectTypeDescriptor);
         plkObject = (TObjectImpl) plkSubObject.eContainer();
         if (plkObject.getIndex() != null) {
             String index = DatatypeConverter.printHexBinary(plkObject.getIndex());
             Integer objectId = Integer.parseInt(index, 16);
-            if ((objectId >= IPowerlinkConstants.MANUFACTURER_PROFILE_START_INDEX)
-                    && (objectId <= IPowerlinkConstants.MANUFACTURER_PROFILE_END_INDEX)) {
+            if ((objectId >= IPowerlinkConstants.COMMUNICATION_PROFILE_START_INDEX)
+                    && (objectId <= IPowerlinkConstants.STANDARDISED_DEVICE_PROFILE_END_INDEX)) {
                 propertyList.add(editNameDescriptor);
 
                 if (plkObject.getDataType() != null) {
@@ -295,6 +309,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
 
                 break;
             case OBJ_SUB_INDEX_ID:
+            case OBJ_EDITABLE_SUB_INDEX_ID:
                 if (plkSubObject.getSubIndex() != null) {
                     String index = DatatypeConverter.printHexBinary(plkSubObject.getSubIndex());
                     index = "0x" + index;
@@ -352,7 +367,6 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
                     if (!dataType.isEmpty()) {
                         for (int i = 0; i < DATA_TYPE_LIST.length; i++) {
                             if (DATA_TYPE_LIST[i].equals(dataTypeVal)) {
-                                System.err.println("Get property value : actual value " + dataTypeVal);
                                 retObj = Integer.valueOf(i);
                                 return retObj;
                             }
@@ -584,10 +598,12 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
     protected String handleLowLimitValue(Object value) {
         String lowLimit = (String) value;
         String highLimit = plkSubObject.getHighLimit();
+        String dataTypeVal = DatatypeConverter.printHexBinary(plkSubObject.getDataType());
+        String dataType = getDataTypeValue(dataTypeVal);
         try {
             if (highLimit != null) {
                 if ((!highLimit.isEmpty()) && (!lowLimit.isEmpty()))
-                    if (Integer.parseInt(lowLimit) > Integer.parseInt(highLimit)) {
+                    if (Long.parseLong(lowLimit) > Long.parseLong(highLimit)) {
                         return "Low limit cannot be greater than high limit.";
 
                     }
@@ -596,7 +612,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
             return "The value '" + lowLimit + "' is invalid.";
         }
 
-        return isValidVal(lowLimit, "low value");
+        return isValidVal(lowLimit, "Low limit", dataType);
     }
 
     /**
@@ -613,16 +629,16 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
             String pdoMappingValue = PDO_MAPPING_TYPES[(int) value];
             TObjectAccessType accessType = plkSubObject.getAccessType();
             switch (pdoMappingValue) {
-            case "Non-mappable":
+            case "No":
                 break;
-            case "Mapped by default":
+            case "Default":
                 break;
-            case "Mapped optionally":
+            case "Optional":
                 if (accessType == TObjectAccessType.CONST) {
                     return "Sub-object with access type 'const' does not allow optional mapping";
                 }
                 break;
-            case "Transmit process data objects":
+            case "TPDO":
                 if (accessType == TObjectAccessType.CONST) {
                     return "Sub-object with access type 'const' does not allow TPDO mapping";
                 }
@@ -630,7 +646,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
                     return "Sub-object with access type 'rw' does not allow TPDO mapping";
                 }
                 break;
-            case "Receive process data objects":
+            case "RPDO":
                 if (accessType == TObjectAccessType.CONST) {
                     return "Sub-object with access type 'const' does not allow RPDO mapping";
                 }
@@ -658,10 +674,12 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
     protected String handleHighLimitValue(Object value) {
         String highLimit = (String) value;
         String lowLimit = plkSubObject.getHighLimit();
+        String dataTypeVal = DatatypeConverter.printHexBinary(plkSubObject.getDataType());
+        String dataType = getDataTypeValue(dataTypeVal);
         try {
             if (lowLimit != null) {
                 if ((!highLimit.isEmpty()) && (!lowLimit.isEmpty()))
-                    if (Integer.parseInt(lowLimit) > Integer.parseInt(highLimit)) {
+                    if (Long.parseLong(lowLimit) > Long.parseLong(highLimit)) {
                         return "Low limit cannot be greater than high limit.";
 
                     }
@@ -670,7 +688,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
             return "The value '" + highLimit + "' is invalid.";
         }
 
-        return isValidVal(highLimit, "high value");
+        return isValidVal(highLimit, "High limit", dataType);
 
     }
 
@@ -679,9 +697,13 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
             try {
 
                 if (value.contains("0x")) {
-                    System.err.println("Value.." + value);
                     value = value.substring(2);
-                    Integer val = Integer.valueOf(value);
+                    Long val = Long.valueOf(value, 16);
+                    if (val < 0) {
+                        return false;
+                    }
+                } else {
+                    Long val = Long.valueOf(value);
                     if (val < 0) {
                         return false;
                     }
@@ -706,6 +728,8 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
      */
     protected String handleDefaultValue(Object value) {
         String defaultVal = StringUtils.EMPTY;
+        String dataTypeVal = DatatypeConverter.printHexBinary(plkSubObject.getDataType());
+        String dataType = getDataTypeValue(dataTypeVal);
         try {
             defaultVal = (String) value;
             if (!isValueValid(defaultVal)) {
@@ -715,11 +739,11 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
             if (defaultVal.contains("0x")) {
                 defaultVal = defaultVal.substring(2);
             }
-            Integer defaultValue = Integer.valueOf(defaultVal);
+            Long defaultValue = Long.valueOf(defaultVal);
 
             if (plkSubObject.getHighLimit() != null) {
                 if (!plkSubObject.getHighLimit().isEmpty()) {
-                    Integer highlimitVal = Integer.valueOf(plkSubObject.getHighLimit());
+                    Long highlimitVal = Long.valueOf(plkSubObject.getHighLimit());
                     if (defaultValue > highlimitVal) {
                         return "Default value '" + defaultValue + "' exceeds the high limit value '" + highlimitVal
                                 + "'.";
@@ -729,7 +753,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
 
             if (plkSubObject.getLowLimit() != null) {
                 if (!plkSubObject.getLowLimit().isEmpty()) {
-                    Integer lowLimitVal = Integer.valueOf(plkSubObject.getLowLimit());
+                    Long lowLimitVal = Long.valueOf(plkSubObject.getLowLimit());
                     if (defaultValue < lowLimitVal) {
                         return "Default value '" + defaultValue + "' cannot be lesser than low limit value '"
                                 + lowLimitVal + "'.";
@@ -740,459 +764,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
         } catch (NumberFormatException ex) {
             return "The value '" + defaultVal + "' is invalid.";
         }
-        return isValidVal(defaultVal, "Default value");
-    }
-
-    private String isValidVal(String highLowLimit, String str) {
-
-        String dataTypeVal = DatatypeConverter.printHexBinary(plkSubObject.getDataType());
-        String dataType = getDataTypeValue(dataTypeVal);
-        if (!highLowLimit.isEmpty()) {
-            long llimit;
-            switch (dataType) {
-            case "Boolean": {
-                try {
-                    llimit = Long.parseLong(highLowLimit);
-                    if (llimit < DataTypeRange.Boolean_min || llimit > DataTypeRange.Boolean_max) {
-                        return "Entered " + str + " is improper to the " + dataType + " range (0 - 1).";
-
-                    }
-                } catch (NumberFormatException e) {
-
-                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
-                }
-            }
-                break;
-            case "Integer8": {
-                try {
-                    llimit = Long.parseLong(highLowLimit);
-                    if (llimit < DataTypeRange.Integer8_min || llimit > DataTypeRange.Integer8_max) {
-                        return "Entered " + str + " is improper to the " + dataType + " range (-256 - 255).";
-
-                    }
-
-                } catch (NumberFormatException e) {
-
-                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
-                }
-            }
-                break;
-            case "Integer16": {
-                try {
-                    llimit = Long.parseLong(highLowLimit);
-                    if (llimit < DataTypeRange.Integer16_min || llimit > DataTypeRange.Integer16_max) {
-                        return "Entered " + str + " is improper to the " + dataType + " range (-65,536 - 65,535 ).";
-
-                    }
-
-                } catch (NumberFormatException e) {
-
-                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
-                }
-            }
-                break;
-            case "Integer32": {
-                try {
-                    llimit = Long.parseLong(highLowLimit);
-                    if (llimit < DataTypeRange.Integer32_min || llimit > DataTypeRange.Integer32_max) {
-                        return "Entered " + str + " is improper to the " + dataType
-                                + " range (-4,294,967,296 - 4,294,967,295).";
-
-                    }
-
-                } catch (NumberFormatException e) {
-
-                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
-                }
-            }
-                break;
-            case "Unsigned8": {
-                try {
-                    llimit = Long.parseLong(highLowLimit);
-                    if (llimit < DataTypeRange.Unsigned8_min || llimit > DataTypeRange.Unsigned8_max) {
-                        return "Entered " + str + " is improper to the " + dataType + " range (0 - 255).";
-
-                    }
-
-                } catch (NumberFormatException e) {
-
-                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
-                }
-            }
-                break;
-            case "Unsigned16": {
-                try {
-                    llimit = Long.parseLong(highLowLimit);
-                    if (llimit < DataTypeRange.Unsigned16_min || llimit > DataTypeRange.Unsigned16_max) {
-                        return "Entered " + str + " is improper to the " + dataType + " range (0 - 65,535).";
-
-                    }
-
-                } catch (NumberFormatException e) {
-
-                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
-                }
-            }
-                break;
-            case "Unsigned32": {
-                try {
-                    llimit = Long.parseLong(highLowLimit);
-                    if (llimit < DataTypeRange.Unsigned32_min || llimit > DataTypeRange.Unsigned32_max) {
-                        return "Entered " + str + " is improper to the " + dataType + " range (0 - 4,294,967,295).";
-
-                    }
-
-                } catch (NumberFormatException e) {
-
-                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
-                }
-            }
-                break;
-            case "Real32": {
-                try {
-                    Double limit = Double.parseDouble(highLowLimit);
-                    if (limit < DataTypeRange.Real32_min || limit > DataTypeRange.Real32_max) {
-                        return "Entered " + str + " is improper to the " + dataType + " range (1.2E-38 - 3.4E+38).";
-
-                    }
-
-                } catch (NumberFormatException e) {
-
-                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
-                }
-            }
-                break;
-            case "Real64": {
-                try {
-                    Double limit = Double.parseDouble(highLowLimit);
-                    if (limit < DataTypeRange.Real64_min || limit > DataTypeRange.Real64_max) {
-                        return "Entered " + str + " is improper to the " + dataType + " range (2.3E-308 - 1.7E+308).";
-
-                    }
-
-                } catch (NumberFormatException e) {
-
-                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
-                }
-
-            }
-                break;
-            case "Visible_String": {
-                try {
-                    llimit = Long.parseLong(highLowLimit);
-                    if (llimit < DataTypeRange.Unsigned16_min || llimit > DataTypeRange.Unsigned16_max) {
-                        return "Entered " + str + " is improper to the " + dataType + " range (0 - 65,535).";
-
-                    }
-
-                } catch (NumberFormatException e) {
-
-                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
-                }
-
-            }
-                break;
-            case "Integer24": {
-                try {
-                    llimit = Long.parseLong(highLowLimit);
-                    if (llimit < DataTypeRange.Integer24_min || llimit > DataTypeRange.Integer24_max) {
-                        return "Entered " + str + " is improper to the " + dataType + " range (8,388,608 - 8,388,607).";
-
-                    }
-
-                } catch (NumberFormatException e) {
-
-                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
-                }
-
-            }
-                break;
-            case "Integer40": {
-                try {
-                    llimit = Long.parseLong(highLowLimit);
-                    if (llimit < DataTypeRange.Integer40_min || llimit > DataTypeRange.Integer40_max) {
-                        return "Entered " + str + " is improper to the " + dataType
-                                + " range (-549,755,813,888 - 549,755,813,887).";
-
-                    }
-
-                } catch (NumberFormatException e) {
-
-                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
-                }
-
-            }
-                break;
-            case "Integer48": {
-                try {
-                    llimit = Long.parseLong(highLowLimit);
-                    if (llimit < DataTypeRange.Integer48_min || llimit > DataTypeRange.Integer48_max) {
-                        return "Entered " + str + " is improper to the " + dataType
-                                + " range (-140,737,488,355,328 - 140,737,488,355,327).";
-
-                    }
-
-                } catch (NumberFormatException e) {
-
-                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
-                }
-
-            }
-                break;
-            case "Integer56": {
-                try {
-                    llimit = Long.parseLong(highLowLimit);
-                    if (llimit < DataTypeRange.Integer56_min || llimit > DataTypeRange.Integer56_max) {
-                        return "Entered " + str + " is improper to the " + dataType
-                                + " range (-36,028,797,018,963,968 - 36,028,797,018,963,967).";
-
-                    }
-
-                } catch (NumberFormatException e) {
-
-                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
-                }
-
-            }
-                break;
-            case "Integer64": {
-                try {
-                    llimit = Long.parseLong(highLowLimit);
-                    if (llimit < DataTypeRange.Integer64_min || llimit > DataTypeRange.Integer64_max) {
-                        return "Entered " + str + " is improper to the " + dataType
-                                + " range (-9,223,372,036,854,775,808 - 9,223,372,036,854,775,807).";
-
-                    }
-
-                } catch (NumberFormatException e) {
-
-                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
-                }
-
-            }
-                break;
-            case "Octet_String": {
-                try {
-                    llimit = Long.parseLong(highLowLimit);
-                    if (llimit < DataTypeRange.Unsigned8_min || llimit > DataTypeRange.Unsigned8_max) {
-                        return "Entered " + str + " is improper to the " + dataType + " range (0 - 255).";
-
-                    }
-
-                } catch (NumberFormatException e) {
-
-                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
-                }
-            }
-                break;
-            case "Unicode_String": {
-                try {
-                    llimit = Long.parseLong(highLowLimit);
-                    if (llimit < DataTypeRange.Unsigned16_min || llimit > DataTypeRange.Unsigned16_max) {
-                        return "Entered " + str + " is improper to the " + dataType + " range (0 - 65,535).";
-
-                    }
-
-                } catch (NumberFormatException e) {
-
-                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
-                }
-            }
-                break;
-            case "Time_of_Day": {
-                try {
-                    llimit = Long.parseLong(highLowLimit);
-                    if (llimit < DataTypeRange.Unsigned48_min || llimit > DataTypeRange.Unsigned48_max) {
-                        return "Entered " + str + " is improper to the " + dataType
-                                + " range (0 - 281,474,976,710,655).";
-
-                    }
-
-                } catch (NumberFormatException e) {
-
-                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
-                }
-
-            }
-                break;
-            case "Time_Diff": {
-                try {
-                    llimit = Long.parseLong(highLowLimit);
-                    if (llimit < DataTypeRange.Unsigned48_min || llimit > DataTypeRange.Unsigned48_max) {
-                        return "Entered " + str + " is improper to the " + dataType
-                                + " range (0 - 281,474,976,710,655).";
-
-                    }
-
-                } catch (NumberFormatException e) {
-
-                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
-                }
-
-            }
-                break;
-            case "Domain": {
-                try {
-                    llimit = Long.parseLong(highLowLimit);
-                    if (llimit < DataTypeRange.Unsigned32_min || llimit > DataTypeRange.Unsigned32_max) {
-                        return "Entered " + str + " is improper to the " + dataType + " range (0 - 4,294,967,295).";
-
-                    }
-
-                } catch (NumberFormatException e) {
-
-                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
-                }
-            }
-                break;
-            case "Unsigned24": {
-                try {
-                    llimit = Long.parseLong(highLowLimit);
-                    if (llimit < DataTypeRange.Unsigned24_min || llimit > DataTypeRange.Unsigned24_max) {
-                        return "Entered " + str + " is improper to the " + dataType + " range (0 - 16,777,215).";
-
-                    }
-
-                } catch (NumberFormatException e) {
-
-                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
-                }
-
-            }
-                break;
-            case "Unsigned40": {
-                try {
-                    llimit = Long.parseLong(highLowLimit);
-                    if (llimit < DataTypeRange.Unsigned40_min || llimit > DataTypeRange.Unsigned40_max) {
-                        return "Entered " + str + " is improper to the " + dataType + " range (0 - 1,099,511,627,775).";
-
-                    }
-
-                } catch (NumberFormatException e) {
-
-                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
-                }
-
-            }
-                break;
-            case "Unsigned48": {
-                try {
-                    llimit = Long.parseLong(highLowLimit);
-                    if (llimit < DataTypeRange.Unsigned48_min || llimit > DataTypeRange.Unsigned48_max) {
-                        return "Entered " + str + " is improper to the " + dataType
-                                + " range (0 - 281,474,976,710,655).";
-
-                    }
-
-                } catch (NumberFormatException e) {
-
-                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
-                }
-
-            }
-                break;
-            case "Unsigned56": {
-                try {
-                    llimit = Long.parseLong(highLowLimit);
-                    if (llimit < DataTypeRange.Unsigned56_min || llimit > DataTypeRange.Unsigned56_max) {
-                        return "Entered " + str + " is improper to the " + dataType
-                                + " range (0 - 72,057,594,037,927,935).";
-
-                    }
-
-                } catch (NumberFormatException e) {
-
-                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
-                }
-
-            }
-                break;
-            case "Unsigned64": {
-                try {
-                    llimit = Long.parseLong(highLowLimit);
-                    if (llimit < 0 || llimit > 1) {
-                        return "Entered " + str + " is improper to the " + dataType + " range (-).";
-
-                    }
-
-                } catch (NumberFormatException e) {
-
-                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
-                }
-
-            }
-                break;
-            case "MAC_ADDRESS": {
-                try {
-                    llimit = Long.parseLong(highLowLimit);
-                    if (llimit < DataTypeRange.Unsigned48_min || llimit > DataTypeRange.Unsigned48_max) {
-                        return "Entered " + str + " is improper to the " + dataType
-                                + " range (0 - 281,474,976,710,655).";
-
-                    }
-
-                } catch (NumberFormatException e) {
-
-                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
-                }
-
-            }
-                break;
-            case "IP_ADDRESS": {
-                try {
-                    llimit = Long.parseLong(highLowLimit);
-                    if (llimit < DataTypeRange.Unsigned32_min || llimit > DataTypeRange.Unsigned32_max) {
-                        return "Entered " + str + " is improper to the " + dataType + " range (0 - 4,294,967,295).";
-
-                    }
-
-                } catch (NumberFormatException e) {
-
-                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
-                }
-            }
-                break;
-            case "NETTIME": {
-                try {
-                    llimit = Long.parseLong(highLowLimit);
-                    if (llimit < 0 || llimit > 1) {
-                        return "Entered " + str + " is improper to the " + dataType + " range (-).";
-
-                    }
-
-                } catch (NumberFormatException e) {
-
-                    return MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType);
-                }
-
-            }
-                break;
-            default:
-                break;
-            }
-        } else {
-
-        }
-        return null;
-    }
-
-    private boolean isActualValueEditable() {
-        boolean retVal = false;
-        // Only VAR type is allowed to be edited.
-        if ((plkSubObject.getObjectType() != 7)) {
-            return retVal;
-        }
-
-        if (plkSubObject.getDataType() == null) {
-            return retVal;
-        }
-
-        if (plkSubObject.getAccessType() == null) {
-            return retVal;
-        }
-
-        retVal = true;
-        return retVal;
+        return isValidVal(defaultVal, "Default value", dataType);
     }
 
     /**
@@ -1352,6 +924,89 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
 
     }
 
+    private boolean isSubObjectIndexAvailable(String objIndex) {
+
+        List<SubObjectType> subObjectList = plkObject.getSubObject();
+
+        if (!subObjectList.isEmpty()) {
+            for (SubObjectType subObject : subObjectList) {
+                byte[] index = subObject.getSubIndex();
+                String indexValue = DatatypeConverter.printHexBinary(index);
+                if (objIndex.contains("0x")) {
+                    objIndex = objIndex.substring(2);
+                }
+                if (objIndex.length() == 1) {
+                    objIndex = "0" + objIndex;
+                }
+                if (indexValue.equalsIgnoreCase(objIndex)) {
+                    return false;
+                }
+
+            }
+        }
+        return true;
+    }
+
+    private boolean isSubObjectIndexValid(String text) {
+        if (!text.isEmpty()) {
+            try {
+                if (text.contains("0x")) {
+                    text = text.substring(2);
+                    Long val = Long.parseLong(text, 16);
+                    if ((val < MANUFACTURER_PROFILE_SUB_OBJ_START_INDEX)
+                            || (val > MANUFACTURER_PROFILE_SUB_OBJ_END_INDEX)) {
+                        return false;
+                    }
+                } else {
+                    Long val = Long.parseLong(text, 16);
+                    if ((val < MANUFACTURER_PROFILE_SUB_OBJ_START_INDEX)
+                            || (val > MANUFACTURER_PROFILE_SUB_OBJ_END_INDEX)) {
+                        return false;
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Handles the Sub object index value modifications.
+     *
+     * @param value
+     *            The value to be set.
+     * @return Returns a string indicating whether the given value is valid;
+     *         null means valid, and non-null means invalid, with the result
+     *         being the error message to display to the end user.
+     */
+    protected String handleSubObjectIndexValue(Object value) {
+        String index = (String) value;
+        String indexVal = StringUtils.EMPTY;
+        if (plkSubObject.getSubIndex() != null) {
+            indexVal = DatatypeConverter.printHexBinary(plkSubObject.getSubIndex());
+            indexVal = "0x" + indexVal;
+        }
+
+        if (index.length() > 4) {
+            return "Invalid sub-object index '" + indexVal + "'.";
+        }
+
+        if (!indexVal.equalsIgnoreCase(index)) {
+            if (!isSubObjectIndexAvailable(index)) {
+                return "Sub-object index '" + index + "' already available.";
+            }
+        }
+
+        if (!isSubObjectIndexValid(index)) {
+            return "Enter the sub-object index value within the range (0x01 to 0xFE).";
+
+        }
+
+        return StringUtils.EMPTY;
+    }
+
     /**
      * sets the value to the Sub-Object Properties
      */
@@ -1363,6 +1018,17 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
                 String objectId = (String) id;
 
                 switch (objectId) {
+                case OBJ_EDITABLE_SUB_INDEX_ID:
+                    String index = (String) value;
+                    if (!index.isEmpty()) {
+                        if (index.contains("0x")) {
+                            index = index.substring(2);
+                            plkSubObject.setSubIndex(DatatypeConverter.parseHexBinary(index));
+                        } else {
+                            plkSubObject.setSubIndex(DatatypeConverter.parseHexBinary(index));
+                        }
+                    }
+                    break;
                 case OBJ_NAME_EDITABLE_ID:
                     String objValue = (String) value;
                     plkSubObject.setName(objValue);
@@ -1377,8 +1043,25 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
                 case OBJ_DATATYPE_EDITABLE_ID:
                     if (value instanceof Integer) {
                         String val = DATA_TYPE_LIST[(int) value];
-                        byte[] dataType = DatatypeConverter.parseHexBinary(getDataType(val));
-                        plkSubObject.setDataType(dataType);
+                        if (!val.isEmpty()) {
+                            byte[] dataType = DatatypeConverter.parseHexBinary(getDataType(val));
+
+                            MessageDialog dialog = new MessageDialog(null, "Change Data Type?", null,
+                                    "Changing the data type will remove the current values in 'Default value' , 'Low lmit' and 'High Limit'. \n\nAre you sure you want to change?",
+                                    MessageDialog.WARNING, new String[] { "Yes", "No" }, 1);
+
+                            int result = dialog.open();
+                            if (result == 0) {
+
+                                plkSubObject.setDataType(dataType);
+                                plkSubObject.setDefaultValue(StringUtils.EMPTY);
+                                plkSubObject.setLowLimit(StringUtils.EMPTY);
+                                plkSubObject.setHighLimit(StringUtils.EMPTY);
+                            }
+
+                        } else {
+                            plkSubObject.setDataType(null);
+                        }
                     }
                     break;
                 case OBJ_LOW_LIMIT_EDITABLE_ID:

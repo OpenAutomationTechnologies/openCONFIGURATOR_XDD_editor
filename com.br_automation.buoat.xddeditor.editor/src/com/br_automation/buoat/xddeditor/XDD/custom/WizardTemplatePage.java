@@ -117,10 +117,8 @@ public class WizardTemplatePage extends WizardPage {
                 if (WizardTemplatePage.this.cbtnUseConfigurationWizard.getSelection()) {
                     WizardTemplatePage.this.enableNext = true;
                     WizardTemplatePage.this.setPageComplete(true);
-                    // ((WizardPage) getNextPage()).setPageComplete(false);
                 } else {
                     WizardTemplatePage.this.enableNext = false;
-                    // ((WizardPage) getNextPage()).setPageComplete(true);
                     WizardTemplatePage.this.setPageComplete(false);
                     WizardTemplatePage.this.setPageComplete(true);
                 }
@@ -130,14 +128,6 @@ public class WizardTemplatePage extends WizardPage {
         this.cbtnUseConfigurationWizard.setBounds(30, 85, 304, 16);
         this.cbtnUseConfigurationWizard.setText("Use the configuration wizard to modify the template");
     } // createControl
-
-    /**
-     * @return <code>True</code> if empty model should be generated,
-     *         <code>false</code> otherwise.
-     */
-    public boolean getLoadEmpty() {
-        return this.rbtnLoadEmptyXDD.getSelection();
-    }
 
     /**
      * @brief Gets the template combobox.
@@ -157,4 +147,4 @@ public class WizardTemplatePage extends WizardPage {
         return this.cbtnUseConfigurationWizard.getSelection();
     }
 
-} // WizardPage
+} // WizardTemplatePage

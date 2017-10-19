@@ -462,6 +462,19 @@ public final class DeviceDescriptionFileEditor extends FormEditor
                 closeEditor();
             }
             break;
+        case IResourceDelta.CHANGED:
+            if (oldDelta.getFlags() == IResourceDelta.CONTENT) {
+                setInput(new FileEditorInput(currentProjectFile));
+                Display.getDefault().asyncExec(new Runnable() {
+                    @Override
+                    public void run() {
+                        System.err.println("The resource changed..");
+                    }
+                });
+
+            }
+
+            break;
         default:
             break;
         }

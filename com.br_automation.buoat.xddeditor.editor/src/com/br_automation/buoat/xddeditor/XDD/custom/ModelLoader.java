@@ -77,24 +77,22 @@ public final class ModelLoader {
      * @param wizardTemplatePage
      *            The first configuration page.
      * @param wizardConfigurationPage1
-     *            The advanced wizard page with userdata.
+     *            The advanced wizard page with user data.
      * @return DocumentRoot with appended data.
      */
     public static DocumentRoot createXDDFromWizardData(WizardTemplatePage wizardTemplatePage,
-            WizardConfigurationPage1 wizardConfigurationPage1) {
+            WizardConfigurationPage wizardConfigurationPage1) {
         // check which Template is used (static etc.)
         String resourceName;
-//        if (wizardTemplatePage.getLoadEmpty())
-//            return ModelLoader.getEmptyModel();
-//        else {
-            String choice = wizardTemplatePage.getTemplateCombo().getText();
-            if (choice.contentEquals("Default device")) //$NON-NLS-1$
-                resourceName = Messages.modelLoader_resourceTemplate_XDDdefault;
-            else if (choice.contentEquals("Default extended device")) //$NON-NLS-1$
-                resourceName = Messages.modelLoader_resourceTemplate_XDDextended;
-            else
-                resourceName = Messages.modelLoader_resourceTemplate_XDDstatic;
-//        }
+
+        String choice = wizardTemplatePage.getTemplateCombo().getText();
+        if (choice.contentEquals("Default device")) //$NON-NLS-1$
+            resourceName = Messages.modelLoader_resourceTemplate_XDDdefault;
+        else if (choice.contentEquals("Default extended device")) //$NON-NLS-1$
+            resourceName = Messages.modelLoader_resourceTemplate_XDDextended;
+        else
+            resourceName = Messages.modelLoader_resourceTemplate_XDDstatic;
+
         DocumentRoot root = XDDUtilities.loadXDD(ModelLoader.class.getResource(resourceName));
 
         if (wizardTemplatePage.isConfigurationWizardStatus())
@@ -173,10 +171,8 @@ public final class ModelLoader {
      *            set.
      */
     public static void setMultiplexFeatureObjects(boolean status, DocumentRoot root) {
-        List<TCNFeatures> tCNfeaturesList = XDDUtilities.
-                findEObjects(root, XDDPackage.eINSTANCE.getTCNFeatures());
-        List<ObjectListType> objectsList = XDDUtilities.
-                findEObjects(root, XDDPackage.eINSTANCE.getObjectListType());
+        List<TCNFeatures> tCNfeaturesList = XDDUtilities.findEObjects(root, XDDPackage.eINSTANCE.getTCNFeatures());
+        List<ObjectListType> objectsList = XDDUtilities.findEObjects(root, XDDPackage.eINSTANCE.getObjectListType());
 
         if (objectsList.isEmpty() || tCNfeaturesList.isEmpty())
             return;
@@ -253,7 +249,7 @@ public final class ModelLoader {
      *            Instance of the WizardConfigurationPage fetch user-input.
      * @return DocumentRoot with appended meta-data gathered from the system.
      */
-    private static DocumentRoot appendMetaData(DocumentRoot root, WizardConfigurationPage1 wizardConfigurationPage1) {
+    private static DocumentRoot appendMetaData(DocumentRoot root, WizardConfigurationPage wizardConfigurationPage1) {
 
         EList<ISO15745ProfileType> profiles = root.getISO15745ProfileContainer().getISO15745Profile();
         ISO15745ProfileType profile1 = profiles.get(0);
@@ -297,7 +293,7 @@ public final class ModelLoader {
      *            Instance of the WizardConfigurationPage fetch user-input.
      * @return DocumentRoot with appended userdata from WizardConfigurationPage.
      */
-    private static DocumentRoot appendUserData(DocumentRoot root, WizardConfigurationPage1 wizardConfigurationPage1) {
+    private static DocumentRoot appendUserData(DocumentRoot root, WizardConfigurationPage wizardConfigurationPage1) {
 
         EList<ISO15745ProfileType> profiles = root.getISO15745ProfileContainer().getISO15745Profile();
         ISO15745ProfileType profile1 = profiles.get(0);

@@ -44,7 +44,6 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.internal.LONG;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
@@ -61,6 +60,7 @@ import com.br_automation.buoat.xddeditor.XDD.custom.Messages;
 import com.br_automation.buoat.xddeditor.XDD.custom.XDDUtilities;
 import com.br_automation.buoat.xddeditor.XDD.resources.IPowerlinkConstants;
 import com.br_automation.buoat.xddeditor.XDD.validation.NameVerifyListener;
+import com.br_automation.buoat.xddeditor.editor.adapters.AbstractObjectPropertySource;
 import com.br_automation.buoat.xddeditor.editor.editors.DeviceDescriptionFileEditor;
 
 /**
@@ -84,6 +84,13 @@ public class AddObjectWizardPage extends WizardPage {
 
     public static final String DIALOG_DESCRIPTION = "Configure the attributes for the new object.";
     public static final String DIALOG_PAGE_LABEL = "Object";
+
+    public static final String VALID_OBJECT_INDEX_RANGE = "Enter the object index value within the range (0x1000 to 0x9FFF).";
+    public static final String INDEX_OUT_OF_RANGE = "Object index is out of range (0x1000 to 0x9FFF).";
+    public static final String OBJECT_ALREADY_EXISTS_ERROR_MESSAGE = "Object index {0} already exists in the file {1}.";
+    public static final String ENTER_OBJECT_NAME = "Enter the name of object.";
+    public static final String OBJECT_ACCESS_TYPE_INVALID_PDO_MAPPING = "Object with access type {0} does not allow {1}.";
+    private String objectTypeText = StringUtils.EMPTY;
 
     /**
      * Constructor to initialize the document instance.
@@ -143,8 +150,7 @@ public class AddObjectWizardPage extends WizardPage {
 
     private static final String[] OBJECT_TYPES = new String[] { "7 - VAR", "8 - ARRAY", "9 - RECORD" };
 
-    private static final String[] PDO_MAPPING_TYPES = new String[] { "Non-mappable", "Mapped by default",
-            "Mapped optionally", "Transmit process data objects", "Receive process data objects" };
+    private static final String[] PDO_MAPPING_TYPES = new String[] { "No", "Default", "Optional", "TPDO", "RPDO" };
 
     private static final String INVALID_VALUE = "Invalid value.";
 
@@ -153,7 +159,11 @@ public class AddObjectWizardPage extends WizardPage {
             try {
                 if (value.contains("0x")) {
                     value = value.substring(2);
-                    Integer val = Integer.valueOf(value);
+                    if (value.isEmpty()) {
+                        return false;
+                    }
+                    Integer val = Integer.parseInt(value, 16);
+
                     if (val < 0) {
                         return false;
                     }
@@ -168,7 +178,7 @@ public class AddObjectWizardPage extends WizardPage {
     }
 
     private static final String[] ACCESS_TYPE_LIST = new String[] { "Constant", "Read only", "Write only",
-            "Read write" };
+            "Read/Write" };
 
     /**
      * Create control for wizard page
@@ -339,20 +349,35 @@ public class AddObjectWizardPage extends WizardPage {
 
             String defaultVal = getTxtDefaultValue();
             if (!defaultVal.isEmpty()) {
-                if (!isValidVal(defaultVal, "Default value")) {
+                String errorMessage = AbstractObjectPropertySource.isValidVal(defaultVal, "Default value", dataType);
+                if (!errorMessage.isEmpty()) {
                     setPageComplete(false);
+                    setErrorMessage(errorMessage);
+                } else {
+                    setPageComplete(true);
+                    setErrorMessage(null);
                 }
             }
             String lowLimit = getTxtLowLimit();
             if (!lowLimit.isEmpty()) {
-                if (!isValidVal(lowLimit, "low value")) {
+                String errorMessage = AbstractObjectPropertySource.isValidVal(lowLimit, "Low limit", dataType);
+                if (!errorMessage.isEmpty()) {
                     setPageComplete(false);
+                    setErrorMessage(errorMessage);
+                } else {
+                    setPageComplete(true);
+                    setErrorMessage(null);
                 }
             }
             String highLimit = getTxtHighLimit();
             if (!highLimit.isEmpty()) {
-                if (!isValidVal(highLimit, "high value")) {
+                String errorMessage = AbstractObjectPropertySource.isValidVal(highLimit, "High limit", dataType);
+                if (!AbstractObjectPropertySource.isValidVal(highLimit, "high value", dataType).isEmpty()) {
                     setPageComplete(false);
+                    setErrorMessage(errorMessage);
+                } else {
+                    setPageComplete(true);
+                    setErrorMessage(null);
                 }
             }
             if ((!highLimit.isEmpty()) && (!lowLimit.isEmpty()))
@@ -430,6 +455,7 @@ public class AddObjectWizardPage extends WizardPage {
 
         @Override
         public void modifyText(ModifyEvent e) {
+            comboDataType.addSelectionListener(dataTypeSelectionListener);
             setErrorMessage(null);
             setPageComplete(true);
             defaultValue = txtDefaultValue.getText();
@@ -478,7 +504,7 @@ public class AddObjectWizardPage extends WizardPage {
         if (accessType.equalsIgnoreCase("Write only")) {
             return TObjectAccessType.WO;
         }
-        if (accessType.equalsIgnoreCase("Read write")) {
+        if (accessType.equalsIgnoreCase("Read/Write")) {
             return TObjectAccessType.RW;
         }
         return TObjectAccessType.CONST;
@@ -508,10 +534,11 @@ public class AddObjectWizardPage extends WizardPage {
         String index = getTxtObjectIndexText();
         String pdoMappingVal = comboPdoMapping.getText();
         String accessTypeVal = comboAccessType.getText();
+        String dataType = comboDataType.getText();
 
         setErrorMessage(null);
         if (index.isEmpty()) {
-            setErrorMessage("Enter the object index value within the range (0x1000 to 0x9FFF).");
+            setErrorMessage(VALID_OBJECT_INDEX_RANGE);
             return false;
         }
 
@@ -520,35 +547,35 @@ public class AddObjectWizardPage extends WizardPage {
             return false;
         }
         if (!isObjectIndexValid(objIndex)) {
-            setErrorMessage("Object index is out of range (0x1000 to 0x9FFF).");
+            setErrorMessage(INDEX_OUT_OF_RANGE);
             return false;
         }
         if (index.contains("0x")) {
             if (index.length() > 6) {
-                setErrorMessage("Enter the object index value within the range (0x1000 to 0x9FFF).");
+                setErrorMessage(VALID_OBJECT_INDEX_RANGE);
                 return false;
             }
         } else {
             if (index.length() > 4) {
-                setErrorMessage("Enter the object index value within the range (0x1000 to 0x9FFF).");
+                setErrorMessage(VALID_OBJECT_INDEX_RANGE);
                 return false;
             }
         }
 
         if (!isObjectIndexAvailable(objIndex)) {
-            setErrorMessage("Object index '" + objIndex + "' already exists in the file '"
-                    + editor.getActiveEditor().getTitle() + "'.");
+            setErrorMessage(MessageFormat.format(OBJECT_ALREADY_EXISTS_ERROR_MESSAGE, objIndex,
+                    editor.getActiveEditor().getTitle()));
             return false;
         }
 
         String objName = getTxtObjectNameText();
         if (objName.isEmpty()) {
-            setErrorMessage("Enter the name of object.");
+            setErrorMessage(ENTER_OBJECT_NAME);
             return false;
         }
 
         if (!isPdoMappingValueValid(pdoMappingVal)) {
-            setErrorMessage("Object with access type '" + accessTypeVal + "' does not allow '" + pdoMapping + "'.");
+            setErrorMessage(MessageFormat.format(OBJECT_ACCESS_TYPE_INVALID_PDO_MAPPING, accessTypeVal, pdoMapping));
             return false;
         }
 
@@ -557,21 +584,34 @@ public class AddObjectWizardPage extends WizardPage {
         txtLowLimit.setEnabled(true);
 
         String defaultVal = getTxtDefaultValue();
+
         if (!defaultVal.isEmpty()) {
-            if (!isValidVal(defaultVal, "Default value")) {
+            String errorMessage = AbstractObjectPropertySource.isValidVal(defaultVal, "Default value", dataType);
+            if (!errorMessage.isEmpty()) {
+                setErrorMessage(errorMessage);
                 return false;
+            } else {
+                setErrorMessage(null);
             }
         }
         String lowLimit = getTxtLowLimit();
         if (!lowLimit.isEmpty()) {
-            if (!isValidVal(lowLimit, "low value")) {
+            String errorMessage = AbstractObjectPropertySource.isValidVal(lowLimit, "Low limit", dataType);
+            if (!errorMessage.isEmpty()) {
+                setErrorMessage(errorMessage);
                 return false;
+            } else {
+                setErrorMessage(null);
             }
         }
         String highLimit = getTxtHighLimit();
         if (!highLimit.isEmpty()) {
-            if (!isValidVal(highLimit, "high value")) {
+            String errorMessage = AbstractObjectPropertySource.isValidVal(highLimit, "High limit", dataType);
+            if (!errorMessage.isEmpty()) {
+                setErrorMessage(errorMessage);
                 return false;
+            } else {
+                setErrorMessage(null);
             }
         }
         if ((!highLimit.isEmpty()) && (!lowLimit.isEmpty())) {
@@ -602,401 +642,6 @@ public class AddObjectWizardPage extends WizardPage {
         }
 
         return true;
-    }
-
-    private boolean isValidVal(String HighLowLimit, String str) {
-        String dataType = comboDataType.getText();
-        if (!HighLowLimit.isEmpty()) {
-            long llimit;
-            switch (dataType) {
-            case "Boolean": {
-                try {
-                    llimit = Long.parseLong(HighLowLimit);
-                    if (llimit < DataTypeRange.Boolean_min || llimit > DataTypeRange.Boolean_max) {
-                        setErrorMessage(str + " is out of range (0 to 1).");
-                        return false;
-                    } else
-                        return true;
-                } catch (NumberFormatException e) {
-                    setErrorMessage(MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
-                }
-            }
-                break;
-            case "Integer8": {
-                try {
-                    llimit = Long.parseLong(HighLowLimit);
-                    if (llimit < DataTypeRange.Integer8_min || llimit > DataTypeRange.Integer8_max) {
-                        setErrorMessage(str + " is out of range (-256 to 255).");
-                        return false;
-                    } else
-                        return true;
-                } catch (NumberFormatException e) {
-                    setErrorMessage(MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
-                }
-            }
-                break;
-            case "Integer16": {
-                try {
-                    llimit = Long.parseLong(HighLowLimit);
-                    if (llimit < DataTypeRange.Integer16_min || llimit > DataTypeRange.Integer16_max) {
-                        setErrorMessage(str + " is out of range (-65,536 to 65,535 ).");
-                        return false;
-                    } else
-                        return true;
-                } catch (NumberFormatException e) {
-                    setErrorMessage(MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
-                }
-            }
-                break;
-            case "Integer32": {
-                try {
-                    llimit = Long.parseLong(HighLowLimit);
-                    if (llimit < DataTypeRange.Integer32_min || llimit > DataTypeRange.Integer32_max) {
-                        setErrorMessage(str + " is out of range (-4,294,967,296 to 4,294,967,295).");
-                        return false;
-                    } else
-                        return true;
-                } catch (NumberFormatException e) {
-                    setErrorMessage("Datatype '" + dataType + " accepts only decimal value");
-                }
-            }
-                break;
-            case "Unsigned8": {
-                try {
-                    llimit = Long.parseLong(HighLowLimit);
-                    if (llimit < DataTypeRange.Unsigned8_min || llimit > DataTypeRange.Unsigned8_max) {
-                        setErrorMessage(str + " is out of range (0 to 255).");
-                        return false;
-                    } else
-                        return true;
-                } catch (NumberFormatException e) {
-                    setErrorMessage("Datatype '" + dataType + " accepts only decimal value");
-                }
-            }
-                break;
-            case "Unsigned16": {
-                try {
-                    llimit = Long.parseLong(HighLowLimit);
-                    if (llimit < DataTypeRange.Unsigned16_min || llimit > DataTypeRange.Unsigned16_max) {
-                        setErrorMessage(str + " is out of range (0 to 65,535).");
-                        return false;
-                    } else
-                        return true;
-                } catch (NumberFormatException e) {
-                    setErrorMessage(MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
-                }
-            }
-                break;
-            case "Unsigned32": {
-                try {
-                    llimit = Long.parseLong(HighLowLimit);
-                    if (llimit < DataTypeRange.Unsigned32_min || llimit > DataTypeRange.Unsigned32_max) {
-                        setErrorMessage(str + " is out of range (0 to 4,294,967,295).");
-                        return false;
-                    } else
-                        return true;
-                } catch (NumberFormatException e) {
-                    setErrorMessage(MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
-                }
-            }
-                break;
-            case "Real32": {
-                try {
-                    Double limit = Double.parseDouble(HighLowLimit);
-                    if (limit < DataTypeRange.Real32_min || limit > DataTypeRange.Real32_max) {
-                        setErrorMessage(str + " is out of range (1.2E-38 to 3.4E+38).");
-                        return false;
-                    } else
-                        return true;
-                } catch (NumberFormatException e) {
-                    setErrorMessage(MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
-                }
-            }
-                break;
-            case "Real64": {
-                try {
-                    Double limit = Double.parseDouble(HighLowLimit);
-                    if (limit < DataTypeRange.Real64_min || limit > DataTypeRange.Real64_max) {
-                        setErrorMessage(str + " is out of range (2.3E-308 to 1.7E+308).");
-                        return false;
-                    } else
-                        return true;
-                } catch (NumberFormatException e) {
-                    setErrorMessage(MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
-                }
-
-            }
-                break;
-            case "Visible_String": {
-                try {
-                    llimit = Long.parseLong(HighLowLimit);
-                    if (llimit < DataTypeRange.Unsigned16_min || llimit > DataTypeRange.Unsigned16_max) {
-                        setErrorMessage(str + " is out of range (0 to 65,535).");
-                        return false;
-                    } else
-                        return true;
-                } catch (NumberFormatException e) {
-                    setErrorMessage(MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
-                }
-
-            }
-                break;
-            case "Integer24": {
-                try {
-                    llimit = Long.parseLong(HighLowLimit);
-                    if (llimit < DataTypeRange.Integer24_min || llimit > DataTypeRange.Integer24_max) {
-                        setErrorMessage(str + " is out of range (8,388,608 to 8,388,607).");
-                        return false;
-                    } else
-                        return true;
-                } catch (NumberFormatException e) {
-                    setErrorMessage(MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
-                }
-
-            }
-                break;
-            case "Integer40": {
-                try {
-                    llimit = Long.parseLong(HighLowLimit);
-                    if (llimit < DataTypeRange.Integer40_min || llimit > DataTypeRange.Integer40_max) {
-                        setErrorMessage(str + " is out of range (-549,755,813,888 to 549,755,813,887).");
-                        return false;
-                    } else
-                        return true;
-                } catch (NumberFormatException e) {
-                    setErrorMessage(MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
-                }
-
-            }
-                break;
-            case "Integer48": {
-                try {
-                    llimit = Long.parseLong(HighLowLimit);
-                    if (llimit < DataTypeRange.Integer48_min || llimit > DataTypeRange.Integer48_max) {
-                        setErrorMessage(str + " is out of range (-140,737,488,355,328 to 140,737,488,355,327).");
-                        return false;
-                    } else
-                        return true;
-                } catch (NumberFormatException e) {
-                    setErrorMessage(MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
-                }
-
-            }
-                break;
-            case "Integer56": {
-                try {
-                    llimit = Long.parseLong(HighLowLimit);
-                    if (llimit < DataTypeRange.Integer56_min || llimit > DataTypeRange.Integer56_max) {
-                        setErrorMessage(str + " is out of range (-36,028,797,018,963,968 to 36,028,797,018,963,967).");
-                        return false;
-                    } else
-                        return true;
-                } catch (NumberFormatException e) {
-                    setErrorMessage("Datatype '" + dataType + " accepts only decimal value");
-                }
-
-            }
-                break;
-            case "Integer64": {
-                try {
-                    llimit = Long.parseLong(HighLowLimit);
-                    if (llimit < DataTypeRange.Integer64_min || llimit > DataTypeRange.Integer64_max) {
-                        setErrorMessage(
-                                str + " is out of range (-9,223,372,036,854,775,808 to 9,223,372,036,854,775,807).");
-                        return false;
-                    } else
-                        return true;
-                } catch (NumberFormatException e) {
-                    setErrorMessage("Datatype '" + dataType + " accepts only decimal value");
-                }
-
-            }
-                break;
-            case "Octet_String": {
-                try {
-                    llimit = Long.parseLong(HighLowLimit);
-                    if (llimit < DataTypeRange.Unsigned8_min || llimit > DataTypeRange.Unsigned8_max) {
-                        setErrorMessage(str + " is out of range (0 to 255).");
-                        return false;
-                    } else
-                        return true;
-                } catch (NumberFormatException e) {
-                    setErrorMessage(MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
-                }
-            }
-                break;
-            case "Unicode_String": {
-                try {
-                    llimit = Long.parseLong(HighLowLimit);
-                    if (llimit < DataTypeRange.Unsigned16_min || llimit > DataTypeRange.Unsigned16_max) {
-                        setErrorMessage(str + " is out of range (0 to 65,535).");
-                        return false;
-                    } else
-                        return true;
-                } catch (NumberFormatException e) {
-                    setErrorMessage(MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
-                }
-            }
-                break;
-            case "Time_of_Day": {
-                try {
-                    llimit = Long.parseLong(HighLowLimit);
-                    if (llimit < DataTypeRange.Unsigned48_min || llimit > DataTypeRange.Unsigned48_max) {
-                        setErrorMessage(str + " is out of range (0 to 281,474,976,710,655).");
-                        return false;
-                    } else
-                        return true;
-                } catch (NumberFormatException e) {
-                    setErrorMessage(MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
-                }
-
-            }
-                break;
-            case "Time_Diff": {
-                try {
-                    llimit = Long.parseLong(HighLowLimit);
-                    if (llimit < DataTypeRange.Unsigned48_min || llimit > DataTypeRange.Unsigned48_max) {
-                        setErrorMessage(str + " is out of range (0 to 281,474,976,710,655).");
-                        return false;
-                    } else
-                        return true;
-                } catch (NumberFormatException e) {
-                    setErrorMessage(MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
-                }
-
-            }
-                break;
-            case "Domain": {
-                try {
-                    llimit = Long.parseLong(HighLowLimit);
-                    if (llimit < DataTypeRange.Unsigned32_min || llimit > DataTypeRange.Unsigned32_max) {
-                        setErrorMessage(str + " is out of range (0 to 4,294,967,295).");
-                        return false;
-                    } else
-                        return true;
-                } catch (NumberFormatException e) {
-                    setErrorMessage(MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
-                }
-            }
-                break;
-            case "Unsigned24": {
-                try {
-                    llimit = Long.parseLong(HighLowLimit);
-                    if (llimit < DataTypeRange.Unsigned24_min || llimit > DataTypeRange.Unsigned24_max) {
-                        setErrorMessage(str + " is out of range (0 to 16,777,215).");
-                        return false;
-                    } else
-                        return true;
-                } catch (NumberFormatException e) {
-                    setErrorMessage(MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
-                }
-
-            }
-                break;
-            case "Unsigned40": {
-                try {
-                    llimit = Long.parseLong(HighLowLimit);
-                    if (llimit < DataTypeRange.Unsigned40_min || llimit > DataTypeRange.Unsigned40_max) {
-                        setErrorMessage(str + " is out of range (0 to 1,099,511,627,775).");
-                        return false;
-                    } else
-                        return true;
-                } catch (NumberFormatException e) {
-                    setErrorMessage(MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
-                }
-
-            }
-                break;
-            case "Unsigned48": {
-                try {
-                    llimit = Long.parseLong(HighLowLimit);
-                    if (llimit < DataTypeRange.Unsigned48_min || llimit > DataTypeRange.Unsigned48_max) {
-                        setErrorMessage(str + " is out of range (0 to 281,474,976,710,655).");
-                        return false;
-                    } else
-                        return true;
-                } catch (NumberFormatException e) {
-                    setErrorMessage(MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
-                }
-
-            }
-                break;
-            case "Unsigned56": {
-                try {
-                    llimit = Long.parseLong(HighLowLimit);
-                    if (llimit < DataTypeRange.Unsigned56_min || llimit > DataTypeRange.Unsigned56_max) {
-                        setErrorMessage(str + " is out of range (0 to 72,057,594,037,927,935).");
-                        return false;
-                    } else
-                        return true;
-                } catch (NumberFormatException e) {
-                    setErrorMessage(MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
-                }
-
-            }
-                break;
-            case "Unsigned64": {
-                try {
-                    llimit = Long.parseLong(HighLowLimit);
-                    if (llimit < 0 || llimit > Long.MAX_VALUE) {
-                        setErrorMessage(str + " out of range (0 to " + Long.MAX_VALUE + ").");
-                        return false;
-                    } else
-                        return true;
-                } catch (NumberFormatException e) {
-                    setErrorMessage(MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
-                }
-
-            }
-                break;
-            case "MAC_ADDRESS": {
-                try {
-                    llimit = Long.parseLong(HighLowLimit);
-                    if (llimit < DataTypeRange.Unsigned48_min || llimit > DataTypeRange.Unsigned48_max) {
-                        setErrorMessage(str + " is out of range (0 to 281,474,976,710,655).");
-                        return false;
-                    } else
-                        return true;
-                } catch (NumberFormatException e) {
-                    setErrorMessage(MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
-                }
-
-            }
-                break;
-            case "IP_ADDRESS": {
-                try {
-                    llimit = Long.parseLong(HighLowLimit);
-                    if (llimit < DataTypeRange.Unsigned32_min || llimit > DataTypeRange.Unsigned32_max) {
-                        setErrorMessage(str + " is out of range (0 to 4,294,967,295).");
-                        return false;
-                    } else
-                        return true;
-                } catch (NumberFormatException e) {
-                    setErrorMessage(MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
-                }
-            }
-                break;
-            case "NETTIME": {
-                try {
-                    llimit = Long.parseLong(HighLowLimit);
-                    if (llimit < 0 || llimit > 1) {
-                        setErrorMessage(str + " is out of range (-).");
-                        return false;
-                    } else
-                        return true;
-                } catch (NumberFormatException e) {
-                    setErrorMessage(MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
-                }
-
-            }
-                break;
-            default:
-                return true;
-            }
-        } else {
-            return false;
-        }
-        return false;
     }
 
     private boolean isObjectIndexAvailable(String objIndex) {
@@ -1166,8 +811,6 @@ public class AddObjectWizardPage extends WizardPage {
         return new byte[] { 0 };
     }
 
-    private String objectTypeText = StringUtils.EMPTY;
-
     public short getObjectType() {
 
         if (objectTypeText.isEmpty()) {
@@ -1193,19 +836,19 @@ public class AddObjectWizardPage extends WizardPage {
             pdoMapping = comboPdoMapping.getText();
         }
 
-        if (pdoMapping.equalsIgnoreCase("Non-mappable")) {
+        if (pdoMapping.equalsIgnoreCase("No")) {
             return TObjectPDOMapping.NO;
         }
-        if (pdoMapping.equalsIgnoreCase("Mapped by default")) {
+        if (pdoMapping.equalsIgnoreCase("Default")) {
             return TObjectPDOMapping.DEFAULT;
         }
-        if (pdoMapping.equalsIgnoreCase("Mapped optionally")) {
+        if (pdoMapping.equalsIgnoreCase("Optional")) {
             return TObjectPDOMapping.OPTIONAL;
         }
-        if (pdoMapping.equalsIgnoreCase("Transmit process data objects")) {
+        if (pdoMapping.equalsIgnoreCase("TPDO")) {
             return TObjectPDOMapping.TPDO;
         }
-        if (pdoMapping.equalsIgnoreCase("Receive process data objects")) {
+        if (pdoMapping.equalsIgnoreCase("RPDO")) {
             return TObjectPDOMapping.RPDO;
         }
         return TObjectPDOMapping.DEFAULT;
@@ -1220,20 +863,19 @@ public class AddObjectWizardPage extends WizardPage {
      *         <code>false</code> otherwise.
      */
     protected boolean isPdoMappingValueValid(String pdoMappingValue) {
-        System.err.println("Acess type.." + getAccessType());
         TObjectAccessType accessType = getAccessType();
         if (pdoMappingValue != null) {
             switch (pdoMappingValue) {
-            case "Non-mappable":
+            case "No":
                 break;
-            case "Mapped by default":
+            case "Default":
                 break;
-            case "Mapped optionally":
+            case "Optional":
                 if (accessType == TObjectAccessType.CONST) {
                     return false;
                 }
                 break;
-            case "Transmit process data objects":
+            case "TPDO":
                 if (accessType == TObjectAccessType.CONST) {
                     return false;
                 }
@@ -1241,7 +883,7 @@ public class AddObjectWizardPage extends WizardPage {
                     return false;
                 }
                 break;
-            case "Receive process data objects":
+            case "RPDO":
                 if (accessType == TObjectAccessType.CONST) {
                     return false;
                 }

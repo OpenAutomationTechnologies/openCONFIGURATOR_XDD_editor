@@ -540,13 +540,6 @@ public class ObjectDictionaryEditorPage extends FormPage implements IPropertyLis
      */
     private PartListener partListener = new PartListener();
 
-    /**
-     * Part listener to listen to the changes of the source part.
-     *
-     * @see IndustrialNetworkView
-     * @author Ramakrishnan P
-     *
-     */
     private class PartListener implements IPartListener {
         @Override
         public void partActivated(IWorkbenchPart part) {
@@ -855,8 +848,8 @@ public class ObjectDictionaryEditorPage extends FormPage implements IPropertyLis
     private boolean isObjectIndexValid(String text) {
         if (!text.isEmpty()) {
             Integer indexvalue = Integer.parseInt(text, 16);
-            if ((indexvalue < IPowerlinkConstants.MANUFACTURER_PROFILE_START_INDEX)
-                    || (indexvalue > IPowerlinkConstants.MANUFACTURER_PROFILE_END_INDEX)) {
+            if ((indexvalue < IPowerlinkConstants.COMMUNICATION_PROFILE_START_INDEX)
+                    || (indexvalue > IPowerlinkConstants.STANDARDISED_DEVICE_PROFILE_END_INDEX)) {
                 return false;
             } else
                 return true;

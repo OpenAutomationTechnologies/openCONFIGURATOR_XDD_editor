@@ -83,7 +83,7 @@ import com.br_automation.buoat.xddeditor.XDD.resources.IPowerlinkConstants;
 /**
  * Class to populate the details page of 0x1000 object
  *
- * @author Sree hari Vignesh
+ * @author Sree Hari Vignesh
  *
  */
 public class Index1000DetailsPage implements IDetailsPage {
@@ -256,6 +256,7 @@ public class Index1000DetailsPage implements IDetailsPage {
             } catch (NumberFormatException e) {
                 this.lblError.setText(Messages.general_error_defaultValueInvalid);
                 this.lblError.setForeground(XDDUtilities.getRed(Display.getCurrent()));
+                e.printStackTrace();
             }
         }
 

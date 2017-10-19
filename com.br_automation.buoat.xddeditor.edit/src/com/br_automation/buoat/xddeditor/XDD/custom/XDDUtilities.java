@@ -652,16 +652,13 @@ public final class XDDUtilities {
         URI fileuri = URI.createURI(resourcePath.toString());
 
         try {
-            System.err.println("File Uri..." + fileuri);
             Resource resource = resSet.getResource(fileuri, true);
-            System.err.println("Resource..." + resource.getContents());
             return (DocumentRoot) resource.getContents().get(0);
         } catch (Exception e) {
             Display.getDefault().asyncExec(new Runnable() {
 
                 @Override
                 public void run() {
-//                    e.printStackTrace();
                     IEditorPart editorPart = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
                             .getActiveEditor();
                     IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
@@ -675,8 +672,6 @@ public final class XDDUtilities {
             });
 
         }
-        // throw new IllegalArgumentException("Parameter 'resourcePath ' must
-        // not be null.");
         return null;
 
     }

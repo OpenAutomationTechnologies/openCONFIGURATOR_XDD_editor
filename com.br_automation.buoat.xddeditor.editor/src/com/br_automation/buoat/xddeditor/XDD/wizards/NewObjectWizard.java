@@ -101,6 +101,14 @@ public class NewObjectWizard extends Wizard {
 
     private DeviceDescriptionFileEditor editor;
 
+    /**
+     * Constructor to initialize the wizard page to create new object.
+     *
+     * @param selectedObj
+     *            Instance of XDD file
+     * @param editor
+     *            Instance of Object dictionary editor page
+     */
     public NewObjectWizard(
 
             DocumentRoot selectedObj, DeviceDescriptionFileEditor editor) {
@@ -165,7 +173,6 @@ public class NewObjectWizard extends Wizard {
             if (profileBody instanceof ProfileBodyCommunicationNetworkPowerlinkImpl) {
                 EList<EObject> bodyContents = profileBody.eContents();
                 for (EObject object : bodyContents) {
-                    System.err.println("Object instance list.." + object);
                     if (object instanceof TApplicationLayersImpl) {
                         TApplicationLayersImpl applicationLayer = (TApplicationLayersImpl) object;
                         return applicationLayer;

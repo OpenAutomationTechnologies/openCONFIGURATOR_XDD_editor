@@ -73,7 +73,7 @@ import com.br_automation.buoat.xddeditor.XDD.presentation.XDDModelWizard;
  */
 public class CustomXDDWizard extends XDDModelWizard {
 
-    private WizardConfigurationPage1 wizardConfigurationPage1;
+    private WizardConfigurationPage wizardConfigurationPage1;
     private WizardTemplatePage wizardTemplatePage;
 
     /**
@@ -121,7 +121,7 @@ public class CustomXDDWizard extends XDDModelWizard {
         this.wizardTemplatePage = new WizardTemplatePage("wizardTemplatePage");
         this.addPage(this.wizardTemplatePage);
 
-        this.wizardConfigurationPage1 = new WizardConfigurationPage1("wizardConfigurationPage1", this);
+        this.wizardConfigurationPage1 = new WizardConfigurationPage("wizardConfigurationPage1", this);
         this.addPage(this.wizardConfigurationPage1);
 
 

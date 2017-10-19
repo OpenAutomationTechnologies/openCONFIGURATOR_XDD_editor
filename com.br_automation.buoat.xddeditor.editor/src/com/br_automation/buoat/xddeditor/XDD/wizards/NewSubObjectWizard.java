@@ -70,6 +70,16 @@ public class NewSubObjectWizard extends Wizard {
 
     private DocumentRoot documentRoot;
 
+    /**
+     * Constructor to initialize the wizard page to create new sub-object.
+     *
+     * @param selectedObj
+     *            Instance of parent object
+     * @param editor
+     *            Instance of Object dictionary editor page
+     * @param docRoot
+     *            Instance of XDD file
+     */
     public NewSubObjectWizard(TObjectImpl selectedObject, DeviceDescriptionFileEditor editor, DocumentRoot docRoot) {
 
         documentRoot = docRoot;
@@ -113,8 +123,8 @@ public class NewSubObjectWizard extends Wizard {
                         subObj.setPDOmapping(TObjectPDOMapping.NO);
 
                         if (addSubObjectWizardPage.getDataType() != null) {
-                            subObj.setDataType(DatatypeConverter
-                                    .parseHexBinary(addSubObjectWizardPage.getDatTypeValue("Unsigned8")));
+                            subObj.setDataType(
+                                    DatatypeConverter.parseHexBinary(addSubObjectWizardPage.getDataType("Unsigned8")));
                         }
 
                         if (addSubObjectWizardPage.getSubIndex() != null) {

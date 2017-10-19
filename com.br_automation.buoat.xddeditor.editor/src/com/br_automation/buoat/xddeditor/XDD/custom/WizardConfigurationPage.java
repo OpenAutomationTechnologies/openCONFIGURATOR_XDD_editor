@@ -1,7 +1,31 @@
 /**
  * @since 19.3.2013
  * @author Joris Lückenga, Bernecker + Rainer Industrie Elektronik Ges.m.b.H.
- */
+ *
+ * @copyright (c) 2017, Bernecker + Rainer Industrie Elektronik Ges.m.b.H.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *   * Redistributions of source code must retain the above copyright
+ *     notice, this list of conditions and the following disclaimer.
+ *   * Redistributions in binary form must reproduce the above copyright
+ *     notice, this list of conditions and the following disclaimer in the
+ *     documentation and/or other materials provided with the distribution.
+ *   * Neither the name of the copyright holders nor the
+ *     names of its contributors may be used to endorse or promote products
+ *     derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDERS BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *******************************************************************************/
 
 package com.br_automation.buoat.xddeditor.XDD.custom;
 
@@ -43,7 +67,7 @@ import com.br_automation.buoat.xddeditor.XDD.wizards.DataTypeRange;
  *
  * @author Joris Lückenga
  */
-public class WizardConfigurationPage1 extends WizardPage {
+public class WizardConfigurationPage extends WizardPage {
 
     private Button btnCnMultiplexFeature;
     private Button btnMultipleASnd;
@@ -77,9 +101,9 @@ public class WizardConfigurationPage1 extends WizardPage {
     private static final String INVALID_PRODUCT_ID_VALUE = "Invalid product ID for the device.";
     private static final String INVALID_VENDOR_NAME_EMPTY_ERROR = "Vendor name cannot be empty.";
 
-    public static final String INVALID_PREQ_TIME_VALUE_EMPTY_ERROR = "PReq time cannot be empty.";
+    public static final String INVALID_PREQ_TIME_VALUE_EMPTY_ERROR = "Time for Soc to PReq cannot be empty.";
     public static final String INVALID_NETWORK_EMPTY_ERROR_ENTRIES = "Network error entries cannot be empty.";
-    public static final String INVALID_MAX_CYCLE_TIME = "Maximum cycle time value invalid.";
+    public static final String INVALID_MAX_CYCLE_TIME = "Invalid maximum cycle time value.";
     public static final String INVALID_MIN_CYCLE_TIME = "Invalid minimum cycle time value.";
     public static final String EMPTY_CYCLE_TIME_ERROR_MESSAGE = "Cycle time cannot be empty.";
     public static final String EMPTY_MIN_CYCLE_TIME_ERROR_MESSAGE = "Minimum cycle time cannot be empty.";
@@ -96,7 +120,7 @@ public class WizardConfigurationPage1 extends WizardPage {
      * @param wizard
      *            the parent-wizard.
      */
-    public WizardConfigurationPage1(String pageID, CustomXDDWizard wizard) {
+    public WizardConfigurationPage(String pageID, CustomXDDWizard wizard) {
         super(pageID);
         this.setTitle(Messages.wizardConfigurationPage1_adv_conf_page_title);
         this.setDescription(Messages.wizardConfigurationPage1_type_in_data_new_model_subheadline);
@@ -132,10 +156,10 @@ public class WizardConfigurationPage1 extends WizardPage {
         this.txtDeviceName.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                if (WizardConfigurationPage1.this.txtDeviceName.getText().isEmpty())
-                    WizardConfigurationPage1.this.setPageComplete(false);
+                if (WizardConfigurationPage.this.txtDeviceName.getText().isEmpty())
+                    WizardConfigurationPage.this.setPageComplete(false);
                 else
-                    WizardConfigurationPage1.this.setPageComplete(true);
+                    WizardConfigurationPage.this.setPageComplete(true);
             }
         });
         this.txtDeviceName.setText("New_Device"); //$NON-NLS-1$
@@ -205,7 +229,6 @@ public class WizardConfigurationPage1 extends WizardPage {
         this.txtVendorID.setText("0x00000000"); //$NON-NLS-1$
         this.txtVendorID.setBounds(128, 43, 143, 21);
 
-
         this.txtProductName = new Text(grpAda, SWT.BORDER);
         this.txtProductName.setText("Sample_Product_Name"); //$NON-NLS-1$
         this.txtProductName.setBounds(128, 67, 143, 21);
@@ -234,26 +257,26 @@ public class WizardConfigurationPage1 extends WizardPage {
         this.txtFirmwareVersionNr.setText("1.00"); //$NON-NLS-1$
         this.txtFirmwareVersionNr.setBounds(128, 163, 143, 21);
 
-        Group grpCnFeatures = new Group(container, SWT.NONE);
-        grpCnFeatures.setText("Node Features"); //$NON-NLS-1$
-        grpCnFeatures.setBounds(297, 225, 254, 113);
+        Group grpNodeFeatures = new Group(container, SWT.NONE);
+        grpNodeFeatures.setText("Node Features"); //$NON-NLS-1$
+        grpNodeFeatures.setBounds(297, 225, 254, 113);
 
-        this.btnCnMultiplexFeature = new Button(grpCnFeatures, SWT.CHECK);
+        this.btnCnMultiplexFeature = new Button(grpNodeFeatures, SWT.CHECK);
         this.btnCnMultiplexFeature.setToolTipText(Messages.wizardConfigurationPage1_multiplex_feature_tooltip);
         this.btnCnMultiplexFeature.setBounds(10, 22, 222, 16);
         this.btnCnMultiplexFeature.setText("Multiplexed Communication"); //$NON-NLS-1$
 
-        this.btnResponseChaining = new Button(grpCnFeatures, SWT.CHECK);
+        this.btnResponseChaining = new Button(grpNodeFeatures, SWT.CHECK);
         this.btnResponseChaining.setToolTipText(Messages.wizardConfigurationPage1_Response_chaining_tooltip);
         this.btnResponseChaining.setBounds(10, 44, 234, 16);
         this.btnResponseChaining.setText("Poll Response Chaining Communication"); //$NON-NLS-1$
 
-        Label lblSoc = new Label(grpCnFeatures, SWT.NONE);
+        Label lblSoc = new Label(grpNodeFeatures, SWT.NONE);
         lblSoc.setToolTipText(Messages.wizardConfigurationPage1_Time_for_cn_to_process_Soc_tooltip);
-        lblSoc.setText("Time for PReq (ns):"); //$NON-NLS-1$
+        lblSoc.setText("Time for Soc to PReq (ns):"); //$NON-NLS-1$
         lblSoc.setBounds(10, 66, 124, 15);
 
-        this.txtNMTCNSoC2PReq = new Text(grpCnFeatures, SWT.BORDER);
+        this.txtNMTCNSoC2PReq = new Text(grpNodeFeatures, SWT.BORDER);
         this.txtNMTCNSoC2PReq.setText("25"); //$NON-NLS-1$
         this.txtNMTCNSoC2PReq.setToolTipText(Messages.wizardConfigurationPage1_time_for_CN_tro_process_SoC_tooltip);
         this.txtNMTCNSoC2PReq.setBounds(140, 63, 92, 21);
@@ -339,7 +362,7 @@ public class WizardConfigurationPage1 extends WizardPage {
 
                 Long value = Long.parseLong(timeforPreqText);
                 if (value < DataTypeRange.Unsigned32_min || value > DataTypeRange.Unsigned32_max) {
-                    setErrorMessage("Time for PReq value '" + timeforPreqText
+                    setErrorMessage("Time for Soc to PReq value '" + timeforPreqText
                             + "' does not fit within the range (0 - 4,294,967,295) of data type 'Unsigned32'.");
                     setPageComplete(false);
 
@@ -348,7 +371,6 @@ public class WizardConfigurationPage1 extends WizardPage {
                 ex.printStackTrace();
                 setPageComplete(false);
             }
-
 
         }
     };
@@ -479,8 +501,6 @@ public class WizardConfigurationPage1 extends WizardPage {
                 ex.printStackTrace();
                 setPageComplete(false);
             }
-
-
 
         }
     };
@@ -622,7 +642,6 @@ public class WizardConfigurationPage1 extends WizardPage {
     public boolean isPageComplete() {
 
         boolean pageComplete = (super.isPageComplete());
-System.err.println("Page complete.."+pageComplete);
         return pageComplete;
     }
 
@@ -652,8 +671,6 @@ System.err.println("Page complete.."+pageComplete);
                 ex.printStackTrace();
                 setPageComplete(false);
             }
-
-
 
         }
     };
@@ -782,8 +799,6 @@ System.err.println("Page complete.."+pageComplete);
                 ex.printStackTrace();
                 setPageComplete(false);
             }
-
-
 
         }
     };

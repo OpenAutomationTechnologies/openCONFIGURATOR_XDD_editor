@@ -61,6 +61,8 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -150,14 +152,15 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
     private static final String PROJECT_INFORMATION_VERSION_NUMBER = "1.0";
 
     private static final String DEVICE_COMMUNICATION_INFORMATION_SECTION = "Communication";
+    private static final String DEVICE_COMMUNICATION_INFORMATION_SECTION_DESCRIPTION ="Provides links to the editor and communication sections.";
     private static final String OBJECT_DICTIONARY_HYPERLINK_SECTION = "Object Dictionary";
     private static final String NETWORK_MANAGEMENT_HYPERLINK_SECTION = "Network Management";
 
     private static final String FORM_EDITOR_PAGE_TITLE = "Device Description File Editor";
 
     private static final String INVALID_VENDOR_ID = "Invalid vendor ID for the device.";
-    private static final String INVALID_VENDOR_ID_NULL_ERROR = "Vendor ID cannot be empty";
-    private static final String INVALID_PRODUCT_ID_NULL_ERROR = "Product ID cannot be empty";
+    private static final String INVALID_VENDOR_ID_NULL_ERROR = "Vendor ID cannot be empty.";
+    private static final String INVALID_PRODUCT_ID_NULL_ERROR = "Product ID cannot be empty.";
     private static final String INVALID_PRODUCT_NAME_EMPTY_ERROR = "Product name cannot be empty.";
     private static final String INVALID_HARDWARE_VERSION_VALUE = "Hardware version value {0} is invalid for the device.";
     private static final String INVALID_SOFTWARE_VERSION_VALUE = "Software version value {0} is invalid for the device.";
@@ -508,100 +511,126 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
      *            The parent form.
      */
     private void createGeneralInfoWidgets(final IManagedForm managedForm) {
-        Section generalInfoSection = toolkit.createSection(managedForm.getForm().getBody(), ExpandableComposite.EXPANDED
-                | Section.DESCRIPTION | ExpandableComposite.TWISTIE | ExpandableComposite.TITLE_BAR);
-        managedForm.getToolkit().paintBordersFor(generalInfoSection);
-        generalInfoSection.setText(DeviceDescriptionFileEditorPage.GENERAL_INFORMATION_SECTION);
-        generalInfoSection.setDescription(DeviceDescriptionFileEditorPage.GENERAL_SECTION_HEADING_DESCRIPTION);
+        try {
+            Section generalInfoSection = toolkit.createSection(managedForm.getForm().getBody(),
+                    ExpandableComposite.EXPANDED | Section.DESCRIPTION | ExpandableComposite.TWISTIE
+                            | ExpandableComposite.TITLE_BAR);
+            managedForm.getToolkit().paintBordersFor(generalInfoSection);
+            generalInfoSection.setText(DeviceDescriptionFileEditorPage.GENERAL_INFORMATION_SECTION);
+            generalInfoSection.setDescription(DeviceDescriptionFileEditorPage.GENERAL_SECTION_HEADING_DESCRIPTION);
 
-        Composite client = toolkit.createComposite(generalInfoSection, SWT.WRAP);
-        GridLayout layout = new GridLayout(2, false);
-        layout.marginWidth = 2;
-        layout.marginHeight = 2;
-        client.setLayout(layout);
-        toolkit.paintBordersFor(client);
-        generalInfoSection.setClient(client);
+            Composite client = toolkit.createComposite(generalInfoSection, SWT.WRAP);
+            GridLayout layout = new GridLayout(2, false);
+            layout.marginWidth = 2;
+            layout.marginHeight = 2;
+            client.setLayout(layout);
+            toolkit.paintBordersFor(client);
+            generalInfoSection.setClient(client);
 
-        Label vendorIdLabel = new Label(client, SWT.NONE);
-        vendorIdLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-        vendorIdLabel.setText(DeviceDescriptionFileEditorPage.VENDOR_ID_LABEL);
-        toolkit.adapt(vendorIdLabel, true, true);
-        vendorIdLabel.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
+            Label vendorIdLabel = new Label(client, SWT.NONE);
+            vendorIdLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+            vendorIdLabel.setText(DeviceDescriptionFileEditorPage.VENDOR_ID_LABEL);
+            toolkit.adapt(vendorIdLabel, true, true);
+            vendorIdLabel.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
 
-        vendorIdText = new Text(client, SWT.BORDER | SWT.WRAP);
-        vendorIdText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-        toolkit.adapt(vendorIdText, true, true);
+            vendorIdText = new Text(client, SWT.BORDER | SWT.WRAP);
+            vendorIdText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+            toolkit.adapt(vendorIdText, true, true);
 
-        Label vendorNameLabel = new Label(client, SWT.NONE);
-        vendorNameLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-        vendorNameLabel.setText(DeviceDescriptionFileEditorPage.VENDOR_NAME_LABEL);
-        toolkit.adapt(vendorNameLabel, true, true);
-        vendorNameLabel.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
+            Label vendorNameLabel = new Label(client, SWT.NONE);
+            vendorNameLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+            vendorNameLabel.setText(DeviceDescriptionFileEditorPage.VENDOR_NAME_LABEL);
+            toolkit.adapt(vendorNameLabel, true, true);
+            vendorNameLabel.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
 
-        vendorNameText = new Text(client, SWT.BORDER | SWT.WRAP);
-        vendorNameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-        toolkit.adapt(vendorNameText, true, true);
+            vendorNameText = new Text(client, SWT.BORDER | SWT.WRAP);
+            vendorNameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+            toolkit.adapt(vendorNameText, true, true);
 
-        Label hwVersionLabel = new Label(client, SWT.NONE);
-        hwVersionLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-        hwVersionLabel.setText(DeviceDescriptionFileEditorPage.HARDWARE_VERSION_LABEL);
-        toolkit.adapt(hwVersionLabel, true, true);
-        hwVersionLabel.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
+            Label hwVersionLabel = new Label(client, SWT.NONE);
+            hwVersionLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+            hwVersionLabel.setText(DeviceDescriptionFileEditorPage.HARDWARE_VERSION_LABEL);
+            toolkit.adapt(hwVersionLabel, true, true);
+            hwVersionLabel.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
 
-        hwVersionText = new Text(client, SWT.BORDER | SWT.WRAP);
-        hwVersionText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-        toolkit.adapt(hwVersionText, true, true);
+            hwVersionText = new Text(client, SWT.BORDER | SWT.WRAP);
+            hwVersionText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+            toolkit.adapt(hwVersionText, true, true);
 
-        Label swVersionLabel = new Label(client, SWT.NONE);
-        swVersionLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-        swVersionLabel.setText(DeviceDescriptionFileEditorPage.SOFTWARE_VERSION_LABEL);
-        toolkit.adapt(swVersionLabel, true, true);
-        swVersionLabel.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
+            Label swVersionLabel = new Label(client, SWT.NONE);
+            swVersionLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+            swVersionLabel.setText(DeviceDescriptionFileEditorPage.SOFTWARE_VERSION_LABEL);
+            toolkit.adapt(swVersionLabel, true, true);
+            swVersionLabel.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
 
-        swVersionText = new Text(client, SWT.BORDER | SWT.WRAP);
-        swVersionText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-        toolkit.adapt(swVersionText, true, true);
+            swVersionText = new Text(client, SWT.BORDER | SWT.WRAP);
+            swVersionText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+            toolkit.adapt(swVersionText, true, true);
 
-        Label fwVersionLabel = new Label(client, SWT.NONE);
-        fwVersionLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-        fwVersionLabel.setText(DeviceDescriptionFileEditorPage.FIRMWARE_VERSION_LABEL);
-        toolkit.adapt(fwVersionLabel, true, true);
-        fwVersionLabel.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
+            Label fwVersionLabel = new Label(client, SWT.NONE);
+            fwVersionLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+            fwVersionLabel.setText(DeviceDescriptionFileEditorPage.FIRMWARE_VERSION_LABEL);
+            toolkit.adapt(fwVersionLabel, true, true);
+            fwVersionLabel.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
 
-        fwVersionText = new Text(client, SWT.BORDER | SWT.WRAP);
-        fwVersionText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-        toolkit.adapt(fwVersionText, true, true);
+            fwVersionText = new Text(client, SWT.BORDER | SWT.WRAP);
+            fwVersionText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+            toolkit.adapt(fwVersionText, true, true);
 
-        Label productnameLabel = new Label(client, SWT.NONE);
-        productnameLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-        productnameLabel.setText(DeviceDescriptionFileEditorPage.PRODUCT_NAME_LABEL);
-        toolkit.adapt(productnameLabel, true, true);
-        productnameLabel.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
+            Label productnameLabel = new Label(client, SWT.NONE);
+            productnameLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+            productnameLabel.setText(DeviceDescriptionFileEditorPage.PRODUCT_NAME_LABEL);
+            toolkit.adapt(productnameLabel, true, true);
+            productnameLabel.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
 
-        productNameText = new Text(client, SWT.BORDER | SWT.WRAP);
-        productNameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-        toolkit.adapt(productNameText, true, true);
+            productNameText = new Text(client, SWT.BORDER | SWT.WRAP);
+            productNameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+            toolkit.adapt(productNameText, true, true);
 
-        Label productIdlabel = new Label(client, SWT.NONE);
-        productIdlabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-        productIdlabel.setText(DeviceDescriptionFileEditorPage.PRODUCT_ID_LABEL);
-        toolkit.adapt(productIdlabel, true, true);
-        productIdlabel.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
+            Label productIdlabel = new Label(client, SWT.NONE);
+            productIdlabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+            productIdlabel.setText(DeviceDescriptionFileEditorPage.PRODUCT_ID_LABEL);
+            toolkit.adapt(productIdlabel, true, true);
+            productIdlabel.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
 
-        productIdText = new Text(client, SWT.BORDER | SWT.WRAP | SWT.SEARCH);
-        productIdText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-        toolkit.adapt(productIdText, true, true);
-        productIdText.setMessage("Ex: 0x00000001");
+            productIdText = new Text(client, SWT.BORDER | SWT.WRAP | SWT.SEARCH);
+            productIdText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+            toolkit.adapt(productIdText, true, true);
+            productIdText.setMessage("Ex: 0x00000001");
 
-        updateGeneralInfoFields();
-        addListenersToControls();
+            updateGeneralInfoFields();
+            addListenersToControls();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
+
+    /**
+     * Keyboard bindings.
+     */
+    private KeyAdapter treeViewerKeyListener = new KeyAdapter() {
+        @Override
+        public void keyReleased(final KeyEvent e) {
+            if (((e.stateMask & SWT.CTRL) == SWT.CTRL) && ((e.keyCode == 'c') || (e.keyCode == 'C'))) {
+
+            } else if (((e.stateMask & SWT.CTRL) == SWT.CTRL) && ((e.keyCode == 'v') || (e.keyCode == 'V'))) {
+                System.err.println("The paste action invoked!");
+
+            }
+
+        }
+
+    };
 
     private void addListenersToControls() {
         vendorIdText.addModifyListener(vendorIdModifyListener);
         vendorIdText.addVerifyListener(nameVerifyListener);
-
+        try {
+            vendorIdText.addKeyListener(treeViewerKeyListener);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         vendorNameText.addModifyListener(vendorNameModifyListener);
         productIdText.addVerifyListener(nameVerifyListener);
 
@@ -1013,7 +1042,6 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
                     return;
                 }
 
-
                 if (getDeviceIdentity().getVendorName() != null) {
                     getDeviceIdentity().getVendorName().setValue(vendorName);
                 } else {
@@ -1347,7 +1375,6 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
         @Override
         public void widgetSelected(SelectionEvent e) {
 
-            // Files.delete(Paths.get(node.getAbsolutePathToXdc()));
             getDeviceFunction().getFirmwareList().getFirmware().remove(firmwareObj);
             updateDocument(documentRoot);
             listViewer.setInput(XDDPackage.eINSTANCE.getTFirmwareList());
@@ -1365,7 +1392,7 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
                 | Section.DESCRIPTION | ExpandableComposite.TWISTIE | ExpandableComposite.TITLE_BAR);
         managedForm.getToolkit().paintBordersFor(hyperLinkSection);
         hyperLinkSection.setText(DeviceDescriptionFileEditorPage.DEVICE_COMMUNICATION_INFORMATION_SECTION);
-        hyperLinkSection.setDescription("Provides links to the editor and communication sections.");
+        hyperLinkSection.setDescription(DEVICE_COMMUNICATION_INFORMATION_SECTION_DESCRIPTION);
         Composite client = toolkit.createComposite(hyperLinkSection, SWT.WRAP);
         GridLayout layout = new GridLayout(2, false);
         layout.marginWidth = 2;

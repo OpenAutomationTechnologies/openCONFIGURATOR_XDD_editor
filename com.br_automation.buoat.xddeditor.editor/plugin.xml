@@ -22,7 +22,7 @@
    <extension point="org.eclipse.ui.editors">
       <editor
             class="com.br_automation.buoat.xddeditor.editor.editors.DeviceDescriptionFileEditor"
-            contributorClass="com.br_automation.buoat.xddeditor.XDD.presentation.XDDActionBarContributor"
+            default="true"
             extensions="xdd, xdc,XDD,XDC"
             icon="icons/full/obj16/XDDModelFile.gif"
             id="com.br_automation.buoat.xddeditor.editor.XDD"

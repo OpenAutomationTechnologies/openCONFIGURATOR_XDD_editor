@@ -31,10 +31,14 @@
 
 package com.br_automation.buoat.xddeditor.editor.adapters;
 
+import java.text.MessageFormat;
+
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 
+import com.br_automation.buoat.xddeditor.XDD.wizards.DataTypeRange;
 import com.br_automation.buoat.xddeditor.editor.editors.DeviceDescriptionFileEditor;
 
 /**
@@ -93,18 +97,20 @@ public class AbstractObjectPropertySource {
     private static final String OBJ_OBJFLAGS_LABEL = "Object Flags";
     private static final String OBJ_UNIQUEIDREF_LABEL = "UniqueIDRef";
 
-    protected static final String[] DATA_TYPE_LIST = { "Boolean", "Integer8", "Integer16", "Integer32", "Unsigned8",
+    public static final int MANUFACTURER_PROFILE_SUB_OBJ_START_INDEX = 0x01;
+    public static final int MANUFACTURER_PROFILE_SUB_OBJ_END_INDEX = 0xFE;
+
+    public static final String[] DATA_TYPE_LIST = { "Boolean", "Integer8", "Integer16", "Integer32", "Unsigned8",
             "Unsigned16", "Unsigned32", "Real32", "Visible_String", "Integer24", "Real64", "Integer40", "Integer48",
             "Integer56", "Integer64", "Octet_String", "Unicode_String", "Time_of_Day", "Time_Diff", "Domain",
             "Unsigned24", "Unsigned40", "Unsigned48", "Unsigned56", "Unsigned64", "MAC_ADDRESS", "IP_ADDRESS",
-            "NETTIME", "" };
+            "NETTIME", StringUtils.EMPTY };
 
     protected static final String[] OBJECT_TYPES = { "7 - VAR", "8 - ARRAY", "9 - RECORD" };
 
-    protected static final String[] PDO_MAPPING_TYPES = { "Non-mappable", "Mapped by default", "Mapped optionally",
-            "Transmit process data objects", "Receive process data objects", "" };
+    protected static final String[] PDO_MAPPING_TYPES = { "No", "Default", "Optional", "TPDO", "RPDO", "" };
 
-    protected static final String[] ACCESS_TYPE_LIST = { "Constant", "Read only", "Write only", "Read write", "" };
+    protected static final String[] ACCESS_TYPE_LIST = { "Constant", "Read only", "Write only", "Read/Write", "" };
 
     private static final String[] YES_NO = { "Yes", "No" };
     protected PropertyDescriptor objectIdDescriptor = new PropertyDescriptor(OBJ_INDEX_ID, OBJ_INDEX_LABEL);
@@ -167,6 +173,435 @@ public class AbstractObjectPropertySource {
 
     public void setEditor(DeviceDescriptionFileEditor editor) {
         this.editor = editor;
+    }
+
+    public static long getValueToBeChecked(String value, String dataType) {
+        long valueToBeChecked;
+
+        if (value.contains("0x")) {
+            value = value.substring(2);
+            valueToBeChecked = Long.parseLong(value, 16);
+        } else {
+            valueToBeChecked = Long.parseLong(value);
+        }
+        return valueToBeChecked;
+    }
+
+    public static String isValidVal(String value, String label, String dataType) {
+        String emptyString = StringUtils.EMPTY;
+        try {
+            if (!value.isEmpty()) {
+
+                long valueToBeChecked = getValueToBeChecked(value, dataType);
+
+                switch (dataType) {
+                case "Boolean": {
+                    try {
+                        if (valueToBeChecked < DataTypeRange.Boolean_min
+                                || valueToBeChecked > DataTypeRange.Boolean_max) {
+                            return label + " is out of range (0 to 1).";
+                        } else {
+                            return emptyString;
+                        }
+                    } catch (NumberFormatException e) {
+                        e.printStackTrace();
+                        return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
+                    }
+                }
+                case "Integer8": {
+                    try {
+                        if (valueToBeChecked < DataTypeRange.Integer8_min
+                                || valueToBeChecked > DataTypeRange.Integer8_max) {
+                            return (label + " is out of range (-256 to 255).");
+                        } else {
+                            return emptyString;
+                        }
+                    } catch (NumberFormatException e) {
+                        return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
+                    }
+                }
+                case "Integer16": {
+                    try {
+                        if (valueToBeChecked < DataTypeRange.Integer16_min
+                                || valueToBeChecked > DataTypeRange.Integer16_max) {
+                            return (label + " is out of range (-65,536 to 65,535 ).");
+
+                        } else
+                            return emptyString;
+                    } catch (NumberFormatException e) {
+                        return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
+                    }
+                }
+                case "Integer32": {
+                    try {
+
+                        if (valueToBeChecked < DataTypeRange.Integer32_min
+                                || valueToBeChecked > DataTypeRange.Integer32_max) {
+                            return (label + " is out of range (-4,294,967,296 to 4,294,967,295).");
+
+                        } else
+                            return emptyString;
+                    } catch (NumberFormatException e) {
+                        return ("Datatype '" + dataType + " accepts only decimal value");
+                    }
+                }
+
+                case "Unsigned8": {
+                    try {
+                        if (valueToBeChecked < DataTypeRange.Unsigned8_min
+                                || valueToBeChecked > DataTypeRange.Unsigned8_max) {
+                            return (label + " is out of range (0 to 255).");
+
+                        } else
+                            return emptyString;
+                    } catch (NumberFormatException e) {
+                        return ("Datatype '" + dataType + " accepts only decimal value");
+                    }
+                }
+                case "Unsigned16": {
+                    try {
+
+                        if (valueToBeChecked < DataTypeRange.Unsigned16_min
+                                || valueToBeChecked > DataTypeRange.Unsigned16_max) {
+                            return (label + " is out of range (0 to 65,535).");
+
+                        } else
+                            return emptyString;
+                    } catch (NumberFormatException e) {
+                        return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
+                    }
+                }
+                case "Unsigned32": {
+                    try {
+
+                        if (valueToBeChecked < DataTypeRange.Unsigned32_min
+                                || valueToBeChecked > DataTypeRange.Unsigned32_max) {
+                            return (label + " is out of range (0 to 4,294,967,295).");
+
+                        } else
+                            return emptyString;
+                    } catch (NumberFormatException e) {
+                        return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
+                    }
+                }
+
+                case "Real32": {
+                    try {
+                        Double limit = Double.parseDouble(value);
+                        if (limit < DataTypeRange.Real32_min || limit > DataTypeRange.Real32_max) {
+                            return (label + " is out of range (1.2E-38 to 3.4E+38).");
+
+                        } else
+                            return emptyString;
+                    } catch (NumberFormatException e) {
+                        return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
+                    }
+                }
+
+                case "Real64": {
+                    try {
+                        Double limit = Double.parseDouble(value);
+                        if (limit < DataTypeRange.Real64_min || limit > DataTypeRange.Real64_max) {
+                            return (label + " is out of range (2.3E-308 to 1.7E+308).");
+
+                        } else
+                            return emptyString;
+                    } catch (NumberFormatException e) {
+                        return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
+                    }
+
+                }
+
+                case "Visible_String": {
+                    try {
+
+                        if (valueToBeChecked < DataTypeRange.Unsigned16_min
+                                || valueToBeChecked > DataTypeRange.Unsigned16_max) {
+                            return (label + " is out of range (0 to 65,535).");
+
+                        } else
+                            return emptyString;
+                    } catch (NumberFormatException e) {
+                        return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
+                    }
+
+                }
+
+                case "Integer24": {
+                    try {
+
+                        if (valueToBeChecked < DataTypeRange.Integer24_min
+                                || valueToBeChecked > DataTypeRange.Integer24_max) {
+                            return (label + " is out of range (8,388,608 to 8,388,607).");
+
+                        } else
+                            return emptyString;
+                    } catch (NumberFormatException e) {
+                        return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
+                    }
+
+                }
+
+                case "Integer40": {
+                    try {
+
+                        if (valueToBeChecked < DataTypeRange.Integer40_min
+                                || valueToBeChecked > DataTypeRange.Integer40_max) {
+                            return (label + " is out of range (-549,755,813,888 to 549,755,813,887).");
+
+                        } else
+                            return emptyString;
+                    } catch (NumberFormatException e) {
+                        return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
+                    }
+
+                }
+
+                case "Integer48": {
+                    try {
+
+                        if (valueToBeChecked < DataTypeRange.Integer48_min
+                                || valueToBeChecked > DataTypeRange.Integer48_max) {
+                            return (label + " is out of range (-140,737,488,355,328 to 140,737,488,355,327).");
+
+                        } else
+                            return emptyString;
+                    } catch (NumberFormatException e) {
+                        return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
+                    }
+
+                }
+
+                case "Integer56": {
+                    try {
+
+                        if (valueToBeChecked < DataTypeRange.Integer56_min
+                                || valueToBeChecked > DataTypeRange.Integer56_max) {
+                            return (label + " is out of range (-36,028,797,018,963,968 to 36,028,797,018,963,967).");
+
+                        } else
+                            return emptyString;
+                    } catch (NumberFormatException e) {
+                        return ("Datatype '" + dataType + " accepts only decimal value");
+                    }
+
+                }
+
+                case "Integer64": {
+                    try {
+
+                        if (valueToBeChecked < DataTypeRange.Integer64_min
+                                || valueToBeChecked > DataTypeRange.Integer64_max) {
+                            return (label
+                                    + " is out of range (-9,223,372,036,854,775,808 to 9,223,372,036,854,775,807).");
+
+                        } else
+                            return emptyString;
+                    } catch (NumberFormatException e) {
+                        return ("Datatype '" + dataType + " accepts only decimal value");
+                    }
+
+                }
+
+                case "Octet_String": {
+                    try {
+
+                        if (valueToBeChecked < DataTypeRange.Unsigned8_min
+                                || valueToBeChecked > DataTypeRange.Unsigned8_max) {
+                            return (label + " is out of range (0 to 255).");
+
+                        } else
+                            return emptyString;
+                    } catch (NumberFormatException e) {
+                        return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
+                    }
+                }
+
+                case "Unicode_String": {
+                    try {
+
+                        if (valueToBeChecked < DataTypeRange.Unsigned16_min
+                                || valueToBeChecked > DataTypeRange.Unsigned16_max) {
+                            return (label + " is out of range (0 to 65,535).");
+
+                        } else
+                            return emptyString;
+                    } catch (NumberFormatException e) {
+                        return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
+                    }
+                }
+
+                case "Time_of_Day": {
+                    try {
+
+                        if (valueToBeChecked < DataTypeRange.Unsigned48_min
+                                || valueToBeChecked > DataTypeRange.Unsigned48_max) {
+                            return (label + " is out of range (0 to 281,474,976,710,655).");
+
+                        } else
+                            return emptyString;
+                    } catch (NumberFormatException e) {
+                        return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
+                    }
+
+                }
+
+                case "Time_Diff": {
+                    try {
+
+                        if (valueToBeChecked < DataTypeRange.Unsigned48_min
+                                || valueToBeChecked > DataTypeRange.Unsigned48_max) {
+                            return (label + " is out of range (0 to 281,474,976,710,655).");
+
+                        } else
+                            return emptyString;
+                    } catch (NumberFormatException e) {
+                        return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
+                    }
+
+                }
+
+                case "Domain": {
+                    try {
+
+                        if (valueToBeChecked < DataTypeRange.Unsigned32_min
+                                || valueToBeChecked > DataTypeRange.Unsigned32_max) {
+                            return (label + " is out of range (0 to 4,294,967,295).");
+
+                        } else
+                            return emptyString;
+                    } catch (NumberFormatException e) {
+                        return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
+                    }
+                }
+
+                case "Unsigned24": {
+                    try {
+
+                        if (valueToBeChecked < DataTypeRange.Unsigned24_min
+                                || valueToBeChecked > DataTypeRange.Unsigned24_max) {
+                            return (label + " is out of range (0 to 16,777,215).");
+
+                        } else
+                            return emptyString;
+                    } catch (NumberFormatException e) {
+                        return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
+                    }
+
+                }
+
+                case "Unsigned40": {
+                    try {
+
+                        if (valueToBeChecked < DataTypeRange.Unsigned40_min
+                                || valueToBeChecked > DataTypeRange.Unsigned40_max) {
+                            return (label + " is out of range (0 to 1,099,511,627,775).");
+
+                        } else
+                            return emptyString;
+                    } catch (NumberFormatException e) {
+                        return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
+                    }
+
+                }
+
+                case "Unsigned48": {
+                    try {
+
+                        if (valueToBeChecked < DataTypeRange.Unsigned48_min
+                                || valueToBeChecked > DataTypeRange.Unsigned48_max) {
+                            return (label + " is out of range (0 to 281,474,976,710,655).");
+
+                        } else
+                            return emptyString;
+                    } catch (NumberFormatException e) {
+                        return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
+                    }
+
+                }
+
+                case "Unsigned56": {
+                    try {
+
+                        if (valueToBeChecked < DataTypeRange.Unsigned56_min
+                                || valueToBeChecked > DataTypeRange.Unsigned56_max) {
+                            return (label + " is out of range (0 to 72,057,594,037,927,935).");
+
+                        } else
+                            return emptyString;
+                    } catch (NumberFormatException e) {
+                        return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
+                    }
+
+                }
+
+                case "Unsigned64": {
+                    try {
+
+                        if (valueToBeChecked < 0 || valueToBeChecked > Long.MAX_VALUE) {
+                            return (label + " out of range (0 to " + Long.MAX_VALUE + ").");
+
+                        } else
+                            return emptyString;
+                    } catch (NumberFormatException e) {
+                        return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
+                    }
+
+                }
+
+                case "MAC_ADDRESS": {
+                    try {
+
+                        if (valueToBeChecked < DataTypeRange.Unsigned48_min
+                                || valueToBeChecked > DataTypeRange.Unsigned48_max) {
+                            return (label + " is out of range (0 to 281,474,976,710,655).");
+
+                        } else
+                            return emptyString;
+                    } catch (NumberFormatException e) {
+                        return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
+                    }
+
+                }
+
+                case "IP_ADDRESS": {
+                    try {
+
+                        if (valueToBeChecked < DataTypeRange.Unsigned32_min
+                                || valueToBeChecked > DataTypeRange.Unsigned32_max) {
+                            return (label + " is out of range (0 to 4,294,967,295).");
+
+                        } else
+                            return emptyString;
+                    } catch (NumberFormatException e) {
+                        return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
+                    }
+                }
+
+                case "NETTIME": {
+                    try {
+
+                        if (valueToBeChecked < 0 || valueToBeChecked > 1) {
+                            return (label + " is out of range (-).");
+
+                        } else
+                            return emptyString;
+                    } catch (NumberFormatException e) {
+                        return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
+                    }
+
+                }
+
+                default:
+                    return emptyString;
+                }
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
+        }
+        return emptyString;
+
     }
 
 }
