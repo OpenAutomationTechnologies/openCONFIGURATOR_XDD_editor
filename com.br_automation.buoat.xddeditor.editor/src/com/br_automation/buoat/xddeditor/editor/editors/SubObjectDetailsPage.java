@@ -120,30 +120,31 @@ public class SubObjectDetailsPage extends EEFAdvancedPropertySection implements 
 
     @Override
     public void selectionChanged(IFormPart part, ISelection selection) {
-        IStructuredSelection sel = (IStructuredSelection) selection;
+        if (selection instanceof IStructuredSelection) {
+            IStructuredSelection sel = (IStructuredSelection) selection;
 
-        SubObjectTypeImpl obj = (SubObjectTypeImpl) sel.getFirstElement();
+            SubObjectTypeImpl obj = (SubObjectTypeImpl) sel.getFirstElement();
 
-        if (obj.getSubIndex() != null) {
-            String index = DatatypeConverter.printHexBinary(obj.getSubIndex());
-            index = "0x" + index;
-            if (subIndexText != null) {
-                subIndexText.setText(index);
+            if (obj.getSubIndex() != null) {
+                String index = DatatypeConverter.printHexBinary(obj.getSubIndex());
+                index = "0x" + index;
+                if (subIndexText != null) {
+                    subIndexText.setText(index);
+                }
+            }
+
+            if (obj.getName() != null) {
+                if (nameText != null) {
+                    nameText.setText(obj.getName());
+                }
+            }
+
+            if (obj.getObjectType() != 0) {
+                if (objTypeText != null) {
+                    objTypeText.setText(String.valueOf(obj.getObjectType()));
+                }
             }
         }
-
-        if (obj.getName() != null) {
-            if (nameText != null) {
-                nameText.setText(obj.getName());
-            }
-        }
-
-        if (obj.getObjectType() != 0) {
-            if (objTypeText != null) {
-                objTypeText.setText(String.valueOf(obj.getObjectType()));
-            }
-        }
-
     }
 
     @Override

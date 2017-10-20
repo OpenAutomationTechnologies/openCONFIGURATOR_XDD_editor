@@ -370,46 +370,53 @@ public class AdvancedFeatureFlagsPropertySection extends AbstractPropertySection
     @Override
     public void setInput(IWorkbenchPart part, ISelection selection) {
         super.setInput(part, selection);
-        Object input = ((IStructuredSelection) selection).getFirstElement();
-        Assert.isTrue(input instanceof TObjectImpl);
-        this.tobject = (TObject) input;
-        if (tobjectComposite != null) {
-            this.tobjectComposite.setObject(this.tobject);
-        }
-        if (lblError != null) {
-            this.lblError.setText(""); //$NON-NLS-1$
-        }
-        if (this.tobject.getDefaultValue() != null)
-            if (lblDefaultValueValue != null) {
-                this.lblDefaultValueValue.setText(this.tobject.getDefaultValue());
+        if (selection instanceof IStructuredSelection) {
+            Object input = ((IStructuredSelection) selection).getFirstElement();
+            Assert.isTrue(input instanceof TObjectImpl);
+            this.tobject = (TObject) input;
+            if (tobjectComposite != null) {
+                this.tobjectComposite.setObject(this.tobject);
             }
-
-        if (this.tobject.getIndex() != null && this.tobject.getDefaultValue() != null) {
-            try {
-                long defaultValue = Integer.decode(this.tobject.getDefaultValue());
-                if ((defaultValue & (1 << 17)) != 0 || defaultValue >= 0x80000)
-                    throw new NumberFormatException(); // Also throw this
-                                                        // exception when a
-                                                        // wrong bit is set or
-                                                        // too long value!
-
-                Set<Entry<Button, Integer>> buttonSet = this.buttonMap.entrySet();
-                for (Entry<Button, Integer> entry : buttonSet) {
-                    int bitOffset = entry.getValue().intValue();
-                    if ((defaultValue & (1 << bitOffset)) != 0) // Check if bit
-                                                                // of button is
-                                                                // set
-                        entry.getKey().setSelection(true); // if yes, set the
-                                                            // selection to true
-                    else
-                        entry.getKey().setSelection(false);
+            if (lblError != null) {
+                this.lblError.setText(""); //$NON-NLS-1$
+            }
+            if (this.tobject.getDefaultValue() != null)
+                if (lblDefaultValueValue != null) {
+                    this.lblDefaultValueValue.setText(this.tobject.getDefaultValue());
                 }
-            } catch (NumberFormatException e) {
-                // Set error-text
-                this.lblError.setText(Messages.general_error_defaultValueInvalid);
-                this.lblError.setForeground(XDDUtilities.getRed(Display.getCurrent()));
-            }
 
+            if (this.tobject.getIndex() != null && this.tobject.getDefaultValue() != null) {
+                try {
+                    long defaultValue = Integer.decode(this.tobject.getDefaultValue());
+                    if ((defaultValue & (1 << 17)) != 0 || defaultValue >= 0x80000)
+                        throw new NumberFormatException(); // Also throw this
+                                                            // exception when a
+                                                            // wrong bit is set
+                                                            // or
+                                                            // too long value!
+
+                    Set<Entry<Button, Integer>> buttonSet = this.buttonMap.entrySet();
+                    for (Entry<Button, Integer> entry : buttonSet) {
+                        int bitOffset = entry.getValue().intValue();
+                        if ((defaultValue & (1 << bitOffset)) != 0) // Check if
+                                                                    // bit
+                                                                    // of button
+                                                                    // is
+                                                                    // set
+                            entry.getKey().setSelection(true); // if yes, set
+                                                                // the
+                                                                // selection to
+                                                                // true
+                        else
+                            entry.getKey().setSelection(false);
+                    }
+                } catch (NumberFormatException e) {
+                    // Set error-text
+                    this.lblError.setText(Messages.general_error_defaultValueInvalid);
+                    this.lblError.setForeground(XDDUtilities.getRed(Display.getCurrent()));
+                }
+
+            }
         }
     } // setInput
 

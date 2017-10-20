@@ -38,7 +38,6 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 
 import com.br_automation.buoat.xddeditor.XDD.DocumentRoot;
-import com.br_automation.buoat.xddeditor.XDD.ISO15745ProfileContainerType;
 import com.br_automation.buoat.xddeditor.XDD.ISO15745ProfileType;
 import com.br_automation.buoat.xddeditor.XDD.IdentityType;
 import com.br_automation.buoat.xddeditor.XDD.ObjectListType;
@@ -376,21 +375,6 @@ public final class ModelLoader {
             ModelLoader.setPResChainingObjects(true, root);
         if (wizardConfigurationPage1.isMultipleASnd())
             ModelLoader.setPResChainingObjects(true, root);
-        return root;
-    }
-
-    /**
-     * @brief Creates empty Standard-Model.
-     * @return An empty model of an XDD-File.
-     */
-    private static DocumentRoot getEmptyModel() {
-        DocumentRoot root = XDDFactory.eINSTANCE.createDocumentRoot();
-        ISO15745ProfileContainerType container = XDDFactory.eINSTANCE.createISO15745ProfileContainerType();
-        ISO15745ProfileType profile = XDDFactory.eINSTANCE.createISO15745ProfileType();
-        root.setISO15745ProfileContainer(container);
-        root.getISO15745ProfileContainer().getISO15745Profile().add(profile);
-        profile.setProfileBody(XDDFactory.eINSTANCE.createProfileBodyCommunicationNetworkPowerlink());
-        profile.setProfileHeader(XDDFactory.eINSTANCE.createProfileHeaderDataType());
         return root;
     }
 

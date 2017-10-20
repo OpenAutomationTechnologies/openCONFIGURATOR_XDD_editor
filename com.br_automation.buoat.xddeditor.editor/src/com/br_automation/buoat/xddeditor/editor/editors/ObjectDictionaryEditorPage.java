@@ -78,7 +78,7 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IPropertyListener;
-import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
@@ -196,7 +196,7 @@ public class ObjectDictionaryEditorPage extends FormPage implements IPropertyLis
      */
     private ScrolledForm form;
 
-    private static DocumentRoot docRoot;
+    private DocumentRoot docRoot;
 
     private TreeViewer listViewer;
 
@@ -413,7 +413,7 @@ public class ObjectDictionaryEditorPage extends FormPage implements IPropertyLis
      * @author Sree Hari Vignesh
      *
      */
-    private static class ObjectDictionaryContentProvider implements ITreeContentProvider {
+    private class ObjectDictionaryContentProvider implements ITreeContentProvider {
 
         public ObjectDictionaryContentProvider() {
         }
@@ -712,10 +712,11 @@ public class ObjectDictionaryEditorPage extends FormPage implements IPropertyLis
                         String index = DatatypeConverter.printHexBinary(obj.getIndex());
                         addSubObjectButton.setEnabled(isSubObjectAdded(index, selectedObject));
                         removeButton.setEnabled(isObjectIndexValid(index));
-                        IViewPart[] viewList = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-                                .getViews();
+                        IViewReference[] viewList = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+                                .getViewReferences();
+
                         boolean isPropertyAvailable = false;
-                        for (IViewPart view : viewList) {
+                        for (IViewReference view : viewList) {
                             if (view instanceof PropertySheet) {
                                 isPropertyAvailable = true;
                             }
@@ -743,7 +744,6 @@ public class ObjectDictionaryEditorPage extends FormPage implements IPropertyLis
                         addSubObjectButton.setEnabled(false);
                         object = (TObjectImpl) subObj.eContainer();
                         String objIndex = DatatypeConverter.printHexBinary(object.getIndex());
-                        String subIndex = DatatypeConverter.printHexBinary(subObj.getSubIndex());
                         if (isObjectIndexValid(objIndex)) {
                             removeButton.setEnabled(true);
                         }

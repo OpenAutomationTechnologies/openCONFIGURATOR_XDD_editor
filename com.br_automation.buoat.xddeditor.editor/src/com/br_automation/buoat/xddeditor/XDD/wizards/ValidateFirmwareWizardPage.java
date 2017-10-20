@@ -34,35 +34,19 @@ package com.br_automation.buoat.xddeditor.XDD.wizards;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.Reader;
 import java.io.StringReader;
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.MessageFormat;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.xml.bind.JAXBException;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.eclipse.emf.ecore.xmi.XMLResource;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.TextViewer;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
@@ -83,16 +67,12 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
+
+import com.br_automation.buoat.xddeditor.XDD.DocumentRoot;
+import com.br_automation.buoat.xddeditor.XDD.custom.FirmwareUtilities;
+import com.br_automation.buoat.xddeditor.editor.editors.DeviceDescriptionFileEditor;
 
 import FwSchema.FirmwareType;
-import FwSchema.util.FwSchemaResourceFactoryImpl;
-import com.br_automation.buoat.xddeditor.XDD.DocumentRoot;
-import com.br_automation.buoat.xddeditor.XDD.TFirmwareList;
-import com.br_automation.buoat.xddeditor.XDD.XDDFactory;
-import com.br_automation.buoat.xddeditor.XDD.custom.FirmwareUtilities;
-import com.br_automation.buoat.xddeditor.XDD.validation.PluginErrorDialogUtils;
-import com.br_automation.buoat.xddeditor.editor.editors.DeviceDescriptionFileEditor;
 
 /**
  * Wizard page to validate the firmware header parameters with XDD file
@@ -118,14 +98,11 @@ public class ValidateFirmwareWizardPage extends WizardPage {
 
     private FwSchema.DocumentRoot firmwareDocumentRoot;
 
-    private static final String WINDOW_TITLE = "Add firmware";
-
     public static final String DIALOG_DESCRIPTION = "Add firmware to device description file.";
     public static final String DIALOG_PAGE_LABEL = "Firmware";
     private static final String FIRMWARE_FILE_LABEL = "Firmware File";
     private static final String DEFAULT_CONFIGURATION_LABEL = "Choose a firmware file";
 
-    private static final String DIALOG_PAGE_NAME = "ValidateFirmwarewizardPage";
     private static final String BROWSE_CONFIGURATION_LABEL = "Browse...";
     private static final String IMPORT_FIRMWARE_FILE_DIALOG_LABEL = "Import firmware file for the device.";
     private static final String ERROR_CHOOSE_VALID_FILE_MESSAGE = "Choose a valid firmware file.";
@@ -142,12 +119,6 @@ public class ValidateFirmwareWizardPage extends WizardPage {
 
     private static final String VENDOR_ID = "vendor ID";
     private static final String PRODUCT_CODE = "product code";
-
-    // Values of XDD object attributes.
-    private static final int XDD_OBJECT_INDEX_TOCHECK = 0x1018;
-    private static final short XDD_SUBOBJECT_INDEX_VENDORID = 1;
-    private static final short XDD_SUBOBJECT_INDEX_PRODUCTCODE = 2;
-    private static final short XDD_SUBOBJECT_INDEX_REVISIONNO = 3;
 
     private static boolean isFirmwareConfigurationValid(final String firmwarePath) {
         boolean retVal = false;
@@ -369,9 +340,13 @@ public class ValidateFirmwareWizardPage extends WizardPage {
                 String firmwareline = StringUtils.EMPTY;
                 int linesInFile = 3;
                 for (int count = 0; count < linesInFile; count++) {
-                    firmwareline += bufferedRdr.readLine();
-                    if (firmwareline.contains("/>")) {
-                        break; // breaks the loop if firmware header is closed
+                    String readLine = bufferedRdr.readLine();
+                    if (readLine != null) {
+                        firmwareline = firmwareline.concat(readLine);
+                        if (firmwareline.contains("/>")) {
+                            break; // breaks the loop if firmware header is
+                                    // closed
+                        }
                     }
                 }
 
@@ -507,7 +482,7 @@ public class ValidateFirmwareWizardPage extends WizardPage {
             return false;
         }
 
-        boolean pageComplete = (super.isPageComplete());
+        boolean pageComplete = true;
 
         if (validateXddModel()) {
             pageComplete = true;

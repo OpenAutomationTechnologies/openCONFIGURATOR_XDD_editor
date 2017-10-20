@@ -56,7 +56,6 @@ public class WizardTemplatePage extends WizardPage {
     private Button cbtnUseConfigurationWizard;
     private Combo cmbTemplate;
     private boolean enableNext;
-    private Button rbtnLoadEmptyXDD;
 
     /**
      * @see WizardTemplatePage#WizardTemplatePage(String)

@@ -34,12 +34,11 @@ package com.br_automation.buoat.xddeditor.editor.editors;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.xml.bind.DatatypeConverter;
 
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -50,12 +49,9 @@ import org.eclipse.emf.ecore.xmi.XMLResource;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -70,13 +66,11 @@ import org.eclipse.ui.forms.IFormPart;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.Section;
-import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 
 import com.br_automation.buoat.xddeditor.XDD.DocumentRoot;
 import com.br_automation.buoat.xddeditor.XDD.TObject;
 import com.br_automation.buoat.xddeditor.XDD.custom.Messages;
 import com.br_automation.buoat.xddeditor.XDD.custom.XDDUtilities;
-import com.br_automation.buoat.xddeditor.XDD.custom.propertypages.AdvancedFeatureFlagsPropertySection;
 import com.br_automation.buoat.xddeditor.XDD.impl.TObjectImpl;
 import com.br_automation.buoat.xddeditor.XDD.resources.IPowerlinkConstants;
 
@@ -184,75 +178,81 @@ public class Index1F82DetailsPage implements IDetailsPage {
 
     @Override
     public void selectionChanged(IFormPart part, ISelection selection) {
-        IStructuredSelection sel = (IStructuredSelection) selection;
-        System.err.println("The object instance.." + sel.getFirstElement());
-        TObjectImpl obj = (TObjectImpl) sel.getFirstElement();
+        if (selection instanceof IStructuredSelection) {
+            IStructuredSelection sel = (IStructuredSelection) selection;
+            TObjectImpl obj = (TObjectImpl) sel.getFirstElement();
 
-        this.tobject = (TObject) obj;
-        if (lblError != null) {
-            this.lblError.setText(""); //$NON-NLS-1$
-        }
-        if (this.tobject.getDefaultValue() != null)
-
-            if (valueOfLblDefaultValue != null) {
-                this.valueOfLblDefaultValue.setText(this.tobject.getDefaultValue().toUpperCase());
+            this.tobject = (TObject) obj;
+            if (lblError != null) {
+                this.lblError.setText(""); //$NON-NLS-1$
             }
+            if (this.tobject.getDefaultValue() != null)
 
-        if (this.tobject.getIndex() != null && this.tobject.getDefaultValue() != null) {
-            try {
-                long defaultValue = Integer.decode(this.tobject.getDefaultValue());
-                if ((defaultValue & (1 << 17)) != 0 || defaultValue >= 0x80000)
-                    throw new NumberFormatException(); // Also throw this
-                                                        // exception when a
-                                                        // wrong bit is set or
-                                                        // too long value!
-
-                Set<Entry<Button, Integer>> buttonSet = this.buttonMap.entrySet();
-                for (Entry<Button, Integer> entry : buttonSet) {
-                    int bitOffset = entry.getValue().intValue();
-                    if ((defaultValue & (1 << bitOffset)) != 0) // Check if bit
-                                                                // of button is
-                                                                // set
-                        entry.getKey().setSelection(true); // if yes, set the
-                                                            // selection to true
-                    else
-                        entry.getKey().setSelection(false);
+                if (valueOfLblDefaultValue != null) {
+                    this.valueOfLblDefaultValue.setText(this.tobject.getDefaultValue().toUpperCase());
                 }
-            } catch (NumberFormatException e) {
-                // Set error-text
-                this.lblError.setText(Messages.general_error_defaultValueInvalid);
-                this.lblError.setForeground(XDDUtilities.getRed(Display.getCurrent()));
-            }
 
-        }
+            if (this.tobject.getIndex() != null && this.tobject.getDefaultValue() != null) {
+                try {
+                    long defaultValue = Integer.decode(this.tobject.getDefaultValue());
+                    if ((defaultValue & (1 << 17)) != 0 || defaultValue >= 0x80000)
+                        throw new NumberFormatException(); // Also throw this
+                                                            // exception when a
+                                                            // wrong bit is set
+                                                            // or
+                                                            // too long value!
 
-        if (obj.getIndex() != null) {
-            String index = DatatypeConverter.printHexBinary(obj.getIndex());
-            index = "0x" + index;
-            if (indexText != null) {
-                indexText.setText(index);
-            }
-        }
-
-        if (obj.getName() != null) {
-            if (nameText != null) {
-                nameText.setText(obj.getName());
-            }
-        }
-
-        if (obj.getObjectType() != 0) {
-            String objectType = String.valueOf(obj.getObjectType());
-            if (objectType.equalsIgnoreCase("7")) {
-                if (objTypeText != null) {
-                    objTypeText.setText("7 - VAR");
+                    Set<Entry<Button, Integer>> buttonSet = this.buttonMap.entrySet();
+                    for (Entry<Button, Integer> entry : buttonSet) {
+                        int bitOffset = entry.getValue().intValue();
+                        if ((defaultValue & (1 << bitOffset)) != 0) // Check if
+                                                                    // bit
+                                                                    // of button
+                                                                    // is
+                                                                    // set
+                            entry.getKey().setSelection(true); // if yes, set
+                                                                // the
+                                                                // selection to
+                                                                // true
+                        else
+                            entry.getKey().setSelection(false);
+                    }
+                } catch (NumberFormatException e) {
+                    // Set error-text
+                    this.lblError.setText(Messages.general_error_defaultValueInvalid);
+                    this.lblError.setForeground(XDDUtilities.getRed(Display.getCurrent()));
                 }
-            } else if (objectType.equalsIgnoreCase("8")) {
-                if (objTypeText != null) {
-                    objTypeText.setText("8 - ARRAY");
+
+            }
+
+            if (obj.getIndex() != null) {
+                String index = DatatypeConverter.printHexBinary(obj.getIndex());
+                index = "0x" + index;
+                if (indexText != null) {
+                    indexText.setText(index);
                 }
-            } else if (objectType.equalsIgnoreCase("9")) {
-                if (objTypeText != null) {
-                    objTypeText.setText("9 - RECORD");
+            }
+
+            if (obj.getName() != null) {
+                if (nameText != null) {
+                    nameText.setText(obj.getName());
+                }
+            }
+
+            if (obj.getObjectType() != 0) {
+                String objectType = String.valueOf(obj.getObjectType());
+                if (objectType.equalsIgnoreCase("7")) {
+                    if (objTypeText != null) {
+                        objTypeText.setText("7 - VAR");
+                    }
+                } else if (objectType.equalsIgnoreCase("8")) {
+                    if (objTypeText != null) {
+                        objTypeText.setText("8 - ARRAY");
+                    }
+                } else if (objectType.equalsIgnoreCase("9")) {
+                    if (objTypeText != null) {
+                        objTypeText.setText("9 - RECORD");
+                    }
                 }
             }
         }
@@ -288,14 +288,15 @@ public class Index1F82DetailsPage implements IDetailsPage {
                         newDefaultValue = newDefaultValue & ~(1 << bitOffset);
                 }
                 tobject.setDefaultValue("0x" //$NON-NLS-1$
-                        + Long.toHexString(newDefaultValue));
+                        + Long.toHexString(newDefaultValue).toUpperCase());
             }
             lblError.setText(""); //$NON-NLS-1$
             Button currentButton = (Button) e.getSource();
             int bitOffset = buttonMap.get(currentButton);
             XDDUtilities.setFeatureFlag(currentButton.getSelection(), bitOffset,
                     (DocumentRoot) EcoreUtil.getRootContainer(tobject));
-            valueOfLblDefaultValue.setText(tobject.getDefaultValue());
+            String defaultValue = tobject.getDefaultValue().substring(2);
+            valueOfLblDefaultValue.setText("0x" + defaultValue.toUpperCase());
             index1F82Object.setDefaultValue(valueOfLblDefaultValue.getText());
             updateDocument(docRoot);
         }
@@ -315,7 +316,6 @@ public class Index1F82DetailsPage implements IDetailsPage {
                 | Section.DESCRIPTION | ExpandableComposite.TWISTIE | ExpandableComposite.TITLE_BAR);
         managedForm.getToolkit().paintBordersFor(index1F82Section);
         index1F82Section.setText(ObjectDictionaryEditorPage.OBJECT_DICTIONARY_DETAILS_HEADING);
-
 
         Composite clientComposite = managedForm.getToolkit().createComposite(index1F82Section, SWT.WRAP);
         GridLayout layouts = new GridLayout(1, true);
@@ -380,11 +380,11 @@ public class Index1F82DetailsPage implements IDetailsPage {
         grpOptionalData.setLayout(new GridLayout(2, false));
 
         // Checkbox-Buttons -------------------------------------------
-        FormData data;
 
         // optionalFlags Label
         Label defaultValueLabel = managedForm.getToolkit().createLabel(grpOptionalData,
                 IPowerlinkConstants.DEFAULT_VALUE);
+        defaultValueLabel.setToolTipText("Default value of object 0x1F82.");
 
         // lblDefaultValue Label
         this.valueOfLblDefaultValue = managedForm.getToolkit().createLabel(grpOptionalData, "      Not found!     ");

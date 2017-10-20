@@ -1970,7 +1970,8 @@ public class XDDFactoryImpl extends EFactoryImpl implements XDDFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public List<String> createAccessListTypeFromString(EDataType eDataType, String initialValue) {
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+    public List<String> createAccessListTypeFromString(EDataType eDataType, String initialValue) {
 		return (List)XMLTypeFactory.eINSTANCE.createFromString(XMLTypePackage.Literals.NMTOKENS, initialValue);
 	}
 
@@ -2101,7 +2102,7 @@ public class XDDFactoryImpl extends EFactoryImpl implements XDDFactory {
 			exception = e;
 		}
 		if (result != null || exception == null) return result;
-    
+
 		throw exception;
 	}
 

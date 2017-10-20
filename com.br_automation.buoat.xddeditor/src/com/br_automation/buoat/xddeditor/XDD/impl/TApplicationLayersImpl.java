@@ -90,7 +90,7 @@ public class TApplicationLayersImpl extends EObjectImpl implements TApplicationL
 	 * @generated
 	 * @ordered
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	protected static final List<String> COMMUNICATION_ENTITY_TYPE_EDEFAULT = (List)XMLTypeFactory.eINSTANCE.createFromString(XMLTypePackage.eINSTANCE.getNMTOKENS(), "slave");
 
 	/**

@@ -29,10 +29,8 @@
 
 package com.br_automation.buoat.xddeditor.XDD.custom;
 
-import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 
@@ -49,13 +47,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.wb.swt.SWTResourceManager;
 
-import com.br_automation.buoat.xddeditor.XDD.ProductNameType;
-import com.br_automation.buoat.xddeditor.XDD.TProductID;
-import com.br_automation.buoat.xddeditor.XDD.TVendorID;
-import com.br_automation.buoat.xddeditor.XDD.TVersion;
-import com.br_automation.buoat.xddeditor.XDD.VendorNameType;
-import com.br_automation.buoat.xddeditor.XDD.VersionTypeType;
-import com.br_automation.buoat.xddeditor.XDD.XDDFactory;
 import com.br_automation.buoat.xddeditor.XDD.validation.NameVerifyListener;
 import com.br_automation.buoat.xddeditor.XDD.wizards.DataTypeRange;
 

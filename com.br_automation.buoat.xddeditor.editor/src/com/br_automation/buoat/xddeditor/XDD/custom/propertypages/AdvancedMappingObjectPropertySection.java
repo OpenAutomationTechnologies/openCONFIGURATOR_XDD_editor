@@ -174,7 +174,7 @@ public class AdvancedMappingObjectPropertySection extends AbstractPropertySectio
         public void focusLost(FocusEvent arg0) {
             Integer length = XDDUtilities.parseInt(AdvancedMappingObjectPropertySection.this.txtLength.getText());
             if (length != null && (length >= 0 && length <= 1490)) {
-                AdvancedMappingObjectPropertySection.this.lengthValue = length.intValue() * 8;
+                AdvancedMappingObjectPropertySection.this.lengthValue = (long) length.intValue() * 8;
                 AdvancedMappingObjectPropertySection.this.setNewDefaultValue();
             } else {
                 AdvancedMappingObjectPropertySection.this.setError(5);
@@ -192,7 +192,7 @@ public class AdvancedMappingObjectPropertySection extends AbstractPropertySectio
             Integer offset = XDDUtilities.parseInt(AdvancedMappingObjectPropertySection.this.txtOffset.getText());
             if (offset != null && (offset >= 0 && offset <= AdvancedMappingObjectPropertySection.MAX_OFFSET_VALUE)) {
                 AdvancedMappingObjectPropertySection.this.setError(0);
-                AdvancedMappingObjectPropertySection.this.offsetValue = offset.intValue() * 8;
+                AdvancedMappingObjectPropertySection.this.offsetValue = (long) offset.intValue() * 8;
                 AdvancedMappingObjectPropertySection.this.setNewDefaultValue();
             } else {
                 AdvancedMappingObjectPropertySection.this.txtOffset.forceFocus();
@@ -405,52 +405,54 @@ public class AdvancedMappingObjectPropertySection extends AbstractPropertySectio
     public void setInput(IWorkbenchPart part, ISelection selection) {
 
         super.setInput(part, selection);
-        Object input = ((IStructuredSelection) selection).getFirstElement();
-        this.tsubObject = (SubObjectType) input;
-        TObject tobject = (TObject) this.tsubObject.eContainer();
-        this.tobjectComposite.setObject(this.tsubObject);
-        this.indexValue = 0;
-        this.subindexValue = 0;
-        this.offsetValue = 0;
-        this.lengthValue = 0;
-        this.setError(0);
+        if (selection instanceof IStructuredSelection) {
+            Object input = ((IStructuredSelection) selection).getFirstElement();
+            this.tsubObject = (SubObjectType) input;
+            TObject tobject = (TObject) this.tsubObject.eContainer();
+            this.tobjectComposite.setObject(this.tsubObject);
+            this.indexValue = 0;
+            this.subindexValue = 0;
+            this.offsetValue = 0;
+            this.lengthValue = 0;
+            this.setError(0);
 
-        if (XDDUtilities.isRPDO(tobject)) {
-            this.validTObjectMapping = XDDUtilities.getValidMappingTypes(TObjectPDOMapping.RPDO);
-            this.lblIndexValue
-                    .setText("0x" + Integer.toHexString(new BigInteger(1, tobject.getIndex()).intValue()).toUpperCase()
-                            + " (Object Mapping - RPDO)"); //$NON-NLS-1$
-        } else {
-            this.validTObjectMapping = XDDUtilities.getValidMappingTypes(TObjectPDOMapping.TPDO);
-            this.lblIndexValue
-                    .setText("0x" + Integer.toHexString(new BigInteger(1, tobject.getIndex()).intValue()).toUpperCase()
-                            + " (Object Mapping - TPDO)"); //$NON-NLS-1$
-        }
-
-        this.cmbIndex.removeAll();
-        this.cmbSubindex.removeAll();
-        this.txtLength.setText(""); //$NON-NLS-1$
-        this.txtOffset.setText("0"); //$NON-NLS-1$
-        this.validTObjects = XDDUtilities.getMappingObjects(
-                (DocumentRoot) EcoreUtil.getRootContainer((EObject) tobject), this.validTObjectMapping);
-
-        for (Entry<Integer, TObject> entry : this.validTObjects.entrySet()) {
-            this.cmbIndex.setData(entry.getValue().getName(), entry.getValue());
-            this.cmbIndex.add(entry.getValue().getName());
-        }
-
-        if (this.cmbIndex.getItemCount() > 0)
-            this.cmbIndex.addSelectionListener(this.indexListener);
-
-        if (this.tsubObject.getDefaultValue() != null)
-            try {
-                this.lblDefaultValueValue.setText(this.tsubObject.getDefaultValue());
-                this.defaultValue = Long.decode(this.tsubObject.getDefaultValue());
-                if (this.defaultValue != 0)
-                    this.parseDefaultParameter(this.defaultValue);
-            } catch (NumberFormatException e) {
-                this.setError(9);
+            if (XDDUtilities.isRPDO(tobject)) {
+                this.validTObjectMapping = XDDUtilities.getValidMappingTypes(TObjectPDOMapping.RPDO);
+                this.lblIndexValue.setText(
+                        "0x" + Integer.toHexString(new BigInteger(1, tobject.getIndex()).intValue()).toUpperCase()
+                                + " (Object Mapping - RPDO)"); //$NON-NLS-1$
+            } else {
+                this.validTObjectMapping = XDDUtilities.getValidMappingTypes(TObjectPDOMapping.TPDO);
+                this.lblIndexValue.setText(
+                        "0x" + Integer.toHexString(new BigInteger(1, tobject.getIndex()).intValue()).toUpperCase()
+                                + " (Object Mapping - TPDO)"); //$NON-NLS-1$
             }
+
+            this.cmbIndex.removeAll();
+            this.cmbSubindex.removeAll();
+            this.txtLength.setText(""); //$NON-NLS-1$
+            this.txtOffset.setText("0"); //$NON-NLS-1$
+            this.validTObjects = XDDUtilities.getMappingObjects(
+                    (DocumentRoot) EcoreUtil.getRootContainer((EObject) tobject), this.validTObjectMapping);
+
+            for (Entry<Integer, TObject> entry : this.validTObjects.entrySet()) {
+                this.cmbIndex.setData(entry.getValue().getName(), entry.getValue());
+                this.cmbIndex.add(entry.getValue().getName());
+            }
+
+            if (this.cmbIndex.getItemCount() > 0)
+                this.cmbIndex.addSelectionListener(this.indexListener);
+
+            if (this.tsubObject.getDefaultValue() != null)
+                try {
+                    this.lblDefaultValueValue.setText(this.tsubObject.getDefaultValue());
+                    this.defaultValue = Long.decode(this.tsubObject.getDefaultValue());
+                    if (this.defaultValue != 0)
+                        this.parseDefaultParameter(this.defaultValue);
+                } catch (NumberFormatException e) {
+                    this.setError(9);
+                }
+        }
     } // setInput
 
     /**

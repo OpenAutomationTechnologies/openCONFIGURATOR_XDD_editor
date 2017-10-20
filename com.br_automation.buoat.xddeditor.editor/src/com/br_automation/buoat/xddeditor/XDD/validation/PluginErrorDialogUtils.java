@@ -31,10 +31,6 @@
 
 package com.br_automation.buoat.xddeditor.XDD.validation;
 
-import org.eclipse.core.internal.runtime.Activator;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
@@ -53,24 +49,6 @@ import org.eclipse.ui.PlatformUI;
 public final class PluginErrorDialogUtils {
 
     public static final String INTERNAL_ERROR_MESSAGE = "An internal error occurred";
-
-    /**
-     * Displays an error dialog with a given error-message.
-     *
-     * @param errorMessage
-     *            Error message to be shown in the dialog.
-     * @param exception
-     *            Exception instance if any, can be null.
-     * @return the code of the button that was pressed that resulted in this
-     *         dialog closing. This will be Dialog.OK if the OK button was
-     *         pressed, or Dialog.CANCEL if this dialog's close window
-     *         decoration or the ESC key was used.
-     */
-    public static int displayErrorMessageDialog(final String errorMessage, final Throwable exception) {
-        IStatus errorStatus = new Status(IStatus.ERROR, Activator.PLUGIN_ID, 1, errorMessage, exception);
-        return ErrorDialog.openError(Display.getDefault().getActiveShell(),
-                PluginErrorDialogUtils.INTERNAL_ERROR_MESSAGE, null, errorStatus);
-    }
 
     /**
      * @return Return the active editor reference.

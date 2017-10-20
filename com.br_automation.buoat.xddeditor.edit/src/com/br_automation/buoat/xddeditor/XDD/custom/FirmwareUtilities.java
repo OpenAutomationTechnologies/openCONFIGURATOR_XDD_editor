@@ -43,7 +43,6 @@ import org.eclipse.emf.ecore.xmi.XMLResource;
 
 import FwSchema.DocumentRoot;
 import FwSchema.util.FwSchemaResourceFactoryImpl;
-import com.br_automation.buoat.xddeditor.XDD.util.XDDResourceFactoryImpl;
 
 /**
  * Class to load the firmware file from the file system and updates the model

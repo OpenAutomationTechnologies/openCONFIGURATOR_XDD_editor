@@ -127,7 +127,7 @@ public class NewSubObjectWizard extends Wizard {
                                     DatatypeConverter.parseHexBinary(addSubObjectWizardPage.getDataType("Unsigned8")));
                         }
 
-                        if (addSubObjectWizardPage.getSubIndex() != null) {
+                        if (addSubObjectWizardPage.getSubIndex() != new byte[0]) {
                             subObj.setSubIndex(DatatypeConverter.parseHexBinary("00"));
                         }
 
@@ -162,7 +162,7 @@ public class NewSubObjectWizard extends Wizard {
                 subObj.setLowLimit(addSubObjectWizardPage.getLowLimit());
             }
 
-            if (addSubObjectWizardPage.getSubIndex() != null) {
+            if (addSubObjectWizardPage.getSubIndex() != new byte[0]) {
                 subObj.setSubIndex(addSubObjectWizardPage.getSubIndex());
             }
 

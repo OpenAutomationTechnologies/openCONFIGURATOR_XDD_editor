@@ -215,7 +215,9 @@ public class TObjectComposite extends Composite {
         } else {
             this.isTObject = false;
             this.txtIndex.setTextLimit(2);
+            if(object instanceof SubObjectType) {
             this.subobject = (SubObjectType) object;
+            }
             this.lblindex.setText("Subindex:"); //$NON-NLS-1$
 
             if (this.subobject.getSubIndex() != null) {

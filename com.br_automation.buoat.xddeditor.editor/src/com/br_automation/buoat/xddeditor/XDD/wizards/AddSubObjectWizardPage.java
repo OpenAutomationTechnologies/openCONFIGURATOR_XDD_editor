@@ -353,7 +353,7 @@ public class AddSubObjectWizardPage extends WizardPage {
         public void modifyText(ModifyEvent e) {
             setErrorMessage(null);
             setPageComplete(true);
-            if (subDataType == DATA_TYPE_LIST[0]) {
+            if (subDataType.equalsIgnoreCase(DATA_TYPE_LIST[0])) {
                 txtLowLimit.setEnabled(false);
             } else {
                 subLowLimit = txtLowLimit.getText();
@@ -399,7 +399,7 @@ public class AddSubObjectWizardPage extends WizardPage {
         public void modifyText(ModifyEvent e) {
             setErrorMessage(null);
             setPageComplete(true);
-            if (subDataType == DATA_TYPE_LIST[0]) {
+            if (subDataType.equalsIgnoreCase(DATA_TYPE_LIST[0])) {
                 txtHighLimit.setEnabled(false);
             } else {
                 subHighLimit = txtHighLimit.getText();
@@ -449,7 +449,7 @@ public class AddSubObjectWizardPage extends WizardPage {
         public void modifyText(ModifyEvent e) {
             setErrorMessage(null);
             setPageComplete(true);
-            if (subDataType == "Boolean") {
+            if (subDataType.equalsIgnoreCase("Boolean")) {
                 txtDefaultValue.setEnabled(false);
             } else {
                 subDefaultValue = txtDefaultValue.getText();
@@ -741,7 +741,10 @@ public class AddSubObjectWizardPage extends WizardPage {
                 if (value.contains("0x")) {
                     value = value.substring(2);
                     Integer val = Integer.parseInt(value, 16);
-                    if (val < 0 && val < 255) {
+                    if (val < 0) {
+                        return false;
+                    }
+                    if (val < 255) {
                         return false;
                     }
                 }
@@ -757,7 +760,7 @@ public class AddSubObjectWizardPage extends WizardPage {
     @Override
     public boolean isPageComplete() {
 
-        boolean pageComplete = (super.isPageComplete());
+        boolean pageComplete = true;
 
         if (validateObjectModel()) {
             pageComplete = true;
@@ -1033,6 +1036,7 @@ public class AddSubObjectWizardPage extends WizardPage {
         return true;
     }
 
+    @SuppressWarnings("unchecked")
     public static <T extends EObject> List<T> findESubObjects(TObjectImpl root, EClass eClass) {
         EObjectCondition condition = new EObjectTypeRelationCondition(eClass);
         SELECT statement = new SELECT(new FROM(root.eContents()), new WHERE(condition));
@@ -1065,7 +1069,7 @@ public class AddSubObjectWizardPage extends WizardPage {
 
             }
         }
-        return null;
+        return new byte[0];
     }
 
 } // AddSubObjectWizardPage

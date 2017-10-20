@@ -117,41 +117,42 @@ public class ObjectDetailsPage implements IDetailsPage {
 
     @Override
     public void selectionChanged(IFormPart part, ISelection selection) {
-        IStructuredSelection sel = (IStructuredSelection) selection;
+        if (selection instanceof IStructuredSelection) {
+            IStructuredSelection sel = (IStructuredSelection) selection;
 
-        TObjectImpl obj = (TObjectImpl) sel.getFirstElement();
+            TObjectImpl obj = (TObjectImpl) sel.getFirstElement();
 
-        if (obj.getIndex() != null) {
-            String index = DatatypeConverter.printHexBinary(obj.getIndex());
-            index = "0x" + index;
-            if (indexText != null) {
-                indexText.setText(index);
-            }
-        }
-
-        if (obj.getName() != null) {
-            if (nameText != null) {
-                nameText.setText(obj.getName());
-            }
-        }
-
-        if (obj.getObjectType() != 0) {
-            String objectType = String.valueOf(obj.getObjectType());
-            if (objectType.equalsIgnoreCase("7")) {
-                if (objTypeText != null) {
-                    objTypeText.setText(IPowerlinkConstants.OBJECT_TYPES[0]);
-                }
-            } else if (objectType.equalsIgnoreCase("8")) {
-                if (objTypeText != null) {
-                    objTypeText.setText(IPowerlinkConstants.OBJECT_TYPES[1]);
-                }
-            } else if (objectType.equalsIgnoreCase("9")) {
-                if (objTypeText != null) {
-                    objTypeText.setText(IPowerlinkConstants.OBJECT_TYPES[2]);
+            if (obj.getIndex() != null) {
+                String index = DatatypeConverter.printHexBinary(obj.getIndex());
+                index = "0x" + index;
+                if (indexText != null) {
+                    indexText.setText(index);
                 }
             }
-        }
 
+            if (obj.getName() != null) {
+                if (nameText != null) {
+                    nameText.setText(obj.getName());
+                }
+            }
+
+            if (obj.getObjectType() != 0) {
+                String objectType = String.valueOf(obj.getObjectType());
+                if (objectType.equalsIgnoreCase("7")) {
+                    if (objTypeText != null) {
+                        objTypeText.setText(IPowerlinkConstants.OBJECT_TYPES[0]);
+                    }
+                } else if (objectType.equalsIgnoreCase("8")) {
+                    if (objTypeText != null) {
+                        objTypeText.setText(IPowerlinkConstants.OBJECT_TYPES[1]);
+                    }
+                } else if (objectType.equalsIgnoreCase("9")) {
+                    if (objTypeText != null) {
+                        objTypeText.setText(IPowerlinkConstants.OBJECT_TYPES[2]);
+                    }
+                }
+            }
+        }
     }
 
     @Override

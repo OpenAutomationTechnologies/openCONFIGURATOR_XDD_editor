@@ -159,14 +159,6 @@
       </propertySections>
    </extension>
    <extension
-         point="org.eclipse.ui.views">
-      <view
-            class="com.br_automation.buoat.xddeditor.editor.editors.View"
-            id="com.br_automation.buoat.xddeditor.editor.editors.View"
-            name="New ViewPart">
-      </view>
-   </extension>
-   <extension
          point="org.eclipse.ui.navigator.viewer">
       <viewerActionBinding
             viewerId="com.br_automation.buoat.xddeditor.editor.viewerActionBinding">

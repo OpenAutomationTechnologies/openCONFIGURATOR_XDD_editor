@@ -47,11 +47,8 @@ import org.eclipse.emf.eef.runtime.ui.properties.sections.EEFAdvancedPropertySec
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -66,19 +63,13 @@ import org.eclipse.ui.forms.IFormPart;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.Section;
-import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.wb.swt.SWTResourceManager;
 
 import com.br_automation.buoat.xddeditor.XDD.DocumentRoot;
-import com.br_automation.buoat.xddeditor.XDD.SubObjectType;
 import com.br_automation.buoat.xddeditor.XDD.TObject;
 import com.br_automation.buoat.xddeditor.XDD.custom.Messages;
 import com.br_automation.buoat.xddeditor.XDD.custom.XDDUtilities;
-import com.br_automation.buoat.xddeditor.XDD.custom.propertypages.AdvancedStoreParamPropertySection;
-import com.br_automation.buoat.xddeditor.XDD.custom.propertypages.TObjectComposite;
-
 import com.br_automation.buoat.xddeditor.XDD.impl.SubObjectTypeImpl;
-import com.br_automation.buoat.xddeditor.XDD.provider.SubObjectTypeItemProvider;
 import com.br_automation.buoat.xddeditor.XDD.resources.IPowerlinkConstants;
 
 /**
@@ -163,37 +154,38 @@ public class StoreParamSubObjectDetailsPage extends EEFAdvancedPropertySection i
 
     @Override
     public void selectionChanged(IFormPart part, ISelection selection) {
-        IStructuredSelection sel = (IStructuredSelection) selection;
+        if (selection instanceof IStructuredSelection) {
+            IStructuredSelection sel = (IStructuredSelection) selection;
 
-        SubObjectTypeImpl obj = (SubObjectTypeImpl) sel.getFirstElement();
+            SubObjectTypeImpl obj = (SubObjectTypeImpl) sel.getFirstElement();
 
-        subObject = (SubObjectTypeImpl) obj;
-        tobject = (TObject) subObject.eContainer();
+            subObject = (SubObjectTypeImpl) obj;
+            tobject = (TObject) subObject.eContainer();
 
-        if (lblIndexValue != null) {
-            this.lblIndexValue.setText("0x1010 (" + tobject.getName() + ")"); //$NON-NLS-1$
-        }
+            if (lblIndexValue != null) {
+                this.lblIndexValue.setText("0x1010 (" + tobject.getName() + ")"); //$NON-NLS-1$
+            }
 
-        if (obj.getSubIndex() != null) {
-            String index = DatatypeConverter.printHexBinary(obj.getSubIndex());
-            index = "0x" + index;
-            if (subIndexText != null) {
-                subIndexText.setText(index);
+            if (obj.getSubIndex() != null) {
+                String index = DatatypeConverter.printHexBinary(obj.getSubIndex());
+                index = "0x" + index;
+                if (subIndexText != null) {
+                    subIndexText.setText(index);
+                }
+            }
+
+            if (obj.getName() != null) {
+                if (nameText != null) {
+                    nameText.setText(obj.getName());
+                }
+            }
+
+            if (obj.getObjectType() != 0) {
+                if (objTypeText != null) {
+                    objTypeText.setText(String.valueOf(obj.getObjectType()));
+                }
             }
         }
-
-        if (obj.getName() != null) {
-            if (nameText != null) {
-                nameText.setText(obj.getName());
-            }
-        }
-
-        if (obj.getObjectType() != 0) {
-            if (objTypeText != null) {
-                objTypeText.setText(String.valueOf(obj.getObjectType()));
-            }
-        }
-
     }
 
     /**
@@ -210,9 +202,6 @@ public class StoreParamSubObjectDetailsPage extends EEFAdvancedPropertySection i
         private final Button btnCmdSave;
         private final Button btnNoSave;
         private final Label lblError;
-        private Label lblsubObjectDefaultValue;
-        private SubObjectType subobject;
-        private SubObjectTypeItemProvider subobjectItemProvider;
 
         /**
          * @brief Constructs the StoreParam-Composite
@@ -286,7 +275,7 @@ public class StoreParamSubObjectDetailsPage extends EEFAdvancedPropertySection i
             this.lblError.setVisible(false);
             subObject.setDefaultValue(("0x" + String.format(String.format("%08x", settedValue))));
             updateDocument(docRoot);
-            valueOfLabelDefaultValue.setText(this.subobject.getDefaultValue());
+            valueOfLabelDefaultValue.setText(subObject.getDefaultValue());
         }
 
         public boolean updateDocument(DocumentRoot documentRoot) {
@@ -317,60 +306,6 @@ public class StoreParamSubObjectDetailsPage extends EEFAdvancedPropertySection i
             return false;
         }
 
-        /**
-         * @brief Sets the SubObject for the Composite
-         * @param subobjecttype
-         *            The subobject of the input.
-         * @param provider
-         *            ItemProvider of subobject to set a new default value.
-         * @param lblDefaultValue
-         *            The label displaying the actual default value in the
-         *            PropertySection.
-         */
-        private void setSubObject(final SubObjectType subobjecttype, final SubObjectTypeItemProvider provider,
-                final Label lblDefaultValue) {
-            this.subobject = subobjecttype;
-            this.lblError.setVisible(false);
-            this.subobjectItemProvider = provider;
-            this.lblsubObjectDefaultValue = lblDefaultValue;
-            int storageType;
-            try {
-                if (this.subobject.getDefaultValue() != null && !this.subobject.getDefaultValue().isEmpty()) {
-
-                    storageType = Integer.decode(this.subobject.getDefaultValue()); // Get
-                                                                                    // 2
-                                                                                    // LSB
-                    this.lblsubObjectDefaultValue.setText(this.subobject.getDefaultValue());
-                } else
-                    storageType = 0;
-
-                switch (storageType) {
-                case 2:
-                    this.btnAutoSave.setSelection(true);
-                    this.btnCmdSave.setSelection(false);
-                    this.btnNoSave.setSelection(false);
-                    break;
-                case 1:
-                    this.btnCmdSave.setSelection(true);
-                    this.btnNoSave.setSelection(false);
-                    this.btnAutoSave.setSelection(false);
-                    break;
-                case 0:
-                    this.btnNoSave.setSelection(true);
-                    this.btnCmdSave.setSelection(false);
-                    this.btnAutoSave.setSelection(false);
-                    break;
-                default:
-                    this.lblError.setVisible(true);
-                    this.btnNoSave.setSelection(false);
-                    this.btnCmdSave.setSelection(false);
-                    this.btnAutoSave.setSelection(false);
-                }
-            } catch (NumberFormatException e) {
-                lblDefaultValue.setText(Messages.general_error_defaultValueInvalid);
-                lblDefaultValue.setForeground(XDDUtilities.getRed(Display.getCurrent()));
-            }
-        }
     }
 
     @Override

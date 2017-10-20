@@ -260,7 +260,7 @@ public class MappingObjectDetailsPage extends EEFAdvancedPropertySection impleme
             Integer offset = XDDUtilities.parseInt(txtOffset.getText());
             if (offset != null && (offset >= 0 && offset <= AdvancedMappingObjectPropertySection.MAX_OFFSET_VALUE)) {
                 setError(0);
-                offsetValue = offset.intValue() * 8;
+                offsetValue = (long) offset.intValue() * 8;
                 setNewDefaultValue();
             } else {
                 txtOffset.forceFocus();
@@ -281,7 +281,7 @@ public class MappingObjectDetailsPage extends EEFAdvancedPropertySection impleme
         this.lblError.setText("");
         subObject.setDefaultValue(newValue);
         updateDocument(docRoot);
-
+        System.err.println("new Default value..." + newValue);
         this.lblDefaultValueValue.setText(newValue);
 
     } // setDefaultValue
@@ -479,66 +479,67 @@ public class MappingObjectDetailsPage extends EEFAdvancedPropertySection impleme
 
     @Override
     public void selectionChanged(IFormPart part, ISelection selection) {
-        IStructuredSelection sel = (IStructuredSelection) selection;
+        if (selection instanceof IStructuredSelection) {
+            IStructuredSelection sel = (IStructuredSelection) selection;
 
-        SubObjectTypeImpl obj = (SubObjectTypeImpl) sel.getFirstElement();
+            SubObjectTypeImpl obj = (SubObjectTypeImpl) sel.getFirstElement();
 
-        this.tsubObject = (SubObjectType) obj;
-        TObject tobject = (TObject) this.tsubObject.eContainer();
+            this.tsubObject = (SubObjectType) obj;
+            TObject tobject = (TObject) this.tsubObject.eContainer();
 
-        this.indexValue = 0;
-        this.subindexValue = 0;
-        this.offsetValue = 0;
-        this.lengthValue = 0;
-        this.setError(0);
+            this.indexValue = 0;
+            this.subindexValue = 0;
+            this.offsetValue = 0;
+            this.lengthValue = 0;
+            this.setError(0);
 
-        if (XDDUtilities.isRPDO(tobject)) {
-            this.validTObjectMapping = XDDUtilities.getValidMappingTypes(TObjectPDOMapping.RPDO);
+            if (XDDUtilities.isRPDO(tobject)) {
+                this.validTObjectMapping = XDDUtilities.getValidMappingTypes(TObjectPDOMapping.RPDO);
 
-        } else {
-            this.validTObjectMapping = XDDUtilities.getValidMappingTypes(TObjectPDOMapping.TPDO);
+            } else {
+                this.validTObjectMapping = XDDUtilities.getValidMappingTypes(TObjectPDOMapping.TPDO);
 
-        }
-
-        this.cmbIndex.removeAll();
-        this.cmbSubindex.removeAll();
-        this.txtLength.setText(""); //$NON-NLS-1$
-        this.txtOffset.setText("0"); //$NON-NLS-1$
-        this.validTObjects = XDDUtilities.getMappingObjects(
-                (DocumentRoot) EcoreUtil.getRootContainer((EObject) tobject), this.validTObjectMapping);
-
-        for (Entry<Integer, TObject> entry : this.validTObjects.entrySet()) {
-            this.cmbIndex.setData(entry.getValue().getName(), entry.getValue());
-            this.cmbIndex.add(entry.getValue().getName());
-        }
-
-        if (this.cmbIndex.getItemCount() > 0)
-            this.cmbIndex.addSelectionListener(this.indexListener);
-
-        if (this.tsubObject.getDefaultValue() != null)
-            try {
-                this.lblDefaultValueValue.setText(this.tsubObject.getDefaultValue());
-                this.defaultValue = Long.decode(this.tsubObject.getDefaultValue());
-                if (this.defaultValue != 0)
-                    this.parseDefaultParameter(this.defaultValue);
-            } catch (NumberFormatException e) {
-                this.setError(9);
             }
 
-        if (obj.getSubIndex() != null) {
-            String index = DatatypeConverter.printHexBinary(obj.getSubIndex());
-            index = "0x" + index;
-            subIndexText.setText(index);
-        }
+            this.cmbIndex.removeAll();
+            this.cmbSubindex.removeAll();
+            this.txtLength.setText(""); //$NON-NLS-1$
+            this.txtOffset.setText("0"); //$NON-NLS-1$
+            this.validTObjects = XDDUtilities.getMappingObjects(
+                    (DocumentRoot) EcoreUtil.getRootContainer((EObject) tobject), this.validTObjectMapping);
 
-        if (obj.getName() != null) {
-            nameText.setText(obj.getName());
-        }
+            for (Entry<Integer, TObject> entry : this.validTObjects.entrySet()) {
+                this.cmbIndex.setData(entry.getValue().getName(), entry.getValue());
+                this.cmbIndex.add(entry.getValue().getName());
+            }
 
-        if (obj.getObjectType() != 0) {
-            objTypeText.setText(String.valueOf(obj.getObjectType()));
-        }
+            if (this.cmbIndex.getItemCount() > 0)
+                this.cmbIndex.addSelectionListener(this.indexListener);
 
+            if (this.tsubObject.getDefaultValue() != null)
+                try {
+                    this.lblDefaultValueValue.setText(this.tsubObject.getDefaultValue());
+                    this.defaultValue = Long.decode(this.tsubObject.getDefaultValue());
+                    if (this.defaultValue != 0)
+                        this.parseDefaultParameter(this.defaultValue);
+                } catch (NumberFormatException e) {
+                    this.setError(9);
+                }
+
+            if (obj.getSubIndex() != null) {
+                String index = DatatypeConverter.printHexBinary(obj.getSubIndex());
+                index = "0x" + index;
+                subIndexText.setText(index);
+            }
+
+            if (obj.getName() != null) {
+                nameText.setText(obj.getName());
+            }
+
+            if (obj.getObjectType() != 0) {
+                objTypeText.setText(String.valueOf(obj.getObjectType()));
+            }
+        }
     }
 
     @Override
@@ -612,7 +613,7 @@ public class MappingObjectDetailsPage extends EEFAdvancedPropertySection impleme
         GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1);
         gridData.widthHint = 558;
         grpOptionalData.setLayoutData(gridData);
-        grpOptionalData.setText(IPowerlinkConstants.DEFAULT_VALUE);
+        grpOptionalData.setText(IPowerlinkConstants.OPTIONAL_GROUP);
         grpOptionalData.setLayout(new GridLayout(2, false));
 
         // lblDefaultvalue
@@ -632,25 +633,29 @@ public class MappingObjectDetailsPage extends EEFAdvancedPropertySection impleme
                 Messages.advancedMappingObjectPropertySection_lbl_MO_Index);
         lblMOIndex.setToolTipText("Index of Mapping Object"); //$NON-NLS-1$
 
-        lblMOIndex.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+        // lblMOIndex.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false,
+        // false, 1, 1));
 
         this.cmbIndex = new Combo(grpOptionalData, SWT.READ_ONLY);
         this.cmbIndex.setToolTipText(Messages.advancedMappingObjectPropertySection_help_Index_combobox);
 
-        this.cmbIndex.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+        // this.cmbIndex.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false,
+        // false, 1, 1));
         this.cmbIndex.removeAll();
 
         // SubindexLabel
         Label lblSubindex = managedForm.getToolkit().createLabel(grpOptionalData,
                 Messages.advancedMappingObjectPropertySection_lbl_MO_Subindex);
-        lblSubindex.setToolTipText("Subindex of Subobject"); //$NON-NLS-1$
+        lblSubindex.setToolTipText("Subindex of Sub-object"); //$NON-NLS-1$
 
-        lblSubindex.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+        // lblSubindex.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false,
+        // false, 1, 1));
 
         this.cmbSubindex = new Combo(grpOptionalData, SWT.READ_ONLY);
         this.cmbSubindex.setToolTipText(Messages.advancedMappingObjectPropertySection_help_subindex_combobox);
 
-        this.cmbSubindex.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+        // this.cmbSubindex.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER,
+        // false, false, 1, 1));
         this.cmbSubindex.removeAll();
         this.cmbSubindex.setEnabled(false);
         this.cmbSubindex.setBackground(XDDUtilities.getGrey(this.device));
@@ -658,26 +663,31 @@ public class MappingObjectDetailsPage extends EEFAdvancedPropertySection impleme
         // OffsetLabel
         Label lbloffset = managedForm.getToolkit().createLabel(grpOptionalData,
                 Messages.advancedMappingObjectPropertySection_lbl_Offset);
+        lbloffset.setToolTipText(Messages.advancedMappingObjectPropertySection_lbl_Offset);
+        // lbloffset.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false,
+        // false, 1, 1));
 
-        lbloffset.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+        this.txtOffset = new Text(grpOptionalData, SWT.BORDER);
 
-        this.txtOffset = managedForm.getToolkit().createText(grpOptionalData, ""); //$NON-NLS-1$
-
-        this.txtOffset.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+        // this.txtOffset.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER,
+        // false, false, 1, 1));
         this.txtOffset.addFocusListener(this.offsetListener);
 
         // Lengthlabel
         Label lbllength = managedForm.getToolkit().createLabel(grpOptionalData,
                 Messages.advancedMappingObjectPropertySection_lbl_Length);
+        lbllength.setToolTipText(Messages.advancedMappingObjectPropertySection_lbl_Length);
 
-        lbllength.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+        // lbllength.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false,
+        // false, 1, 1));
 
         // Combobox / Textboxen
 
-        // Textbox Lenght
-        this.txtLength = managedForm.getToolkit().createText(grpOptionalData, ""); //$NON-NLS-1$
+        // Textbox Length
+        this.txtLength = new Text(grpOptionalData, SWT.BORDER);
 
-        this.txtLength.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+        // this.txtLength.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER,
+        // false, false, 1, 1));
         this.txtLength.addFocusListener(this.lengthListener);
 
         // Errorlabel
@@ -697,7 +707,7 @@ public class MappingObjectDetailsPage extends EEFAdvancedPropertySection impleme
         public void focusLost(FocusEvent arg0) {
             Integer length = XDDUtilities.parseInt(txtLength.getText());
             if (length != null && (length >= 0 && length <= 1490)) {
-                lengthValue = length.intValue() * 8;
+                lengthValue = (long) length.intValue() * 8;
                 setNewDefaultValue();
             } else {
                 setError(5);

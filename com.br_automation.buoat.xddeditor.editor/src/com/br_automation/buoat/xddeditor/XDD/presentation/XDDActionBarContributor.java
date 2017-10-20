@@ -6,36 +6,27 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import org.eclipse.emf.common.ui.viewer.IViewerProvider;
-
-import org.eclipse.emf.edit.domain.EditingDomain;
-import org.eclipse.emf.edit.domain.IEditingDomainProvider;
-
 import org.eclipse.emf.edit.ui.action.ControlAction;
 import org.eclipse.emf.edit.ui.action.CreateChildAction;
 import org.eclipse.emf.edit.ui.action.CreateSiblingAction;
 import org.eclipse.emf.edit.ui.action.EditingDomainActionBarContributor;
 import org.eclipse.emf.edit.ui.action.LoadResourceAction;
 import org.eclipse.emf.edit.ui.action.ValidateAction;
-
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IContributionManager;
-import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.SubContributionItem;
-
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.Viewer;
-
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PartInitException;
 
@@ -233,19 +224,11 @@ public class XDDActionBarContributor extends EditingDomainActionBarContributor i
 
         // Query the new selection for appropriate new child/sibling descriptors
 
-        Collection<?> newChildDescriptors = null;
-        Collection<?> newSiblingDescriptors = null;
-
         ISelection selection = event.getSelection();
-        if (selection instanceof IStructuredSelection && ((IStructuredSelection) selection).size() == 1) {
-            Object object = ((IStructuredSelection) selection).getFirstElement();
-
-        }
 
         // Generate actions for selection; populate and redraw the menus.
-        //
-        createChildActions = generateCreateChildActions(newChildDescriptors, selection);
-        createSiblingActions = generateCreateSiblingActions(newSiblingDescriptors, selection);
+        createChildActions = generateCreateChildActions(null, selection);
+        createSiblingActions = generateCreateSiblingActions(null, selection);
 
         if (createChildMenuManager != null) {
             populateManager(createChildMenuManager, createChildActions, null);

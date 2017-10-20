@@ -113,59 +113,66 @@ public class AbstractObjectPropertySource {
     protected static final String[] ACCESS_TYPE_LIST = { "Constant", "Read only", "Write only", "Read/Write", "" };
 
     private static final String[] YES_NO = { "Yes", "No" };
-    protected PropertyDescriptor objectIdDescriptor = new PropertyDescriptor(OBJ_INDEX_ID, OBJ_INDEX_LABEL);
-    protected TextPropertyDescriptor editableobjectIdDescriptor = new TextPropertyDescriptor(OBJ_INDEX_EDITABLE_ID,
+    protected static final PropertyDescriptor objectIdDescriptor = new PropertyDescriptor(OBJ_INDEX_ID,
             OBJ_INDEX_LABEL);
-    protected PropertyDescriptor nameDescriptor = new PropertyDescriptor(OBJ_NAME_ID, OBJ_NAME_LABEL);
-    protected PropertyDescriptor objectTypeDescriptor = new PropertyDescriptor(OBJ_TYPE_ID, OBJ_TYPE_LABEL);
-    protected PropertyDescriptor dataTypeDescriptor = new PropertyDescriptor(OBJ_DATATYPE_ID, OBJ_DATATYPE_LABEL);
-    protected PropertyDescriptor lowLimitDescriptor = new PropertyDescriptor(OBJ_LOW_LIMIT_ID, OBJ_LOW_LIMIT_LABEL);
-    protected PropertyDescriptor highLimitDescriptor = new PropertyDescriptor(OBJ_HIGH_LIMIT_ID, OBJ_HIGH_LIMIT_LABEL);
-    protected PropertyDescriptor accessTypeDescriptor = new PropertyDescriptor(OBJ_ACCESS_TYPE_ID,
+    protected static final TextPropertyDescriptor editableobjectIdDescriptor = new TextPropertyDescriptor(
+            OBJ_INDEX_EDITABLE_ID, OBJ_INDEX_LABEL);
+    protected static final PropertyDescriptor nameDescriptor = new PropertyDescriptor(OBJ_NAME_ID, OBJ_NAME_LABEL);
+    protected static final PropertyDescriptor objectTypeDescriptor = new PropertyDescriptor(OBJ_TYPE_ID,
+            OBJ_TYPE_LABEL);
+    protected static final PropertyDescriptor dataTypeDescriptor = new PropertyDescriptor(OBJ_DATATYPE_ID,
+            OBJ_DATATYPE_LABEL);
+    protected static final PropertyDescriptor lowLimitDescriptor = new PropertyDescriptor(OBJ_LOW_LIMIT_ID,
+            OBJ_LOW_LIMIT_LABEL);
+    protected static final PropertyDescriptor highLimitDescriptor = new PropertyDescriptor(OBJ_HIGH_LIMIT_ID,
+            OBJ_HIGH_LIMIT_LABEL);
+    protected static final PropertyDescriptor accessTypeDescriptor = new PropertyDescriptor(OBJ_ACCESS_TYPE_ID,
             OBJ_ACCESS_TYPE_LABEL);
 
     protected static final String INVALID_DATA_TYPE_VALUE = "Invalid value for data type {0}.";
 
-    protected PropertyDescriptor defaultValueDescriptor = new PropertyDescriptor(OBJ_DEFAULT_VALUE_ID,
+    protected static final PropertyDescriptor defaultValueDescriptor = new PropertyDescriptor(OBJ_DEFAULT_VALUE_ID,
             OBJ_DEFAULT_VALUE_LABEL);
-    protected PropertyDescriptor actualValueReadOnlyDescriptor = new PropertyDescriptor(OBJ_ACTUAL_VALUE_READ_ONLY_ID,
-            OBJ_ACTUAL_VALUE_LABEL);
-    protected TextPropertyDescriptor actualValueEditableDescriptor = new TextPropertyDescriptor(
+    protected static final PropertyDescriptor actualValueReadOnlyDescriptor = new PropertyDescriptor(
+            OBJ_ACTUAL_VALUE_READ_ONLY_ID, OBJ_ACTUAL_VALUE_LABEL);
+    protected static final TextPropertyDescriptor actualValueEditableDescriptor = new TextPropertyDescriptor(
             OBJ_ACTUAL_VALUE_EDITABLE_ID, OBJ_ACTUAL_VALUE_LABEL);
 
-    protected ComboBoxPropertyDescriptor forceActualValue = new ComboBoxPropertyDescriptor(OBJ_FORCE_ACTUAL_VALUE_ID,
-            OBJ_FORCE_ACTUAL_VALUE_LABEL, YES_NO);
-    protected PropertyDescriptor denotationDescriptor = new PropertyDescriptor(OBJ_DENOTATION_ID, OBJ_DENOTATION_LABEL);
-    protected PropertyDescriptor pdoMappingDescriptor = new PropertyDescriptor(OBJ_PDO_MAPPING_ID,
+    protected static final ComboBoxPropertyDescriptor forceActualValue = new ComboBoxPropertyDescriptor(
+            OBJ_FORCE_ACTUAL_VALUE_ID, OBJ_FORCE_ACTUAL_VALUE_LABEL, YES_NO);
+    protected static final PropertyDescriptor denotationDescriptor = new PropertyDescriptor(OBJ_DENOTATION_ID,
+            OBJ_DENOTATION_LABEL);
+    protected static final PropertyDescriptor pdoMappingDescriptor = new PropertyDescriptor(OBJ_PDO_MAPPING_ID,
             OBJ_PDO_MAPPING_LABEL);
-    protected PropertyDescriptor objFlagsDescriptor = new PropertyDescriptor(OBJ_OBJFLAGS_ID, OBJ_OBJFLAGS_LABEL);
-    protected PropertyDescriptor uniqueIDRefDescriptor = new PropertyDescriptor(OBJ_UNIQUEIDREF_ID,
+    protected static final PropertyDescriptor objFlagsDescriptor = new PropertyDescriptor(OBJ_OBJFLAGS_ID,
+            OBJ_OBJFLAGS_LABEL);
+    protected static final PropertyDescriptor uniqueIDRefDescriptor = new PropertyDescriptor(OBJ_UNIQUEIDREF_ID,
             OBJ_UNIQUEIDREF_LABEL);
 
-    protected PropertyDescriptor objectErrorDescriptor = new PropertyDescriptor(OBJ_ERROR_ID, "Error");
+    protected static final PropertyDescriptor objectErrorDescriptor = new PropertyDescriptor(OBJ_ERROR_ID, "Error");
 
-    protected TextPropertyDescriptor editNameDescriptor = new TextPropertyDescriptor(OBJ_NAME_EDITABLE_ID,
+    protected static final TextPropertyDescriptor editNameDescriptor = new TextPropertyDescriptor(OBJ_NAME_EDITABLE_ID,
             OBJ_NAME_LABEL);
-    protected ComboBoxPropertyDescriptor editObjectTypeDescriptor = new ComboBoxPropertyDescriptor(OBJ_TYPE_EDITABLE_ID,
-            OBJ_TYPE_LABEL, OBJECT_TYPES);
-    protected ComboBoxPropertyDescriptor editDataTypeDescriptor = new ComboBoxPropertyDescriptor(
+    protected static final ComboBoxPropertyDescriptor editObjectTypeDescriptor = new ComboBoxPropertyDescriptor(
+            OBJ_TYPE_EDITABLE_ID, OBJ_TYPE_LABEL, OBJECT_TYPES);
+    protected static final ComboBoxPropertyDescriptor editDataTypeDescriptor = new ComboBoxPropertyDescriptor(
             OBJ_DATATYPE_EDITABLE_ID, OBJ_DATATYPE_LABEL, DATA_TYPE_LIST);
-    protected TextPropertyDescriptor editLowLimitDescriptor = new TextPropertyDescriptor(OBJ_LOW_LIMIT_EDITABLE_ID,
-            OBJ_LOW_LIMIT_LABEL);
-    protected TextPropertyDescriptor editHighLimitDescriptor = new TextPropertyDescriptor(OBJ_HIGH_LIMIT_EDITABLE_ID,
-            OBJ_HIGH_LIMIT_LABEL);
-    protected ComboBoxPropertyDescriptor editAccessTypeDescriptor = new ComboBoxPropertyDescriptor(
+    protected static final TextPropertyDescriptor editLowLimitDescriptor = new TextPropertyDescriptor(
+            OBJ_LOW_LIMIT_EDITABLE_ID, OBJ_LOW_LIMIT_LABEL);
+    protected static final TextPropertyDescriptor editHighLimitDescriptor = new TextPropertyDescriptor(
+            OBJ_HIGH_LIMIT_EDITABLE_ID, OBJ_HIGH_LIMIT_LABEL);
+    protected static final ComboBoxPropertyDescriptor editAccessTypeDescriptor = new ComboBoxPropertyDescriptor(
             OBJ_ACCESS_TYPE_EDITABLE_ID, OBJ_ACCESS_TYPE_LABEL, ACCESS_TYPE_LIST);
 
-    protected TextPropertyDescriptor editDefaultValueDescriptor = new TextPropertyDescriptor(
+    protected static final TextPropertyDescriptor editDefaultValueDescriptor = new TextPropertyDescriptor(
             OBJ_DEFAULT_VALUE_EDITABLE_ID, OBJ_DEFAULT_VALUE_LABEL);
 
-    protected TextPropertyDescriptor editDenotationDescriptor = new TextPropertyDescriptor(OBJ_DENOTATION_EDITABLE_ID,
-            OBJ_DENOTATION_LABEL);
-    protected ComboBoxPropertyDescriptor editPdoMappingDescriptor = new ComboBoxPropertyDescriptor(
+    protected static final TextPropertyDescriptor editDenotationDescriptor = new TextPropertyDescriptor(
+            OBJ_DENOTATION_EDITABLE_ID, OBJ_DENOTATION_LABEL);
+    protected static final ComboBoxPropertyDescriptor editPdoMappingDescriptor = new ComboBoxPropertyDescriptor(
             OBJ_PDO_MAPPING_EDITABLE_ID, OBJ_PDO_MAPPING_LABEL, PDO_MAPPING_TYPES);
-    protected TextPropertyDescriptor editbjFlagsDescriptor = new TextPropertyDescriptor(OBJ_OBJFLAGS_EDITABLE_ID,
-            OBJ_OBJFLAGS_LABEL);
+    protected static final TextPropertyDescriptor editbjFlagsDescriptor = new TextPropertyDescriptor(
+            OBJ_OBJFLAGS_EDITABLE_ID, OBJ_OBJFLAGS_LABEL);
 
     public DeviceDescriptionFileEditor getEditor() {
         return editor;
@@ -177,429 +184,303 @@ public class AbstractObjectPropertySource {
 
     public static long getValueToBeChecked(String value, String dataType) {
         long valueToBeChecked;
-
-        if (value.contains("0x")) {
-            value = value.substring(2);
-            valueToBeChecked = Long.parseLong(value, 16);
-        } else {
-            valueToBeChecked = Long.parseLong(value);
+        switch (dataType) {
+        case "Visible_String":
+        case "Octet_String":
+        case "Unicode_String":
+        case "Time_of_Day":
+        case "Time_Diff":
+        case "Real32":
+        case "Real64":
+        case "MAC_ADDRESS":
+        case "IP_ADDRESS":
+        case "NETTIME": {
+            return 0;
         }
-        return valueToBeChecked;
+        default: {
+            if (value.contains("0x")) {
+                value = value.substring(2);
+                valueToBeChecked = Long.parseLong(value, 16);
+            } else {
+                valueToBeChecked = Long.parseLong(value);
+            }
+            return valueToBeChecked;
+        }
+        }
+
     }
 
     public static String isValidVal(String value, String label, String dataType) {
         String emptyString = StringUtils.EMPTY;
-        try {
-            if (!value.isEmpty()) {
 
-                long valueToBeChecked = getValueToBeChecked(value, dataType);
+        if (!value.isEmpty()) {
+            long valueToBeChecked;
+            try {
+                valueToBeChecked = getValueToBeChecked(value, dataType);
+            } catch (Exception e) {
+                return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
+            }
+            switch (dataType) {
+            case "Boolean": {
+                try {
 
-                switch (dataType) {
-                case "Boolean": {
-                    try {
-                        if (valueToBeChecked < DataTypeRange.Boolean_min
-                                || valueToBeChecked > DataTypeRange.Boolean_max) {
-                            return label + " is out of range (0 to 1).";
-                        } else {
-                            return emptyString;
-                        }
-                    } catch (NumberFormatException e) {
-                        e.printStackTrace();
-                        return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
+                    if (valueToBeChecked < DataTypeRange.Boolean_min || valueToBeChecked > DataTypeRange.Boolean_max) {
+                        return label + " is out of range (0 to 1).";
+                    } else {
+                        return emptyString;
                     }
-                }
-                case "Integer8": {
-                    try {
-                        if (valueToBeChecked < DataTypeRange.Integer8_min
-                                || valueToBeChecked > DataTypeRange.Integer8_max) {
-                            return (label + " is out of range (-256 to 255).");
-                        } else {
-                            return emptyString;
-                        }
-                    } catch (NumberFormatException e) {
-                        return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
-                    }
-                }
-                case "Integer16": {
-                    try {
-                        if (valueToBeChecked < DataTypeRange.Integer16_min
-                                || valueToBeChecked > DataTypeRange.Integer16_max) {
-                            return (label + " is out of range (-65,536 to 65,535 ).");
-
-                        } else
-                            return emptyString;
-                    } catch (NumberFormatException e) {
-                        return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
-                    }
-                }
-                case "Integer32": {
-                    try {
-
-                        if (valueToBeChecked < DataTypeRange.Integer32_min
-                                || valueToBeChecked > DataTypeRange.Integer32_max) {
-                            return (label + " is out of range (-4,294,967,296 to 4,294,967,295).");
-
-                        } else
-                            return emptyString;
-                    } catch (NumberFormatException e) {
-                        return ("Datatype '" + dataType + " accepts only decimal value");
-                    }
-                }
-
-                case "Unsigned8": {
-                    try {
-                        if (valueToBeChecked < DataTypeRange.Unsigned8_min
-                                || valueToBeChecked > DataTypeRange.Unsigned8_max) {
-                            return (label + " is out of range (0 to 255).");
-
-                        } else
-                            return emptyString;
-                    } catch (NumberFormatException e) {
-                        return ("Datatype '" + dataType + " accepts only decimal value");
-                    }
-                }
-                case "Unsigned16": {
-                    try {
-
-                        if (valueToBeChecked < DataTypeRange.Unsigned16_min
-                                || valueToBeChecked > DataTypeRange.Unsigned16_max) {
-                            return (label + " is out of range (0 to 65,535).");
-
-                        } else
-                            return emptyString;
-                    } catch (NumberFormatException e) {
-                        return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
-                    }
-                }
-                case "Unsigned32": {
-                    try {
-
-                        if (valueToBeChecked < DataTypeRange.Unsigned32_min
-                                || valueToBeChecked > DataTypeRange.Unsigned32_max) {
-                            return (label + " is out of range (0 to 4,294,967,295).");
-
-                        } else
-                            return emptyString;
-                    } catch (NumberFormatException e) {
-                        return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
-                    }
-                }
-
-                case "Real32": {
-                    try {
-                        Double limit = Double.parseDouble(value);
-                        if (limit < DataTypeRange.Real32_min || limit > DataTypeRange.Real32_max) {
-                            return (label + " is out of range (1.2E-38 to 3.4E+38).");
-
-                        } else
-                            return emptyString;
-                    } catch (NumberFormatException e) {
-                        return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
-                    }
-                }
-
-                case "Real64": {
-                    try {
-                        Double limit = Double.parseDouble(value);
-                        if (limit < DataTypeRange.Real64_min || limit > DataTypeRange.Real64_max) {
-                            return (label + " is out of range (2.3E-308 to 1.7E+308).");
-
-                        } else
-                            return emptyString;
-                    } catch (NumberFormatException e) {
-                        return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
-                    }
-
-                }
-
-                case "Visible_String": {
-                    try {
-
-                        if (valueToBeChecked < DataTypeRange.Unsigned16_min
-                                || valueToBeChecked > DataTypeRange.Unsigned16_max) {
-                            return (label + " is out of range (0 to 65,535).");
-
-                        } else
-                            return emptyString;
-                    } catch (NumberFormatException e) {
-                        return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
-                    }
-
-                }
-
-                case "Integer24": {
-                    try {
-
-                        if (valueToBeChecked < DataTypeRange.Integer24_min
-                                || valueToBeChecked > DataTypeRange.Integer24_max) {
-                            return (label + " is out of range (8,388,608 to 8,388,607).");
-
-                        } else
-                            return emptyString;
-                    } catch (NumberFormatException e) {
-                        return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
-                    }
-
-                }
-
-                case "Integer40": {
-                    try {
-
-                        if (valueToBeChecked < DataTypeRange.Integer40_min
-                                || valueToBeChecked > DataTypeRange.Integer40_max) {
-                            return (label + " is out of range (-549,755,813,888 to 549,755,813,887).");
-
-                        } else
-                            return emptyString;
-                    } catch (NumberFormatException e) {
-                        return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
-                    }
-
-                }
-
-                case "Integer48": {
-                    try {
-
-                        if (valueToBeChecked < DataTypeRange.Integer48_min
-                                || valueToBeChecked > DataTypeRange.Integer48_max) {
-                            return (label + " is out of range (-140,737,488,355,328 to 140,737,488,355,327).");
-
-                        } else
-                            return emptyString;
-                    } catch (NumberFormatException e) {
-                        return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
-                    }
-
-                }
-
-                case "Integer56": {
-                    try {
-
-                        if (valueToBeChecked < DataTypeRange.Integer56_min
-                                || valueToBeChecked > DataTypeRange.Integer56_max) {
-                            return (label + " is out of range (-36,028,797,018,963,968 to 36,028,797,018,963,967).");
-
-                        } else
-                            return emptyString;
-                    } catch (NumberFormatException e) {
-                        return ("Datatype '" + dataType + " accepts only decimal value");
-                    }
-
-                }
-
-                case "Integer64": {
-                    try {
-
-                        if (valueToBeChecked < DataTypeRange.Integer64_min
-                                || valueToBeChecked > DataTypeRange.Integer64_max) {
-                            return (label
-                                    + " is out of range (-9,223,372,036,854,775,808 to 9,223,372,036,854,775,807).");
-
-                        } else
-                            return emptyString;
-                    } catch (NumberFormatException e) {
-                        return ("Datatype '" + dataType + " accepts only decimal value");
-                    }
-
-                }
-
-                case "Octet_String": {
-                    try {
-
-                        if (valueToBeChecked < DataTypeRange.Unsigned8_min
-                                || valueToBeChecked > DataTypeRange.Unsigned8_max) {
-                            return (label + " is out of range (0 to 255).");
-
-                        } else
-                            return emptyString;
-                    } catch (NumberFormatException e) {
-                        return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
-                    }
-                }
-
-                case "Unicode_String": {
-                    try {
-
-                        if (valueToBeChecked < DataTypeRange.Unsigned16_min
-                                || valueToBeChecked > DataTypeRange.Unsigned16_max) {
-                            return (label + " is out of range (0 to 65,535).");
-
-                        } else
-                            return emptyString;
-                    } catch (NumberFormatException e) {
-                        return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
-                    }
-                }
-
-                case "Time_of_Day": {
-                    try {
-
-                        if (valueToBeChecked < DataTypeRange.Unsigned48_min
-                                || valueToBeChecked > DataTypeRange.Unsigned48_max) {
-                            return (label + " is out of range (0 to 281,474,976,710,655).");
-
-                        } else
-                            return emptyString;
-                    } catch (NumberFormatException e) {
-                        return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
-                    }
-
-                }
-
-                case "Time_Diff": {
-                    try {
-
-                        if (valueToBeChecked < DataTypeRange.Unsigned48_min
-                                || valueToBeChecked > DataTypeRange.Unsigned48_max) {
-                            return (label + " is out of range (0 to 281,474,976,710,655).");
-
-                        } else
-                            return emptyString;
-                    } catch (NumberFormatException e) {
-                        return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
-                    }
-
-                }
-
-                case "Domain": {
-                    try {
-
-                        if (valueToBeChecked < DataTypeRange.Unsigned32_min
-                                || valueToBeChecked > DataTypeRange.Unsigned32_max) {
-                            return (label + " is out of range (0 to 4,294,967,295).");
-
-                        } else
-                            return emptyString;
-                    } catch (NumberFormatException e) {
-                        return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
-                    }
-                }
-
-                case "Unsigned24": {
-                    try {
-
-                        if (valueToBeChecked < DataTypeRange.Unsigned24_min
-                                || valueToBeChecked > DataTypeRange.Unsigned24_max) {
-                            return (label + " is out of range (0 to 16,777,215).");
-
-                        } else
-                            return emptyString;
-                    } catch (NumberFormatException e) {
-                        return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
-                    }
-
-                }
-
-                case "Unsigned40": {
-                    try {
-
-                        if (valueToBeChecked < DataTypeRange.Unsigned40_min
-                                || valueToBeChecked > DataTypeRange.Unsigned40_max) {
-                            return (label + " is out of range (0 to 1,099,511,627,775).");
-
-                        } else
-                            return emptyString;
-                    } catch (NumberFormatException e) {
-                        return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
-                    }
-
-                }
-
-                case "Unsigned48": {
-                    try {
-
-                        if (valueToBeChecked < DataTypeRange.Unsigned48_min
-                                || valueToBeChecked > DataTypeRange.Unsigned48_max) {
-                            return (label + " is out of range (0 to 281,474,976,710,655).");
-
-                        } else
-                            return emptyString;
-                    } catch (NumberFormatException e) {
-                        return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
-                    }
-
-                }
-
-                case "Unsigned56": {
-                    try {
-
-                        if (valueToBeChecked < DataTypeRange.Unsigned56_min
-                                || valueToBeChecked > DataTypeRange.Unsigned56_max) {
-                            return (label + " is out of range (0 to 72,057,594,037,927,935).");
-
-                        } else
-                            return emptyString;
-                    } catch (NumberFormatException e) {
-                        return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
-                    }
-
-                }
-
-                case "Unsigned64": {
-                    try {
-
-                        if (valueToBeChecked < 0 || valueToBeChecked > Long.MAX_VALUE) {
-                            return (label + " out of range (0 to " + Long.MAX_VALUE + ").");
-
-                        } else
-                            return emptyString;
-                    } catch (NumberFormatException e) {
-                        return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
-                    }
-
-                }
-
-                case "MAC_ADDRESS": {
-                    try {
-
-                        if (valueToBeChecked < DataTypeRange.Unsigned48_min
-                                || valueToBeChecked > DataTypeRange.Unsigned48_max) {
-                            return (label + " is out of range (0 to 281,474,976,710,655).");
-
-                        } else
-                            return emptyString;
-                    } catch (NumberFormatException e) {
-                        return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
-                    }
-
-                }
-
-                case "IP_ADDRESS": {
-                    try {
-
-                        if (valueToBeChecked < DataTypeRange.Unsigned32_min
-                                || valueToBeChecked > DataTypeRange.Unsigned32_max) {
-                            return (label + " is out of range (0 to 4,294,967,295).");
-
-                        } else
-                            return emptyString;
-                    } catch (NumberFormatException e) {
-                        return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
-                    }
-                }
-
-                case "NETTIME": {
-                    try {
-
-                        if (valueToBeChecked < 0 || valueToBeChecked > 1) {
-                            return (label + " is out of range (-).");
-
-                        } else
-                            return emptyString;
-                    } catch (NumberFormatException e) {
-                        return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
-                    }
-
-                }
-
-                default:
-                    return emptyString;
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                    return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
                 }
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
+            case "Integer8": {
+                try {
+
+                    if (valueToBeChecked < DataTypeRange.Integer8_min
+                            || valueToBeChecked > DataTypeRange.Integer8_max) {
+                        return (label + " is out of range (-256 to 255).");
+                    } else {
+                        return emptyString;
+                    }
+                } catch (NumberFormatException e) {
+                    return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
+                }
+            }
+            case "Integer16": {
+                try {
+
+                    if (valueToBeChecked < DataTypeRange.Integer16_min
+                            || valueToBeChecked > DataTypeRange.Integer16_max) {
+                        return (label + " is out of range (-65,536 to 65,535 ).");
+
+                    } else
+                        return emptyString;
+                } catch (NumberFormatException e) {
+                    return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
+                }
+            }
+            case "Integer32": {
+                try {
+
+                    if (valueToBeChecked < DataTypeRange.Integer32_min
+                            || valueToBeChecked > DataTypeRange.Integer32_max) {
+                        return (label + " is out of range (-4,294,967,296 to 4,294,967,295).");
+
+                    } else
+                        return emptyString;
+                } catch (NumberFormatException e) {
+                    return ("Datatype '" + dataType + " accepts only decimal value");
+                }
+            }
+
+            case "Unsigned8": {
+                try {
+
+                    if (valueToBeChecked < DataTypeRange.Unsigned8_min
+                            || valueToBeChecked > DataTypeRange.Unsigned8_max) {
+                        return (label + " is out of range (0 to 255).");
+
+                    } else
+                        return emptyString;
+                } catch (NumberFormatException e) {
+                    return ("Datatype '" + dataType + " accepts only decimal value");
+                }
+            }
+            case "Unsigned16": {
+                try {
+
+                    if (valueToBeChecked < DataTypeRange.Unsigned16_min
+                            || valueToBeChecked > DataTypeRange.Unsigned16_max) {
+                        return (label + " is out of range (0 to 65,535).");
+
+                    } else
+                        return emptyString;
+                } catch (NumberFormatException e) {
+                    return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
+                }
+            }
+            case "Unsigned32": {
+                try {
+
+                    if (valueToBeChecked < DataTypeRange.Unsigned32_min
+                            || valueToBeChecked > DataTypeRange.Unsigned32_max) {
+                        return (label + " is out of range (0 to 4,294,967,295).");
+
+                    } else
+                        return emptyString;
+                } catch (NumberFormatException e) {
+                    return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
+                }
+            }
+
+            case "Integer24": {
+                try {
+
+                    if (valueToBeChecked < DataTypeRange.Integer24_min
+                            || valueToBeChecked > DataTypeRange.Integer24_max) {
+                        return (label + " is out of range (8,388,608 to 8,388,607).");
+
+                    } else
+                        return emptyString;
+                } catch (NumberFormatException e) {
+                    return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
+                }
+
+            }
+
+            case "Integer40": {
+                try {
+                    if (valueToBeChecked < DataTypeRange.Integer40_min
+                            || valueToBeChecked > DataTypeRange.Integer40_max) {
+                        return (label + " is out of range (-549,755,813,888 to 549,755,813,887).");
+
+                    } else
+                        return emptyString;
+                } catch (NumberFormatException e) {
+                    return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
+                }
+
+            }
+
+            case "Integer48": {
+                try {
+
+                    if (valueToBeChecked < DataTypeRange.Integer48_min
+                            || valueToBeChecked > DataTypeRange.Integer48_max) {
+                        return (label + " is out of range (-140,737,488,355,328 to 140,737,488,355,327).");
+
+                    } else
+                        return emptyString;
+                } catch (NumberFormatException e) {
+                    return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
+                }
+
+            }
+
+            case "Integer56": {
+                try {
+
+                    if (valueToBeChecked < DataTypeRange.Integer56_min
+                            || valueToBeChecked > DataTypeRange.Integer56_max) {
+                        return (label + " is out of range (-36,028,797,018,963,968 to 36,028,797,018,963,967).");
+
+                    } else
+                        return emptyString;
+                } catch (NumberFormatException e) {
+                    return ("Datatype '" + dataType + " accepts only decimal value");
+                }
+
+            }
+
+            case "Integer64": {
+                try {
+
+                    if (valueToBeChecked <= DataTypeRange.Integer64_min
+                            || valueToBeChecked >= DataTypeRange.Integer64_max) {
+                        return (label + " is out of range (-9,223,372,036,854,775,808 to 9,223,372,036,854,775,807).");
+
+                    } else
+                        return emptyString;
+                } catch (NumberFormatException e) {
+                    return ("Datatype '" + dataType + " accepts only decimal value");
+                }
+
+            }
+
+            case "Unsigned24": {
+                try {
+
+                    if (valueToBeChecked < DataTypeRange.Unsigned24_min
+                            || valueToBeChecked > DataTypeRange.Unsigned24_max) {
+                        return (label + " is out of range (0 to 16,777,215).");
+
+                    } else
+                        return emptyString;
+                } catch (NumberFormatException e) {
+                    return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
+                }
+
+            }
+
+            case "Unsigned40": {
+                try {
+
+                    if (valueToBeChecked < DataTypeRange.Unsigned40_min
+                            || valueToBeChecked > DataTypeRange.Unsigned40_max) {
+                        return (label + " is out of range (0 to 1,099,511,627,775).");
+
+                    } else
+                        return emptyString;
+                } catch (NumberFormatException e) {
+                    return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
+                }
+
+            }
+
+            case "Unsigned48": {
+                try {
+
+                    if (valueToBeChecked < DataTypeRange.Unsigned48_min
+                            || valueToBeChecked > DataTypeRange.Unsigned48_max) {
+                        return (label + " is out of range (0 to 281,474,976,710,655).");
+
+                    } else
+                        return emptyString;
+                } catch (NumberFormatException e) {
+                    return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
+                }
+
+            }
+
+            case "Unsigned56": {
+                try {
+
+                    if (valueToBeChecked < DataTypeRange.Unsigned56_min
+                            || valueToBeChecked > DataTypeRange.Unsigned56_max) {
+                        return (label + " is out of range (0 to 72,057,594,037,927,935).");
+
+                    } else
+                        return emptyString;
+                } catch (NumberFormatException e) {
+                    return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
+                }
+
+            }
+
+            case "Unsigned64": {
+                try {
+
+                    if (valueToBeChecked < 0 || valueToBeChecked >= Long.MAX_VALUE) {
+                        return (label + " out of range (0 to " + Long.MAX_VALUE + ").");
+
+                    } else
+                        return emptyString;
+                } catch (NumberFormatException e) {
+                    return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
+                }
+
+            }
+
+            case "Domain": {
+                try {
+
+                    if (valueToBeChecked < DataTypeRange.Unsigned32_min
+                            || valueToBeChecked > DataTypeRange.Unsigned32_max) {
+                        return (label + " is out of range (0 to 4,294,967,295).");
+
+                    } else
+                        return emptyString;
+                } catch (NumberFormatException e) {
+                    return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
+                }
+            }
+
+            default:
+                return emptyString;
+            }
         }
+
         return emptyString;
 
     }

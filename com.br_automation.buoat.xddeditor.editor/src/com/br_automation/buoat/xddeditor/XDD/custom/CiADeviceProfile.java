@@ -39,7 +39,7 @@ public enum CiADeviceProfile {
     CIA401(401, "CiA 401", "Generic I/O Modules"), CIA402(402, "CiA 402", "Drives and Motion Control"), CIA404(404,
             "CiA 404", "Measuring devices and Closed Loop Controllers"), CIA405(405, "CiA 405",
                     "IEC 61131-3 Programmable Devices"), CIA406(406, "CiA 406", "Rotating and Linear Encoders"), CIA408(
-                            408, "CiA 408", "Hydraulic Drives and Proportional Valves"), CIA410(401, "CiA 410",
+                            408, "CiA 408", "Hydraulic Drives and Proportional Valves"), CIA410(410, "CiA 410",
                                     "Inclinometers"), CIA412(412, "CiA 412", "Medical Devices"), CIA413(413, "CiA 413",
                                             "Truck Gateways"), CIA414(414, "CiA 414",
                                                     "Yarn Feeding Units (Weaving Machines)"), CIA415(415, "CiA 415",

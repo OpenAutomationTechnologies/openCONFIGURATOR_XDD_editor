@@ -56,6 +56,7 @@ public class ObjectAdapterFactory extends AbstractObjectPropertySource implement
      */
     private SubObjectPropertySource subObjectPropertySource;
 
+    @SuppressWarnings("unchecked")
     @Override
     public Object getAdapter(final Object adaptableObject, @SuppressWarnings("rawtypes") Class adapterType) {
         if (adapterType == IPropertySource.class) {

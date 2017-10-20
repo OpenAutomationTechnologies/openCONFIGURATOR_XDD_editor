@@ -668,7 +668,7 @@ public class AddObjectWizardPage extends WizardPage {
     @Override
     public boolean isPageComplete() {
 
-        boolean pageComplete = (super.isPageComplete());
+        boolean pageComplete = true;
 
         if (validateObjectModel()) {
             pageComplete = true;

@@ -47,13 +47,10 @@ import org.eclipse.emf.ecore.xmi.XMLResource;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
@@ -68,7 +65,6 @@ import org.eclipse.ui.forms.IFormPart;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.Section;
-import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 
 import com.br_automation.buoat.xddeditor.XDD.DocumentRoot;
 import com.br_automation.buoat.xddeditor.XDD.TObject;
@@ -76,7 +72,6 @@ import com.br_automation.buoat.xddeditor.XDD.custom.CiADeviceProfile;
 import com.br_automation.buoat.xddeditor.XDD.custom.Messages;
 import com.br_automation.buoat.xddeditor.XDD.custom.XDDUtilities;
 import com.br_automation.buoat.xddeditor.XDD.custom.XDDUtilities.RegexVerifyListener;
-import com.br_automation.buoat.xddeditor.XDD.custom.propertypages.AdvancedDeviceTypePropertySection;
 import com.br_automation.buoat.xddeditor.XDD.impl.TObjectImpl;
 import com.br_automation.buoat.xddeditor.XDD.resources.IPowerlinkConstants;
 
@@ -206,7 +201,7 @@ public class Index1000DetailsPage implements IDetailsPage {
     private void setDefaultValue() {
         Long newDefaultValue = (this.additionalInfoValue) + this.profileValue;
         String defaultHexValue = Long.toHexString(newDefaultValue);
-        index1000Object.setDefaultValue(defaultHexValue.toUpperCase());
+        index1000Object.setDefaultValue("0x" + defaultHexValue.toUpperCase());
         updateDocument(docRoot);
         this.lblDefaultValueValue.setText(index1000Object.getDefaultValue());
     }
@@ -223,64 +218,64 @@ public class Index1000DetailsPage implements IDetailsPage {
 
     @Override
     public void selectionChanged(IFormPart part, ISelection selection) {
-        IStructuredSelection sel = (IStructuredSelection) selection;
-        System.err.println("The object instance.." + sel.getFirstElement());
-        TObjectImpl obj = (TObjectImpl) sel.getFirstElement();
+        if (selection instanceof IStructuredSelection) {
+            IStructuredSelection sel = (IStructuredSelection) selection;
+            TObjectImpl obj = (TObjectImpl) sel.getFirstElement();
 
-        this.tobject = (TObject) obj;
-        this.lblError.setText(""); //$NON-NLS-1$
+            this.tobject = (TObject) obj;
+            this.lblError.setText(""); //$NON-NLS-1$
 
-        if (this.tobject.getDefaultValue() != null && this.tobject.getDefaultValue().length() > 0) {
-            try {
-                this.lblDefaultValueValue.setText(this.tobject.getDefaultValue());
-                this.profileValue = Long.decode(this.tobject.getDefaultValue()) & this.maskLSB; // get
-                                                                                                // 16
-                                                                                                // LSB
-                this.additionalInfoValue = Long.decode(this.tobject.getDefaultValue()) & this.maskMSB;
+            if (this.tobject.getDefaultValue() != null && this.tobject.getDefaultValue().length() > 0) {
+                try {
+                    this.lblDefaultValueValue.setText(this.tobject.getDefaultValue());
+                    this.profileValue = Long.decode(this.tobject.getDefaultValue()) & this.maskLSB; // get
+                                                                                                    // 16
+                                                                                                    // LSB
+                    this.additionalInfoValue = Long.decode(this.tobject.getDefaultValue()) & this.maskMSB;
 
-                this.txtAdditionalInfo.setText(String.format("%04x", this.additionalInfoValue) //$NON-NLS-1$
-                        .toUpperCase());
-                this.txtAdditionalInfo.addVerifyListener(this.additionalInfoListener);
+                    this.txtAdditionalInfo.setText(String.format("%04x", this.additionalInfoValue) //$NON-NLS-1$
+                            .toUpperCase());
+                    this.txtAdditionalInfo.addVerifyListener(this.additionalInfoListener);
 
-                String selectedProfileString = null;
-                selectedProfileString = (String) this.cmbDeviceProfileNr.getData(Long.toString(this.profileValue));
-                if (selectedProfileString != null) {
-                    this.cmbDeviceProfileNr.select(this.cmbDeviceProfileNr.indexOf(selectedProfileString));
-                    this.lblError.setText(""); //$NON-NLS-1$
-                } else if (this.profileValue != 0) {
-                    this.cmbDeviceProfileNr.setText(""); //$NON-NLS-1$
-                    this.lblError.setText(Messages.advancedDeviceTypePropertySection_CiA_Profile_not_found);
+                    String selectedProfileString = null;
+                    selectedProfileString = (String) this.cmbDeviceProfileNr.getData(Long.toString(this.profileValue));
+                    if (selectedProfileString != null) {
+                        this.cmbDeviceProfileNr.select(this.cmbDeviceProfileNr.indexOf(selectedProfileString));
+                        this.lblError.setText(""); //$NON-NLS-1$
+                    } else if (this.profileValue != 0) {
+                        this.cmbDeviceProfileNr.setText(""); //$NON-NLS-1$
+                        this.lblError.setText(Messages.advancedDeviceTypePropertySection_CiA_Profile_not_found);
+                        this.lblError.setForeground(XDDUtilities.getRed(Display.getCurrent()));
+                    }
+
+                } catch (NumberFormatException e) {
+                    this.lblError.setText(Messages.general_error_defaultValueInvalid);
                     this.lblError.setForeground(XDDUtilities.getRed(Display.getCurrent()));
+                    e.printStackTrace();
                 }
+            }
 
-            } catch (NumberFormatException e) {
-                this.lblError.setText(Messages.general_error_defaultValueInvalid);
-                this.lblError.setForeground(XDDUtilities.getRed(Display.getCurrent()));
-                e.printStackTrace();
+            if (obj.getIndex() != null) {
+                String index = DatatypeConverter.printHexBinary(obj.getIndex());
+                index = "0x" + index;
+                indexText.setText(index);
+            }
+
+            if (obj.getName() != null) {
+                nameText.setText(obj.getName());
+            }
+
+            if (obj.getObjectType() != 0) {
+                String objectType = String.valueOf(obj.getObjectType());
+                if (objectType.equalsIgnoreCase("7")) {
+                    objTypeText.setText("7 - VAR");
+                } else if (objectType.equalsIgnoreCase("8")) {
+                    objTypeText.setText("8 - ARRAY");
+                } else if (objectType.equalsIgnoreCase("9")) {
+                    objTypeText.setText("9 - RECORD");
+                }
             }
         }
-
-        if (obj.getIndex() != null) {
-            String index = DatatypeConverter.printHexBinary(obj.getIndex());
-            index = "0x" + index;
-            indexText.setText(index);
-        }
-
-        if (obj.getName() != null) {
-            nameText.setText(obj.getName());
-        }
-
-        if (obj.getObjectType() != 0) {
-            String objectType = String.valueOf(obj.getObjectType());
-            if (objectType.equalsIgnoreCase("7")) {
-                objTypeText.setText("7 - VAR");
-            } else if (objectType.equalsIgnoreCase("8")) {
-                objTypeText.setText("8 - ARRAY");
-            } else if (objectType.equalsIgnoreCase("9")) {
-                objTypeText.setText("9 - RECORD");
-            }
-        }
-
     }
 
     private Text txtAdditionalInfo;
@@ -386,12 +381,14 @@ public class Index1000DetailsPage implements IDetailsPage {
 
         Label lblDefaultValue = managedForm.getToolkit().createLabel(grpOptionalData,
                 IPowerlinkConstants.DEFAULT_VALUE);
+        lblDefaultValue.setToolTipText(IPowerlinkConstants.DEFAULT_VALUE);
 
         // lblDefaultValueValue Label
         this.lblDefaultValueValue = managedForm.getToolkit().createLabel(grpOptionalData, ""); //$NON-NLS-1$
 
         Label lblProfileType = managedForm.getToolkit().createLabel(grpOptionalData,
                 IPowerlinkConstants.PROFILE_TYPE_LABEL);
+        lblProfileType.setToolTipText(IPowerlinkConstants.PROFILE_TYPE_LABEL);
 
         this.cmbDeviceProfileNr = new Combo(grpOptionalData, SWT.READ_ONLY);
 
@@ -405,6 +402,7 @@ public class Index1000DetailsPage implements IDetailsPage {
 
         Label lblAdditionalInfo = managedForm.getToolkit().createLabel(grpOptionalData,
                 IPowerlinkConstants.ADDITIONAL_INFO_LABEL);
+        lblAdditionalInfo.setToolTipText(IPowerlinkConstants.ADDITIONAL_INFO_LABEL);
 
         this.txtAdditionalInfo = managedForm.getToolkit().createText(grpOptionalData, "");
         this.txtAdditionalInfo.setTextLimit(4);

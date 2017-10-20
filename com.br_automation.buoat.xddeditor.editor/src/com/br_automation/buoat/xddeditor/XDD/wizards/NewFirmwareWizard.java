@@ -33,38 +33,27 @@ package com.br_automation.buoat.xddeditor.XDD.wizards;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.swt.events.SelectionAdapter;
 
 import com.br_automation.buoat.xddeditor.XDD.DocumentRoot;
 import com.br_automation.buoat.xddeditor.XDD.ISO15745ProfileType;
 import com.br_automation.buoat.xddeditor.XDD.ProfileBodyDataType;
-import com.br_automation.buoat.xddeditor.XDD.ProfileHeaderDataType;
 import com.br_automation.buoat.xddeditor.XDD.TDeviceFunction;
 import com.br_automation.buoat.xddeditor.XDD.TFirmwareList;
 import com.br_automation.buoat.xddeditor.XDD.XDDFactory;
 import com.br_automation.buoat.xddeditor.XDD.impl.FirmwareTypeImpl;
 import com.br_automation.buoat.xddeditor.editor.editors.DeviceDescriptionFileEditor;
-
-import FwSchema.util.FwSchemaResourceFactoryImpl;
 
 /**
  * Wizard page to add new firmware.

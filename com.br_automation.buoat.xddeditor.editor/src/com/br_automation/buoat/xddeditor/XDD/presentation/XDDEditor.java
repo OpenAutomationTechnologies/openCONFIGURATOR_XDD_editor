@@ -4,6 +4,7 @@ package com.br_automation.buoat.xddeditor.XDD.presentation;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -390,6 +391,8 @@ public class XDDEditor extends MultiPageEditorPart implements IEditingDomainProv
                     }
                     break;
                 }
+                default:
+                    break;
                 }
             } else {
                 super.notifyChanged(notification);
@@ -1188,7 +1191,8 @@ public class XDDEditor extends MultiPageEditorPart implements IEditingDomainProv
         if (getPageCount() <= 1) {
             setPageText(0, "");
             if (getContainer() instanceof CTabFolder) {
-                ((CTabFolder) getContainer()).setTabHeight(1);
+                CTabFolder tabFolder = (CTabFolder) getContainer();
+                tabFolder.setTabHeight(1);
                 Point point = getContainer().getSize();
                 getContainer().setSize(point.x, point.y + 6);
             }
@@ -1233,7 +1237,7 @@ public class XDDEditor extends MultiPageEditorPart implements IEditingDomainProv
      *
      * @generated
      */
-    @SuppressWarnings("rawtypes")
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public Object getAdapter(Class key) {
         if (key.equals(IContentOutlinePage.class)) {
@@ -1429,20 +1433,22 @@ public class XDDEditor extends MultiPageEditorPart implements IEditingDomainProv
         };
 
         updateProblemIndication = false;
-        try {
-            // This runs the options, and shows progress.
-            //
-            new ProgressMonitorDialog(getSite().getShell()).run(true, false, operation);
 
-            // Refresh the necessary state.
-            //
-            ((BasicCommandStack) editingDomain.getCommandStack()).saveIsDone();
-            firePropertyChange(IEditorPart.PROP_DIRTY);
-        } catch (Exception exception) {
-            // Something went wrong that shouldn't.
-            //
-            XDDEditorPlugin.INSTANCE.log(exception);
+        try {
+            new ProgressMonitorDialog(getSite().getShell()).run(true, false, operation);
+        } catch (InvocationTargetException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
+
+        // Refresh the necessary state.
+        //
+        ((BasicCommandStack) editingDomain.getCommandStack()).saveIsDone();
+        firePropertyChange(IEditorPart.PROP_DIRTY);
+
         updateProblemIndication = true;
         updateProblemIndication();
     }

@@ -295,52 +295,57 @@ public class AdvancedStartUpPropertySection extends AbstractPropertySection {
     public void setInput(IWorkbenchPart part, ISelection selection) {
 
         super.setInput(part, selection);
-        Object input = ((IStructuredSelection) selection).getFirstElement();
-        this.tobject = (TObject) input;
-        if (lblError != null) {
-            this.lblError.setText(""); //$NON-NLS-1$
-        }
-        if (tObjectComposite != null) {
-            this.tObjectComposite.setObject(this.tobject);
-        }
-        if (lblDefaultValueValue != null) {
-            this.lblDefaultValueValue.setText(this.tobject.getDefaultValue());
-        }
-        Set<Entry<Button, Integer>> buttonSet = this.buttonMap.entrySet();
+        if (selection instanceof IStructuredSelection) {
+            Object input = ((IStructuredSelection) selection).getFirstElement();
+            this.tobject = (TObject) input;
+            if (lblError != null) {
+                this.lblError.setText(""); //$NON-NLS-1$
+            }
+            if (tObjectComposite != null) {
+                this.tObjectComposite.setObject(this.tobject);
+            }
+            if (lblDefaultValueValue != null) {
+                this.lblDefaultValueValue.setText(this.tobject.getDefaultValue());
+            }
+            Set<Entry<Button, Integer>> buttonSet = this.buttonMap.entrySet();
 
-        try {
-            int currentDefaultValue = 0;
-            if (this.tobject.getDefaultValue() != null && this.tobject.getDefaultValue().length() > 0) {
+            try {
+                int currentDefaultValue = 0;
+                if (this.tobject.getDefaultValue() != null && this.tobject.getDefaultValue().length() > 0) {
 
-                currentDefaultValue = Integer.decode(this.tobject.getDefaultValue());
+                    currentDefaultValue = Integer.decode(this.tobject.getDefaultValue());
 
-                for (Entry<Button, Integer> entry : buttonSet) {
-                    int btnValue = entry.getValue().intValue();
-                    if ((currentDefaultValue & (1 << btnValue)) != 0) // Check
-                                                                        // if
-                                                                        // Bit
-                                                                        // of
-                                                                        // Button
-                                                                        // is
-                                                                        // set
-                        entry.getKey().setSelection(true); // if yes, set the
-                                                            // selection to true
-                    else
+                    for (Entry<Button, Integer> entry : buttonSet) {
+                        int btnValue = entry.getValue().intValue();
+                        if ((currentDefaultValue & (1 << btnValue)) != 0) // Check
+                                                                            // if
+                                                                            // Bit
+                                                                            // of
+                                                                            // Button
+                                                                            // is
+                                                                            // set
+                            entry.getKey().setSelection(true); // if yes, set
+                                                                // the
+                                                                // selection to
+                                                                // true
+                        else
+                            entry.getKey().setSelection(false);
+                    }
+                }
+                if (currentDefaultValue != 0 // Checks if any reserved bits are
+                                                // set
+                                                // in defaultValue (Bit 0, Bit
+                                                // 5,
+                                                // all Bits > 13)
+                        && (currentDefaultValue > 0x3FDE || ((currentDefaultValue & (1 << 5)) != 0))
+                        || (currentDefaultValue & (1 << 0)) != 0) {
+                    this.lblError.setText(Messages.general_error_defaultValueInvalid);
+                    for (Entry<Button, Integer> entry : buttonSet)
                         entry.getKey().setSelection(false);
                 }
-            }
-            if (currentDefaultValue != 0 // Checks if any reserved bits are set
-                                            // in defaultValue (Bit 0, Bit 5,
-                                            // all Bits > 13)
-                    && (currentDefaultValue > 0x3FDE || ((currentDefaultValue & (1 << 5)) != 0))
-                    || (currentDefaultValue & (1 << 0)) != 0) {
+            } catch (NumberFormatException e) {
                 this.lblError.setText(Messages.general_error_defaultValueInvalid);
-                for (Entry<Button, Integer> entry : buttonSet)
-                    entry.getKey().setSelection(false);
             }
-        } catch (NumberFormatException e) {
-            this.lblError.setText(Messages.general_error_defaultValueInvalid);
-        }
-    } // setInput
-
+        } // setInput
+    }
 } // AdvancedStartUpPropertySection

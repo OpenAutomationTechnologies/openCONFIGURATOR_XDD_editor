@@ -57,7 +57,6 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
-import org.eclipse.ui.views.properties.IPropertySheetEntry;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
@@ -87,8 +86,6 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
             OBJ_SUB_INDEX_LABEL);
     private static final TextPropertyDescriptor subObjectIdEditableDescriptor = new TextPropertyDescriptor(
             OBJ_EDITABLE_SUB_INDEX_ID, OBJ_SUB_INDEX_LABEL);
-    private static final String[] EXPERT_FILTER_FLAG = { IPropertySheetEntry.FILTER_ID_EXPERT };
-
     static {
         subObjectIdDescriptor.setCategory(IPropertySourceSupport.INITIAL_VALUE_CATEGORY);
         subObjectIdEditableDescriptor.setCategory(IPropertySourceSupport.INITIAL_VALUE_CATEGORY);
@@ -215,7 +212,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
         propertyList.add(objectIdDescriptor);
         if (plkSubObject.getSubIndex() != null) {
             String index = DatatypeConverter.printHexBinary(plkSubObject.getSubIndex());
-            int subObjeIndexVal = Integer.valueOf(index);
+            Integer subObjeIndexVal = Integer.valueOf(index);
             if (subObjeIndexVal != 0) {
                 propertyList.add(subObjectIdEditableDescriptor);
             } else {
@@ -826,7 +823,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
         if (accessType.equalsIgnoreCase("Write only")) {
             return TObjectAccessType.WO;
         }
-        if (accessType.equalsIgnoreCase("Read write")) {
+        if (accessType.equalsIgnoreCase("Read/Write")) {
             return TObjectAccessType.RW;
         }
         return TObjectAccessType.CONST;
@@ -834,19 +831,19 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
 
     public TObjectPDOMapping getPdoMapping(String pdoMapping) {
 
-        if (pdoMapping.equalsIgnoreCase("Non-mappable")) {
+        if (pdoMapping.equalsIgnoreCase("No")) {
             return TObjectPDOMapping.NO;
         }
-        if (pdoMapping.equalsIgnoreCase("Mapped by default")) {
+        if (pdoMapping.equalsIgnoreCase("Default")) {
             return TObjectPDOMapping.DEFAULT;
         }
-        if (pdoMapping.equalsIgnoreCase("Mapped optionally")) {
+        if (pdoMapping.equalsIgnoreCase("Optional")) {
             return TObjectPDOMapping.OPTIONAL;
         }
-        if (pdoMapping.equalsIgnoreCase("Transmit process data objects")) {
+        if (pdoMapping.equalsIgnoreCase("TPDO")) {
             return TObjectPDOMapping.TPDO;
         }
-        if (pdoMapping.equalsIgnoreCase("Receive process data objects")) {
+        if (pdoMapping.equalsIgnoreCase("RPDO")) {
             return TObjectPDOMapping.RPDO;
         }
         return TObjectPDOMapping.DEFAULT;

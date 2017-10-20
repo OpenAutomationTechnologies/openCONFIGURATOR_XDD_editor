@@ -289,7 +289,9 @@ public class XDDModelWizard extends Wizard implements INewWizard {
                 final ISelection targetSelection = new StructuredSelection(modelFile);
                 getShell().getDisplay().asyncExec(new Runnable() {
                     public void run() {
-                        ((ISetSelectionTarget) activePart).selectReveal(targetSelection);
+                        if (activePart instanceof ISetSelectionTarget) {
+                            ((ISetSelectionTarget) activePart).selectReveal(targetSelection);
+                        }
                     }
                 });
             }

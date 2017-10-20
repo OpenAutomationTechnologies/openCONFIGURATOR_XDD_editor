@@ -465,12 +465,6 @@ public final class DeviceDescriptionFileEditor extends FormEditor
         case IResourceDelta.CHANGED:
             if (oldDelta.getFlags() == IResourceDelta.CONTENT) {
                 setInput(new FileEditorInput(currentProjectFile));
-                Display.getDefault().asyncExec(new Runnable() {
-                    @Override
-                    public void run() {
-                        System.err.println("The resource changed..");
-                    }
-                });
 
             }
 
@@ -589,8 +583,9 @@ public final class DeviceDescriptionFileEditor extends FormEditor
         }
     }
 
-    @Override
-    public Object getAdapter(Class key) {
+    @SuppressWarnings("unchecked")
+	@Override
+    public Object getAdapter(@SuppressWarnings("rawtypes") Class key) {
         if (key.equals(IGotoMarker.class)) {
             return this;
         } else {

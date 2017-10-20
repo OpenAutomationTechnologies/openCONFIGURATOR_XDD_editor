@@ -73,7 +73,7 @@ import com.br_automation.buoat.xddeditor.XDD.presentation.XDDModelWizard;
  */
 public class CustomXDDWizard extends XDDModelWizard {
 
-    private WizardConfigurationPage wizardConfigurationPage1;
+    private WizardConfigurationPage wizardConfigurationPage;
     private WizardTemplatePage wizardTemplatePage;
 
     /**
@@ -121,20 +121,17 @@ public class CustomXDDWizard extends XDDModelWizard {
         this.wizardTemplatePage = new WizardTemplatePage("wizardTemplatePage");
         this.addPage(this.wizardTemplatePage);
 
-        this.wizardConfigurationPage1 = new WizardConfigurationPage("wizardConfigurationPage1", this);
-        this.addPage(this.wizardConfigurationPage1);
-
-
+        this.wizardConfigurationPage = new WizardConfigurationPage("wizardConfigurationPage1", this);
+        this.addPage(this.wizardConfigurationPage);
 
     }
 
-
-
     @Override
     public boolean canFinish() {
-
-        if (!wizardConfigurationPage1.isPageComplete()) {
-            return false;
+        if (wizardConfigurationPage != null) {
+            if (!wizardConfigurationPage.isPageComplete()) {
+                return false;
+            }
         }
 
         return true;
@@ -212,7 +209,9 @@ public class CustomXDDWizard extends XDDModelWizard {
                                                                             // 11:26
                         @Override
                         public void run() {
-                            ((ISetSelectionTarget) activePart).selectReveal(targetSelection);
+                            if (activePart instanceof ISetSelectionTarget) {
+                                ((ISetSelectionTarget) activePart).selectReveal(targetSelection);
+                            }
                         }
 
                     });
@@ -242,7 +241,7 @@ public class CustomXDDWizard extends XDDModelWizard {
      */
     @Override
     protected EObject createInitialModel() {
-        DocumentRoot root = ModelLoader.createXDDFromWizardData(this.wizardTemplatePage, this.wizardConfigurationPage1);
+        DocumentRoot root = ModelLoader.createXDDFromWizardData(this.wizardTemplatePage, this.wizardConfigurationPage);
         return root;
     }
 

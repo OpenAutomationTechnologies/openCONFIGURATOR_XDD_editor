@@ -34,7 +34,7 @@ import com.br_automation.buoat.xddeditor.XDD.XDDPackage;
  * <!-- end-user-doc -->
  * @generated
  */
-public class TApplicationLayersItemProvider 
+public class TApplicationLayersItemProvider
 	extends ItemProviderAdapter
 	implements
 		IEditingDomainItemProvider,
@@ -163,7 +163,8 @@ public class TApplicationLayersItemProvider
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
+	@SuppressWarnings("rawtypes")
+    @Override
 	public String getText(Object object) {
 		List labelValue = ((TApplicationLayers)object).getCommunicationEntityType();
 		String label = labelValue == null ? null : labelValue.toString();
@@ -171,7 +172,7 @@ public class TApplicationLayersItemProvider
 			getString("_UI_TApplicationLayers_type") :
 			getString("_UI_TApplicationLayers_type") + " " + label;
 	}
-	
+
 
 	/**
 	 * This handles model notifications by calling {@link #updateChildren} to update any cached
