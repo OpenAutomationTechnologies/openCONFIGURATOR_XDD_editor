@@ -100,6 +100,7 @@ public class AddSubObjectWizardPage extends WizardPage {
     private String subObjIndex = StringUtils.EMPTY;
     private String subObjName = StringUtils.EMPTY;
     private String subObjectType = StringUtils.EMPTY;
+    private String validDataType = StringUtils.EMPTY;
 
     private Short idx;
 
@@ -131,6 +132,18 @@ public class AddSubObjectWizardPage extends WizardPage {
     private static final String INVALID_VALUE = "Invalid value.";
 
     protected static final String INVALID_DATA_TYPE_VALUE = "Invalid value for data type {0}.";
+
+    public static final String ENTER_VALID_SUB_OBJECT_INDEX = "Enter the hexadecimal sub-object index value within the range (0x01 to 0xFE).";
+    public static final String SUB_OBJECT_INDEX_OUT_OF_RANGE = "Sub-object index is out of range (0x01 to 0xFE).";
+    public static final String SUB_OBJECT_ALREADY_EXISTS_ERROR_MESSAGE = "Sub-object index {0} already exists in the file {1}.";
+    public static final String ENTER_SUB_OBJECT_NAME = "Enter the name of Sub-object.";
+    public static final String SUB_OBJECT_ACCESS_TYPE_INVALID_PDO_MAPPING = "Sub-object with access type {0} does not allow {1}.";
+    public static final String SELECT_VALID_DATA_TYPE = "Since the object type of object index  {0} is {1}. Please select the data type as {2}.";
+    public static final String LOW_LIMIT_GREATER_THAN_HIGH_LIMIT = "Low limit cannot be greater than high limit.";
+    public static final String DEFAULT_VALUE_GREATER_THAN_HIGH_LIMIT = "Default value {0} exceeds the high limit value {1}.";
+    public static final String DEFAULT_VALUE_LESSER_THAN_HIGH_LIMIT = "Default value {0} cannot be lesser than low limit value {1}.";
+    public static final String INVALID_PDO_MAPPING_ERROR_MESSAGE = "Sub-object with access type {0} does not allow {1}.";
+    public static final String LOW_LIMIT_GREATER_HIGH_LIMIT = "Low limit cannot be greater than high limit.";
 
     /**
      * Constructor to initialize the document instance.
@@ -205,8 +218,8 @@ public class AddSubObjectWizardPage extends WizardPage {
             public void widgetSelected(SelectionEvent e) {
                 subAccessType = comboAccessType.getText();
                 if (!isPdoMappingValueValid(subPdoMapping)) {
-                    setErrorMessage("Sub-object with access type '" + subAccessType + "' does not allow '"
-                            + subPdoMapping + "'.");
+                    setErrorMessage(
+                            MessageFormat.format(INVALID_PDO_MAPPING_ERROR_MESSAGE, subAccessType, subPdoMapping));
                     setPageComplete(false);
                 } else {
                     setErrorMessage(null);
@@ -285,8 +298,6 @@ public class AddSubObjectWizardPage extends WizardPage {
         else if (objType == 9)
             idx = 2;
         comboObjType.select(idx);
-
-        // comboObjType.
 
         Group grpSubObjDetails = new Group(container, SWT.NONE);
         grpSubObjDetails.setText(Messages.addSubObjectWizardPage_subobject_details);
@@ -464,14 +475,27 @@ public class AddSubObjectWizardPage extends WizardPage {
         }
     };
 
+    /**
+     * @return Low limit value from wizard
+     */
     public String getTxtLowLimit() {
         return subLowLimit;
     }
 
+    /**
+     * @return High limit value from wizard
+     */
     public String getTxtHighLimit() {
         return subHighLimit;
     }
 
+    /**
+     * Get name of object type
+     *
+     * @param objectType
+     *            Object type value
+     * @return Name of object type
+     */
     public String getObjectType(short objectType) {
         if (objectType == 7) {
             return IPowerlinkConstants.OBJECT_TYPES[0];
@@ -483,6 +507,9 @@ public class AddSubObjectWizardPage extends WizardPage {
         return StringUtils.EMPTY;
     }
 
+    /**
+     * @return Value of Sub-object type
+     */
     public short getSubObjectType() {
 
         if (subObjectType.isEmpty()) {
@@ -500,35 +527,56 @@ public class AddSubObjectWizardPage extends WizardPage {
         return 0;
     }
 
+    /**
+     * @return Default value from wizard
+     */
     public String getTxtDefaultValue() {
         return subDefaultValue;
     }
 
+    /**
+     * @return High limit value from wizard
+     */
     public String getHighLimit() {
         subHighLimit = "0x" + subHighLimit;
         return subHighLimit;
     }
 
+    /**
+     * @return Low limit value from wizard
+     */
     public String getLowLimit() {
         subLowLimit = "0x" + subLowLimit;
         return subLowLimit;
     }
 
+    /**
+     * @return Sub-object index value from wizard
+     */
     public String getTxtSubObjIndex() {
         return subObjIndex;
     }
 
+    /**
+     * @return Sub-object name from wizard
+     */
     public String getTxtSubObjName() {
         return subObjName;
     }
 
+    /**
+     * @return Byte value of data type
+     */
     public byte[] getDataType() {
         if (!subDataType.isEmpty()) {
             subDataType = comboDataType.getText();
         }
-        return DatatypeConverter.parseHexBinary(getDataType(subDataType));
+        return DatatypeConverter.parseHexBinary(getDataTypeVal(subDataType));
     }
 
+    /**
+     * @return TObjectPdomapping value from wizard
+     */
     public TObjectPDOMapping getPdoMapping() {
 
         subPdoMapping = comboPdoMapping.getText();
@@ -553,6 +601,9 @@ public class AddSubObjectWizardPage extends WizardPage {
         return TObjectPDOMapping.DEFAULT;
     }
 
+    /**
+     * @return TObjectAccesstype value from wizard
+     */
     public TObjectAccessType getAccessType() {
         if (subAccessType.isEmpty()) {
             subAccessType = comboAccessType.getText();
@@ -574,13 +625,13 @@ public class AddSubObjectWizardPage extends WizardPage {
     }
 
     /**
-     * Gets the value of IEC data type
+     * Gets the data type of IEC value
      *
      * @param dataType
      *            Value of selected data type
-     * @return IEC value of data type
+     * @return data type of IEC value
      */
-    public String getDataTypeValue(String dataType) {
+    public String getDataType(String dataType) {
         switch (dataType) {
 
         case "0001":
@@ -672,12 +723,20 @@ public class AddSubObjectWizardPage extends WizardPage {
 
     }
 
-    public String getDataType(String dataType) {
+    /**
+     * Gets the value of IEC data type
+     *
+     * @param dataType
+     *            Value of selected data type
+     * @return IEC value of data type
+     */
+    public String getDataTypeVal(String dataType) {
         switch (dataType) {
         case "Boolean":
             return "0001";
         case "Integer8":
             return "0002";
+
         case "Integer16":
             return "0003";
         case "Integer32":
@@ -771,22 +830,12 @@ public class AddSubObjectWizardPage extends WizardPage {
         return pageComplete;
     }
 
-    public static final String ENTER_VALID_SUB_OBJECT_INDEX = "Enter the hexadecimal sub-object index value within the range (0x01 to 0xFE).";
-    public static final String SUB_OBJECT_INDEX_OUT_OF_RANGE = "Sub-object index is out of range (0x01 to 0xFE).";
-    public static final String SUB_OBJECT_ALREADY_EXISTS_ERROR_MESSAGE = "Sub-object index {0} already exists in the file {1}.";
-    public static final String ENTER_SUB_OBJECT_NAME = "Enter the name of Sub-object.";
-    public static final String SUB_OBJECT_ACCESS_TYPE_INVALID_PDO_MAPPING = "Sub-object with access type {0} does not allow {1}.";
-    public static final String SELECT_VALID_DATA_TYPE = "Since the object type of object index  {0} is {1}. Please select the data type as {2}.";
-    public static final String LOW_LIMIT_GREATER_THAN_HIGH_LIMIT = "Low limit cannot be greater than high limit.";
-    public static final String DEFAULT_VALUE_GREATER_THAN_HIGH_LIMIT = "Default value {0} exceeds the high limit value {1}.";
-    public static final String DEFAULT_VALUE_LESSER_THAN_HIGH_LIMIT = "Default value {0} cannot be lesser than low limit value {1}.";
-
     private boolean validateObjectModel() {
         String index = getTxtSubObjIndex();
         String defaultVal = getTxtDefaultValue();
         String lowLimit = getTxtLowLimit();
         String highLimit = getTxtHighLimit();
-        String dataType = getDataType(comboDataType.getText());
+        String dataType = getDataTypeVal(comboDataType.getText());
         String objIndex = DatatypeConverter.printHexBinary(selObj.getIndex());
         String pdoMapping = comboPdoMapping.getText();
         String accessType = comboAccessType.getText();
@@ -798,7 +847,7 @@ public class AddSubObjectWizardPage extends WizardPage {
             if (selObj.getObjectType() == 8) {
                 String objDataType = DatatypeConverter.printHexBinary(selObj.getDataType());
 
-                int typeIndex = comboDataType.indexOf(getDataTypeValue(objDataType));
+                int typeIndex = comboDataType.indexOf(getDataType(objDataType));
                 comboDataType.select(typeIndex);
                 comboDataType.setEnabled(false);
                 comboSubObjType.select(0);
@@ -831,7 +880,7 @@ public class AddSubObjectWizardPage extends WizardPage {
 
         if (!isValidDataType(dataType)) {
             String objectType = getObjectType(selObj.getObjectType());
-            String dataTypeValue = getDataTypeValue(validDataType);
+            String dataTypeValue = getDataType(validDataType);
             setErrorMessage(MessageFormat.format(SELECT_VALID_DATA_TYPE, objIndex, objectType, dataTypeValue));
             return false;
         }
@@ -914,8 +963,6 @@ public class AddSubObjectWizardPage extends WizardPage {
         }
         return true;
     }
-
-    private String validDataType = StringUtils.EMPTY;
 
     private boolean isValidDataType(String dataTypeVal) {
         try {

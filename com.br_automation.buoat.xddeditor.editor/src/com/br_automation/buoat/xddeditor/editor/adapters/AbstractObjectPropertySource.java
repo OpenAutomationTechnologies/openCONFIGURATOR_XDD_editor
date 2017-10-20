@@ -100,6 +100,14 @@ public class AbstractObjectPropertySource {
     public static final int MANUFACTURER_PROFILE_SUB_OBJ_START_INDEX = 0x01;
     public static final int MANUFACTURER_PROFILE_SUB_OBJ_END_INDEX = 0xFE;
 
+    public static final String VALID_OBJECT_INDEX_RANGE = "Enter the object index value within the range (0x1000 to 0x9FFF).";
+    public static final String INDEX_OUT_OF_RANGE = "Object index is out of range (0x1000 to 0x9FFF).";
+    public static final String OBJECT_ALREADY_EXISTS_ERROR_MESSAGE = "Object index {0} already exists in the file {1}.";
+    public static final String ENTER_OBJECT_NAME = "Enter the name of object.";
+    public static final String OBJECT_ACCESS_TYPE_INVALID_PDO_MAPPING = "Object with access type {0} does not allow {1} mapping.";
+    public static final String LOW_LIMIT_GREATER_HIGH_LIMIT = "Low limit cannot be greater than high limit.";
+    public static final String INVALID_VALUE = "The value {0} is invalid.";
+
     public static final String[] DATA_TYPE_LIST = { "Boolean", "Integer8", "Integer16", "Integer32", "Unsigned8",
             "Unsigned16", "Unsigned32", "Real32", "Visible_String", "Integer24", "Real64", "Integer40", "Integer48",
             "Integer56", "Integer64", "Octet_String", "Unicode_String", "Time_of_Day", "Time_Diff", "Domain",
@@ -130,6 +138,8 @@ public class AbstractObjectPropertySource {
             OBJ_ACCESS_TYPE_LABEL);
 
     protected static final String INVALID_DATA_TYPE_VALUE = "Invalid value for data type {0}.";
+
+    protected static final String INVALID_DATA_TYPE_DECIMAL_VALUE = "Datatype {0} accepts only decimal value";
 
     protected static final PropertyDescriptor defaultValueDescriptor = new PropertyDescriptor(OBJ_DEFAULT_VALUE_ID,
             OBJ_DEFAULT_VALUE_LABEL);
@@ -174,6 +184,25 @@ public class AbstractObjectPropertySource {
     protected static final TextPropertyDescriptor editbjFlagsDescriptor = new TextPropertyDescriptor(
             OBJ_OBJFLAGS_EDITABLE_ID, OBJ_OBJFLAGS_LABEL);
 
+    public static final String BOOLEAN_OUT_OF_RANGE = "{0} is out of range (0 to 1).";
+    public static final String INTEGER8_OUT_OF_RANGE = "{0} is out of range (-256 to 255).";
+    public static final String INTEGER16_OUT_OF_RANGE = "{0} is out of range (-65,536 to 65,535 ).";
+    public static final String INTEGER32_OUT_OF_RANGE = "{0}  is out of range (-4,294,967,296 to 4,294,967,295).";
+    public static final String UNSIGNED8_OUT_OF_RANGE = "{0} is out of range (0 to 255).";
+    public static final String UNSIGNED16_OUT_OF_RANGE = "{0} is out of range (0 to 65,535).";
+    public static final String UNSIGNED32_OUT_OF_RANGE = "{0} is out of range (0 to 4,294,967,295).";
+    public static final String INTEGER24_OUT_OF_RANGE = "{0}  is out of range (8,388,608 to 8,388,607).";
+    public static final String INTEGER40_OUT_OF_RANGE = "{0}  is out of range (-549,755,813,888 to 549,755,813,887).";
+    public static final String INTEGER48_OUT_OF_RANGE = "{0} is out of range (-140,737,488,355,328 to 140,737,488,355,327).";
+    public static final String INTEGER56_OUT_OF_RANGE = "{0} is out of range (-36,028,797,018,963,968 to 36,028,797,018,963,967).";
+    public static final String INTEGER64_OUT_OF_RANGE = "{0} is out of range (-9,223,372,036,854,775,808 to 9,223,372,036,854,775,807).";
+    public static final String UNSIGNED24_OUT_OF_RANGE = "{0} is out of range (0 to 16,777,215).";
+    public static final String UNSIGNED40_OUT_OF_RANGE = "{0} is out of range (0 to 1,099,511,627,775).";
+    public static final String UNSIGNED48_OUT_OF_RANGE = "{0}  is out of range (0 to 281,474,976,710,655).";
+    public static final String UNSIGNED56_OUT_OF_RANGE = "{0} is out of range (0 to 72,057,594,037,927,935).";
+    public static final String UNSIGNED64_OUT_OF_RANGE = "{0}  out of range (0 to " + Long.MAX_VALUE + ").";
+    public static final String DOMAIN_OUT_OF_RANGE = "{0}  is out of range (0 to 4,294,967,295).";
+
     public DeviceDescriptionFileEditor getEditor() {
         return editor;
     }
@@ -182,6 +211,16 @@ public class AbstractObjectPropertySource {
         this.editor = editor;
     }
 
+    /**
+     * Get the default or low limit or high limit value entered in the wizard or
+     * property page.
+     *
+     * @param value
+     *            Entered value instance
+     * @param dataType
+     *            Selected data type value
+     * @return Long value to be verified
+     */
     public static long getValueToBeChecked(String value, String dataType) {
         long valueToBeChecked;
         switch (dataType) {
@@ -210,6 +249,17 @@ public class AbstractObjectPropertySource {
 
     }
 
+    /**
+     * Verifies the value with respect to data type
+     *
+     * @param value
+     *            The value to be verified
+     * @param label
+     *            The attribute to of object or sub object to be verified
+     * @param dataType
+     *            Name of the selected data type
+     * @return Error message
+     */
     public static String isValidVal(String value, String label, String dataType) {
         String emptyString = StringUtils.EMPTY;
 
@@ -225,7 +275,7 @@ public class AbstractObjectPropertySource {
                 try {
 
                     if (valueToBeChecked < DataTypeRange.Boolean_min || valueToBeChecked > DataTypeRange.Boolean_max) {
-                        return label + " is out of range (0 to 1).";
+                        return MessageFormat.format(BOOLEAN_OUT_OF_RANGE, label);
                     } else {
                         return emptyString;
                     }
@@ -239,7 +289,7 @@ public class AbstractObjectPropertySource {
 
                     if (valueToBeChecked < DataTypeRange.Integer8_min
                             || valueToBeChecked > DataTypeRange.Integer8_max) {
-                        return (label + " is out of range (-256 to 255).");
+                        return MessageFormat.format(INTEGER8_OUT_OF_RANGE, label);
                     } else {
                         return emptyString;
                     }
@@ -252,7 +302,7 @@ public class AbstractObjectPropertySource {
 
                     if (valueToBeChecked < DataTypeRange.Integer16_min
                             || valueToBeChecked > DataTypeRange.Integer16_max) {
-                        return (label + " is out of range (-65,536 to 65,535 ).");
+                        return MessageFormat.format(INTEGER16_OUT_OF_RANGE, label);
 
                     } else
                         return emptyString;
@@ -265,12 +315,12 @@ public class AbstractObjectPropertySource {
 
                     if (valueToBeChecked < DataTypeRange.Integer32_min
                             || valueToBeChecked > DataTypeRange.Integer32_max) {
-                        return (label + " is out of range (-4,294,967,296 to 4,294,967,295).");
+                        return MessageFormat.format(INTEGER32_OUT_OF_RANGE, label);
 
                     } else
                         return emptyString;
                 } catch (NumberFormatException e) {
-                    return ("Datatype '" + dataType + " accepts only decimal value");
+                    return MessageFormat.format(INVALID_DATA_TYPE_DECIMAL_VALUE, dataType);
                 }
             }
 
@@ -279,12 +329,12 @@ public class AbstractObjectPropertySource {
 
                     if (valueToBeChecked < DataTypeRange.Unsigned8_min
                             || valueToBeChecked > DataTypeRange.Unsigned8_max) {
-                        return (label + " is out of range (0 to 255).");
+                        return MessageFormat.format(UNSIGNED8_OUT_OF_RANGE, label);
 
                     } else
                         return emptyString;
                 } catch (NumberFormatException e) {
-                    return ("Datatype '" + dataType + " accepts only decimal value");
+                    return MessageFormat.format(INVALID_DATA_TYPE_DECIMAL_VALUE, dataType);
                 }
             }
             case "Unsigned16": {
@@ -292,7 +342,7 @@ public class AbstractObjectPropertySource {
 
                     if (valueToBeChecked < DataTypeRange.Unsigned16_min
                             || valueToBeChecked > DataTypeRange.Unsigned16_max) {
-                        return (label + " is out of range (0 to 65,535).");
+                        return MessageFormat.format(UNSIGNED16_OUT_OF_RANGE, label);
 
                     } else
                         return emptyString;
@@ -305,7 +355,7 @@ public class AbstractObjectPropertySource {
 
                     if (valueToBeChecked < DataTypeRange.Unsigned32_min
                             || valueToBeChecked > DataTypeRange.Unsigned32_max) {
-                        return (label + " is out of range (0 to 4,294,967,295).");
+                        return MessageFormat.format(UNSIGNED32_OUT_OF_RANGE, label);
 
                     } else
                         return emptyString;
@@ -319,7 +369,7 @@ public class AbstractObjectPropertySource {
 
                     if (valueToBeChecked < DataTypeRange.Integer24_min
                             || valueToBeChecked > DataTypeRange.Integer24_max) {
-                        return (label + " is out of range (8,388,608 to 8,388,607).");
+                        return MessageFormat.format(INTEGER24_OUT_OF_RANGE, label);
 
                     } else
                         return emptyString;
@@ -333,7 +383,7 @@ public class AbstractObjectPropertySource {
                 try {
                     if (valueToBeChecked < DataTypeRange.Integer40_min
                             || valueToBeChecked > DataTypeRange.Integer40_max) {
-                        return (label + " is out of range (-549,755,813,888 to 549,755,813,887).");
+                        return MessageFormat.format(INTEGER40_OUT_OF_RANGE, label);
 
                     } else
                         return emptyString;
@@ -348,7 +398,7 @@ public class AbstractObjectPropertySource {
 
                     if (valueToBeChecked < DataTypeRange.Integer48_min
                             || valueToBeChecked > DataTypeRange.Integer48_max) {
-                        return (label + " is out of range (-140,737,488,355,328 to 140,737,488,355,327).");
+                        return MessageFormat.format(INTEGER48_OUT_OF_RANGE, label);
 
                     } else
                         return emptyString;
@@ -363,12 +413,12 @@ public class AbstractObjectPropertySource {
 
                     if (valueToBeChecked < DataTypeRange.Integer56_min
                             || valueToBeChecked > DataTypeRange.Integer56_max) {
-                        return (label + " is out of range (-36,028,797,018,963,968 to 36,028,797,018,963,967).");
+                        return MessageFormat.format(INTEGER56_OUT_OF_RANGE, label);
 
                     } else
                         return emptyString;
                 } catch (NumberFormatException e) {
-                    return ("Datatype '" + dataType + " accepts only decimal value");
+                    return MessageFormat.format(INVALID_DATA_TYPE_DECIMAL_VALUE, dataType);
                 }
 
             }
@@ -378,12 +428,12 @@ public class AbstractObjectPropertySource {
 
                     if (valueToBeChecked <= DataTypeRange.Integer64_min
                             || valueToBeChecked >= DataTypeRange.Integer64_max) {
-                        return (label + " is out of range (-9,223,372,036,854,775,808 to 9,223,372,036,854,775,807).");
+                        return MessageFormat.format(INTEGER64_OUT_OF_RANGE, label);
 
                     } else
                         return emptyString;
                 } catch (NumberFormatException e) {
-                    return ("Datatype '" + dataType + " accepts only decimal value");
+                    return MessageFormat.format(INVALID_DATA_TYPE_DECIMAL_VALUE, dataType);
                 }
 
             }
@@ -393,7 +443,7 @@ public class AbstractObjectPropertySource {
 
                     if (valueToBeChecked < DataTypeRange.Unsigned24_min
                             || valueToBeChecked > DataTypeRange.Unsigned24_max) {
-                        return (label + " is out of range (0 to 16,777,215).");
+                        return MessageFormat.format(UNSIGNED24_OUT_OF_RANGE, label);
 
                     } else
                         return emptyString;
@@ -408,7 +458,7 @@ public class AbstractObjectPropertySource {
 
                     if (valueToBeChecked < DataTypeRange.Unsigned40_min
                             || valueToBeChecked > DataTypeRange.Unsigned40_max) {
-                        return (label + " is out of range (0 to 1,099,511,627,775).");
+                        return MessageFormat.format(UNSIGNED40_OUT_OF_RANGE, label);
 
                     } else
                         return emptyString;
@@ -423,7 +473,7 @@ public class AbstractObjectPropertySource {
 
                     if (valueToBeChecked < DataTypeRange.Unsigned48_min
                             || valueToBeChecked > DataTypeRange.Unsigned48_max) {
-                        return (label + " is out of range (0 to 281,474,976,710,655).");
+                        return MessageFormat.format(UNSIGNED48_OUT_OF_RANGE, label);
 
                     } else
                         return emptyString;
@@ -438,8 +488,7 @@ public class AbstractObjectPropertySource {
 
                     if (valueToBeChecked < DataTypeRange.Unsigned56_min
                             || valueToBeChecked > DataTypeRange.Unsigned56_max) {
-                        return (label + " is out of range (0 to 72,057,594,037,927,935).");
-
+                        return MessageFormat.format(UNSIGNED56_OUT_OF_RANGE, label);
                     } else
                         return emptyString;
                 } catch (NumberFormatException e) {
@@ -452,7 +501,7 @@ public class AbstractObjectPropertySource {
                 try {
 
                     if (valueToBeChecked < 0 || valueToBeChecked >= Long.MAX_VALUE) {
-                        return (label + " out of range (0 to " + Long.MAX_VALUE + ").");
+                        return MessageFormat.format(UNSIGNED64_OUT_OF_RANGE, label);
 
                     } else
                         return emptyString;
@@ -467,7 +516,7 @@ public class AbstractObjectPropertySource {
 
                     if (valueToBeChecked < DataTypeRange.Unsigned32_min
                             || valueToBeChecked > DataTypeRange.Unsigned32_max) {
-                        return (label + " is out of range (0 to 4,294,967,295).");
+                        return MessageFormat.format(DOMAIN_OUT_OF_RANGE, label);
 
                     } else
                         return emptyString;

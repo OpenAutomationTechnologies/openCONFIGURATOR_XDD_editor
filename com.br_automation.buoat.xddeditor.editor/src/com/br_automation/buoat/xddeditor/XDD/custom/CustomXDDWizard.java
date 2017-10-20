@@ -82,7 +82,7 @@ public class CustomXDDWizard extends XDDModelWizard {
     @Override
     public void addPages() {
         // Create a page, set the title, and the initial model file name.
-        this.newFileCreationPage = new XDDModelWizardNewFileCreationPage("WizPag1", this.selection);
+        this.newFileCreationPage = new XDDModelWizardNewFileCreationPage("WizPag", this.selection);
         this.newFileCreationPage.setTitle(XDDEditorPlugin.INSTANCE.getString("_UI_XDDModelWizard_label"));
         this.newFileCreationPage.setDescription(XDDEditorPlugin.INSTANCE.getString("_UI_XDDModelWizard_description"));
         this.newFileCreationPage.setFileName(XDDEditorPlugin.INSTANCE.getString("_UI_XDDEditorFilenameDefaultBase")
@@ -121,7 +121,7 @@ public class CustomXDDWizard extends XDDModelWizard {
         this.wizardTemplatePage = new WizardTemplatePage("wizardTemplatePage");
         this.addPage(this.wizardTemplatePage);
 
-        this.wizardConfigurationPage = new WizardConfigurationPage("wizardConfigurationPage1", this);
+        this.wizardConfigurationPage = new WizardConfigurationPage("wizardConfigurationPage", this);
         this.addPage(this.wizardConfigurationPage);
 
     }

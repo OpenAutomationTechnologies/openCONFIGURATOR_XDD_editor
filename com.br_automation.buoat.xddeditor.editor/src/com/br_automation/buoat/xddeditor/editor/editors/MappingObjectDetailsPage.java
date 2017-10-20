@@ -281,7 +281,6 @@ public class MappingObjectDetailsPage extends EEFAdvancedPropertySection impleme
         this.lblError.setText("");
         subObject.setDefaultValue(newValue);
         updateDocument(docRoot);
-        System.err.println("new Default value..." + newValue);
         this.lblDefaultValueValue.setText(newValue);
 
     } // setDefaultValue
@@ -631,31 +630,21 @@ public class MappingObjectDetailsPage extends EEFAdvancedPropertySection impleme
         // MappingobjectIndex label
         Label lblMOIndex = managedForm.getToolkit().createLabel(grpOptionalData,
                 Messages.advancedMappingObjectPropertySection_lbl_MO_Index);
-        lblMOIndex.setToolTipText("Index of Mapping Object"); //$NON-NLS-1$
-
-        // lblMOIndex.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false,
-        // false, 1, 1));
+        lblMOIndex.setToolTipText(Messages.advancedMappingObjectPropertySection_lbl_MO_Index); // $NON-NLS-1$
 
         this.cmbIndex = new Combo(grpOptionalData, SWT.READ_ONLY);
         this.cmbIndex.setToolTipText(Messages.advancedMappingObjectPropertySection_help_Index_combobox);
 
-        // this.cmbIndex.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false,
-        // false, 1, 1));
         this.cmbIndex.removeAll();
 
         // SubindexLabel
         Label lblSubindex = managedForm.getToolkit().createLabel(grpOptionalData,
                 Messages.advancedMappingObjectPropertySection_lbl_MO_Subindex);
-        lblSubindex.setToolTipText("Subindex of Sub-object"); //$NON-NLS-1$
-
-        // lblSubindex.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false,
-        // false, 1, 1));
+        lblSubindex.setToolTipText(Messages.advancedMappingObjectPropertySection_lbl_MO_Subindex); // $NON-NLS-1$
 
         this.cmbSubindex = new Combo(grpOptionalData, SWT.READ_ONLY);
         this.cmbSubindex.setToolTipText(Messages.advancedMappingObjectPropertySection_help_subindex_combobox);
 
-        // this.cmbSubindex.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER,
-        // false, false, 1, 1));
         this.cmbSubindex.removeAll();
         this.cmbSubindex.setEnabled(false);
         this.cmbSubindex.setBackground(XDDUtilities.getGrey(this.device));
@@ -664,13 +653,9 @@ public class MappingObjectDetailsPage extends EEFAdvancedPropertySection impleme
         Label lbloffset = managedForm.getToolkit().createLabel(grpOptionalData,
                 Messages.advancedMappingObjectPropertySection_lbl_Offset);
         lbloffset.setToolTipText(Messages.advancedMappingObjectPropertySection_lbl_Offset);
-        // lbloffset.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false,
-        // false, 1, 1));
 
         this.txtOffset = new Text(grpOptionalData, SWT.BORDER);
 
-        // this.txtOffset.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER,
-        // false, false, 1, 1));
         this.txtOffset.addFocusListener(this.offsetListener);
 
         // Lengthlabel
@@ -678,16 +663,11 @@ public class MappingObjectDetailsPage extends EEFAdvancedPropertySection impleme
                 Messages.advancedMappingObjectPropertySection_lbl_Length);
         lbllength.setToolTipText(Messages.advancedMappingObjectPropertySection_lbl_Length);
 
-        // lbllength.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false,
-        // false, 1, 1));
-
         // Combobox / Textboxen
 
         // Textbox Length
         this.txtLength = new Text(grpOptionalData, SWT.BORDER);
 
-        // this.txtLength.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER,
-        // false, false, 1, 1));
         this.txtLength.addFocusListener(this.lengthListener);
 
         // Errorlabel

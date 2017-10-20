@@ -34,6 +34,7 @@ package com.br_automation.buoat.xddeditor.editor.adapters;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -82,6 +83,11 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
     public static final String OBJ_SUB_INDEX_ID = "Obj.SubIndexId"; //$NON-NLS-1$
     public static final String OBJ_EDITABLE_SUB_INDEX_ID = "Obj.SubIndexId.Editable"; //$NON-NLS-1$
     public static final String OBJ_SUB_INDEX_LABEL = "Sub-Object ID"; //$NON-NLS-1$
+    public static final String SUB_OBJECT_CANNOT_BE_EMPTY = "Sub-object name cannot be empty.";
+    public static final String INVALID_OBJECT_NAME = "Invalid object name";
+    private static final String DEFAULT_VALUE_EXCEEDS_HIGH_LIMIT = "Default value {0} exceeds the high limit value {1}.";
+    private static final String DEFAULT_VALUE_LESS_THAN_LOW_LIMIT = "Default value {0} cannot be lesser than low limit value {1}.";
+
     private static final PropertyDescriptor subObjectIdDescriptor = new PropertyDescriptor(OBJ_SUB_INDEX_ID,
             OBJ_SUB_INDEX_LABEL);
     private static final TextPropertyDescriptor subObjectIdEditableDescriptor = new TextPropertyDescriptor(
@@ -194,15 +200,13 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
         if (name instanceof String) {
             String nodeName = ((String) name);
             if (nodeName.isEmpty()) {
-                return "Sub-object name cannot be empty.";
+                return SUB_OBJECT_CANNOT_BE_EMPTY;
             }
 
             if (nodeName.charAt(0) == ' ') {
-                return "Invalid object name";
+                return INVALID_OBJECT_NAME;
             }
 
-        } else {
-            System.err.println("HandleObjectName: Invalid value type:" + name);
         }
         return null;
     }
@@ -351,7 +355,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
             case OBJ_DATATYPE_ID:
                 if (plkSubObject.getDataType() != null) {
                     String dataType = DatatypeConverter.printHexBinary(plkSubObject.getDataType());
-                    String dataTypeVal = getDataTypeValue(dataType);
+                    String dataTypeVal = getDataType(dataType);
                     retObj = dataTypeVal;
                 } else {
                     retObj = StringUtils.EMPTY;
@@ -360,7 +364,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
             case OBJ_DATATYPE_EDITABLE_ID:
                 if (plkSubObject.getDataType() != null) {
                     String dataType = DatatypeConverter.printHexBinary(plkSubObject.getDataType());
-                    String dataTypeVal = getDataTypeValue(dataType);
+                    String dataTypeVal = getDataType(dataType);
                     if (!dataType.isEmpty()) {
                         for (int i = 0; i < DATA_TYPE_LIST.length; i++) {
                             if (DATA_TYPE_LIST[i].equals(dataTypeVal)) {
@@ -485,13 +489,14 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
     }
 
     /**
-     * Gets the value of IEC data type
+     *
+     * Gets the data type of the IEC value
      *
      * @param dataType
      *            Value of selected data type
-     * @return IEC value of data type
+     * @return data type of IEC value
      */
-    public String getDataTypeValue(String dataType) {
+    public String getDataType(String dataType) {
         switch (dataType) {
 
         case "0001":
@@ -596,21 +601,27 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
         String lowLimit = (String) value;
         String highLimit = plkSubObject.getHighLimit();
         String dataTypeVal = DatatypeConverter.printHexBinary(plkSubObject.getDataType());
-        String dataType = getDataTypeValue(dataTypeVal);
+        String dataType = getDataType(dataTypeVal);
         try {
             if (highLimit != null) {
                 if ((!highLimit.isEmpty()) && (!lowLimit.isEmpty()))
                     if (Long.parseLong(lowLimit) > Long.parseLong(highLimit)) {
-                        return "Low limit cannot be greater than high limit.";
+                        return LOW_LIMIT_GREATER_HIGH_LIMIT;
 
                     }
             }
         } catch (NumberFormatException ex) {
-            return "The value '" + lowLimit + "' is invalid.";
+            return MessageFormat.format(INVALID_VALUE, lowLimit);
         }
 
         return isValidVal(lowLimit, "Low limit", dataType);
     }
+
+    public static final String INVALID_CONST_OPTIONAL_MAPPING = "Sub-object with access type 'const' does not allow optional mapping";
+    public static final String INVALID_CONST_TPDO_MAPPING = "Sub-object with access type 'const' does not allow TPDO mapping";
+    public static final String INVALID_CONST_RPDO_MAPPING = "Sub-object with access type 'const' does not allow RPDO mapping";
+    public static final String INVALID_RW_TPDO_MAPPING = "Sub-object with access type 'rw' does not allow TPDO mapping";
+    public static final String INVALID_RO_RPDO_MAPPING = "Sub-object with access type 'ro' does not allow RPDO mapping";
 
     /**
      * Handles the PDO mapping value modifications.
@@ -632,23 +643,23 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
                 break;
             case "Optional":
                 if (accessType == TObjectAccessType.CONST) {
-                    return "Sub-object with access type 'const' does not allow optional mapping";
+                    return INVALID_CONST_OPTIONAL_MAPPING;
                 }
                 break;
             case "TPDO":
                 if (accessType == TObjectAccessType.CONST) {
-                    return "Sub-object with access type 'const' does not allow TPDO mapping";
+                    return INVALID_CONST_TPDO_MAPPING;
                 }
                 if (accessType == TObjectAccessType.RW) {
-                    return "Sub-object with access type 'rw' does not allow TPDO mapping";
+                    return INVALID_RW_TPDO_MAPPING;
                 }
                 break;
             case "RPDO":
                 if (accessType == TObjectAccessType.CONST) {
-                    return "Sub-object with access type 'const' does not allow RPDO mapping";
+                    return INVALID_CONST_RPDO_MAPPING;
                 }
                 if (accessType == TObjectAccessType.RO) {
-                    return "Sub-object with access type 'ro' does not allow RPDO mapping";
+                    return INVALID_RO_RPDO_MAPPING;
                 }
                 break;
             default:
@@ -672,17 +683,17 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
         String highLimit = (String) value;
         String lowLimit = plkSubObject.getHighLimit();
         String dataTypeVal = DatatypeConverter.printHexBinary(plkSubObject.getDataType());
-        String dataType = getDataTypeValue(dataTypeVal);
+        String dataType = getDataType(dataTypeVal);
         try {
             if (lowLimit != null) {
                 if ((!highLimit.isEmpty()) && (!lowLimit.isEmpty()))
                     if (Long.parseLong(lowLimit) > Long.parseLong(highLimit)) {
-                        return "Low limit cannot be greater than high limit.";
+                        return LOW_LIMIT_GREATER_HIGH_LIMIT;
 
                     }
             }
         } catch (NumberFormatException ex) {
-            return "The value '" + highLimit + "' is invalid.";
+            return MessageFormat.format(INVALID_VALUE, highLimit);
         }
 
         return isValidVal(highLimit, "High limit", dataType);
@@ -726,11 +737,11 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
     protected String handleDefaultValue(Object value) {
         String defaultVal = StringUtils.EMPTY;
         String dataTypeVal = DatatypeConverter.printHexBinary(plkSubObject.getDataType());
-        String dataType = getDataTypeValue(dataTypeVal);
+        String dataType = getDataType(dataTypeVal);
         try {
             defaultVal = (String) value;
             if (!isValueValid(defaultVal)) {
-                return "The value '" + defaultVal + "' is invalid.";
+                return MessageFormat.format(INVALID_VALUE, defaultVal);
             }
 
             if (defaultVal.contains("0x")) {
@@ -742,8 +753,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
                 if (!plkSubObject.getHighLimit().isEmpty()) {
                     Long highlimitVal = Long.valueOf(plkSubObject.getHighLimit());
                     if (defaultValue > highlimitVal) {
-                        return "Default value '" + defaultValue + "' exceeds the high limit value '" + highlimitVal
-                                + "'.";
+                        return MessageFormat.format(DEFAULT_VALUE_EXCEEDS_HIGH_LIMIT, defaultValue, highlimitVal);
                     }
                 }
             }
@@ -752,14 +762,13 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
                 if (!plkSubObject.getLowLimit().isEmpty()) {
                     Long lowLimitVal = Long.valueOf(plkSubObject.getLowLimit());
                     if (defaultValue < lowLimitVal) {
-                        return "Default value '" + defaultValue + "' cannot be lesser than low limit value '"
-                                + lowLimitVal + "'.";
+                        return MessageFormat.format(DEFAULT_VALUE_LESS_THAN_LOW_LIMIT, defaultValue, lowLimitVal);
                     }
                 }
             }
 
         } catch (NumberFormatException ex) {
-            return "The value '" + defaultVal + "' is invalid.";
+            return MessageFormat.format(INVALID_VALUE, defaultVal);
         }
         return isValidVal(defaultVal, "Default value", dataType);
     }
@@ -797,6 +806,13 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
         // TODO: Implement reset default value property.
     }
 
+    /**
+     * Get the value of given object type
+     *
+     * @param objectTypeText
+     *            Name of object type
+     * @return numeric value of object type
+     */
     public short getObjectType(String objectTypeText) {
 
         if (objectTypeText.equalsIgnoreCase(IPowerlinkConstants.OBJECT_TYPES[0])) {
@@ -812,6 +828,13 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
         return 0;
     }
 
+    /**
+     * Get the TObjectaccess type of given value
+     *
+     * @param accessType
+     *            Name of selected access type
+     * @return TObjectAcess type value
+     */
     public TObjectAccessType getAccessType(String accessType) {
 
         if (accessType.equalsIgnoreCase("Constant")) {
@@ -856,7 +879,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
      *            Value of selected data type
      * @return IEC value of data type
      */
-    public String getDataType(String dataType) {
+    public String getDataTypeVal(String dataType) {
         switch (dataType) {
         case "Boolean":
             return "0001";
@@ -1041,7 +1064,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
                     if (value instanceof Integer) {
                         String val = DATA_TYPE_LIST[(int) value];
                         if (!val.isEmpty()) {
-                            byte[] dataType = DatatypeConverter.parseHexBinary(getDataType(val));
+                            byte[] dataType = DatatypeConverter.parseHexBinary(getDataTypeVal(val));
 
                             MessageDialog dialog = new MessageDialog(null, "Change Data Type?", null,
                                     "Changing the data type will remove the current values in 'Default value' , 'Low lmit' and 'High Limit'. \n\nAre you sure you want to change?",
@@ -1129,6 +1152,14 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
         return root;
     }
 
+    /**
+     * Verifies whether the entered value is updated in XDD file
+     *
+     * @param documentRoot
+     *            Instance of XDD file
+     * @return <code>True</code> If value is updated in document,
+     *         <code>False</code> otherwise.
+     */
     public boolean updateDocument(DocumentRoot documentRoot) {
 
         // Create a resource for this file.

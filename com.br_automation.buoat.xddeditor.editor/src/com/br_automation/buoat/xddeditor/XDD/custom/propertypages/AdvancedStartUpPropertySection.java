@@ -75,6 +75,11 @@ public class AdvancedStartUpPropertySection extends AbstractPropertySection {
     private CLabel lblDefaultValueValue;
     private CLabel lblError;
 
+    private TObject tobject;
+    private TObjectComposite tObjectComposite;
+
+    private TObjectItemProvider tObjectProvider;
+
     private final SelectionListener selectionListener = new SelectionAdapter() {
 
         @Override
@@ -101,11 +106,6 @@ public class AdvancedStartUpPropertySection extends AbstractPropertySection {
 
         }
     }; // SelectionListener
-
-    private TObject tobject;
-    private TObjectComposite tObjectComposite;
-
-    private TObjectItemProvider tObjectProvider;
 
     @Override
     public void createControls(Composite parent, TabbedPropertySheetPage aTabbedPropertySheetPage) {

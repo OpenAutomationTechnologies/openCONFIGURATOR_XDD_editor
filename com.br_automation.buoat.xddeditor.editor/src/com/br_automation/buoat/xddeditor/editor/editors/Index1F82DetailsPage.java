@@ -92,12 +92,29 @@ public class Index1F82DetailsPage implements IDetailsPage {
     private DocumentRoot docRoot;
     private DeviceDescriptionFileEditor editor;
 
+    private Label valueOfLblDefaultValue;
+    private Label lblError;
+
+    private TObject tobject;
+
+    private final Map<Button, Integer> buttonMap = new HashMap<Button, Integer>();
+
+    private static final String[] OBJECT_TYPES = new String[] { "7 - VAR", "8 - ARRAY", "9 - RECORD" };
+
     public Index1F82DetailsPage(TObjectImpl index1f82Object, DocumentRoot docRoot, DeviceDescriptionFileEditor editor) {
         this.index1F82Object = index1f82Object;
         this.docRoot = docRoot;
         this.editor = editor;
     }
 
+    /**
+     * Verifies whether the entered value is updated in XDD file
+     *
+     * @param documentRoot
+     *            Instance of XDD file
+     * @return <code>True</code> If value is updated in document,
+     *         <code>False</code> otherwise.
+     */
     public boolean updateDocument(DocumentRoot documentRoot) {
         // Create a resource set
         ResourceSet resourceSet = new ResourceSetImpl();
@@ -174,8 +191,6 @@ public class Index1F82DetailsPage implements IDetailsPage {
 
     }
 
-    private TObject tobject;
-
     @Override
     public void selectionChanged(IFormPart part, ISelection selection) {
         if (selection instanceof IStructuredSelection) {
@@ -243,23 +258,21 @@ public class Index1F82DetailsPage implements IDetailsPage {
                 String objectType = String.valueOf(obj.getObjectType());
                 if (objectType.equalsIgnoreCase("7")) {
                     if (objTypeText != null) {
-                        objTypeText.setText("7 - VAR");
+                        objTypeText.setText(OBJECT_TYPES[0]);
                     }
                 } else if (objectType.equalsIgnoreCase("8")) {
                     if (objTypeText != null) {
-                        objTypeText.setText("8 - ARRAY");
+                        objTypeText.setText(OBJECT_TYPES[1]);
                     }
                 } else if (objectType.equalsIgnoreCase("9")) {
                     if (objTypeText != null) {
-                        objTypeText.setText("9 - RECORD");
+                        objTypeText.setText(OBJECT_TYPES[2]);
                     }
                 }
             }
         }
 
     }
-
-    private final Map<Button, Integer> buttonMap = new HashMap<Button, Integer>();
 
     private final SelectionListener selectionListener = new SelectionAdapter() {
 
@@ -301,9 +314,6 @@ public class Index1F82DetailsPage implements IDetailsPage {
             updateDocument(docRoot);
         }
     }; // SelectionListener
-
-    private Label valueOfLblDefaultValue;
-    private Label lblError;
 
     @Override
     public void createContents(Composite parent) {

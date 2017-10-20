@@ -163,6 +163,8 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
     private static final String INVALID_VENDOR_NAME_EMPTY_ERROR = "Vendor name cannot be empty.";
     private static final String OBJECT_DICTIONARY_HYPERLINK_DESCRIPTION = ": Edit the POWERLINK object dictionary of the device.";
     private static final String NETWORK_MANAGEMENT_HYPERLINK_DESCRIPTION = ": Configure network management properties.";
+    private static final String VENDOR_ID_VAL_DOES_NOT_FIT_IN_RANGE = "Vendor ID value {0} does not fit within the range (0 - 4,294,967,295) of data type 'Unsigned32'.";
+    private static final String PRODUCT_ID_VAL_DOES_NOT_FIT_IN_RANGE = "Product ID value {0} does not fit within the range (0 - 4,294,967,295) of data type 'Unsigned32'.";
 
     private static final String PROJECT_INFORMATION_SECTION_HEADING = "File Information";
     private static final String PROJECT_INFORMATION_SECTION_HEADING_DESCRIPTION = "Provides the device description file information.";
@@ -173,6 +175,7 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
     private static final String GENERATOR_SECTION_VERSION_LABEL = "Version:";
     private static final String GENERATOR_SECTION_TOOL_NAME_LABEL = "Tool Name:";
     private static final String GENERATOR_SECTION_VENDOR_NAME_LABEL = "Vendor:";
+    public static final String FIRMWARE_LIST = "Firmware List";
 
     /**
      * Name verify listener
@@ -593,31 +596,9 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
 
     }
 
-    /**
-     * Keyboard bindings.
-     */
-    private static KeyAdapter treeViewerKeyListener = new KeyAdapter() {
-        @Override
-        public void keyReleased(final KeyEvent e) {
-            if (((e.stateMask & SWT.CTRL) == SWT.CTRL) && ((e.keyCode == 'c') || (e.keyCode == 'C'))) {
-
-            } else if (((e.stateMask & SWT.CTRL) == SWT.CTRL) && ((e.keyCode == 'v') || (e.keyCode == 'V'))) {
-                System.err.println("The paste action invoked!");
-
-            }
-
-        }
-
-    };
-
     private void addListenersToControls() {
         vendorIdText.addModifyListener(vendorIdModifyListener);
         vendorIdText.addVerifyListener(nameVerifyListener);
-        try {
-            vendorIdText.addKeyListener(treeViewerKeyListener);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         vendorNameText.addModifyListener(vendorNameModifyListener);
         productIdText.addVerifyListener(nameVerifyListener);
 
@@ -691,7 +672,6 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
                 productNameText.setEditable(false);
                 break;
             default:
-                System.err.println("Invalid selection!");
                 break;
             }
         }
@@ -714,6 +694,9 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
         }
     }
 
+    /**
+     * @return TDevice Identity of XDD file
+     */
     public TDeviceIdentity getDeviceIdentity() {
 
         EList<ISO15745ProfileType> profiles = documentRoot.getISO15745ProfileContainer().getISO15745Profile();
@@ -763,8 +746,7 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
                     if (!val.isEmpty()) {
                         long vendorIdVal = Long.parseLong(val, 16);
                         if (vendorIdVal < DataTypeRange.Unsigned32_min || vendorIdVal > DataTypeRange.Unsigned32_max) {
-                            setErrorMessage("Vendor ID value '" + vendorIdVal
-                                    + "' does not fit within the range (0 - 4,294,967,295) of data type 'Unsigned32'.");
+                            setErrorMessage(MessageFormat.format(VENDOR_ID_VAL_DOES_NOT_FIT_IN_RANGE, vendorIdVal));
                             return;
 
                         }
@@ -980,8 +962,7 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
                         long productIdVal = Long.parseLong(val, 16);
                         if (productIdVal < DataTypeRange.Unsigned32_min
                                 || productIdVal > DataTypeRange.Unsigned32_max) {
-                            setErrorMessage("Product ID value '" + productIdVal
-                                    + "' does not fit within the range (0 - 4,294,967,295) of data type 'Unsigned32'.");
+                            setErrorMessage(MessageFormat.format(PRODUCT_ID_VAL_DOES_NOT_FIT_IN_RANGE, productIdVal));
                             return;
 
                         }
@@ -1046,6 +1027,14 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
         }
     };
 
+    /**
+     * Verifies whether the entered value is updated in XDD file
+     *
+     * @param documentRoot
+     *            Instance of XDD file
+     * @return <code>True</code> If value is updated in document,
+     *         <code>False</code> otherwise.
+     */
     public boolean updateDocument(DocumentRoot documentRoot) {
         // Create a resource set
         ResourceSet resourceSet = new ResourceSetImpl();
@@ -1208,7 +1197,7 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
         @Override
         public String getText(Object element) {
             if (element instanceof TFirmwareList) {
-                return "Firmware List";
+                return FIRMWARE_LIST;
             } else if (element instanceof FirmwareType) {
                 FirmwareType subObj = (FirmwareType) element;
                 String firmware = subObj.getURI();
@@ -1302,6 +1291,9 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
 
     }
 
+    /**
+     * @return TDeviceFunction from XDD file
+     */
     public TDeviceFunction getDeviceFunction() {
         EList<ISO15745ProfileType> profiles = documentRoot.getISO15745ProfileContainer().getISO15745Profile();
         ISO15745ProfileType profile1 = profiles.get(0);

@@ -63,6 +63,19 @@ import com.br_automation.buoat.xddeditor.XDD.provider.TObjectItemProvider;
  */
 public class TObjectComposite extends Composite {
     private final Combo cmbObjectType;
+    private SubObjectType subobject;
+    private final SubObjectTypeItemProvider subObjectItemProvicer;
+    private TObject tobject;
+    private final TObjectItemProvider tobjectitemProvider;
+    private final Text txtIndex;
+    private final Text txtName;
+
+    private final RegexVerifyListener indexVerifyListener = new RegexVerifyListener(RegexVerifyListener.PATTERN_HEX,
+            Arrays.asList(Character.valueOf((char) 0x7f), Character.valueOf((char) 0x8)), true);
+
+    private boolean isTObject;
+    private final Label lblindex;
+
     private final FocusAdapter indexFocusListener = new FocusAdapter() {
         @Override
         public void focusLost(FocusEvent event) {
@@ -81,11 +94,6 @@ public class TObjectComposite extends Composite {
             }
         }
     };
-    private final RegexVerifyListener indexVerifyListener = new RegexVerifyListener(RegexVerifyListener.PATTERN_HEX,
-            Arrays.asList(Character.valueOf((char) 0x7f), Character.valueOf((char) 0x8)), true);
-
-    private boolean isTObject;
-    private final Label lblindex;
 
     private final FocusAdapter nameListener = new FocusAdapter() {
         @Override
@@ -122,12 +130,6 @@ public class TObjectComposite extends Composite {
                         "objectType", selection); //$NON-NLS-1$
         }
     };
-    private SubObjectType subobject;
-    private final SubObjectTypeItemProvider subObjectItemProvicer;
-    private TObject tobject;
-    private final TObjectItemProvider tobjectitemProvider;
-    private final Text txtIndex;
-    private final Text txtName;
 
     /**
      * @brief Also needs the AdapterFactory to set properties for the Object.
@@ -215,8 +217,8 @@ public class TObjectComposite extends Composite {
         } else {
             this.isTObject = false;
             this.txtIndex.setTextLimit(2);
-            if(object instanceof SubObjectType) {
-            this.subobject = (SubObjectType) object;
+            if (object instanceof SubObjectType) {
+                this.subobject = (SubObjectType) object;
             }
             this.lblindex.setText("Subindex:"); //$NON-NLS-1$
 

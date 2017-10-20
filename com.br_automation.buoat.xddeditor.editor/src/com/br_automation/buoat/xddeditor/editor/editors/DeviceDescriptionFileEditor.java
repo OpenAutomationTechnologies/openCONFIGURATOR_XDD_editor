@@ -111,6 +111,7 @@ public final class DeviceDescriptionFileEditor extends FormEditor
     private static final String NETWORK_MANAGEMENT_EDITOR_PAGE_NAME = "Network Management";
     private static final String PROJECT_EDITOR_CREATION_ERROR_MESSAGE = "Error creating project editor overview page.";
     private static final String INVALID_INPUT_ERROR = "Invalid input: Must be a valid device description file.";
+    public AdapterFactoryEditingDomain editingDomain;
 
     /**
      * Eclipse project instance linked with this editor.
@@ -131,6 +132,8 @@ public final class DeviceDescriptionFileEditor extends FormEditor
      * Network management editor page.
      */
     private NetworkManagementEditorPage ntwrkMgmteditorPage;
+
+    private ObjectDictionaryEditorPage objectEditorPage;
 
     /**
      * Constructor
@@ -217,8 +220,6 @@ public final class DeviceDescriptionFileEditor extends FormEditor
             e.printStackTrace();
         }
     }
-
-    private ObjectDictionaryEditorPage objectEditorPage;
 
     /**
      * Creates the Object dictionary editor page
@@ -339,6 +340,9 @@ public final class DeviceDescriptionFileEditor extends FormEditor
 
     }
 
+    /**
+     * @return Vendor ID value from XDD file
+     */
     public String getVendorId() {
         TDeviceIdentity deviceIdentity = getDeviceIdentity();
         if (deviceIdentity.getVendorID() != null) {
@@ -348,6 +352,9 @@ public final class DeviceDescriptionFileEditor extends FormEditor
         return StringUtils.EMPTY;
     }
 
+    /**
+     * @return Product ID value from XDD file
+     */
     public String getproductId() {
         TDeviceIdentity deviceIdentity = getDeviceIdentity();
         if (deviceIdentity.getProductID() != null) {
@@ -356,6 +363,9 @@ public final class DeviceDescriptionFileEditor extends FormEditor
         return StringUtils.EMPTY;
     }
 
+    /**
+     * @return TDeviceIdentity of XDD file
+     */
     public TDeviceIdentity getDeviceIdentity() {
         EList<ISO15745ProfileType> profiles = getDocumentRoot().getISO15745ProfileContainer().getISO15745Profile();
         ISO15745ProfileType profile1 = profiles.get(0);
@@ -375,6 +385,9 @@ public final class DeviceDescriptionFileEditor extends FormEditor
         return false;
     }
 
+    /**
+     * @return Instance of active XDD project
+     */
     public IProject getProject() {
         return activeProject;
     }
@@ -483,8 +496,6 @@ public final class DeviceDescriptionFileEditor extends FormEditor
         return (EditingDomainActionBarContributor) getEditorSite().getActionBarContributor();
     }
 
-    public AdapterFactoryEditingDomain editingDomain;
-
     /**
      * Handles activation of the editor or it's associated views. <!--
      * begin-user-doc --> <!-- end-user-doc -->
@@ -584,7 +595,7 @@ public final class DeviceDescriptionFileEditor extends FormEditor
     }
 
     @SuppressWarnings("unchecked")
-	@Override
+    @Override
     public Object getAdapter(@SuppressWarnings("rawtypes") Class key) {
         if (key.equals(IGotoMarker.class)) {
             return this;

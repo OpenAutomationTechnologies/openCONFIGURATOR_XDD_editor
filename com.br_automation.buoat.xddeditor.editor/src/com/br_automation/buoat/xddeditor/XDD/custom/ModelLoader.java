@@ -80,7 +80,7 @@ public final class ModelLoader {
      * @return DocumentRoot with appended data.
      */
     public static DocumentRoot createXDDFromWizardData(WizardTemplatePage wizardTemplatePage,
-            WizardConfigurationPage wizardConfigurationPage1) {
+            WizardConfigurationPage wizardConfigurationPage) {
         // check which Template is used (static etc.)
         String resourceName;
 
@@ -95,9 +95,9 @@ public final class ModelLoader {
         DocumentRoot root = XDDUtilities.loadXDD(ModelLoader.class.getResource(resourceName));
 
         if (wizardTemplatePage.isConfigurationWizardStatus())
-            ModelLoader.appendUserData(root, wizardConfigurationPage1);
+            ModelLoader.appendUserData(root, wizardConfigurationPage);
         else
-            ModelLoader.appendMetaData(root, wizardConfigurationPage1);
+            ModelLoader.appendMetaData(root, wizardConfigurationPage);
         return root;
     } // createXDDFromWizardData
 
@@ -244,42 +244,42 @@ public final class ModelLoader {
      * @brief Appends reduced data when advanced wizard is not used.
      * @param root
      *            DocumentRoot of the new Resource.
-     * @param wizardConfigurationPage1
+     * @param wizardConfigurationPage
      *            Instance of the WizardConfigurationPage fetch user-input.
      * @return DocumentRoot with appended meta-data gathered from the system.
      */
-    private static DocumentRoot appendMetaData(DocumentRoot root, WizardConfigurationPage wizardConfigurationPage1) {
+    private static DocumentRoot appendMetaData(DocumentRoot root, WizardConfigurationPage wizardConfigurationPage) {
 
         EList<ISO15745ProfileType> profiles = root.getISO15745ProfileContainer().getISO15745Profile();
         ISO15745ProfileType profile1 = profiles.get(0);
         ISO15745ProfileType profile2 = profiles.get(1);
         ProfileHeaderDataType header1 = profile1.getProfileHeader();
         header1.setProfileIdentification("Powerlink_" //$NON-NLS-1$
-                + wizardConfigurationPage1.getDeviceNameString() + "_Profile"); //$NON-NLS-1$
-        header1.setProfileName(wizardConfigurationPage1.getDeviceNameString() + " Profile"); //$NON-NLS-1$
+                + wizardConfigurationPage.getDeviceNameString() + "_Profile"); //$NON-NLS-1$
+        header1.setProfileName(wizardConfigurationPage.getDeviceNameString() + " Profile"); //$NON-NLS-1$
 
         // Setzen der Body-Werte im Profil 1
         ProfileBodyDataType body1 = profile1.getProfileBody();
-        body1.setFileCreationDate(wizardConfigurationPage1.getCreationDateXML());
-        body1.setFileCreationTime(wizardConfigurationPage1.getCreationTimeXML());
-        body1.setFileCreator(wizardConfigurationPage1.getCreatorString());
-        body1.setFileName(wizardConfigurationPage1.getFileNameString());
-        body1.setFileModificationDate(wizardConfigurationPage1.getCreationDateXML());
-        body1.setFileModificationTime(wizardConfigurationPage1.getCreationTimeXML());
-        body1.setFileVersion(wizardConfigurationPage1.getFileVersionString());
+        body1.setFileCreationDate(wizardConfigurationPage.getCreationDateXML());
+        body1.setFileCreationTime(wizardConfigurationPage.getCreationTimeXML());
+        body1.setFileCreator(wizardConfigurationPage.getCreatorString());
+        body1.setFileName(wizardConfigurationPage.getFileNameString());
+        body1.setFileModificationDate(wizardConfigurationPage.getCreationDateXML());
+        body1.setFileModificationTime(wizardConfigurationPage.getCreationTimeXML());
+        body1.setFileVersion(wizardConfigurationPage.getFileVersionString());
 
         // Setzen der Body-Werte im Profil 2
         ProfileBodyDataType body2 = profile2.getProfileBody();
-        body2.setFileCreationDate(wizardConfigurationPage1.getCreationDateXML());
-        body2.setFileCreationTime(wizardConfigurationPage1.getCreationTimeXML());
-        body2.setFileCreator(wizardConfigurationPage1.getCreatorString());
-        body2.setFileName(wizardConfigurationPage1.getFileNameString());
-        body2.setFileModificationDate(wizardConfigurationPage1.getCreationDateXML());
-        body2.setFileModificationTime(wizardConfigurationPage1.getCreationTimeXML());
-        body2.setFileVersion(wizardConfigurationPage1.getFileNameString());
+        body2.setFileCreationDate(wizardConfigurationPage.getCreationDateXML());
+        body2.setFileCreationTime(wizardConfigurationPage.getCreationTimeXML());
+        body2.setFileCreator(wizardConfigurationPage.getCreatorString());
+        body2.setFileName(wizardConfigurationPage.getFileNameString());
+        body2.setFileModificationDate(wizardConfigurationPage.getCreationDateXML());
+        body2.setFileModificationTime(wizardConfigurationPage.getCreationTimeXML());
+        body2.setFileVersion(wizardConfigurationPage.getFileNameString());
 
         // For further Saves -> Give Utilites the creator name
-        XDDUtilities.setCreator(wizardConfigurationPage1.getCreatorString());
+        XDDUtilities.setCreator(wizardConfigurationPage.getCreatorString());
 
         return root;
     }
@@ -288,11 +288,11 @@ public final class ModelLoader {
      * @brief Appends the userdata from WizardConfigurationPage1.
      * @param root
      *            DocumentRoot of the new Resource.
-     * @param wizardConfigurationPage1
+     * @param wizardConfigurationPage
      *            Instance of the WizardConfigurationPage fetch user-input.
      * @return DocumentRoot with appended userdata from WizardConfigurationPage.
      */
-    private static DocumentRoot appendUserData(DocumentRoot root, WizardConfigurationPage wizardConfigurationPage1) {
+    private static DocumentRoot appendUserData(DocumentRoot root, WizardConfigurationPage wizardConfigurationPage) {
 
         EList<ISO15745ProfileType> profiles = root.getISO15745ProfileContainer().getISO15745Profile();
         ISO15745ProfileType profile1 = profiles.get(0);
@@ -300,80 +300,80 @@ public final class ModelLoader {
 
         ProfileHeaderDataType header1 = profile1.getProfileHeader();
         header1.setProfileIdentification("Powerlink_" //$NON-NLS-1$
-                + wizardConfigurationPage1.getDeviceNameString() + "_Profile"); //$NON-NLS-1$
-        header1.setProfileName(wizardConfigurationPage1.getDeviceNameString() + " Profile"); //$NON-NLS-1$
-        XDDUtilities.setCreator(wizardConfigurationPage1.getCreatorString());
+                + wizardConfigurationPage.getDeviceNameString() + "_Profile"); //$NON-NLS-1$
+        header1.setProfileName(wizardConfigurationPage.getDeviceNameString() + " Profile"); //$NON-NLS-1$
+        XDDUtilities.setCreator(wizardConfigurationPage.getCreatorString());
         // Setzen der Body-Werte im Profil 1
         ProfileBodyDataType body1 = profile1.getProfileBody();
-        body1.setFileCreationDate(wizardConfigurationPage1.getCreationDateXML());
-        body1.setFileCreationTime(wizardConfigurationPage1.getCreationTimeXML());
-        body1.setFileCreator(wizardConfigurationPage1.getCreatorString());
-        body1.setFileName(wizardConfigurationPage1.getFileNameString());
-        body1.setFileModificationDate(wizardConfigurationPage1.getCreationDateXML());
-        body1.setFileModificationTime(wizardConfigurationPage1.getCreationTimeXML());
-        body1.setFileModifiedBy(wizardConfigurationPage1.getCreatorString());
-        body1.setFileVersion(wizardConfigurationPage1.getFileVersionString());
+        body1.setFileCreationDate(wizardConfigurationPage.getCreationDateXML());
+        body1.setFileCreationTime(wizardConfigurationPage.getCreationTimeXML());
+        body1.setFileCreator(wizardConfigurationPage.getCreatorString());
+        body1.setFileName(wizardConfigurationPage.getFileNameString());
+        body1.setFileModificationDate(wizardConfigurationPage.getCreationDateXML());
+        body1.setFileModificationTime(wizardConfigurationPage.getCreationTimeXML());
+        body1.setFileModifiedBy(wizardConfigurationPage.getCreatorString());
+        body1.setFileVersion(wizardConfigurationPage.getFileVersionString());
 
         // Setzen der Vendor-Werte im Body 1
         EList<EObject> bodyContents = body1.eContents();
         EObject identity = bodyContents.get(0);
         TDeviceIdentity tDeviceIdentity = (TDeviceIdentity) identity;
-        tDeviceIdentity.getVendorName().setValue(wizardConfigurationPage1.getVendorNameString());
-        tDeviceIdentity.getVendorID().setValue(wizardConfigurationPage1.getVendorIDString());
-        tDeviceIdentity.getProductName().setValue(wizardConfigurationPage1.getProductNameString());
-        tDeviceIdentity.getVersion().get(0).setValue(wizardConfigurationPage1.getHardwareversString());
-        tDeviceIdentity.getVersion().get(1).setValue(wizardConfigurationPage1.getSoftwareversString());
+        tDeviceIdentity.getVendorName().setValue(wizardConfigurationPage.getVendorNameString());
+        tDeviceIdentity.getVendorID().setValue(wizardConfigurationPage.getVendorIDString());
+        tDeviceIdentity.getProductName().setValue(wizardConfigurationPage.getProductNameString());
+        tDeviceIdentity.getVersion().get(0).setValue(wizardConfigurationPage.getHardwareversString());
+        tDeviceIdentity.getVersion().get(1).setValue(wizardConfigurationPage.getSoftwareversString());
         tDeviceIdentity.getVersion().add(XDDFactory.eINSTANCE.createTVersion());
         TVersion fwVersion = tDeviceIdentity.getVersion().get(2);
         fwVersion.setVersionType(VersionTypeType.HW);
         fwVersion.setReadOnly(true);
-        fwVersion.setValue(wizardConfigurationPage1.getFirmwareversString());
+        fwVersion.setValue(wizardConfigurationPage.getFirmwareversString());
 
         // Set unsetted Value of ProductID of template
         tDeviceIdentity.setProductID(XDDFactory.eINSTANCE.createTProductID());
-        tDeviceIdentity.getProductID().setValue(wizardConfigurationPage1.getProductIDString());
+        tDeviceIdentity.getProductID().setValue(wizardConfigurationPage.getProductIDString());
 
         // Setzen der Body-Werte im Profil 2
         ProfileBodyDataType body2 = profile2.getProfileBody();
-        body2.setFileCreationDate(wizardConfigurationPage1.getCreationDateXML());
-        body2.setFileCreationTime(wizardConfigurationPage1.getCreationTimeXML());
-        body2.setFileCreator(wizardConfigurationPage1.getCreatorString());
-        body2.setFileName(wizardConfigurationPage1.getFileNameString());
-        body2.setFileModificationDate(wizardConfigurationPage1.getCreationDateXML());
-        body2.setFileModificationTime(wizardConfigurationPage1.getCreationTimeXML());
-        body2.setFileModifiedBy(wizardConfigurationPage1.getCreatorString());
-        body2.setFileVersion(wizardConfigurationPage1.getFileVersionString());
+        body2.setFileCreationDate(wizardConfigurationPage.getCreationDateXML());
+        body2.setFileCreationTime(wizardConfigurationPage.getCreationTimeXML());
+        body2.setFileCreator(wizardConfigurationPage.getCreatorString());
+        body2.setFileName(wizardConfigurationPage.getFileNameString());
+        body2.setFileModificationDate(wizardConfigurationPage.getCreationDateXML());
+        body2.setFileModificationTime(wizardConfigurationPage.getCreationTimeXML());
+        body2.setFileModifiedBy(wizardConfigurationPage.getCreatorString());
+        body2.setFileVersion(wizardConfigurationPage.getFileVersionString());
 
         // Setzen der Vendor.ID im Communication Body
         EList<EObject> bodyContents2 = body2.eContents();
         TApplicationLayers apllayers = (TApplicationLayers) bodyContents2.get(0);
         IdentityType identity2 = apllayers.getIdentity();
-        identity2.getVendorID().setValue(wizardConfigurationPage1.getVendorIDString());
+        identity2.getVendorID().setValue(wizardConfigurationPage.getVendorIDString());
         identity2.setProductID(XDDFactory.eINSTANCE.createTProductID());
-        identity2.getProductID().setValue(wizardConfigurationPage1.getProductIDString());
+        identity2.getProductID().setValue(wizardConfigurationPage.getProductIDString());
 
         // Setzen der General Features aus dem Wizard
         TNetworkManagement tnmg = (TNetworkManagement) body2.eContents().get(2);
         TGeneralFeatures generalFeatures = tnmg.getGeneralFeatures();
-        generalFeatures.setNMTBootTimeNotActive(wizardConfigurationPage1.getNMTBootTimeNotActive());
-        generalFeatures.setNMTCycleTimeMax(wizardConfigurationPage1.getNMTCycleTimeMax());
-        generalFeatures.setNMTCycleTimeMin(wizardConfigurationPage1.getNMTCycleTimeMin());
-        generalFeatures.setNMTErrorEntries(wizardConfigurationPage1.getNMTErrorEntries());
+        generalFeatures.setNMTBootTimeNotActive(wizardConfigurationPage.getNMTBootTimeNotActive());
+        generalFeatures.setNMTCycleTimeMax(wizardConfigurationPage.getNMTCycleTimeMax());
+        generalFeatures.setNMTCycleTimeMin(wizardConfigurationPage.getNMTCycleTimeMin());
+        generalFeatures.setNMTErrorEntries(wizardConfigurationPage.getNMTErrorEntries());
         generalFeatures.setDLLFeatureMN(false);
 
         // Setzen der CN Features aus dem Wizard
         TCNFeatures cnFeatures = tnmg.getCNFeatures();
-        cnFeatures.setDLLCNPResChaining(wizardConfigurationPage1.isResponseChaining());
-        cnFeatures.setNMTCNSoC2PReq(wizardConfigurationPage1.getNMTCNSoC2PReq());
+        cnFeatures.setDLLCNPResChaining(wizardConfigurationPage.isResponseChaining());
+        cnFeatures.setNMTCNSoC2PReq(wizardConfigurationPage.getNMTCNSoC2PReq());
 
-        cnFeatures.setDLLCNFeatureMultiplex(wizardConfigurationPage1.isCnMultiplexFeature());
-        if (wizardConfigurationPage1.isCnMultiplexFeature())
+        cnFeatures.setDLLCNFeatureMultiplex(wizardConfigurationPage.isCnMultiplexFeature());
+        if (wizardConfigurationPage.isCnMultiplexFeature())
             ModelLoader.setMultiplexFeatureObjects(true, root);
-        if (wizardConfigurationPage1.isNWLIPSupport())
+        if (wizardConfigurationPage.isNWLIPSupport())
             ModelLoader.setIPSupportObjects(true, root);
-        if (wizardConfigurationPage1.isResponseChaining())
+        if (wizardConfigurationPage.isResponseChaining())
             ModelLoader.setPResChainingObjects(true, root);
-        if (wizardConfigurationPage1.isMultipleASnd())
+        if (wizardConfigurationPage.isMultipleASnd())
             ModelLoader.setPResChainingObjects(true, root);
         return root;
     }

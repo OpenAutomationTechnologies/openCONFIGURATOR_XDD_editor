@@ -91,6 +91,16 @@ public class Index1F80DetailsPage implements IDetailsPage {
     private DocumentRoot docRoot;
     private DeviceDescriptionFileEditor editor;
 
+    private Label lblDefaultValueValue;
+
+    private int defaultValue;
+
+    private TObject tobject;
+
+    private final Map<Button, Integer> buttonMap = new HashMap<Button, Integer>(13);
+
+    private Label lblError;
+
     public Index1F80DetailsPage(TObjectImpl index1f80Object, DocumentRoot docRoot, DeviceDescriptionFileEditor editor) {
         this.index1F80Object = index1f80Object;
         this.docRoot = docRoot;
@@ -173,8 +183,6 @@ public class Index1F80DetailsPage implements IDetailsPage {
 
     }
 
-    private TObject tobject;
-
     private final SelectionListener selectionListener = new SelectionAdapter() {
 
         @Override
@@ -198,8 +206,6 @@ public class Index1F80DetailsPage implements IDetailsPage {
 
         }
     }; // SelectionListener
-
-    private int defaultValue;
 
     @Override
     public void selectionChanged(IFormPart part, ISelection selection) {
@@ -288,12 +294,6 @@ public class Index1F80DetailsPage implements IDetailsPage {
         }
     }
 
-    private Label lblDefaultValueValue;
-
-    private final Map<Button, Integer> buttonMap = new HashMap<Button, Integer>(13);
-
-    private Label lblError;
-
     @Override
     public void createContents(Composite parent) {
 
@@ -371,16 +371,7 @@ public class Index1F80DetailsPage implements IDetailsPage {
         grpOptionalData.setText(IPowerlinkConstants.OPTIONAL_GROUP);
         grpOptionalData.setLayout(new GridLayout(1, false));
 
-        // Label lblDefaultValue =
-        // managedForm.getToolkit().createLabel(grpOptionalData,
-        // IPowerlinkConstants.DEFAULT_VALUE); // $NON-NLS-1$
-        //
-        // lblDefaultValue.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER,
-        // false, false, 1, 1));
-
         this.lblDefaultValueValue = managedForm.getToolkit().createLabel(grpOptionalData, "               ");
-
-        // --Checkbox-Section
 
         // btnStartCNsMode
         Button btnStartCNsMode = managedForm.getToolkit().createButton(grpOptionalData,

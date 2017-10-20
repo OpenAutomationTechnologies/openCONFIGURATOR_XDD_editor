@@ -91,6 +91,24 @@ public class AdvancedMappingObjectPropertySection extends AbstractPropertySectio
     private long defaultValue;
     private final Device device = Display.getCurrent();
 
+    private long subindexValue;
+    private SubObjectTypeItemProvider subObjectItemProvider;
+    private TObjectComposite tobjectComposite;
+    private SubObjectType tsubObject;
+    private Text txtLength;
+    private Text txtOffset;
+    private Map<Integer, SubObjectType> validSubObjectTypes;
+    private Set<TObjectPDOMapping> validTObjectMapping;
+    private Map<Integer, TObject> validTObjects;
+
+    private int indexValue;
+
+    private CLabel lblDefaultValue;
+
+    private CLabel lblDefaultValueValue;
+    private CLabel lblError;
+    private CLabel lblIndexValue;
+
     private final SelectionAdapter indexListener = new SelectionAdapter() {
 
         @Override
@@ -159,13 +177,6 @@ public class AdvancedMappingObjectPropertySection extends AbstractPropertySectio
         } // widgetSelected
     }; // SelectionAdapter
 
-    private int indexValue;
-
-    private CLabel lblDefaultValue;
-
-    private CLabel lblDefaultValueValue;
-    private CLabel lblError;
-    private CLabel lblIndexValue;
     // When length-Texbox looses focus -> Check values,calculate & set the new
     // defaultvalues
     private final FocusAdapter lengthListener = new FocusAdapter() {
@@ -252,15 +263,6 @@ public class AdvancedMappingObjectPropertySection extends AbstractPropertySectio
             }
         } // widgetSelected
     }; // SelectionAdapter
-    private long subindexValue;
-    private SubObjectTypeItemProvider subObjectItemProvider;
-    private TObjectComposite tobjectComposite;
-    private SubObjectType tsubObject;
-    private Text txtLength;
-    private Text txtOffset;
-    private Map<Integer, SubObjectType> validSubObjectTypes;
-    private Set<TObjectPDOMapping> validTObjectMapping;
-    private Map<Integer, TObject> validTObjects;
 
     // Creates the Checkbox-Buttons and Labels as well as slection listeners for
     // each component

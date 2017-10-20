@@ -124,7 +124,7 @@ public class NewSubObjectWizard extends Wizard {
 
                         if (addSubObjectWizardPage.getDataType() != null) {
                             subObj.setDataType(
-                                    DatatypeConverter.parseHexBinary(addSubObjectWizardPage.getDataType("Unsigned8")));
+                                    DatatypeConverter.parseHexBinary(addSubObjectWizardPage.getDataTypeVal("Unsigned8")));
                         }
 
                         if (addSubObjectWizardPage.getSubIndex() != new byte[0]) {
@@ -179,6 +179,14 @@ public class NewSubObjectWizard extends Wizard {
         return true;
     }
 
+    /**
+     * Updates the object into XDD/XDC file
+     *
+     * @param documentRoot
+     *            Instance of XDD file
+     * @return <code>True</code> if successfully updated, <code>False</code>
+     *         Otherwise.
+     */
     public boolean updateDocument(DocumentRoot documentRoot) {
         // Create a resource set
         ResourceSet resourceSet = new ResourceSetImpl();

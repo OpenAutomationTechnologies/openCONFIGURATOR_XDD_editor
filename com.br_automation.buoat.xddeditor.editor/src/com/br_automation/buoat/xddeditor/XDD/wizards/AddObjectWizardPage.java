@@ -92,6 +92,12 @@ public class AddObjectWizardPage extends WizardPage {
     public static final String OBJECT_ACCESS_TYPE_INVALID_PDO_MAPPING = "Object with access type {0} does not allow {1}.";
     private String objectTypeText = StringUtils.EMPTY;
 
+    private static final String[] ACCESS_TYPE_LIST = new String[] { "Constant", "Read only", "Write only",
+            "Read/Write" };
+
+    public static final String INVALID_PDO_MAPPING_ERROR_MESSAGE = "Object with access type {0} does not allow {1}.";
+    public static final String LOW_LIMIT_GREATER_HIGH_LIMIT = "Low limit cannot be greater than high limit.";
+
     /**
      * Constructor to initialize the document instance.
      *
@@ -177,9 +183,6 @@ public class AddObjectWizardPage extends WizardPage {
         return true;
     }
 
-    private static final String[] ACCESS_TYPE_LIST = new String[] { "Constant", "Read only", "Write only",
-            "Read/Write" };
-
     /**
      * Create control for wizard page
      */
@@ -231,8 +234,7 @@ public class AddObjectWizardPage extends WizardPage {
             public void widgetSelected(SelectionEvent e) {
                 accessType = comboAccessType.getText();
                 if (!isPdoMappingValueValid(pdoMapping)) {
-                    setErrorMessage(
-                            "Object with access type '" + accessType + "' does not allow '" + pdoMapping + "'.");
+                    setErrorMessage(MessageFormat.format(INVALID_PDO_MAPPING_ERROR_MESSAGE, accessType, pdoMapping));
                     setPageComplete(false);
                 } else {
                     setErrorMessage(null);
@@ -265,8 +267,7 @@ public class AddObjectWizardPage extends WizardPage {
             public void widgetSelected(SelectionEvent e) {
                 pdoMapping = comboPdoMapping.getText();
                 if (!isPdoMappingValueValid(pdoMapping)) {
-                    setErrorMessage(
-                            "Object with access type '" + accessType + "' does not allow '" + pdoMapping + "'.");
+                    setErrorMessage(MessageFormat.format(INVALID_PDO_MAPPING_ERROR_MESSAGE, accessType, pdoMapping));
                     setPageComplete(false);
                 } else {
                     setErrorMessage(null);
@@ -382,7 +383,7 @@ public class AddObjectWizardPage extends WizardPage {
             }
             if ((!highLimit.isEmpty()) && (!lowLimit.isEmpty()))
                 if (Integer.parseInt(lowLimit) > Integer.parseInt(highLimit)) {
-                    setErrorMessage("Low limit cannot be greater than high limit.");
+                    setErrorMessage(LOW_LIMIT_GREATER_HIGH_LIMIT);
                     setPageComplete(false);
                 }
 
@@ -830,6 +831,9 @@ public class AddObjectWizardPage extends WizardPage {
         return 0;
     }
 
+    /**
+     * @return TPDOMapping value from XDD file
+     */
     public TObjectPDOMapping getPdoMapping() {
 
         if (pdoMapping == null) {

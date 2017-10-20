@@ -159,6 +159,16 @@ public class ObjectDictionaryEditorPage extends FormPage implements IPropertyLis
 
     public static final String OBJECT_PROPERTIES = "Properties";
 
+    /**
+     * Source workbench part.
+     */
+    private IWorkbenchPart sourcePart;
+
+    /**
+     * Listener instance to listen to the changes in the source part.
+     */
+    private PartListener partListener = new PartListener();
+
     private FilteredTree filteredTree;
 
     private TObjectImpl selectedObject;
@@ -526,19 +536,12 @@ public class ObjectDictionaryEditorPage extends FormPage implements IPropertyLis
 
     }
 
+    /**
+     * @return Instance of object dictionary list viewer
+     */
     public TreeViewer getViewer() {
         return listViewer;
     }
-
-    /**
-     * Source workbench part.
-     */
-    private IWorkbenchPart sourcePart;
-
-    /**
-     * Listener instance to listen to the changes in the source part.
-     */
-    private PartListener partListener = new PartListener();
 
     private class PartListener implements IPartListener {
         @Override
@@ -730,7 +733,6 @@ public class ObjectDictionaryEditorPage extends FormPage implements IPropertyLis
                                 PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
                                         .showView(IPageLayout.ID_PROP_SHEET);
                             } catch (PartInitException e) {
-                                // TODO Auto-generated catch block
                                 e.printStackTrace();
                             }
                         }
@@ -747,8 +749,6 @@ public class ObjectDictionaryEditorPage extends FormPage implements IPropertyLis
                         if (isObjectIndexValid(objIndex)) {
                             removeButton.setEnabled(true);
                         }
-                    } else {
-                        System.err.println("Invalid selection instance.");
                     }
 
                     managedForm.fireSelectionChanged(spart, event.getSelection());
@@ -1029,6 +1029,14 @@ public class ObjectDictionaryEditorPage extends FormPage implements IPropertyLis
         }
     };
 
+    /**
+     * Verifies whether the entered value is updated in XDD file
+     *
+     * @param documentRoot
+     *            Instance of XDD file
+     * @return <code>True</code> If value is updated in document,
+     *         <code>False</code> otherwise.
+     */
     public boolean updateDocument(DocumentRoot documentRoot) {
         // Create a resource set
         ResourceSet resourceSet = new ResourceSetImpl();

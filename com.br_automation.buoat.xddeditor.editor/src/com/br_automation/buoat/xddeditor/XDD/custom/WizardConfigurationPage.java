@@ -85,6 +85,11 @@ public class WizardConfigurationPage extends WizardPage {
     // Product/Vendor variables
     private Text txtVendorName;
 
+    /**
+     * Name verify listener
+     */
+    private NameVerifyListener nameVerifyListener = new NameVerifyListener();
+
     private static final String INVALID_VENDOR_ID = "Invalid vendor ID for the device.";
     private static final String INVALID_VENDOR_ID_NULL_ERROR = "Vendor ID cannot be empty";
     private static final String INVALID_PRODUCT_ID_NULL_ERROR = "Product ID cannot be empty";
@@ -113,8 +118,8 @@ public class WizardConfigurationPage extends WizardPage {
      */
     public WizardConfigurationPage(String pageID, CustomXDDWizard wizard) {
         super(pageID);
-        this.setTitle(Messages.wizardConfigurationPage1_adv_conf_page_title);
-        this.setDescription(Messages.wizardConfigurationPage1_type_in_data_new_model_subheadline);
+        this.setTitle(Messages.wizardConfigurationPage_adv_conf_page_title);
+        this.setDescription(Messages.wizardConfigurationPage_type_in_data_new_model_subheadline);
         this.mainwizard = wizard;
         this.mainwizard.getWizardTemplatePage().setPageComplete(true);
         this.setPageComplete(true);
@@ -135,12 +140,12 @@ public class WizardConfigurationPage extends WizardPage {
         creationTimeStr = creationTimeStr.substring(0, 11) + ":00"; //$NON-NLS-1$
 
         Group grpMetadata = new Group(container, SWT.NONE);
-        grpMetadata.setText(Messages.wizardConfigurationPage1_metadata_lbl);
+        grpMetadata.setText(Messages.wizardConfigurationPage_metadata_lbl);
         grpMetadata.setBounds(297, 10, 242, 144);
 
         Label lblDeviceName = new Label(grpMetadata, SWT.NONE);
         lblDeviceName.setBounds(10, 91, 82, 15);
-        lblDeviceName.setText(Messages.wizardConfigurationPage1_device_name_lbl);
+        lblDeviceName.setText(Messages.wizardConfigurationPage_device_name_lbl);
 
         this.txtDeviceName = new Text(grpMetadata, SWT.BORDER);
         this.txtDeviceName.setBounds(98, 88, 134, 21);
@@ -161,11 +166,11 @@ public class WizardConfigurationPage extends WizardPage {
 
         Label lblCreator = new Label(grpMetadata, SWT.NONE);
         lblCreator.setBounds(10, 67, 55, 15);
-        lblCreator.setText(Messages.wizardConfigurationPage1_creator_lbl);
+        lblCreator.setText(Messages.wizardConfigurationPage_creator_lbl);
 
         Label lblCreationTime = new Label(grpMetadata, SWT.NONE);
         lblCreationTime.setBounds(10, 43, 82, 15);
-        lblCreationTime.setText(Messages.wizardConfigurationPage1_creation_time_lbl);
+        lblCreationTime.setText(Messages.wizardConfigurationPage_creation_time_lbl);
 
         Label lblContentCreationTime = new Label(grpMetadata, SWT.NONE);
         lblContentCreationTime.setBounds(98, 43, 134, 15);
@@ -173,7 +178,7 @@ public class WizardConfigurationPage extends WizardPage {
 
         Label lblCreationDate = new Label(grpMetadata, SWT.NONE);
         lblCreationDate.setBounds(10, 22, 82, 15);
-        lblCreationDate.setText(Messages.wizardConfigurationPage1_creation_date_lbl);
+        lblCreationDate.setText(Messages.wizardConfigurationPage_creation_date_lbl);
 
         Label lblContentCreationDate = new Label(grpMetadata, SWT.NONE);
         lblContentCreationDate.setBounds(98, 22, 134, 15);
@@ -181,7 +186,7 @@ public class WizardConfigurationPage extends WizardPage {
 
         Label lblFileVersion = new Label(grpMetadata, SWT.NONE);
         lblFileVersion.setBounds(10, 115, 82, 15);
-        lblFileVersion.setText(Messages.wizardConfigurationPage1_file_version_lbl);
+        lblFileVersion.setText(Messages.wizardConfigurationPage_file_version_lbl);
 
         this.txtFileVersion = new Text(grpMetadata, SWT.BORDER);
         this.txtFileVersion.setText("1.00"); // NOPMD by //$NON-NLS-1$
@@ -189,27 +194,27 @@ public class WizardConfigurationPage extends WizardPage {
         this.txtFileVersion.setBounds(98, 112, 134, 21);
 
         Group grpAda = new Group(container, SWT.NONE);
-        grpAda.setText(Messages.wizardConfigurationPage1_vendor_prod_info_lbl);
+        grpAda.setText(Messages.wizardConfigurationPage_vendor_prod_info_lbl);
         grpAda.setBounds(10, 10, 281, 199);
 
         Label lblVendorName = new Label(grpAda, SWT.NONE);
         lblVendorName.setBounds(10, 22, 91, 15);
-        lblVendorName.setText(Messages.wizardConfigurationPage1_vendor_name_lbl);
+        lblVendorName.setText(Messages.wizardConfigurationPage_vendor_name_lbl);
 
         Label lblVendorId = new Label(grpAda, SWT.NONE);
-        lblVendorId.setText(Messages.wizardConfigurationPage1_vendor_id_lbl);
+        lblVendorId.setText(Messages.wizardConfigurationPage_vendor_id_lbl);
         lblVendorId.setBounds(10, 46, 73, 15);
 
         Label lblProductName = new Label(grpAda, SWT.NONE);
-        lblProductName.setText(Messages.wizardConfigurationPage1_product_name_lbl);
+        lblProductName.setText(Messages.wizardConfigurationPage_product_name_lbl);
         lblProductName.setBounds(10, 70, 91, 15);
 
         Label lblHardwareVersionNr = new Label(grpAda, SWT.NONE);
-        lblHardwareVersionNr.setText(Messages.wizardConfigurationPage1_hardware_vers_nr_lbl);
+        lblHardwareVersionNr.setText(Messages.wizardConfigurationPage_hardware_vers_nr_lbl);
         lblHardwareVersionNr.setBounds(10, 118, 118, 15);
 
         Label lblSoftwareVersionNr = new Label(grpAda, SWT.NONE);
-        lblSoftwareVersionNr.setText(Messages.wizardConfigurationPage1_software_version_nr_lbl);
+        lblSoftwareVersionNr.setText(Messages.wizardConfigurationPage_software_version_nr_lbl);
         lblSoftwareVersionNr.setBounds(10, 142, 118, 15);
 
         this.txtVendorName = new Text(grpAda, SWT.BORDER);
@@ -241,7 +246,7 @@ public class WizardConfigurationPage extends WizardPage {
         this.txtProductID.setBounds(128, 91, 143, 21);
 
         Label lblFirmwareVersionNr = new Label(grpAda, SWT.NONE);
-        lblFirmwareVersionNr.setText(Messages.wizardConfigurationPage1_firmversion_nr_lbl);
+        lblFirmwareVersionNr.setText(Messages.wizardConfigurationPage_firmversion_nr_lbl);
         lblFirmwareVersionNr.setBounds(10, 166, 118, 15);
 
         this.txtFirmwareVersionNr = new Text(grpAda, SWT.BORDER);
@@ -253,29 +258,29 @@ public class WizardConfigurationPage extends WizardPage {
         grpNodeFeatures.setBounds(297, 225, 254, 113);
 
         this.btnCnMultiplexFeature = new Button(grpNodeFeatures, SWT.CHECK);
-        this.btnCnMultiplexFeature.setToolTipText(Messages.wizardConfigurationPage1_multiplex_feature_tooltip);
+        this.btnCnMultiplexFeature.setToolTipText(Messages.wizardConfigurationPage_multiplex_feature_tooltip);
         this.btnCnMultiplexFeature.setBounds(10, 22, 222, 16);
         this.btnCnMultiplexFeature.setText("Multiplexed Communication"); //$NON-NLS-1$
 
         this.btnResponseChaining = new Button(grpNodeFeatures, SWT.CHECK);
-        this.btnResponseChaining.setToolTipText(Messages.wizardConfigurationPage1_Response_chaining_tooltip);
+        this.btnResponseChaining.setToolTipText(Messages.wizardConfigurationPage_Response_chaining_tooltip);
         this.btnResponseChaining.setBounds(10, 44, 234, 16);
         this.btnResponseChaining.setText("Poll Response Chaining Communication"); //$NON-NLS-1$
 
         Label lblSoc = new Label(grpNodeFeatures, SWT.NONE);
-        lblSoc.setToolTipText(Messages.wizardConfigurationPage1_Time_for_cn_to_process_Soc_tooltip);
+        lblSoc.setToolTipText(Messages.wizardConfigurationPage_Time_for_cn_to_process_Soc_tooltip);
         lblSoc.setText("Time for Soc to PReq (ns):"); //$NON-NLS-1$
         lblSoc.setBounds(10, 66, 124, 15);
 
         this.txtNMTCNSoC2PReq = new Text(grpNodeFeatures, SWT.BORDER);
         this.txtNMTCNSoC2PReq.setText("25"); //$NON-NLS-1$
-        this.txtNMTCNSoC2PReq.setToolTipText(Messages.wizardConfigurationPage1_time_for_CN_tro_process_SoC_tooltip);
+        this.txtNMTCNSoC2PReq.setToolTipText(Messages.wizardConfigurationPage_time_for_CN_tro_process_SoC_tooltip);
         this.txtNMTCNSoC2PReq.setBounds(140, 63, 92, 21);
 
         Group grpGeneralFeatures = new Group(container, SWT.SHADOW_OUT);
         grpGeneralFeatures.setFont(SWTResourceManager.getFont("Segoe UI", 9, SWT.NORMAL)); //$NON-NLS-1$
         grpGeneralFeatures.setBackground(SWTResourceManager.getColor(SWT.COLOR_WIDGET_BACKGROUND));
-        grpGeneralFeatures.setText(Messages.wizardConfigurationPage1_general_features);
+        grpGeneralFeatures.setText(Messages.wizardConfigurationPage_general_features);
         grpGeneralFeatures.setBounds(10, 225, 281, 156);
 
         Label lblNmtboottimenotactive = new Label(grpGeneralFeatures, SWT.NONE);
@@ -291,7 +296,7 @@ public class WizardConfigurationPage extends WizardPage {
         lblNewLabel2.setText("Minimum Cycle Time (\u00B5s):"); //$NON-NLS-1$
 
         Label lblNewLabel3 = new Label(grpGeneralFeatures, SWT.NONE);
-        lblNewLabel3.setToolTipText(Messages.wizardConfigurationPage1_nr_of_Errors_reported_to_MN);
+        lblNewLabel3.setToolTipText(Messages.wizardConfigurationPage_nr_of_Errors_reported_to_MN);
         lblNewLabel3.setBounds(10, 86, 163, 15);
         lblNewLabel3.setText("Total Network Error Entries:"); //$NON-NLS-1$
 
@@ -313,11 +318,11 @@ public class WizardConfigurationPage extends WizardPage {
 
         this.btnNWLIPSupport = new Button(grpGeneralFeatures, SWT.CHECK);
         this.btnNWLIPSupport.setBounds(10, 130, 146, 16);
-        this.btnNWLIPSupport.setToolTipText(Messages.wizardConfigurationPage1_EnableDisableIPSupport); // $NON-NLS-1$
+        this.btnNWLIPSupport.setToolTipText(Messages.wizardConfigurationPage_EnableDisableIPSupport); // $NON-NLS-1$
         this.btnNWLIPSupport.setText("Network IP Support");
 
         this.btnMultipleASnd = new Button(grpGeneralFeatures, SWT.CHECK);
-        this.btnMultipleASnd.setToolTipText(Messages.wizardConfigurationPage1_btnMultiASnd_text);
+        this.btnMultipleASnd.setToolTipText(Messages.wizardConfigurationPage_btnMultiASnd_text);
         this.btnMultipleASnd.setText("IP Support");
         this.btnMultipleASnd.setBounds(10, 107, 146, 16);
 
@@ -407,11 +412,6 @@ public class WizardConfigurationPage extends WizardPage {
 
         }
     };
-
-    /**
-     * Name verify listener
-     */
-    private NameVerifyListener nameVerifyListener = new NameVerifyListener();
 
     private void addListenersToControls() {
 
@@ -883,4 +883,4 @@ public class WizardConfigurationPage extends WizardPage {
     public boolean isResponseChaining() {
         return this.btnResponseChaining.getSelection();
     }
-} // WizardConfigurationPage1
+} // WizardConfigurationPage

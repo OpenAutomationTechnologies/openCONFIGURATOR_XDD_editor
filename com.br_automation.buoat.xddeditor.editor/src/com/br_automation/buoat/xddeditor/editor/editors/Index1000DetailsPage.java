@@ -94,6 +94,19 @@ public class Index1000DetailsPage implements IDetailsPage {
     private DocumentRoot docRoot;
     private DeviceDescriptionFileEditor editor;
 
+    private Text txtAdditionalInfo;
+
+    private Label lblError;
+
+    private Label lblDefaultValueValue;
+
+    private Combo cmbDeviceProfileNr;
+    private TObject tobject;
+    private long profileValue;
+    private long maskLSB;
+    private long maskMSB;
+    private long additionalInfoValue;
+
     public Index1000DetailsPage(TObjectImpl index1000Object, DocumentRoot docRoot, DeviceDescriptionFileEditor editor) {
         this.index1000Object = index1000Object;
         this.docRoot = docRoot;
@@ -148,12 +161,6 @@ public class Index1000DetailsPage implements IDetailsPage {
 
     }
 
-    private TObject tobject;
-    private long profileValue;
-    private long maskLSB;
-    private long maskMSB;
-    private long additionalInfoValue;
-
     private RegexVerifyListener additionalInfoListener = new RegexVerifyListener(RegexVerifyListener.PATTERN_HEX,
             Arrays.asList(Character.valueOf((char) 0x7f), Character.valueOf((char) 0x8)), true);
 
@@ -167,6 +174,14 @@ public class Index1000DetailsPage implements IDetailsPage {
         }
     };
 
+    /**
+     * Verifies whether the entered value is updated in XDD file
+     *
+     * @param documentRoot
+     *            Instance of XDD file
+     * @return <code>True</code> If value is updated in document,
+     *         <code>False</code> otherwise.
+     */
     public boolean updateDocument(DocumentRoot documentRoot) {
         // Create a resource set
         ResourceSet resourceSet = new ResourceSetImpl();
@@ -268,23 +283,15 @@ public class Index1000DetailsPage implements IDetailsPage {
             if (obj.getObjectType() != 0) {
                 String objectType = String.valueOf(obj.getObjectType());
                 if (objectType.equalsIgnoreCase("7")) {
-                    objTypeText.setText("7 - VAR");
+                    objTypeText.setText(IPowerlinkConstants.OBJECT_TYPES[0]);
                 } else if (objectType.equalsIgnoreCase("8")) {
-                    objTypeText.setText("8 - ARRAY");
+                    objTypeText.setText(IPowerlinkConstants.OBJECT_TYPES[1]);
                 } else if (objectType.equalsIgnoreCase("9")) {
-                    objTypeText.setText("9 - RECORD");
+                    objTypeText.setText(IPowerlinkConstants.OBJECT_TYPES[2]);
                 }
             }
         }
     }
-
-    private Text txtAdditionalInfo;
-
-    private Label lblError;
-
-    private Label lblDefaultValueValue;
-
-    private Combo cmbDeviceProfileNr;
 
     @Override
     public void createContents(Composite parent) {
