@@ -78,6 +78,16 @@ public class NewFirmwareWizard extends Wizard {
 
     private FirmwareTypeImpl firmwareObj;
 
+    /**
+     * Constructor to initialize wizard page
+     *
+     * @param selectedObj
+     *            Instance of selected XDD file
+     * @param editor
+     *            Instance of editor page
+     * @param editFirmware
+     *            value of firmware edit
+     */
     public NewFirmwareWizard(
 
             DocumentRoot selectedObj, DeviceDescriptionFileEditor editor, boolean editFirmware) {
@@ -89,6 +99,18 @@ public class NewFirmwareWizard extends Wizard {
         validateFirmwarePage = new ValidateFirmwareWizardPage(WINDOW_TITLE, documentRoot, editor);
     }
 
+    /**
+     * Constructor to initialize wizard page
+     *
+     * @param selectedObj
+     *            Instance of selected XDD file
+     * @param editor
+     *            Instance of editor page
+     * @param editFirmware
+     *            value of firmware edit
+     * @param firmwareObj
+     *            Instance of firmware file
+     */
     public NewFirmwareWizard(DocumentRoot selectedObj, DeviceDescriptionFileEditor editor, boolean editFirmware,
             FirmwareTypeImpl firmwareObj) {
         if (selectedObj == null) {
@@ -121,6 +143,14 @@ public class NewFirmwareWizard extends Wizard {
         return true;
     }
 
+    /**
+     * Verifies whether the entered value is updated in XDD file
+     *
+     * @param documentRoot
+     *            Instance of XDD file
+     * @return <code>True</code> If value is updated in document,
+     *         <code>False</code> otherwise.
+     */
     public boolean updateDocument(DocumentRoot documentRoot) {
         // Create a resource set
         ResourceSet resourceSet = new ResourceSetImpl();
@@ -149,6 +179,9 @@ public class NewFirmwareWizard extends Wizard {
         return false;
     }
 
+    /**
+     * @return Device function instance of XDD file
+     */
     public TDeviceFunction getDeviceFunction() {
         EList<ISO15745ProfileType> profiles = documentRoot.getISO15745ProfileContainer().getISO15745Profile();
         ISO15745ProfileType profile1 = profiles.get(0);

@@ -276,6 +276,15 @@ public class ValidateFirmwareWizardPage extends WizardPage {
         return errorinfo;
     }
 
+    /**
+     * Validate the XDD attributes with firmware file
+     *
+     * @param documentRoot
+     *            Instance of XDD document
+     * @param firmwareDocumentRoot2
+     *            Instance of firmware document
+     * @return <code>True</code> or <code>False</code> otherwise
+     */
     public boolean checkWithXddAttributes(DocumentRoot documentRoot, FwSchema.DocumentRoot firmwareDocumentRoot2) {
 
         String xddVendorId = editor.getVendorId();
@@ -328,6 +337,15 @@ public class ValidateFirmwareWizardPage extends WizardPage {
 
     }
 
+    /**
+     * Loads the schema for firmware file
+     *
+     * @param firmwareFile
+     *            Instance of firmware file
+     * @param newfirmwareFilePath
+     *            Path of firmware file
+     * @return Instance of firmware document
+     */
     public synchronized FwSchema.DocumentRoot loadFirmwareFile(File firmwareFile, String newfirmwareFilePath) {
         try {
             InputSource input = null;
@@ -418,6 +436,9 @@ public class ValidateFirmwareWizardPage extends WizardPage {
         return firmwareDocumentRoot;
     }
 
+    /**
+     * @return <code>True</code> or <code>False</code> otherwise
+     */
     public boolean validateXddModel() {
 
         getInfoStyledText("");
@@ -493,6 +514,9 @@ public class ValidateFirmwareWizardPage extends WizardPage {
         return pageComplete;
     }
 
+    /**
+     * @return Instance of firmware file
+     */
     public FwSchema.DocumentRoot getFirmwareDocument() {
         return firmwareDocumentRoot;
     }

@@ -31,6 +31,12 @@
 
 package com.br_automation.buoat.xddeditor.XDD.wizards;
 
+/**
+ * Range of different data types
+ *
+ * @author Sree Hari Vignesh
+ *
+ */
 public interface DataTypeRange {
     public static long Boolean_min = 0;
     public static long Boolean_max = 1;

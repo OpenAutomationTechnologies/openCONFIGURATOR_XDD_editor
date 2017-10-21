@@ -122,6 +122,11 @@ public class MappingObjectDetailsPage extends EEFAdvancedPropertySection impleme
     private Text txtLength;
     private Text txtOffset;
 
+    private long lengthValue;
+
+    /*
+     * Constructor
+     */
     public MappingObjectDetailsPage(SubObjectTypeImpl subObject, DocumentRoot docRoot,
             DeviceDescriptionFileEditor editor) {
         this.subObject = subObject;
@@ -129,6 +134,14 @@ public class MappingObjectDetailsPage extends EEFAdvancedPropertySection impleme
         this.editor = editor;
     }
 
+    /**
+     * Verifies whether the entered value is updated in XDD file
+     *
+     * @param documentRoot
+     *            Instance of XDD file
+     * @return <code>True</code> If value is updated in document,
+     *         <code>False</code> otherwise.
+     */
     public boolean updateDocument(DocumentRoot documentRoot) {
         // Create a resource set
         ResourceSet resourceSet = new ResourceSetImpl();
@@ -251,9 +264,6 @@ public class MappingObjectDetailsPage extends EEFAdvancedPropertySection impleme
         } // switchcase
     } // setError
 
-    private long lengthValue;
-    // When Offset-Texbox looses focus -> Check values,calculate & set the new
-    // defaultvalues
     private final FocusAdapter offsetListener = new FocusAdapter() {
         @Override
         public void focusLost(FocusEvent arg0) {

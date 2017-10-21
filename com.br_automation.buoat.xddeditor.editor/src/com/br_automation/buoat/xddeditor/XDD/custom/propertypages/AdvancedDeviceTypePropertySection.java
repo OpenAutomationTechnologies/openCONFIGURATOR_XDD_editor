@@ -1,8 +1,8 @@
 /**
  * @since 21.3.2013
- * @author Joris Lückenga, Bernecker + Rainer Industrie Elektronik Ges.m.b.H.
+ * @author Joris Lückenga, B&R Industrial Automation GmbH
 
- * @copyright (c) 2017, Bernecker + Rainer Industrie Elektronik Ges.m.b.H.
+ * @copyright (c) 2017, B&R Industrial Automation GmbH
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:

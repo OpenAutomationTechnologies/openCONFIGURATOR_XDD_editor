@@ -61,6 +61,7 @@ import com.br_automation.buoat.xddeditor.editor.editors.DeviceDescriptionFileEdi
 public class NewSubObjectWizard extends Wizard {
 
     private static final String WINDOW_TITLE = "Add Sub-object";
+    private static final String NUMBER_OF_ENTRIES = "NumberOfEntries";
 
     private final AddSubObjectWizardPage addSubObjectWizardPage;
 
@@ -123,8 +124,8 @@ public class NewSubObjectWizard extends Wizard {
                         subObj.setPDOmapping(TObjectPDOMapping.NO);
 
                         if (addSubObjectWizardPage.getDataType() != null) {
-                            subObj.setDataType(
-                                    DatatypeConverter.parseHexBinary(addSubObjectWizardPage.getDataTypeVal("Unsigned8")));
+                            subObj.setDataType(DatatypeConverter
+                                    .parseHexBinary(addSubObjectWizardPage.getDataTypeVal("Unsigned8")));
                         }
 
                         if (addSubObjectWizardPage.getSubIndex() != new byte[0]) {
@@ -133,7 +134,7 @@ public class NewSubObjectWizard extends Wizard {
 
                         subObj.setObjectType((short) 7);
 
-                        subObj.setName("NumberOfEntries");
+                        subObj.setName(NUMBER_OF_ENTRIES);
 
                         selObj.getSubObject().add(subObj);
                     }

@@ -87,6 +87,15 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
     public static final String INVALID_OBJECT_NAME = "Invalid object name";
     private static final String DEFAULT_VALUE_EXCEEDS_HIGH_LIMIT = "Default value {0} exceeds the high limit value {1}.";
     private static final String DEFAULT_VALUE_LESS_THAN_LOW_LIMIT = "Default value {0} cannot be lesser than low limit value {1}.";
+    private static final String INVALID_SUB_OBJECT_INDEX = "Invalid sub-object index {0}.";
+    private static final String SUB_OBJECT_INDEX_ALREADY_EXISTS = "Sub-object index {0} already exists.";
+    private static final String VALID_SUB_OBJECT_INDEX = "Enter the sub-object index value within the range (0x01 to 0xFE).";
+
+    public static final String INVALID_CONST_OPTIONAL_MAPPING = "Sub-object with access type 'const' does not allow optional mapping";
+    public static final String INVALID_CONST_TPDO_MAPPING = "Sub-object with access type 'const' does not allow TPDO mapping";
+    public static final String INVALID_CONST_RPDO_MAPPING = "Sub-object with access type 'const' does not allow RPDO mapping";
+    public static final String INVALID_RW_TPDO_MAPPING = "Sub-object with access type 'rw' does not allow TPDO mapping";
+    public static final String INVALID_RO_RPDO_MAPPING = "Sub-object with access type 'ro' does not allow RPDO mapping";
 
     private static final PropertyDescriptor subObjectIdDescriptor = new PropertyDescriptor(OBJ_SUB_INDEX_ID,
             OBJ_SUB_INDEX_LABEL);
@@ -196,6 +205,13 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
         objectErrorDescriptor.setCategory(IPropertySourceSupport.OBJECT_ATTRIBUTES_CATEGORY);
     }
 
+    /**
+     * Validate the object name
+     *
+     * @param name
+     *            Name of object to be validated
+     * @return Error message
+     */
     protected String handleObjectName(Object name) {
         if (name instanceof String) {
             String nodeName = ((String) name);
@@ -617,12 +633,6 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
         return isValidVal(lowLimit, "Low limit", dataType);
     }
 
-    public static final String INVALID_CONST_OPTIONAL_MAPPING = "Sub-object with access type 'const' does not allow optional mapping";
-    public static final String INVALID_CONST_TPDO_MAPPING = "Sub-object with access type 'const' does not allow TPDO mapping";
-    public static final String INVALID_CONST_RPDO_MAPPING = "Sub-object with access type 'const' does not allow RPDO mapping";
-    public static final String INVALID_RW_TPDO_MAPPING = "Sub-object with access type 'rw' does not allow TPDO mapping";
-    public static final String INVALID_RO_RPDO_MAPPING = "Sub-object with access type 'ro' does not allow RPDO mapping";
-
     /**
      * Handles the PDO mapping value modifications.
      *
@@ -852,6 +862,13 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
         return TObjectAccessType.CONST;
     }
 
+    /**
+     * Get TObject PDO mapping value
+     *
+     * @param pdoMapping
+     *            PDO mapping value
+     * @return TObjectPDOMapping
+     */
     public TObjectPDOMapping getPdoMapping(String pdoMapping) {
 
         if (pdoMapping.equalsIgnoreCase("No")) {
@@ -1010,17 +1027,17 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
         }
 
         if (index.length() > 4) {
-            return "Invalid sub-object index '" + indexVal + "'.";
+            return MessageFormat.format(INVALID_SUB_OBJECT_INDEX, indexVal);
         }
 
         if (!indexVal.equalsIgnoreCase(index)) {
             if (!isSubObjectIndexAvailable(index)) {
-                return "Sub-object index '" + index + "' already available.";
+                return MessageFormat.format(SUB_OBJECT_INDEX_ALREADY_EXISTS, index);
             }
         }
 
         if (!isSubObjectIndexValid(index)) {
-            return "Enter the sub-object index value within the range (0x01 to 0xFE).";
+            return VALID_SUB_OBJECT_INDEX;
 
         }
 
@@ -1131,6 +1148,9 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
 
     }
 
+    /**
+     * @return The instance of document root
+     */
     public DocumentRoot getDocumentRoot() {
 
         IEditorPart editorPart = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();

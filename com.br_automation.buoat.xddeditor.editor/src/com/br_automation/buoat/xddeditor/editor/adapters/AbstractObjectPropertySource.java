@@ -203,10 +203,19 @@ public class AbstractObjectPropertySource {
     public static final String UNSIGNED64_OUT_OF_RANGE = "{0}  out of range (0 to " + Long.MAX_VALUE + ").";
     public static final String DOMAIN_OUT_OF_RANGE = "{0}  is out of range (0 to 4,294,967,295).";
 
+    /**
+     * @return Instance of device description file editor
+     */
     public DeviceDescriptionFileEditor getEditor() {
         return editor;
     }
 
+    /**
+     * Set instance of editor
+     *
+     * @param editor
+     *            Instance of device description file editor
+     */
     public void setEditor(DeviceDescriptionFileEditor editor) {
         this.editor = editor;
     }

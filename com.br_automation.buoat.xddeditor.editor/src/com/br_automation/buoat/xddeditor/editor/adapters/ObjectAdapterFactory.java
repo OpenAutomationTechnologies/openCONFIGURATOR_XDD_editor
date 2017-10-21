@@ -56,6 +56,13 @@ public class ObjectAdapterFactory extends AbstractObjectPropertySource implement
      */
     private SubObjectPropertySource subObjectPropertySource;
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * org.eclipse.core.runtime.IAdapterFactory#getAdapter(java.lang.Object,
+     * java.lang.Class)
+     */
     @SuppressWarnings("unchecked")
     @Override
     public Object getAdapter(final Object adaptableObject, @SuppressWarnings("rawtypes") Class adapterType) {
@@ -85,6 +92,11 @@ public class ObjectAdapterFactory extends AbstractObjectPropertySource implement
         return null;
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.eclipse.core.runtime.IAdapterFactory#getAdapterList()
+     */
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public Class[] getAdapterList() {

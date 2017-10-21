@@ -60,6 +60,10 @@ import com.br_automation.buoat.xddeditor.XDD.resources.IPowerlinkConstants;
  *
  */
 public class SubObjectDetailsPage extends EEFAdvancedPropertySection implements IDetailsPage {
+
+    /*
+     * Constructor
+     */
     public SubObjectDetailsPage() {
     }
 

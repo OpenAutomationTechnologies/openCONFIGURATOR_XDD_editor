@@ -1,6 +1,6 @@
 /**
  * @since 02.5.2013
- * @author Joris Lückenga, Bernecker + Rainer Industrie Elektronik Ges.m.b.H.
+ * @author Joris Lückenga, B&R Industrial Automation GmbH
  */
 
 package com.br_automation.buoat.xddeditor.XDD.custom;
@@ -16,7 +16,7 @@ import com.br_automation.buoat.xddeditor.XDD.provider.TMNFeaturesItemProvider;
 /**
  * @brief Custom ItemProvider to set/unset MNFeatures in object 0x1F82
  *        correspondingly.
- * 
+ *
  * @author Joris Lückenga
  */
 public class CustomTMNFeaturesItemProvider extends TMNFeaturesItemProvider {
@@ -30,10 +30,9 @@ public class CustomTMNFeaturesItemProvider extends TMNFeaturesItemProvider {
 
     @Override
     public Object getEditableValue(Object object) {
-        XDDUtilities.setFeatureFlag(
-            ((TMNFeatures) object).isNMTMNBasicEthernet(), 11,
-            (DocumentRoot) EcoreUtil.getRootContainer((EObject) object));
+        XDDUtilities.setFeatureFlag(((TMNFeatures) object).isNMTMNBasicEthernet(), 11,
+                (DocumentRoot) EcoreUtil.getRootContainer((EObject) object));
         return object;
     }
 
-} //CustomTMNFeaturesItemProvider
+} // CustomTMNFeaturesItemProvider

@@ -95,6 +95,11 @@ public class StoreParamSubObjectDetailsPage extends EEFAdvancedPropertySection i
     private Label lblIndexValue;
     private StoreParamComposite storeparam;
 
+    private TObject tobject;
+
+    /*
+     * Constructor
+     */
     public StoreParamSubObjectDetailsPage(SubObjectTypeImpl subObject, DocumentRoot docRoot,
             DeviceDescriptionFileEditor editor) {
         this.subObject = subObject;
@@ -149,8 +154,6 @@ public class StoreParamSubObjectDetailsPage extends EEFAdvancedPropertySection i
         // TODO Auto-generated method stub
 
     }
-
-    private TObject tobject;
 
     @Override
     public void selectionChanged(IFormPart part, ISelection selection) {
@@ -278,6 +281,14 @@ public class StoreParamSubObjectDetailsPage extends EEFAdvancedPropertySection i
             valueOfLabelDefaultValue.setText(subObject.getDefaultValue());
         }
 
+        /**
+         * Verifies whether the entered value is updated in XDD file
+         *
+         * @param documentRoot
+         *            Instance of XDD file
+         * @return <code>True</code> If value is updated in document,
+         *         <code>False</code> otherwise.
+         */
         public boolean updateDocument(DocumentRoot documentRoot) {
             // Create a resource set
             ResourceSet resourceSet = new ResourceSetImpl();

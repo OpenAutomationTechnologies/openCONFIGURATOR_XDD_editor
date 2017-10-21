@@ -251,8 +251,8 @@ public class AddSubObjectWizardPage extends WizardPage {
             public void widgetSelected(SelectionEvent e) {
                 subPdoMapping = comboPdoMapping.getText();
                 if (!isPdoMappingValueValid(subPdoMapping)) {
-                    setErrorMessage("Sub-object with access type '" + subAccessType + "' does not allow '"
-                            + subPdoMapping + "'.");
+                    setErrorMessage(
+                            MessageFormat.format(INVALID_PDO_MAPPING_ERROR_MESSAGE, subAccessType, subPdoMapping));
                     setPageComplete(false);
                 } else {
                     setErrorMessage(null);
@@ -1097,6 +1097,9 @@ public class AddSubObjectWizardPage extends WizardPage {
         return foundObjectsList;
     }
 
+    /**
+     * @return Byte array of sub object index
+     */
     public byte[] getSubIndex() {
         String index = getTxtSubObjIndex();
         if (!index.isEmpty()) {

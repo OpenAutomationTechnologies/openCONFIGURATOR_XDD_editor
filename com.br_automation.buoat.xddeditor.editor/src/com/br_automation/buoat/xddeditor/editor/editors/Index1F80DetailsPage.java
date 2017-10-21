@@ -101,12 +101,24 @@ public class Index1F80DetailsPage implements IDetailsPage {
 
     private Label lblError;
 
+    /**
+     * Constructor
+     *
+     */
     public Index1F80DetailsPage(TObjectImpl index1f80Object, DocumentRoot docRoot, DeviceDescriptionFileEditor editor) {
         this.index1F80Object = index1f80Object;
         this.docRoot = docRoot;
         this.editor = editor;
     }
 
+    /**
+     * Verifies whether the entered value is updated in XDD file
+     *
+     * @param documentRoot
+     *            Instance of XDD file
+     * @return <code>True</code> If value is updated in document,
+     *         <code>False</code> otherwise.
+     */
     public boolean updateDocument(DocumentRoot documentRoot) {
         // Create a resource set
         ResourceSet resourceSet = new ResourceSetImpl();
@@ -207,6 +219,14 @@ public class Index1F80DetailsPage implements IDetailsPage {
         }
     }; // SelectionListener
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * org.eclipse.ui.forms.IPartSelectionListener#selectionChanged(org.eclipse.
+     * ui.forms.IFormPart, org.eclipse.jface.viewers.ISelection)
+     */
+
     @Override
     public void selectionChanged(IFormPart part, ISelection selection) {
         if (selection instanceof IStructuredSelection) {
@@ -294,6 +314,13 @@ public class Index1F80DetailsPage implements IDetailsPage {
         }
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * org.eclipse.ui.forms.IDetailsPage#createContents(org.eclipse.swt.widgets.
+     * Composite)
+     */
     @Override
     public void createContents(Composite parent) {
 

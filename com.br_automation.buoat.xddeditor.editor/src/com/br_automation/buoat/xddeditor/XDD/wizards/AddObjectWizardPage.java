@@ -92,30 +92,14 @@ public class AddObjectWizardPage extends WizardPage {
     public static final String OBJECT_ACCESS_TYPE_INVALID_PDO_MAPPING = "Object with access type {0} does not allow {1}.";
     private String objectTypeText = StringUtils.EMPTY;
 
+    private static final String DEFAULT_VALUE_EXCEEDS_HIGH_LIMIT = "Default value {0} exceeds the high limit value {1}.";
+    private static final String DEFAULT_VALUE_LESS_THAN_LOW_LIMIT = "Default value {0} cannot be lesser than low limit value {1}.";
+
     private static final String[] ACCESS_TYPE_LIST = new String[] { "Constant", "Read only", "Write only",
             "Read/Write" };
 
     public static final String INVALID_PDO_MAPPING_ERROR_MESSAGE = "Object with access type {0} does not allow {1}.";
     public static final String LOW_LIMIT_GREATER_HIGH_LIMIT = "Low limit cannot be greater than high limit.";
-
-    /**
-     * Constructor to initialize the document instance.
-     *
-     * @param pageName
-     *            Name of the wizard page.
-     * @param documentRoot
-     *            the instance of device description file document.
-     * @param editor
-     *            the instance of editor.
-     */
-    protected AddObjectWizardPage(String pageName, DocumentRoot documentRoot, DeviceDescriptionFileEditor editor) {
-        super(pageName);
-        this.documentRoot = documentRoot;
-        this.editor = editor;
-        setTitle(DIALOG_PAGE_LABEL);
-        setDescription(DIALOG_DESCRIPTION);
-
-    }
 
     /**
      * Name verify listener
@@ -159,6 +143,25 @@ public class AddObjectWizardPage extends WizardPage {
     private static final String[] PDO_MAPPING_TYPES = new String[] { "No", "Default", "Optional", "TPDO", "RPDO" };
 
     private static final String INVALID_VALUE = "Invalid value.";
+
+    /**
+     * Constructor to initialize the document instance.
+     *
+     * @param pageName
+     *            Name of the wizard page.
+     * @param documentRoot
+     *            the instance of device description file document.
+     * @param editor
+     *            the instance of editor.
+     */
+    protected AddObjectWizardPage(String pageName, DocumentRoot documentRoot, DeviceDescriptionFileEditor editor) {
+        super(pageName);
+        this.documentRoot = documentRoot;
+        this.editor = editor;
+        setTitle(DIALOG_PAGE_LABEL);
+        setDescription(DIALOG_DESCRIPTION);
+
+    }
 
     private boolean isValueValid(String value) {
         if (!value.isEmpty()) {
@@ -491,6 +494,9 @@ public class AddObjectWizardPage extends WizardPage {
         return true;
     }
 
+    /**
+     * @return TObjectAccess type value of object
+     */
     public TObjectAccessType getAccessType() {
         if (accessType == null) {
             accessType = comboAccessType.getText();
@@ -511,22 +517,37 @@ public class AddObjectWizardPage extends WizardPage {
         return TObjectAccessType.CONST;
     }
 
+    /**
+     * @return Low limit value
+     */
     public String getTxtLowLimit() {
         return lowLimit;
     }
 
+    /**
+     * @return High limit value
+     */
     public String getTxtHighLimit() {
         return highLimit;
     }
 
+    /**
+     * @return Object name value
+     */
     public String getTxtObjectNameText() {
         return objName;
     }
 
+    /**
+     * @return Object index value
+     */
     public String getTxtObjectIndexText() {
         return objIndex;
     }
 
+    /**
+     * @return Default value of object
+     */
     public String getTxtDefaultValue() {
         return defaultValue;
     }
@@ -617,7 +638,7 @@ public class AddObjectWizardPage extends WizardPage {
         }
         if ((!highLimit.isEmpty()) && (!lowLimit.isEmpty())) {
             if (Integer.parseInt(lowLimit) > Integer.parseInt(highLimit)) {
-                setErrorMessage("Low limit cannot be greater than high limit.");
+                setErrorMessage(LOW_LIMIT_GREATER_HIGH_LIMIT);
                 return false;
             }
         }
@@ -626,8 +647,7 @@ public class AddObjectWizardPage extends WizardPage {
             Integer highlimitVal = Integer.valueOf(highLimit);
             Integer defaultValue = Integer.valueOf(defaultVal);
             if (defaultValue > highlimitVal) {
-                setErrorMessage(
-                        "Default value '" + defaultValue + "' exceeds the high limit value '" + highlimitVal + "'.");
+                setErrorMessage(MessageFormat.format(DEFAULT_VALUE_EXCEEDS_HIGH_LIMIT, defaultValue, highlimitVal));
                 return false;
             }
         }
@@ -636,8 +656,7 @@ public class AddObjectWizardPage extends WizardPage {
             Integer lowLimitVal = Integer.valueOf(lowLimit);
             Integer defaultValue = Integer.valueOf(defaultVal);
             if (defaultValue < lowLimitVal) {
-                setErrorMessage("Default value '" + defaultValue + "' cannot be lesser than low limit value '"
-                        + lowLimitVal + "'.");
+                setErrorMessage(MessageFormat.format(DEFAULT_VALUE_LESS_THAN_LOW_LIMIT, defaultValue, lowLimitVal));
                 return false;
             }
         }
@@ -680,8 +699,10 @@ public class AddObjectWizardPage extends WizardPage {
         return pageComplete;
     }
 
+    /**
+     * @return Actual value of object
+     */
     public String getActualValue() {
-
         return StringUtils.EMPTY;
     }
 
@@ -757,6 +778,9 @@ public class AddObjectWizardPage extends WizardPage {
 
     }
 
+    /**
+     * @return Byte array of data type
+     */
     public byte[] getDataType() {
         if (dataType == null) {
             dataType = comboDataType.getText();
@@ -770,6 +794,9 @@ public class AddObjectWizardPage extends WizardPage {
 
     }
 
+    /**
+     * @return Default value of object
+     */
     public String getDefaultValue() {
         String defaultValue = getTxtDefaultValue();
         if (!defaultValue.isEmpty()) {
@@ -778,11 +805,17 @@ public class AddObjectWizardPage extends WizardPage {
         return StringUtils.EMPTY;
     }
 
+    /**
+     * @return Denotation value of object
+     */
     public String getDenotation() {
 
         return StringUtils.EMPTY;
     }
 
+    /**
+     * @return High Limit value of object
+     */
     public String getHighLimit() {
         String highLimit = getTxtHighLimit();
         if (!highLimit.isEmpty()) {
@@ -791,6 +824,9 @@ public class AddObjectWizardPage extends WizardPage {
         return StringUtils.EMPTY;
     }
 
+    /**
+     * @return Low Limit value of object
+     */
     public String getLowLimit() {
         String lowLimit = getTxtLowLimit();
         if (!lowLimit.isEmpty()) {
@@ -799,6 +835,9 @@ public class AddObjectWizardPage extends WizardPage {
         return StringUtils.EMPTY;
     }
 
+    /**
+     * @return byte array of object index
+     */
     public byte[] getIndex() {
         String index = getTxtObjectIndexText();
         if (!index.isEmpty()) {
@@ -812,6 +851,9 @@ public class AddObjectWizardPage extends WizardPage {
         return new byte[] { 0 };
     }
 
+    /**
+     * @return Object type value
+     */
     public short getObjectType() {
 
         if (objectTypeText.isEmpty()) {
@@ -904,6 +946,9 @@ public class AddObjectWizardPage extends WizardPage {
         return true;
     }
 
+    /**
+     * @return Object name
+     */
     public String getObjectName() {
 
         return objName;

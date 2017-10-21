@@ -141,7 +141,7 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
     private static final String EDIT_BUTTON_LABEL = "Edit...";
     private static final String DELETE_BUTTON_LABEL = "Delete";
 
-    private static final String PROJECT_INFORMATION_VENDOR_NAME = "Kalycito Infotech Private Limited & Bernecker + Rainer Industrie Elektronik Ges.m.b.H.";
+    private static final String PROJECT_INFORMATION_VENDOR_NAME = "Kalycito Infotech Private Limited & B&R Industrial Automation GmbH";
     private static final String PROJECT_INFORMATION_TOOL_NAME = "Ethernet POWERLINK XDD Editor";
     private static final String PROJECT_INFORMATION_VERSION_NUMBER = "1.0";
 
@@ -181,6 +181,8 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
      * Name verify listener
      */
     private NameVerifyListener nameVerifyListener = new NameVerifyListener();
+
+    private FirmwareTypeImpl firmwareObj;
 
     /**
      * Form size
@@ -246,6 +248,16 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
 
     private TreeViewer listViewer;
 
+    /**
+     * Constructor to initialize the editor page
+     *
+     * @param editor
+     *            Instance of device description file editor
+     * @param title
+     *            Name of editor page
+     * @param documentRoot
+     *            Instance of document root
+     */
     public DeviceDescriptionFileEditorPage(DeviceDescriptionFileEditor editor, final String title,
             DocumentRoot documentRoot) {
         super(editor, DeviceDescriptionFileEditorPage.ID, title);
@@ -1281,8 +1293,6 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
         addListenerstoControls();
 
     }
-
-    private FirmwareTypeImpl firmwareObj;
 
     private void addListenerstoControls() {
         addFirmwareSettingsButton.addSelectionListener(addFirmwareWizardSelectionAdapter);

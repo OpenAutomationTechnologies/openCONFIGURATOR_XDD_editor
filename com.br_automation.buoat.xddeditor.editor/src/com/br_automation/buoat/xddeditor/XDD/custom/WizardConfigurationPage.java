@@ -1,8 +1,8 @@
 /**
  * @since 19.3.2013
- * @author Joris Lückenga, Bernecker + Rainer Industrie Elektronik Ges.m.b.H.
+ * @author Joris Lückenga, B&R Industrial Automation GmbH
  *
- * @copyright (c) 2017, Bernecker + Rainer Industrie Elektronik Ges.m.b.H.
+ * @copyright (c) 2017, B&R Industrial Automation GmbH
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -29,6 +29,7 @@
 
 package com.br_automation.buoat.xddeditor.XDD.custom;
 
+import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -109,6 +110,16 @@ public class WizardConfigurationPage extends WizardPage {
     private static final String INVALID_PREQ_TIME_SPACE_ERROR = "PReq time cannot start with spaces.";
     private static final String INVALID_NETWORK_BOOT_TIME_SPACE_ERROR = "Network boot time cannot start with spaces.";
     private static final String INVALID_NETWORK_ERROR_ENTRIES_SPACE_ERROR = "Network error entries cannot start with spaces.";
+
+    private static final String MAXIMUM_CYCLE_TIME_OUT_OF_RANGE = "Maximum cycle time value {0} does not fit within the range (0 - 4,294,967,295) of data type 'Unsigned32'.";
+    private static final String MAXIMUM_CYCLE_LESS_THAN_MINIMUM_CYCLE_TIME = "Maximum cycle time value {0} cannot be lesser than minimum cycle time value {1}.";
+    private static final String MINIMUM_CYCLE_TIME_OUT_OF_RANGE = "Minimum cycle time value {0} does not fit within the range (0 - 4,294,967,295) of data type 'Unsigned32'.";
+    private static final String MINIMUM_CYCLE_GREATER_MAXIMUM_CYCLE_TIME = "Minimum cycle time value {0} cannot be greater than maximum cycle time value {1}.";
+    private static final String NETWORK_BOOT_TIME_OUT_OF_RANGE = "Network boot time value {0} does not fit within the range (0 - 4,294,967,295) of data type 'Unsigned32'.";
+    private static final String TIME_FOR_PREQ_OUT_OF_RANGE = "Time for PReq value {0} does not fit within the range (0 - 4,294,967,295) of data type 'Unsigned32'.";
+    private static final String TOTAL_NETWORK_ENTRIES_OUT_OF_RANGE = "Total network error entries {0} does not fit within the range (0 - 4,294,967,295) of data type 'Unsigned32'.";
+    private static final String VENDOR_ID_OUT_OF_RANGE = "Vendor ID value {0} does not fit within the range (0 - 4,294,967,295) of data type 'Unsigned32'.";
+    private static final String PRODUCT_ID_OUT_OF_RANGE = "Product ID value {0} does not fit within the range (0 - 4,294,967,295) of data type 'Unsigned32'.";
 
     /**
      * @param pageID
@@ -358,8 +369,7 @@ public class WizardConfigurationPage extends WizardPage {
 
                 Long value = Long.parseLong(timeforPreqText);
                 if (value < DataTypeRange.Unsigned32_min || value > DataTypeRange.Unsigned32_max) {
-                    setErrorMessage("Time for Soc to PReq value '" + timeforPreqText
-                            + "' does not fit within the range (0 - 4,294,967,295) of data type 'Unsigned32'.");
+                    setErrorMessage(MessageFormat.format(TIME_FOR_PREQ_OUT_OF_RANGE, timeforPreqText));
                     setPageComplete(false);
 
                 }
@@ -398,8 +408,7 @@ public class WizardConfigurationPage extends WizardPage {
 
                 Long value = Long.parseLong(totalNetworkEntry);
                 if (value < DataTypeRange.Unsigned32_min || value > DataTypeRange.Unsigned32_max) {
-                    setErrorMessage("Total network error entries '" + totalNetworkEntry
-                            + "' does not fit within the range (0 - 4,294,967,295) of data type 'Unsigned32'.");
+                    setErrorMessage(MessageFormat.format(TOTAL_NETWORK_ENTRIES_OUT_OF_RANGE, totalNetworkEntry));
                     setPageComplete(false);
 
                 }
@@ -475,8 +484,7 @@ public class WizardConfigurationPage extends WizardPage {
                     if (!val.isEmpty()) {
                         long vendorIdVal = Long.parseLong(val, 16);
                         if (vendorIdVal < DataTypeRange.Unsigned32_min || vendorIdVal > DataTypeRange.Unsigned32_max) {
-                            setErrorMessage("Vendor ID value '" + vendorIdVal
-                                    + "' does not fit within the range (0 - 4,294,967,295) of data type 'Unsigned32'.");
+                            setErrorMessage(MessageFormat.format(VENDOR_ID_OUT_OF_RANGE, vendorIdVal));
                             setPageComplete(false);
 
                         }
@@ -496,26 +504,44 @@ public class WizardConfigurationPage extends WizardPage {
         }
     };
 
+    /**
+     * @return XML date
+     */
     public XMLGregorianCalendar getCreationDateXML() {
         return XDDUtilities.getXMLDate();
     }
 
+    /**
+     * @return XML time
+     */
     public XMLGregorianCalendar getCreationTimeXML() {
         return XDDUtilities.getXMLTime();
     }
 
+    /**
+     * @return Creator string
+     */
     public String getCreatorString() {
         return this.txtCreator.getText().trim();
     }
 
+    /**
+     * @return Name of device
+     */
     public String getDeviceNameString() {
         return this.txtDeviceName.getText().trim();
     }
 
+    /**
+     * @return Name of XDD file
+     */
     public String getFileNameString() {
         return this.mainwizard.getNewFileCreationPage().getFileName();
     }
 
+    /**
+     * @return Version of file
+     */
     public String getFileVersionString() {
         return this.txtFileVersion.getText().trim();
     }
@@ -548,8 +574,7 @@ public class WizardConfigurationPage extends WizardPage {
 
                 Long value = Long.parseLong(maximumCycleTime);
                 if (value < DataTypeRange.Unsigned32_min || value > DataTypeRange.Unsigned32_max) {
-                    setErrorMessage("Maximum cycle time value '" + maximumCycleTime
-                            + "' does not fit within the range (0 - 4,294,967,295) of data type 'Unsigned32'.");
+                    setErrorMessage(MessageFormat.format(MAXIMUM_CYCLE_TIME_OUT_OF_RANGE, maximumCycleTime));
                     setPageComplete(false);
 
                 }
@@ -557,8 +582,8 @@ public class WizardConfigurationPage extends WizardPage {
                 if (!minimumCycleTime.isEmpty()) {
                     Long minValue = Long.parseLong(minimumCycleTime);
                     if (value < minValue) {
-                        setErrorMessage("Maximum cycle time value '" + value
-                                + "' cannot be lesser than minimum cycle time value '" + minimumCycleTime + "'.");
+                        setErrorMessage(MessageFormat.format(MAXIMUM_CYCLE_LESS_THAN_MINIMUM_CYCLE_TIME, value,
+                                minimumCycleTime));
                     }
                 }
 
@@ -601,8 +626,7 @@ public class WizardConfigurationPage extends WizardPage {
 
                 Long value = Long.parseLong(minimumCycleTime);
                 if (value < DataTypeRange.Unsigned32_min || value > DataTypeRange.Unsigned32_max) {
-                    setErrorMessage("Minimum cycle time value '" + minimumCycleTime
-                            + "' does not fit within the range (0 - 4,294,967,295) of data type 'Unsigned32'.");
+                    setErrorMessage(MessageFormat.format(MINIMUM_CYCLE_TIME_OUT_OF_RANGE, minimumCycleTime));
                     setPageComplete(false);
 
                 }
@@ -610,8 +634,8 @@ public class WizardConfigurationPage extends WizardPage {
                 if (!maximumCycleTime.isEmpty()) {
                     Long maxValue = Long.parseLong(maximumCycleTime);
                     if (value > maxValue) {
-                        setErrorMessage("Minimum cycle time value '" + value
-                                + "' cannot be greater than maximum cycle time value '" + maximumCycleTime + "'.");
+                        setErrorMessage(MessageFormat.format(MINIMUM_CYCLE_GREATER_MAXIMUM_CYCLE_TIME, value,
+                                minimumCycleTime));
                     }
                 }
 
@@ -702,8 +726,7 @@ public class WizardConfigurationPage extends WizardPage {
                         long productIdVal = Long.parseLong(val, 16);
                         if (productIdVal < DataTypeRange.Unsigned32_min
                                 || productIdVal > DataTypeRange.Unsigned32_max) {
-                            setErrorMessage("Product ID value '" + productIdVal
-                                    + "' does not fit within the range (0 - 4,294,967,295) of data type 'Unsigned32'.");
+                            setErrorMessage(MessageFormat.format(PRODUCT_ID_OUT_OF_RANGE, productIdVal));
                             setPageComplete(false);
 
                         }
@@ -779,8 +802,7 @@ public class WizardConfigurationPage extends WizardPage {
 
                 Long value = Long.parseLong(networkBootTime);
                 if (value < DataTypeRange.Unsigned32_min || value > DataTypeRange.Unsigned32_max) {
-                    setErrorMessage("Network boot time value '" + networkBootTime
-                            + "' does not fit within the range (0 - 4,294,967,295) of data type 'Unsigned32'.");
+                    setErrorMessage(MessageFormat.format(NETWORK_BOOT_TIME_OUT_OF_RANGE, networkBootTime));
                     setPageComplete(false);
 
                 }
@@ -794,10 +816,16 @@ public class WizardConfigurationPage extends WizardPage {
         }
     };
 
+    /**
+     * @return Version number of Firmware
+     */
     public String getFirmwareversString() {
         return this.txtFirmwareVersionNr.getText().trim();
     }
 
+    /**
+     * @return Hardware version number
+     */
     public String getHardwareversString() {
         return this.txtHardwareVersNr.getText().trim();
     }
@@ -848,38 +876,65 @@ public class WizardConfigurationPage extends WizardPage {
         return null;
     }
 
+    /**
+     * @return Product Id value
+     */
     public String getProductIDString() {
         return this.txtProductID.getText();
     }
 
+    /**
+     * @return Product name value
+     */
     public String getProductNameString() {
         return this.txtProductName.getText();
     }
 
+    /**
+     * @return Software version
+     */
     public String getSoftwareversString() {
         return this.txtSoftwareVersNr.getText();
     }
 
+    /**
+     * @return Vendor ID value
+     */
     public String getVendorIDString() {
         return this.txtVendorID.getText();
     }
 
+    /**
+     * @return Vendor Name
+     */
     public String getVendorNameString() {
         return this.txtVendorName.getText();
     }
 
+    /**
+     * @return <code>True</code> or <code>False</code> otherwise
+     */
     public boolean isCnMultiplexFeature() {
         return this.btnCnMultiplexFeature.getSelection();
     }
 
+    /**
+     * @return <code>True</code> or <code>False</code> otherwise
+     */
     public boolean isMultipleASnd() {
         return this.btnMultipleASnd.getSelection();
     }
 
+    /**
+     * @return <code>True</code> or <code>False</code> otherwise
+     */
     public boolean isNWLIPSupport() {
         return this.btnNWLIPSupport.getSelection();
     }
 
+    /**
+     * @return <code>True</code> or <code>False</code> otherwise
+     */
     public boolean isResponseChaining() {
         return this.btnResponseChaining.getSelection();
     }

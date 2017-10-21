@@ -113,6 +113,14 @@ public class NewObjectWizard extends Wizard {
         return true;
     }
 
+    /**
+     * Verifies whether the entered value is updated in XDD file
+     *
+     * @param documentRoot
+     *            Instance of XDD file
+     * @return <code>True</code> If value is updated in document,
+     *         <code>False</code> otherwise.
+     */
     public boolean updateDocument(DocumentRoot documentRoot) {
         // Create a resource set
         ResourceSet resourceSet = new ResourceSetImpl();

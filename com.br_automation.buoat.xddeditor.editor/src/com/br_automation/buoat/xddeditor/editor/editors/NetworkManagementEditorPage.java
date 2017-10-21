@@ -32,6 +32,7 @@
 package com.br_automation.buoat.xddeditor.editor.editors;
 
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -120,6 +121,13 @@ public final class NetworkManagementEditorPage extends FormPage {
     private static final String INVALID_NETWORK_BOOT_TIME_SPACE_ERROR = "Network boot time cannot start with spaces.";
     private static final String INVALID_NETWORK_ERROR_ENTRIES_SPACE_ERROR = "Network error entries cannot start with spaces.";
 
+    private static final String MAXIMUM_CYCLE_TIME_OUT_OF_RANGE = "Maximum cycle time value {0} does not fit within the range (0 - 4,294,967,295) of data type 'Unsigned32'.";
+    private static final String MAXIMUM_CYCLE_LESS_THAN_MINIMUM_CYCLE_TIME = "Maximum cycle time value {0} cannot be lesser than minimum cycle time value {1}.";
+    private static final String MINIMUM_CYCLE_TIME_OUT_OF_RANGE = "Minimum cycle time value {0} does not fit within the range (0 - 4,294,967,295) of data type 'Unsigned32'.";
+    private static final String MINIMUM_CYCLE_GREATER_MAXIMUM_CYCLE_TIME = "Minimum cycle time value {0} cannot be greater than maximum cycle time value {1}.";
+    private static final String NETWORK_BOOT_TIME_OUT_OF_RANGE = "Network boot time value {0} does not fit within the range (0 - 4,294,967,295) of data type 'Unsigned32'.";
+    private static final String TIME_FOR_PREQ_OUT_OF_RANGE = "Time for PReq value {0} does not fit within the range (0 - 4,294,967,295) of data type 'Unsigned32'.";
+
     /**
      * Form size
      */
@@ -161,6 +169,14 @@ public final class NetworkManagementEditorPage extends FormPage {
 
     private DocumentRoot documentRoot;
 
+    /**
+     * Name verify listener
+     */
+    private NameVerifyListener nameVerifyListener = new NameVerifyListener();
+
+    /*
+     * Constructor
+     */
     public NetworkManagementEditorPage(DeviceDescriptionFileEditor editor, final String title,
             DocumentRoot documentRoot) {
         super(editor, NetworkManagementEditorPage.ID, title);
@@ -201,11 +217,6 @@ public final class NetworkManagementEditorPage extends FormPage {
         addListenersToControls();
 
     }
-
-    /**
-     * Name verify listener
-     */
-    private NameVerifyListener nameVerifyListener = new NameVerifyListener();
 
     private void addListenersToControls() {
         minimumCycleTimeText.addModifyListener(minimumCycleTimeModifyListener);
@@ -360,8 +371,7 @@ public final class NetworkManagementEditorPage extends FormPage {
 
                 Long value = Long.parseLong(timeforPreqText);
                 if (value < DataTypeRange.Unsigned32_min || value > DataTypeRange.Unsigned32_max) {
-                    setErrorMessage("Time for PReq value '" + timeforPreqText
-                            + "' does not fit within the range (0 - 4,294,967,295) of data type 'Unsigned32'.");
+                    setErrorMessage(MessageFormat.format(TIME_FOR_PREQ_OUT_OF_RANGE, timeforPreqText));
                     return;
 
                 }
@@ -407,8 +417,7 @@ public final class NetworkManagementEditorPage extends FormPage {
 
                 Long value = Long.parseLong(totalNetworkEntry);
                 if (value < DataTypeRange.Unsigned32_min || value > DataTypeRange.Unsigned32_max) {
-                    setErrorMessage("Total network error entries '" + totalNetworkEntry
-                            + "' does not fit within the range (0 - 4,294,967,295) of data type 'Unsigned32'.");
+                    setErrorMessage(MessageFormat.format(NETWORK_BOOT_TIME_OUT_OF_RANGE, totalNetworkEntry));
                     return;
 
                 }
@@ -428,6 +437,14 @@ public final class NetworkManagementEditorPage extends FormPage {
         }
     };
 
+    /**
+     * Verifies whether the entered value is updated in XDD file
+     *
+     * @param documentRoot
+     *            Instance of XDD file
+     * @return <code>True</code> If value is updated in document,
+     *         <code>False</code> otherwise.
+     */
     public boolean updateDocument(DocumentRoot documentRoot) {
         // Create a resource set
         ResourceSet resourceSet = new ResourceSetImpl();
@@ -483,8 +500,7 @@ public final class NetworkManagementEditorPage extends FormPage {
 
                 Long value = Long.parseLong(maximumCycleTime);
                 if (value < DataTypeRange.Unsigned32_min || value > DataTypeRange.Unsigned32_max) {
-                    setErrorMessage("Maximum cycle time value '" + maximumCycleTime
-                            + "' does not fit within the range (0 - 4,294,967,295) of data type 'Unsigned32'.");
+                    setErrorMessage(MessageFormat.format(MAXIMUM_CYCLE_TIME_OUT_OF_RANGE, maximumCycleTime));
                     return;
 
                 }
@@ -492,8 +508,8 @@ public final class NetworkManagementEditorPage extends FormPage {
                 if (!minimumCycleTime.isEmpty()) {
                     Long minValue = Long.parseLong(minimumCycleTime);
                     if (value < minValue) {
-                        setErrorMessage("Maximum cycle time value '" + value
-                                + "' cannot be lesser than minimum cycle time value '" + minimumCycleTime + "'.");
+                        setErrorMessage(MessageFormat.format(MAXIMUM_CYCLE_LESS_THAN_MINIMUM_CYCLE_TIME, value,
+                                minimumCycleTime));
                     }
                 }
 
@@ -539,8 +555,7 @@ public final class NetworkManagementEditorPage extends FormPage {
 
                 Long value = Long.parseLong(minimumCycleTime);
                 if (value < DataTypeRange.Unsigned32_min || value > DataTypeRange.Unsigned32_max) {
-                    setErrorMessage("Minimum cycle time value '" + minimumCycleTime
-                            + "' does not fit within the range (0 - 4,294,967,295) of data type 'Unsigned32'.");
+                    setErrorMessage(MessageFormat.format(MINIMUM_CYCLE_TIME_OUT_OF_RANGE, minimumCycleTime));
                     return;
 
                 }
@@ -548,8 +563,8 @@ public final class NetworkManagementEditorPage extends FormPage {
                 if (!maximumCycleTime.isEmpty()) {
                     Long maxValue = Long.parseLong(maximumCycleTime);
                     if (value > maxValue) {
-                        setErrorMessage("Minimum cycle time value '" + value
-                                + "' cannot be greater than maximum cycle time value '" + maximumCycleTime + "'.");
+                        setErrorMessage(MessageFormat.format(MINIMUM_CYCLE_GREATER_MAXIMUM_CYCLE_TIME, value,
+                                maximumCycleTime));
                     }
                 }
 
@@ -595,8 +610,7 @@ public final class NetworkManagementEditorPage extends FormPage {
 
                 Long value = Long.parseLong(networkBootTime);
                 if (value < DataTypeRange.Unsigned32_min || value > DataTypeRange.Unsigned32_max) {
-                    setErrorMessage("Network boot time value '" + networkBootTime
-                            + "' does not fit within the range (0 - 4,294,967,295) of data type 'Unsigned32'.");
+                    setErrorMessage(MessageFormat.format(NETWORK_BOOT_TIME_OUT_OF_RANGE, networkBootTime));
                     return;
 
                 }

@@ -107,54 +107,105 @@ public class Index1000DetailsPage implements IDetailsPage {
     private long maskMSB;
     private long additionalInfoValue;
 
+    /**
+     * Constructor to initialize the details page
+     *
+     * @param index1000Object
+     *            Instance of TObjectImpl
+     * @param docRoot
+     *            Instance of document root
+     * @param editor
+     *            Instance of editor page
+     */
     public Index1000DetailsPage(TObjectImpl index1000Object, DocumentRoot docRoot, DeviceDescriptionFileEditor editor) {
         this.index1000Object = index1000Object;
         this.docRoot = docRoot;
         this.editor = editor;
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.eclipse.ui.forms.IFormPart#initialize(org.eclipse.ui.forms.
+     * IManagedForm)
+     */
     @Override
     public void initialize(IManagedForm form) {
         managedForm = form;
 
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.eclipse.ui.forms.IFormPart#dispose()
+     */
     @Override
     public void dispose() {
         // TODO Auto-generated method stub
 
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.eclipse.ui.forms.IFormPart#isDirty()
+     */
     @Override
     public boolean isDirty() {
         // TODO Auto-generated method stub
         return false;
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.eclipse.ui.forms.IFormPart#commit(boolean)
+     */
     @Override
     public void commit(boolean onSave) {
         // TODO Auto-generated method stub
 
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.eclipse.ui.forms.IFormPart#setFormInput(java.lang.Object)
+     */
     @Override
     public boolean setFormInput(Object input) {
         // TODO Auto-generated method stub
         return false;
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.eclipse.ui.forms.IFormPart#setFocus()
+     */
     @Override
     public void setFocus() {
         // TODO Auto-generated method stub
 
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.eclipse.ui.forms.IFormPart#isStale()
+     */
     @Override
     public boolean isStale() {
         // TODO Auto-generated method stub
         return false;
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.eclipse.ui.forms.IFormPart#refresh()
+     */
     @Override
     public void refresh() {
         // TODO Auto-generated method stub
@@ -231,6 +282,13 @@ public class Index1000DetailsPage implements IDetailsPage {
         }
     };
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * org.eclipse.ui.forms.IPartSelectionListener#selectionChanged(org.eclipse.
+     * ui.forms.IFormPart, org.eclipse.jface.viewers.ISelection)
+     */
     @Override
     public void selectionChanged(IFormPart part, ISelection selection) {
         if (selection instanceof IStructuredSelection) {
@@ -293,6 +351,13 @@ public class Index1000DetailsPage implements IDetailsPage {
         }
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * org.eclipse.ui.forms.IDetailsPage#createContents(org.eclipse.swt.widgets.
+     * Composite)
+     */
     @Override
     public void createContents(Composite parent) {
 

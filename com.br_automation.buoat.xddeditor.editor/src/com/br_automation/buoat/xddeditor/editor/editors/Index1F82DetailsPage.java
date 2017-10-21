@@ -101,6 +101,10 @@ public class Index1F82DetailsPage implements IDetailsPage {
 
     private static final String[] OBJECT_TYPES = new String[] { "7 - VAR", "8 - ARRAY", "9 - RECORD" };
 
+    /**
+     * Constructor
+     *
+     */
     public Index1F82DetailsPage(TObjectImpl index1f82Object, DocumentRoot docRoot, DeviceDescriptionFileEditor editor) {
         this.index1F82Object = index1f82Object;
         this.docRoot = docRoot;

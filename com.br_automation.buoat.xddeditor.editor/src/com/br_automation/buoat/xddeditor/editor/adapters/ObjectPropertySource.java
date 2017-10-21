@@ -86,6 +86,12 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
     private static final String DEFAULT_VALUE_EXCEEDS_HIGH_LIMIT = "Default value {0} exceeds the high limit value {1}.";
     private static final String DEFAULT_VALUE_LESS_THAN_LOW_LIMIT = "Default value {0} cannot be lesser than low limit value {1}.";
 
+    /**
+     * Constructor to initialize the property descriptors for object
+     *
+     * @param plkObject
+     *            Instance of POWERLINK object
+     */
     public ObjectPropertySource(final TObjectImpl plkObject) {
 
         setObjectData(plkObject);
@@ -1022,6 +1028,14 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
         return TObjectAccessType.CONST;
     }
 
+    /**
+     * Get the TObject PDO mapping value based on selected PDO mapping in
+     * property page
+     *
+     * @param pdoMapping
+     *            Value of PDO
+     * @return TObjectPDOMapping
+     */
     public TObjectPDOMapping getPdoMapping(String pdoMapping) {
 
         if (pdoMapping.equalsIgnoreCase("No")) {
@@ -1146,6 +1160,9 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
 
     }
 
+    /**
+     * @return The instance of document root
+     */
     public DocumentRoot getDocumentRoot() {
 
         IEditorPart editorPart = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
@@ -1167,6 +1184,14 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
         return root;
     }
 
+    /**
+     * Updates the object into XDD file
+     *
+     * @param documentRoot
+     *            Instance of document root
+     * @return <code>True</code> if document is updated, <code>False</code>
+     *         otherwise
+     */
     public boolean updateDocument(DocumentRoot documentRoot) {
 
         // Create a resource for this file.

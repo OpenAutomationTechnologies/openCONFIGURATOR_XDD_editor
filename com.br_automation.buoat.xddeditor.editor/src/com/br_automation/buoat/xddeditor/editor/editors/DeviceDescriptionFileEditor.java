@@ -114,6 +114,14 @@ public final class DeviceDescriptionFileEditor extends FormEditor
     public AdapterFactoryEditingDomain editingDomain;
 
     /**
+     * This is the one adapter factory used for providing views of the model.
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    public ComposedAdapterFactory adapterFactory;
+
+    /**
      * Eclipse project instance linked with this editor.
      */
     private IProject activeProject;
@@ -260,6 +268,11 @@ public final class DeviceDescriptionFileEditor extends FormEditor
 
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.eclipse.ui.part.EditorPart#doSaveAs()
+     */
     @Override
     public void doSaveAs() {
         // TODO Auto-generated method stub
@@ -291,6 +304,9 @@ public final class DeviceDescriptionFileEditor extends FormEditor
         super.handlePropertyChange(propertyId);
     }
 
+    /**
+     * @return The instance of document root
+     */
     public DocumentRoot getDocumentRoot() {
         java.net.URI uri = projectFile.getLocationURI();
         DocumentRoot root = null;
@@ -304,10 +320,16 @@ public final class DeviceDescriptionFileEditor extends FormEditor
         return root;
     }
 
+    /**
+     * @return Instance of XDD file
+     */
     public IFile getModelFile() {
         return projectFile;
     }
 
+    /**
+     * @return IPath of XDD file
+     */
     public IPath getPathOfXddFile() {
         return projectFile.getRawLocation();
     }
@@ -403,6 +425,13 @@ public final class DeviceDescriptionFileEditor extends FormEditor
 
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * org.eclipse.jface.util.IPropertyChangeListener#propertyChange(org.eclipse
+     * .jface.util.PropertyChangeEvent)
+     */
     @Override
     public void propertyChange(PropertyChangeEvent event) {
         // TODO Auto-generated method stub
@@ -522,13 +551,8 @@ public final class DeviceDescriptionFileEditor extends FormEditor
     }
 
     /**
-     * This is the one adapter factory used for providing views of the model.
-     * <!-- begin-user-doc --> <!-- end-user-doc -->
-     *
-     * @generated
+     * Initialize editor page
      */
-    public ComposedAdapterFactory adapterFactory;
-
     protected void initializeEditingDomain() {
         // Create an adapter factory that yields item providers.
         //
@@ -594,6 +618,11 @@ public final class DeviceDescriptionFileEditor extends FormEditor
         }
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.eclipse.ui.part.MultiPageEditorPart#getAdapter(java.lang.Class)
+     */
     @SuppressWarnings("unchecked")
     @Override
     public Object getAdapter(@SuppressWarnings("rawtypes") Class key) {
