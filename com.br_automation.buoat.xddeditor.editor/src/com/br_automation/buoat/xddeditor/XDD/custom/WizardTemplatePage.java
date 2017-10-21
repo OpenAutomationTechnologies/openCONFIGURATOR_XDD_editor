@@ -1,7 +1,35 @@
-/**
- * @since 19.3.2013
- * @author Joris Lückenga, Bernecker + Rainer Industrie Elektronik Ges.m.b.H.
- */
+/*******************************************************************************
+ * @file   WizardTemplatePage.java
+ *
+ * @author Joris Lückenga, B&R Industrial Automation GmbH
+ *
+ * @copyright (c) 2017, Kalycito Infotech Private Limited
+ *
+ *
+ *@copyright (c) 2017, B&R Industrial Automation GmbH
+ *            All rights reserved.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *   * Redistributions of source code must retain the above copyright
+ *     notice, this list of conditions and the following disclaimer.
+ *   * Redistributions in binary form must reproduce the above copyright
+ *     notice, this list of conditions and the following disclaimer in the
+ *     documentation and/or other materials provided with the distribution.
+ *   * Neither the name of the copyright holders nor the
+ *     names of its contributors may be used to endorse or promote products
+ *     derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDERS BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *******************************************************************************/
 
 package com.br_automation.buoat.xddeditor.XDD.custom;
 
@@ -17,10 +45,10 @@ import org.eclipse.swt.widgets.Label;
 /**
  * @brief Wizard to choose Template and if the ConfigurationWizard should be
  *        used.
- * 
+ *
  *        Provides a combobox and checkbox to set template and ask if the
  *        advanced wizard should be used.
- * 
+ *
  * @author Joris Lückenga
  */
 public class WizardTemplatePage extends WizardPage {
@@ -28,7 +56,6 @@ public class WizardTemplatePage extends WizardPage {
     private Button cbtnUseConfigurationWizard;
     private Combo cmbTemplate;
     private boolean enableNext;
-    private Button rbtnLoadEmptyXDD;
 
     /**
      * @see WizardTemplatePage#WizardTemplatePage(String)
@@ -58,27 +85,10 @@ public class WizardTemplatePage extends WizardPage {
         Composite composite = new Composite(container, SWT.NONE);
         composite.setBounds(10, 10, 387, 147);
 
-        this.rbtnLoadEmptyXDD = new Button(composite, SWT.RADIO);
-        this.rbtnLoadEmptyXDD.setBounds(10, 121, 149, 16);
-        this.rbtnLoadEmptyXDD.setText("Load empty XDD file");
-        //If Empty Project is loaded....
-        this.rbtnLoadEmptyXDD.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-
-                WizardTemplatePage.this.cmbTemplate.setEnabled(false);
-                WizardTemplatePage.this.cbtnUseConfigurationWizard.setEnabled(false);
-                WizardTemplatePage.this.cbtnUseConfigurationWizard.setSelection(false);
-                WizardTemplatePage.this.enableNext = false;
-                WizardTemplatePage.this.setPageComplete(false);
-                WizardTemplatePage.this.setPageComplete(true);
-            }
-        });
-
-        this.cmbTemplate = new Combo(composite, SWT.NONE);
+        this.cmbTemplate = new Combo(composite, SWT.READ_ONLY);
         this.cmbTemplate.setBounds(30, 56, 186, 23);
-        this.cmbTemplate.setItems(new String[] { "Default device", "Default extended device",
-        "Default static device" });
+        this.cmbTemplate
+                .setItems(new String[] { "Default device", "Default extended device", "Default static device" });
         this.cmbTemplate.select(0);
 
         Label lblTemplateType = new Label(composite, SWT.NONE);
@@ -95,8 +105,8 @@ public class WizardTemplatePage extends WizardPage {
             }
         });
         rbtnLoadDefaultXDD.setSelection(true);
-        rbtnLoadDefaultXDD.setBounds(10, 10, 172, 16);
-        rbtnLoadDefaultXDD.setText("Load default XDD Template");
+        rbtnLoadDefaultXDD.setBounds(10, 10, 240, 16);
+        rbtnLoadDefaultXDD.setText("Create a new XDD file based on a template");
 
         this.cbtnUseConfigurationWizard = new Button(composite, SWT.CHECK);
         this.cbtnUseConfigurationWizard.addSelectionListener(new SelectionAdapter() {
@@ -106,10 +116,8 @@ public class WizardTemplatePage extends WizardPage {
                 if (WizardTemplatePage.this.cbtnUseConfigurationWizard.getSelection()) {
                     WizardTemplatePage.this.enableNext = true;
                     WizardTemplatePage.this.setPageComplete(true);
-                    //((WizardPage) getNextPage()).setPageComplete(false);
                 } else {
                     WizardTemplatePage.this.enableNext = false;
-                    //((WizardPage) getNextPage()).setPageComplete(true);
                     WizardTemplatePage.this.setPageComplete(false);
                     WizardTemplatePage.this.setPageComplete(true);
                 }
@@ -117,17 +125,8 @@ public class WizardTemplatePage extends WizardPage {
             }
         });
         this.cbtnUseConfigurationWizard.setBounds(30, 85, 304, 16);
-        this.cbtnUseConfigurationWizard
-        .setText("Use the Configuration Wizard to modify the Template");
-    } //createControl
-
-    /**
-     * @return <code>True</code> if empty model should be generated,
-     *         <code>false</code> otherwise.
-     */
-    public boolean getLoadEmpty() {
-        return this.rbtnLoadEmptyXDD.getSelection();
-    }
+        this.cbtnUseConfigurationWizard.setText("Use the configuration wizard to modify the template");
+    } // createControl
 
     /**
      * @brief Gets the template combobox.
@@ -147,4 +146,4 @@ public class WizardTemplatePage extends WizardPage {
         return this.cbtnUseConfigurationWizard.getSelection();
     }
 
-} //WizardPage
+} // WizardTemplatePage

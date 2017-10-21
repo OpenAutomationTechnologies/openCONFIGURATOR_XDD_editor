@@ -4,7 +4,11 @@ Bundle-Name: %pluginName
 Bundle-SymbolicName: com.br_automation.buoat.xddeditor.editor;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-ClassPath: .,
- resources/
+ resources/,
+ os/jdom-2.0.6/jdom-2.0.6.jar,
+ os/jdom-2.0.6/lib/jaxen-1.1.6.jar,
+ os/commons-io-2.5/commons-io-2.5.jar,
+ os/commons-lang3-3.4/commons-lang3-3.4.jar
 Bundle-Activator: com.br_automation.buoat.xddeditor.XDD.presentation.XDDEditorPlugin$Implementation
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
@@ -32,5 +36,10 @@ Require-Bundle: com.br_automation.buoat.xddeditor.edit;visibility:=reexport,
  org.eclipse.ui.navigator,
  org.eclipse.ui,
  org.eclipse.ui.views.properties.tabbed,
- org.eclipse.emf.eef.runtime;visibility:=reexport
+ org.eclipse.emf.eef.runtime;visibility:=reexport,
+ org.eclipse.jface.text,
+ org.eclipse.ui.editors,
+ org.eclipse.ui.forms,
+ org.eclipse.pde;visibility:=reexport,
+ org.eclipse.pde.core;visibility:=reexport
 Bundle-ActivationPolicy: lazy

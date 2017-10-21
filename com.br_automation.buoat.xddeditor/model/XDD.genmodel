@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
     xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/com.br_automation.buoat.xddeditor/src" modelPluginID="com.br_automation.buoat.xddeditor"
-    modelName="XDD" importerID="org.eclipse.emf.importer.ecore" complianceLevel="7.0"
+    modelName="XDD" importerID="org.eclipse.xsd.ecore.importer" complianceLevel="7.0"
     copyrightFields="false">
-  <foreignModel>XDD.ecore</foreignModel>
+  <foreignModel>file:/C:/Users/Jenifer%20Anthonysamy/Documents/XDD%20Editor/POWERLINK_XDD_Examples__XML_Schema_and_Template_02/schema/v0.14_DS311_1_1_0/Powerlink_Main.xsd</foreignModel>
   <genPackages prefix="XDD" basePackage="com.br_automation.buoat.xddeditor" resource="XML"
       disposableProviderFactory="true" literalsInterface="false" ecorePackage="XDD.ecore#/">
     <genEnums typeSafeEnumCompatible="false" ecoreEnum="XDD.ecore#//AccessType">
@@ -26,6 +26,24 @@
       <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//AccessTypeType/readOnly"/>
       <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//AccessTypeType/writeOnly"/>
       <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//AccessTypeType/readWriteOutput"/>
+    </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="XDD.ecore#//ClassificationType">
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//ClassificationType/Controller"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//ClassificationType/IndustrialPC"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//ClassificationType/OperatorInterface"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//ClassificationType/IO"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//ClassificationType/Drive"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//ClassificationType/Motor"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//ClassificationType/Encoder"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//ClassificationType/VisionSystem"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//ClassificationType/Sensor"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//ClassificationType/Temperature"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//ClassificationType/Counter"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//ClassificationType/Safe"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//ClassificationType/Analog"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//ClassificationType/Digital"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//ClassificationType/Input"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//ClassificationType/Output"/>
     </genEnums>
     <genEnums typeSafeEnumCompatible="false" ecoreEnum="XDD.ecore#//DeviceClassType">
       <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//DeviceClassType/compact"/>
@@ -61,6 +79,13 @@
     <genEnums typeSafeEnumCompatible="false" ecoreEnum="XDD.ecore#//NodeTypeType">
       <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//NodeTypeType/MN"/>
       <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//NodeTypeType/CN"/>
+    </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="XDD.ecore#//PositioningType">
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//PositioningType/remote"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//PositioningType/localAbove"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//PositioningType/localBelow"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//PositioningType/localLeft"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//PositioningType/localRight"/>
     </genEnums>
     <genEnums typeSafeEnumCompatible="false" ecoreEnum="XDD.ecore#//ProfileClassIDDataType">
       <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//ProfileClassIDDataType/AIP"/>
@@ -100,6 +125,15 @@
       <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//TObjectPDOMapping/TPDO"/>
       <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//TObjectPDOMapping/RPDO"/>
     </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="XDD.ecore#//TSpecificationVersion">
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//TSpecificationVersion/_110"/>
+    </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="XDD.ecore#//TypeType">
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//TypeType/frontPicture"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//TypeType/icon"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//TypeType/additional"/>
+      <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//TypeType/none"/>
+    </genEnums>
     <genEnums typeSafeEnumCompatible="false" ecoreEnum="XDD.ecore#//VersionTypeType">
       <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//VersionTypeType/SW"/>
       <genEnumLiterals ecoreEnumLiteral="XDD.ecore#//VersionTypeType/FW"/>
@@ -109,6 +143,7 @@
     <genDataTypes ecoreDataType="XDD.ecore#//AccessTypeObject"/>
     <genDataTypes ecoreDataType="XDD.ecore#//AccessTypeObject1"/>
     <genDataTypes ecoreDataType="XDD.ecore#//AccessTypeTypeObject"/>
+    <genDataTypes ecoreDataType="XDD.ecore#//ClassificationTypeObject"/>
     <genDataTypes ecoreDataType="XDD.ecore#//DeviceClassTypeObject"/>
     <genDataTypes ecoreDataType="XDD.ecore#//IASInterfaceDataType"/>
     <genDataTypes ecoreDataType="XDD.ecore#//IASInterfaceDataTypeMember0Object"/>
@@ -118,6 +153,7 @@
     <genDataTypes ecoreDataType="XDD.ecore#//LEDtypeTypeObject"/>
     <genDataTypes ecoreDataType="XDD.ecore#//NodeTypeTypeObject"/>
     <genDataTypes ecoreDataType="XDD.ecore#//OffsetType"/>
+    <genDataTypes ecoreDataType="XDD.ecore#//PositioningTypeObject"/>
     <genDataTypes ecoreDataType="XDD.ecore#//ProfileClassIDDataTypeObject"/>
     <genDataTypes ecoreDataType="XDD.ecore#//RangeTypeObject"/>
     <genDataTypes ecoreDataType="XDD.ecore#//StateTypeObject"/>
@@ -125,6 +161,8 @@
     <genDataTypes ecoreDataType="XDD.ecore#//SupportTypeObject"/>
     <genDataTypes ecoreDataType="XDD.ecore#//TObjectAccessTypeObject"/>
     <genDataTypes ecoreDataType="XDD.ecore#//TObjectPDOMappingObject"/>
+    <genDataTypes ecoreDataType="XDD.ecore#//TSpecificationVersionObject"/>
+    <genDataTypes ecoreDataType="XDD.ecore#//TypeTypeObject"/>
     <genDataTypes ecoreDataType="XDD.ecore#//VersionTypeTypeObject"/>
     <genClasses ecoreClass="XDD.ecore#//AddInfoType">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute XDD.ecore#//AddInfoType/group"/>
@@ -213,6 +251,18 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ConnectionType/destination"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ConnectionType/source"/>
     </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//ConnectorType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute XDD.ecore#//ConnectorType/group"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//ConnectorType/label"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//ConnectorType/description"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//ConnectorType/labelRef"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//ConnectorType/descriptionRef"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ConnectorType/connectorType"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ConnectorType/id"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ConnectorType/positioning"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ConnectorType/posX"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ConnectorType/posY"/>
+    </genClasses>
     <genClasses ecoreClass="XDD.ecore#//DataTypeListType">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//DataTypeListType/defType"/>
     </genClasses>
@@ -266,7 +316,12 @@
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//DocumentRoot/mixed"/>
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//DocumentRoot/xMLNSPrefixMap"/>
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//DocumentRoot/xSISchemaLocation"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//DocumentRoot/classification"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//DocumentRoot/connector"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//DocumentRoot/firmware"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//DocumentRoot/iSO15745Profile"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//DocumentRoot/iSO15745ProfileContainer"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//DocumentRoot/textResource"/>
     </genClasses>
     <genClasses ecoreClass="XDD.ecore#//DynamicChannelsType">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//DynamicChannelsType/dynamicChannel"/>
@@ -325,6 +380,16 @@
     </genClasses>
     <genClasses ecoreClass="XDD.ecore#//FileType">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//FileType/uRI"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//FirmwareType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute XDD.ecore#//FirmwareType/group"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//FirmwareType/label"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//FirmwareType/description"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//FirmwareType/labelRef"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//FirmwareType/descriptionRef"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//FirmwareType/buildDate"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//FirmwareType/deviceRevisionNumber"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//FirmwareType/uRI"/>
     </genClasses>
     <genClasses ecoreClass="XDD.ecore#//FunctionInstanceType">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute XDD.ecore#//FunctionInstanceType/group"/>
@@ -451,7 +516,11 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//OutputVarsType/varDeclaration"/>
     </genClasses>
     <genClasses ecoreClass="XDD.ecore#//ParameterRefType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ParameterRefType/actualValue"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ParameterRefType/bitOffset"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ParameterRefType/locked"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ParameterRefType/uniqueIDRef"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ParameterRefType/visible"/>
     </genClasses>
     <genClasses ecoreClass="XDD.ecore#//ParameterType">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute XDD.ecore#//ParameterType/group"/>
@@ -504,6 +573,7 @@
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//PictureType/labelRef"/>
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//PictureType/descriptionRef"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//PictureType/number"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//PictureType/type"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//PictureType/uRI"/>
     </genClasses>
     <genClasses ecoreClass="XDD.ecore#//ProductFamilyType">
@@ -527,6 +597,7 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ProfileBodyCommunicationNetworkPowerlink/transportLayers"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ProfileBodyCommunicationNetworkPowerlink/networkManagement"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ProfileBodyCommunicationNetworkPowerlink/externalProfileHandle"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ProfileBodyCommunicationNetworkPowerlink/specificationVersion"/>
     </genClasses>
     <genClasses image="false" ecoreClass="XDD.ecore#//ProfileBodyDataType">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ProfileBodyDataType/fileCreationDate"/>
@@ -548,6 +619,7 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ProfileBodyDevicePowerlink/applicationProcess"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//ProfileBodyDevicePowerlink/externalProfileHandle"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ProfileBodyDevicePowerlink/deviceClass"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ProfileBodyDevicePowerlink/specificationVersion"/>
     </genClasses>
     <genClasses ecoreClass="XDD.ecore#//ProfileHandleDataType">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//ProfileHandleDataType/profileIdentification"/>
@@ -636,9 +708,16 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TCapabilities/characteristicsList"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TCapabilities/standardComplianceList"/>
     </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//TClassificationList">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TClassificationList/classification"/>
+    </genClasses>
     <genClasses ecoreClass="XDD.ecore#//TCNFeatures">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TCNFeatures/dLLCNFeatureMultiplex"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TCNFeatures/dLLCNPResChaining"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TCNFeatures/nMTCNDNA"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TCNFeatures/nMTCNMaxAInv"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TCNFeatures/nMTCNPreOp2ToReady2Op"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TCNFeatures/nMTCNSetNodeNumberTime"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TCNFeatures/nMTCNSoC2PReq"/>
     </genClasses>
     <genClasses ecoreClass="XDD.ecore#//TCombinedState">
@@ -651,6 +730,9 @@
     </genClasses>
     <genClasses ecoreClass="XDD.ecore#//TConditionalSupport">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TConditionalSupport/paramIDRef"/>
+    </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//TConnectorList">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TConnectorList/connector"/>
     </genClasses>
     <genClasses ecoreClass="XDD.ecore#//TCount">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute XDD.ecore#//TCount/group"/>
@@ -730,6 +812,9 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TDeviceFunction/capabilities"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TDeviceFunction/picturesList"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TDeviceFunction/dictionaryList"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TDeviceFunction/connectorList"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TDeviceFunction/firmwareList"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TDeviceFunction/classificationList"/>
     </genClasses>
     <genClasses ecoreClass="XDD.ecore#//TDeviceIdentity">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TDeviceIdentity/vendorName"/>
@@ -782,6 +867,9 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TextResourceType/textEntry"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TextResourceType/lang"/>
     </genClasses>
+    <genClasses ecoreClass="XDD.ecore#//TFirmwareList">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TFirmwareList/firmware"/>
+    </genClasses>
     <genClasses ecoreClass="XDD.ecore#//TFunctionInstanceList">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TFunctionInstanceList/functionInstance"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TFunctionInstanceList/connection"/>
@@ -795,19 +883,23 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/dLLErrMacBuffer"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/dLLFeatureCN"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/dLLFeatureMN"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/dLLMultiplePReqPRes"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/nMTBootTimeNotActive"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/nMTCycleTimeGranularity"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/nMTCycleTimeMax"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/nMTCycleTimeMin"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/nMTEmergencyQueueSize"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/nMTErrorEntries"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/nMTExtNmtCmds"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/nMTFlushArpEntry"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/nMTIsochronous"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/nMTMaxCNNodeID"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/nMTMaxCNNumber"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/nMTMaxHeartbeats"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/nMTMinRedCycleTime"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/nMTNetHostNameSet"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/nMTNodeIDByHW"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/nMTNodeIDBySW"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/nMTProductCode"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/nMTPublishActiveNodes"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/nMTPublishConfigNodes"/>
@@ -823,6 +915,7 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/nWLForward"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/nWLICMPSupport"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/nWLIPSupport"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/pDODynamicMapping"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/pDOGranularity"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/pDOMaxDescrMem"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/pDORPDOChannelObjects"/>
@@ -854,6 +947,9 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/sDOMaxParallelConnections"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/sDOSeqLayerTxHistorySize"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/sDOServer"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/sDOSupportASnd"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/sDOSupportPDO"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TGeneralFeatures/sDOSupportUdpIp"/>
     </genClasses>
     <genClasses ecoreClass="XDD.ecore#//TIndicatorList">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TIndicatorList/lEDList"/>
@@ -873,18 +969,23 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TMNFeatures/dLLMNFeatureMultiplex"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TMNFeatures/dLLMNFeaturePResTx"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TMNFeatures/dLLMNPResChaining"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TMNFeatures/dLLMNRingRedundancy"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TMNFeatures/nMTMNASnd2SoC"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TMNFeatures/nMTMNBasicEthernet"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TMNFeatures/nMTMNDNA"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TMNFeatures/nMTMNMaxAsynchronousSlots"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TMNFeatures/nMTMNMultiplCycMax"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TMNFeatures/nMTMNPRes2PReq"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TMNFeatures/nMTMNPRes2PRes"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TMNFeatures/nMTMNPResRx2SoA"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TMNFeatures/nMTMNPResTx2SoA"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TMNFeatures/nMTMNRedundancy"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TMNFeatures/nMTMNSoA2ASndTx"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TMNFeatures/nMTMNSoC2PReq"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TMNFeatures/nMTNetTime"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TMNFeatures/nMTNetTimeIsRealTime"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TMNFeatures/nMTRelativeTime"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TMNFeatures/nMTServiceUdpIp"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TMNFeatures/nMTSimpleBoot"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TMNFeatures/pDOTPDOChannels"/>
     </genClasses>
@@ -918,8 +1019,14 @@
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//TParameterGroup/description"/>
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//TParameterGroup/labelRef"/>
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//TParameterGroup/descriptionRef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute XDD.ecore#//TParameterGroup/group1"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TParameterGroup/parameterGroup"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TParameterGroup/parameterRef"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TParameterGroup/bitOffset"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TParameterGroup/conditionalUniqueIDRef"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TParameterGroup/conditionalValue"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TParameterGroup/configParameter"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TParameterGroup/groupLevelVisible"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TParameterGroup/kindOfAccess"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute XDD.ecore#//TParameterGroup/uniqueID"/>
     </genClasses>
@@ -930,6 +1037,11 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TParameterList/parameter"/>
     </genClasses>
     <genClasses ecoreClass="XDD.ecore#//TParameterTemplate">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute XDD.ecore#//TParameterTemplate/group"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//TParameterTemplate/label"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//TParameterTemplate/description"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//TParameterTemplate/labelRef"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference XDD.ecore#//TParameterTemplate/descriptionRef"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TParameterTemplate/bOOL"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TParameterTemplate/bITSTRING"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference XDD.ecore#//TParameterTemplate/bYTE"/>

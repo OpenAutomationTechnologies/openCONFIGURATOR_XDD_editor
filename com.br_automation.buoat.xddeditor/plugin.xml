@@ -23,4 +23,32 @@
       </parser>
    </extension>
 
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated XDD -->
+      <package
+            uri="http://www.ethernet-powerlink.org"
+            class="com.br_automation.buoat.xddeditor.XDD.XDDPackage"
+            genModel="model/XDD.genmodel"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.extension_parser">
+      <!-- @generated XDD -->
+      <parser
+            type="xdd"
+            class="com.br_automation.buoat.xddeditor.XDD.util.XDDResourceFactoryImpl"/>
+   </extension>
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated Firmware -->
+      <package
+            uri="file:/D:/OCPV2.2_Release/openconfigurator-core-plugin/org.epsg.openconfigurator/resources/firmwareschema/fw_schema.xsd"
+            class="FwSchema.FwSchemaPackage"
+            genModel="model/Firmware.genmodel"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.extension_parser">
+      <!-- @generated Firmware -->
+      <parser
+            type="fwschema"
+            class="FwSchema.util.FwSchemaResourceFactoryImpl"/>
+   </extension>
 </plugin>
