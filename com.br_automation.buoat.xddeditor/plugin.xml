@@ -40,7 +40,7 @@
    <extension point="org.eclipse.emf.ecore.generated_package">
       <!-- @generated Firmware -->
       <package
-            uri="file:/D:/OCPV2.2_Release/openconfigurator-core-plugin/org.epsg.openconfigurator/resources/firmwareschema/fw_schema.xsd"
+            uri="http://www.ethernet-powerlink.org"
             class="FwSchema.FwSchemaPackage"
             genModel="model/Firmware.genmodel"/>
    </extension>
