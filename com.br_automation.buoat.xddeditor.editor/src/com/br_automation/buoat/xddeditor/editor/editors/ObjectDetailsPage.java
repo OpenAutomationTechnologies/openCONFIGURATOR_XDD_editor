@@ -191,34 +191,34 @@ public class ObjectDetailsPage implements IDetailsPage {
             nameLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
             nameLabel.setText(IPowerlinkConstants.OBJECT_NAME);
             managedForm.getToolkit().adapt(nameLabel, true, true);
-            nameLabel.setForeground(managedForm.getToolkit().getColors().getColor(IFormColors.TITLE));
 
             nameText = new Text(grpMandatoryData, SWT.BORDER | SWT.WRAP);
             nameText.setLayoutData(mandatoryvalsec);
             managedForm.getToolkit().adapt(nameText, true, true);
             nameText.setEditable(false);
+            nameText.setEnabled(false);
 
             Label objTypelabel = new Label(grpMandatoryData, SWT.WRAP);
             objTypelabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
             objTypelabel.setText(IPowerlinkConstants.OBJECT_TYPE);
             managedForm.getToolkit().adapt(objTypelabel, true, true);
-            objTypelabel.setForeground(managedForm.getToolkit().getColors().getColor(IFormColors.TITLE));
 
             objTypeText = new Text(grpMandatoryData, SWT.BORDER | SWT.WRAP);
             objTypeText.setLayoutData(mandatoryvalsec);
             managedForm.getToolkit().adapt(objTypeText, true, true);
             objTypeText.setEditable(false);
+            objTypeText.setEnabled(false);
 
             Label indexLabel = new Label(grpMandatoryData, SWT.WRAP);
             indexLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
             indexLabel.setText(IPowerlinkConstants.OBJECT_INDEX);
             managedForm.getToolkit().adapt(indexLabel, true, true);
-            indexLabel.setForeground(managedForm.getToolkit().getColors().getColor(IFormColors.TITLE));
 
             indexText = new Text(grpMandatoryData, SWT.BORDER | SWT.WRAP);
             indexText.setLayoutData(mandatoryvalsec);
             managedForm.getToolkit().adapt(indexText, true, true);
             indexText.setEditable(false);
+            indexText.setEnabled(false);
 
         }
     }

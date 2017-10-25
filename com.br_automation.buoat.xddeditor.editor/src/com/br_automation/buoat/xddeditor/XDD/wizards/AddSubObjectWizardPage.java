@@ -193,15 +193,15 @@ public class AddSubObjectWizardPage extends WizardPage {
         lblDataType.setBounds(10, 22, 120, 21);
         lblDataType.setText(Messages.addSubObjectWizardPage_lblDataType);
 
-        this.txtLowLimit = new Text(grpAddObjectAdvancedOptions, SWT.BORDER);
-        this.txtLowLimit.setText(Messages.addObjectWizardPage_txtLowLimit); // $NON-NLS-1$
-        this.txtLowLimit.setBounds(136, 136, 140, 23);
-        this.txtLowLimit.addModifyListener(txtLowLimitModifyListener);
+        txtLowLimit = new Text(grpAddObjectAdvancedOptions, SWT.BORDER);
+        txtLowLimit.setText(Messages.addObjectWizardPage_txtLowLimit); // $NON-NLS-1$
+        txtLowLimit.setBounds(136, 136, 140, 23);
+        txtLowLimit.addModifyListener(txtLowLimitModifyListener);
 
-        this.txtHighLimit = new Text(grpAddObjectAdvancedOptions, SWT.BORDER);
-        this.txtHighLimit.setText(Messages.addObjectWizardPage_txtHighLimit); // $NON-NLS-1$
-        this.txtHighLimit.setBounds(136, 164, 140, 21);
-        this.txtHighLimit.addModifyListener(txtHighLimitModifyListener);
+        txtHighLimit = new Text(grpAddObjectAdvancedOptions, SWT.BORDER);
+        txtHighLimit.setText(Messages.addObjectWizardPage_txtHighLimit); // $NON-NLS-1$
+        txtHighLimit.setBounds(136, 164, 140, 21);
+        txtHighLimit.addModifyListener(txtHighLimitModifyListener);
 
         Label lblAccessType = new Label(grpAddObjectAdvancedOptions, SWT.NONE);
         lblAccessType.setText(Messages.addSubObjectWizardPage_lblAccess_type);
@@ -364,15 +364,11 @@ public class AddSubObjectWizardPage extends WizardPage {
         public void modifyText(ModifyEvent e) {
             setErrorMessage(null);
             setPageComplete(true);
-            if (subDataType.equalsIgnoreCase(DATA_TYPE_LIST[0])) {
-                txtLowLimit.setEnabled(false);
-            } else {
-                subLowLimit = txtLowLimit.getText();
-                if (!isValueValid(subLowLimit)) {
-                    setErrorMessage(INVALID_VALUE);
-                    setPageComplete(false);
-                }
 
+            subLowLimit = txtLowLimit.getText();
+            if (!isValueValid(subLowLimit)) {
+                setErrorMessage(INVALID_VALUE);
+                setPageComplete(false);
             }
 
             getWizard().getContainer().updateButtons();
@@ -396,11 +392,79 @@ public class AddSubObjectWizardPage extends WizardPage {
             }
 
             String defaultVal = txtDefaultValue.getText();
-            txtDefaultValue.setText(defaultVal);
             String highLimit = txtHighLimit.getText();
-            txtHighLimit.setText(highLimit);
             String lowLimit = txtLowLimit.getText();
-            txtLowLimit.setText(lowLimit);
+
+            if (!defaultVal.isEmpty()) {
+                String errorMessage = AbstractObjectPropertySource.isValidVal(defaultVal, "'Default value'",
+                        subDataType);
+                if (!errorMessage.isEmpty()) {
+                    setErrorMessage(errorMessage);
+                    setPageComplete(false);
+                } else {
+                    setErrorMessage(null);
+                    setPageComplete(true);
+                }
+            }
+
+            if (!lowLimit.isEmpty()) {
+                String errorMessage = AbstractObjectPropertySource.isValidVal(lowLimit, "'Low limit'", subDataType);
+                if (!errorMessage.isEmpty()) {
+                    setErrorMessage(errorMessage);
+                    setPageComplete(false);
+                } else {
+                    setErrorMessage(null);
+                    setPageComplete(true);
+                }
+            }
+
+            if (!highLimit.isEmpty()) {
+                String errorMessage = AbstractObjectPropertySource.isValidVal(highLimit, "'High limit'", subDataType);
+                if (!errorMessage.isEmpty()) {
+                    setErrorMessage(errorMessage);
+                    setPageComplete(false);
+                } else {
+                    setErrorMessage(null);
+                    setPageComplete(true);
+                }
+            }
+
+            if ((!highLimit.isEmpty()) && (!lowLimit.isEmpty())) {
+                if (Integer.parseInt(lowLimit) > Integer.parseInt(highLimit)) {
+                    setErrorMessage(LOW_LIMIT_GREATER_THAN_HIGH_LIMIT);
+                    setPageComplete(false);
+                } else {
+                    setPageComplete(true);
+                    setErrorMessage(null);
+                }
+            }
+
+            if (!highLimit.isEmpty() && (!defaultVal.isEmpty())) {
+                Integer highlimitVal = Integer.valueOf(highLimit);
+                Integer defaultValue = Integer.valueOf(defaultVal);
+                if (defaultValue > highlimitVal) {
+                    setErrorMessage(
+                            MessageFormat.format(DEFAULT_VALUE_GREATER_THAN_HIGH_LIMIT, defaultValue, highlimitVal));
+                    setPageComplete(false);
+                } else {
+                    setPageComplete(true);
+                    setErrorMessage(null);
+                }
+            }
+
+            if (!lowLimit.isEmpty() && (!defaultVal.isEmpty())) {
+                Integer lowLimitVal = Integer.valueOf(lowLimit);
+                Integer defaultValue = Integer.valueOf(defaultVal);
+                if (defaultValue < lowLimitVal) {
+                    setErrorMessage(
+                            MessageFormat.format(DEFAULT_VALUE_GREATER_THAN_HIGH_LIMIT, defaultValue, lowLimitVal));
+                    setPageComplete(false);
+                } else {
+                    setPageComplete(true);
+                    setErrorMessage(null);
+                }
+            }
+
         }
     };
 
@@ -410,15 +474,13 @@ public class AddSubObjectWizardPage extends WizardPage {
         public void modifyText(ModifyEvent e) {
             setErrorMessage(null);
             setPageComplete(true);
-            if (subDataType.equalsIgnoreCase(DATA_TYPE_LIST[0])) {
-                txtHighLimit.setEnabled(false);
-            } else {
-                subHighLimit = txtHighLimit.getText();
-                if (!isValueValid(subHighLimit)) {
-                    setErrorMessage(INVALID_VALUE);
-                    setPageComplete(false);
-                }
+
+            subHighLimit = txtHighLimit.getText();
+            if (!isValueValid(subHighLimit)) {
+                setErrorMessage(INVALID_VALUE);
+                setPageComplete(false);
             }
+
             getWizard().getContainer().updateButtons();
 
         }
@@ -458,18 +520,16 @@ public class AddSubObjectWizardPage extends WizardPage {
 
         @Override
         public void modifyText(ModifyEvent e) {
+            comboDataType.addSelectionListener(dataTypeSelectionListener);
             setErrorMessage(null);
             setPageComplete(true);
-            if (subDataType.equalsIgnoreCase("Boolean")) {
-                txtDefaultValue.setEnabled(false);
-            } else {
-                subDefaultValue = txtDefaultValue.getText();
-                if (!isValueValid(subDefaultValue)) {
-                    setErrorMessage(INVALID_VALUE);
-                    setPageComplete(false);
-                }
 
+            subDefaultValue = txtDefaultValue.getText();
+            if (!isValueValid(subDefaultValue)) {
+                setErrorMessage(INVALID_VALUE);
+                setPageComplete(false);
             }
+
             getWizard().getContainer().updateButtons();
 
         }
@@ -846,12 +906,39 @@ public class AddSubObjectWizardPage extends WizardPage {
         if (selObj.getDataType() != null) {
             if (selObj.getObjectType() == 8) {
                 String objDataType = DatatypeConverter.printHexBinary(selObj.getDataType());
-
-                int typeIndex = comboDataType.indexOf(getDataType(objDataType));
-                comboDataType.select(typeIndex);
-                comboDataType.setEnabled(false);
-                comboSubObjType.select(0);
-                comboSubObjType.setEnabled(false);
+                List<SubObjectType> subObjList = selObj.getSubObject();
+                if (!subObjList.isEmpty()) {
+                    for (SubObjectType subObj : subObjList) {
+                        String subIndex = DatatypeConverter.printHexBinary(subObj.getSubIndex());
+                        if (subIndex.equalsIgnoreCase("01")) {
+                            validDataType = DatatypeConverter.printHexBinary(subObj.getDataType());
+                            int typeIndex = comboDataType.indexOf(getDataType(validDataType));
+                            comboDataType.select(typeIndex);
+                            comboDataType.setEnabled(false);
+                        }
+                    }
+                } else {
+                    int typeIndex = comboDataType.indexOf(getDataType(objDataType));
+                    comboDataType.select(typeIndex);
+                    comboDataType.setEnabled(false);
+                    comboSubObjType.select(0);
+                    comboSubObjType.setEnabled(false);
+                }
+            }
+        } else {
+            if (selObj.getObjectType() == 8) {
+                List<SubObjectType> subObjList = selObj.getSubObject();
+                if (!subObjList.isEmpty()) {
+                    for (SubObjectType subObj : subObjList) {
+                        String subIndex = DatatypeConverter.printHexBinary(subObj.getSubIndex());
+                        if (subIndex.equalsIgnoreCase("01")) {
+                            validDataType = DatatypeConverter.printHexBinary(subObj.getDataType());
+                            int typeIndex = comboDataType.indexOf(getDataType(validDataType));
+                            comboDataType.select(typeIndex);
+                            comboDataType.setEnabled(false);
+                        }
+                    }
+                }
             }
         }
 
@@ -915,50 +1002,53 @@ public class AddSubObjectWizardPage extends WizardPage {
                 setErrorMessage(null);
             }
         }
+        if (!AbstractObjectPropertySource.getStringDataTypeList().contains(dataType)) {
 
-        if (!lowLimit.isEmpty()) {
-            String errorMessage = AbstractObjectPropertySource.isValidVal(lowLimit, "'Low limit'", dataTypeVal);
-            if (!errorMessage.isEmpty()) {
-                setErrorMessage(errorMessage);
-                return false;
-            } else {
-                setErrorMessage(null);
+            if (!lowLimit.isEmpty()) {
+                String errorMessage = AbstractObjectPropertySource.isValidVal(lowLimit, "'Low limit'", dataTypeVal);
+                if (!errorMessage.isEmpty()) {
+                    setErrorMessage(errorMessage);
+                    return false;
+                } else {
+                    setErrorMessage(null);
+                }
             }
-        }
 
-        if (!highLimit.isEmpty()) {
-            String errorMessage = AbstractObjectPropertySource.isValidVal(highLimit, "'High limit'", dataTypeVal);
-            if (!errorMessage.isEmpty()) {
-                setErrorMessage(errorMessage);
-                return false;
-            } else {
-                setErrorMessage(null);
+            if (!highLimit.isEmpty()) {
+                String errorMessage = AbstractObjectPropertySource.isValidVal(highLimit, "'High limit'", dataTypeVal);
+                if (!errorMessage.isEmpty()) {
+                    setErrorMessage(errorMessage);
+                    return false;
+                } else {
+                    setErrorMessage(null);
+                }
             }
-        }
 
-        if ((!highLimit.isEmpty()) && (!lowLimit.isEmpty())) {
-            if (Integer.parseInt(lowLimit) > Integer.parseInt(highLimit)) {
-                setErrorMessage(LOW_LIMIT_GREATER_THAN_HIGH_LIMIT);
-                return false;
+            if ((!highLimit.isEmpty()) && (!lowLimit.isEmpty())) {
+                if (Integer.parseInt(lowLimit) > Integer.parseInt(highLimit)) {
+                    setErrorMessage(LOW_LIMIT_GREATER_THAN_HIGH_LIMIT);
+                    return false;
+                }
             }
-        }
 
-        if (!highLimit.isEmpty() && (!defaultVal.isEmpty())) {
-            Integer highlimitVal = Integer.valueOf(highLimit);
-            Integer defaultValue = Integer.valueOf(defaultVal);
-            if (defaultValue > highlimitVal) {
-                setErrorMessage(
-                        MessageFormat.format(DEFAULT_VALUE_GREATER_THAN_HIGH_LIMIT, defaultValue, highlimitVal));
-                return false;
+            if (!highLimit.isEmpty() && (!defaultVal.isEmpty())) {
+                Integer highlimitVal = Integer.valueOf(highLimit);
+                Integer defaultValue = Integer.valueOf(defaultVal);
+                if (defaultValue > highlimitVal) {
+                    setErrorMessage(
+                            MessageFormat.format(DEFAULT_VALUE_GREATER_THAN_HIGH_LIMIT, defaultValue, highlimitVal));
+                    return false;
+                }
             }
-        }
 
-        if (!lowLimit.isEmpty() && (!defaultVal.isEmpty())) {
-            Integer lowLimitVal = Integer.valueOf(lowLimit);
-            Integer defaultValue = Integer.valueOf(defaultVal);
-            if (defaultValue < lowLimitVal) {
-                setErrorMessage(MessageFormat.format(DEFAULT_VALUE_GREATER_THAN_HIGH_LIMIT, defaultValue, lowLimitVal));
-                return false;
+            if (!lowLimit.isEmpty() && (!defaultVal.isEmpty())) {
+                Integer lowLimitVal = Integer.valueOf(lowLimit);
+                Integer defaultValue = Integer.valueOf(defaultVal);
+                if (defaultValue < lowLimitVal) {
+                    setErrorMessage(
+                            MessageFormat.format(DEFAULT_VALUE_GREATER_THAN_HIGH_LIMIT, defaultValue, lowLimitVal));
+                    return false;
+                }
             }
         }
         return true;
@@ -1015,7 +1105,7 @@ public class AddSubObjectWizardPage extends WizardPage {
             if (accessType == TObjectAccessType.CONST) {
                 return false;
             }
-            if (accessType == TObjectAccessType.RW) {
+            if (accessType == TObjectAccessType.WO) {
                 return false;
             }
             break;

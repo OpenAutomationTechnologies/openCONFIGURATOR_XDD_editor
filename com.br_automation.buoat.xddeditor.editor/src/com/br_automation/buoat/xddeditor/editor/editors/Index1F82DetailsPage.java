@@ -353,7 +353,6 @@ public class Index1F82DetailsPage implements IDetailsPage {
         Label nameLabel = new Label(grpMandatoryData, SWT.NONE);
         nameLabel.setText(IPowerlinkConstants.OBJECT_NAME);
         managedForm.getToolkit().adapt(nameLabel, true, true);
-        nameLabel.setForeground(managedForm.getToolkit().getColors().getColor(IFormColors.TITLE));
 
         nameText = new Text(grpMandatoryData, SWT.BORDER | SWT.WRAP);
         nameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 5, 1));
@@ -364,7 +363,6 @@ public class Index1F82DetailsPage implements IDetailsPage {
         Label objTypelabel = new Label(grpMandatoryData, SWT.NONE);
         objTypelabel.setText(IPowerlinkConstants.OBJECT_TYPE);
         managedForm.getToolkit().adapt(objTypelabel, true, true);
-        objTypelabel.setForeground(managedForm.getToolkit().getColors().getColor(IFormColors.TITLE));
 
         objTypeText = new Text(grpMandatoryData, SWT.BORDER | SWT.WRAP);
         objTypeText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 5, 1));
@@ -375,7 +373,6 @@ public class Index1F82DetailsPage implements IDetailsPage {
         Label indexLabel = new Label(grpMandatoryData, SWT.NONE);
         indexLabel.setText(IPowerlinkConstants.OBJECT_INDEX);
         managedForm.getToolkit().adapt(indexLabel, true, true);
-        indexLabel.setForeground(managedForm.getToolkit().getColors().getColor(IFormColors.TITLE));
 
         indexText = new Text(grpMandatoryData, SWT.BORDER | SWT.WRAP);
         indexText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 5, 1));

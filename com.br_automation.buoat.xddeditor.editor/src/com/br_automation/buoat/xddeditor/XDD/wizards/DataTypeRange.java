@@ -31,6 +31,8 @@
 
 package com.br_automation.buoat.xddeditor.XDD.wizards;
 
+import java.math.BigInteger;
+
 /**
  * Range of different data types
  *
@@ -40,12 +42,12 @@ package com.br_automation.buoat.xddeditor.XDD.wizards;
 public interface DataTypeRange {
     public static long Boolean_min = 0;
     public static long Boolean_max = 1;
-    public static long Integer8_min = -256;
-    public static long Integer8_max = 255L;
-    public static long Integer16_min = -65536L;
-    public static long Integer16_max = 65535L;
-    public static long Integer32_min = -4294967296L;
-    public static long Integer32_max = 4294967295L;
+    public static long Integer8_min = -128;
+    public static long Integer8_max = 127L;
+    public static long Integer16_min = -32768L;
+    public static long Integer16_max =  32767L;
+    public static long Integer32_min = -2147483648L;
+    public static long Integer32_max =  2147483647L;
     public static long Unsigned8_min = 0;
     public static long Unsigned8_max = 255L;
     public static long Unsigned16_min = 0;
@@ -71,7 +73,7 @@ public interface DataTypeRange {
     public static long Unsigned56_min = 0;
     public static long Unsigned56_max = 72057594037927935L;
     public static long Unsigned64_min = 0;
-    public static long Unsigned64_max = Long.MAX_VALUE;
+    public static long Unsigned64_max = 2^63 -1;
     public static double Real32_min = 1.2E-38;
     public static double Real32_max = 3.4E+38;
     public static double Real64_min = 2.3E-308;

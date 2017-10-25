@@ -616,6 +616,8 @@ public class AddObjectWizardPage extends WizardPage {
                 setErrorMessage(null);
             }
         }
+
+        if (!AbstractObjectPropertySource.getStringDataTypeList().contains(dataType)) {
         String lowLimit = getTxtLowLimit();
         if (!lowLimit.isEmpty()) {
             String errorMessage = AbstractObjectPropertySource.isValidVal(lowLimit, "Low limit", dataType);
@@ -659,6 +661,7 @@ public class AddObjectWizardPage extends WizardPage {
                 setErrorMessage(MessageFormat.format(DEFAULT_VALUE_LESS_THAN_LOW_LIMIT, defaultValue, lowLimitVal));
                 return false;
             }
+        }
         }
 
         return true;
@@ -925,7 +928,7 @@ public class AddObjectWizardPage extends WizardPage {
                 if (accessType == TObjectAccessType.CONST) {
                     return false;
                 }
-                if (accessType == TObjectAccessType.RW) {
+                if (accessType == TObjectAccessType.WO) {
                     return false;
                 }
                 break;

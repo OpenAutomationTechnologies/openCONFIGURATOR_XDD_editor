@@ -209,7 +209,7 @@ public final class DeviceDescriptionFileEditor extends FormEditor
     }
 
     /**
-     * Creates the Network Management editor page
+     * Creates the Network management editor page
      *
      * @see NetworkManagementEditorPage
      */
@@ -616,6 +616,10 @@ public final class DeviceDescriptionFileEditor extends FormEditor
             };
             getSite().getShell().getDisplay().asyncExec(runnable);
         }
+    }
+
+    public ObjectDictionaryEditorPage getobjectDictionaryEditorpage() {
+        return objectEditorPage;
     }
 
     /*

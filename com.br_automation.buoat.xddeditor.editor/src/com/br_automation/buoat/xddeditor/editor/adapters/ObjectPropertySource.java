@@ -37,6 +37,7 @@ import java.net.URL;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -44,15 +45,12 @@ import javax.xml.bind.DatatypeConverter;
 
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.xmi.XMLResource;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ICellEditorValidator;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
@@ -61,6 +59,7 @@ import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
 
 import com.br_automation.buoat.xddeditor.XDD.DocumentRoot;
+import com.br_automation.buoat.xddeditor.XDD.SubObjectType;
 import com.br_automation.buoat.xddeditor.XDD.TObject;
 import com.br_automation.buoat.xddeditor.XDD.TObjectAccessType;
 import com.br_automation.buoat.xddeditor.XDD.TObjectPDOMapping;
@@ -68,6 +67,7 @@ import com.br_automation.buoat.xddeditor.XDD.XDDPackage;
 import com.br_automation.buoat.xddeditor.XDD.custom.XDDUtilities;
 import com.br_automation.buoat.xddeditor.XDD.impl.TObjectImpl;
 import com.br_automation.buoat.xddeditor.XDD.resources.IPowerlinkConstants;
+import com.br_automation.buoat.xddeditor.editor.editors.DeviceDescriptionFileEditor;
 
 /**
  * Describes the properties for a POWERLINK object.
@@ -81,6 +81,7 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
     private TObjectImpl plkObject;
 
     public static final String INVALID_OBJECT_TYPE = "Object type cannot be '7 - VAR' for object {0} with sub-objects.";
+    public static final String INVALID_ARRAY_OBJECT_TYPE = "Object type cannot be '8 - ARRAY' for object {0} with sub-objects.";
     private static final String EMPTY_OBJECT_NAME = "Object name cannot be empty.";
     private static final String INVALID_OBJECT_NAME = "Invalid object name";
     private static final String DEFAULT_VALUE_EXCEEDS_HIGH_LIMIT = "Default value {0} exceeds the high limit value {1}.";
@@ -128,32 +129,18 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
                 return handleObjectType(value);
             }
 
-            private String handleObjectType(Object value) {
-                if (value instanceof Integer) {
-                    String objectType = IPowerlinkConstants.OBJECT_TYPES[(int) value];
-
-                    switch (objectType) {
-                    case "7 - VAR":
-                        if (!plkObject.getSubObject().isEmpty()) {
-                            return MessageFormat.format(INVALID_OBJECT_TYPE, plkObject.getName());
-                        }
-                        break;
-                    case "8 - ARRAY":
-                        break;
-                    case "9 - RECORD":
-                        break;
-
-                    default:
-                        break;
-
-                    }
-                }
-                return StringUtils.EMPTY;
-            }
         });
 
         dataTypeDescriptor.setCategory(IPropertySourceSupport.INITIAL_VALUE_CATEGORY);
         editDataTypeDescriptor.setCategory(IPropertySourceSupport.INITIAL_VALUE_CATEGORY);
+        editDataTypeDescriptor.setValidator(new ICellEditorValidator() {
+
+            @Override
+            public String isValid(Object value) {
+
+                return handleDataType(value);
+            }
+        });
 
         lowLimitDescriptor.setCategory(IPropertySourceSupport.OBJECT_ATTRIBUTES_CATEGORY);
         editLowLimitDescriptor.setCategory(IPropertySourceSupport.OBJECT_ATTRIBUTES_CATEGORY);
@@ -214,6 +201,84 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
 
         objectErrorDescriptor.setCategory(IPropertySourceSupport.OBJECT_ATTRIBUTES_CATEGORY);
 
+    }
+
+    private String handleObjectType(Object value) {
+        if (value instanceof Integer) {
+            String objectType = IPowerlinkConstants.OBJECT_TYPES[(int) value];
+
+            switch (objectType) {
+            case "7 - VAR":
+                if (!plkObject.getSubObject().isEmpty()) {
+                    return MessageFormat.format(INVALID_OBJECT_TYPE, plkObject.getName());
+                }
+                break;
+            case "8 - ARRAY":
+                HashSet<String> dataTypeList = new HashSet<String>();
+                if (!plkObject.getSubObject().isEmpty()) {
+
+                    for (SubObjectType subObj : plkObject.getSubObject()) {
+                        String subIndex = DatatypeConverter.printHexBinary(subObj.getSubIndex());
+
+                        if (!subIndex.equalsIgnoreCase("00")) {
+                            String dataType = DatatypeConverter.printHexBinary(subObj.getDataType());
+                            dataTypeList.add(dataType);
+                        }
+                    }
+
+                }
+                if (dataTypeList.size() > 1) {
+                    return MessageFormat.format(INVALID_ARRAY_OBJECT_TYPE, plkObject.getName());
+                }
+                break;
+            case "9 - RECORD":
+                break;
+
+            default:
+                break;
+
+            }
+        }
+        return StringUtils.EMPTY;
+    }
+
+    /**
+     * Validates the selection of data type to reset the values of object
+     *
+     * @param value
+     *            Data type value to be verified
+     * @return Error statement
+     */
+    protected String handleDataType(Object value) {
+        if (value instanceof Integer) {
+            if ((int) value < 29) {
+                String val = DATA_TYPE_LIST[(int) value];
+                String oldDataType = StringUtils.EMPTY;
+                String dataTypeVal = StringUtils.EMPTY;
+                if (plkObject.getDataType() != null) {
+                    oldDataType = DatatypeConverter.printHexBinary(plkObject.getDataType());
+                    dataTypeVal = getDataType(oldDataType);
+                }
+                if (!val.isEmpty()) {
+
+                    if (!dataTypeVal.equalsIgnoreCase(val)) {
+
+                        MessageDialog dialog = new MessageDialog(null, "Change Data Type?", null,
+                                "Changing the data type will remove the current values in 'Default value' , 'Low lmit' and 'High Limit'. \n\nAre you sure you want to change?",
+                                MessageDialog.WARNING, new String[] { "Yes", "No" }, 1);
+
+                        int result = dialog.open();
+                        if (result == 0) {
+
+                            return null;
+                        } else {
+                            return "No change in data type.";
+                        }
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     /**
@@ -327,12 +392,15 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
         }
 
         try {
-            if (highLimit != null) {
-                if ((!highLimit.isEmpty()) && (!lowLimit.isEmpty()))
-                    if (Long.parseLong(lowLimit) > Long.parseLong(highLimit)) {
-                        return LOW_LIMIT_GREATER_HIGH_LIMIT;
+            if (!getStringDataTypeList().contains(dataType)) {
+                if (highLimit != null) {
+                    if ((!highLimit.isEmpty()) && (!lowLimit.isEmpty()))
 
-                    }
+                        if (Long.parseLong(lowLimit) > Long.parseLong(highLimit)) {
+                            return LOW_LIMIT_GREATER_HIGH_LIMIT;
+
+                        }
+                }
             }
         } catch (NumberFormatException ex) {
             return MessageFormat.format(INVALID_VALUE, lowLimit);
@@ -430,11 +498,13 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
             dataType = getDataType(dataTypeVal);
         }
         try {
-            if (lowLimit != null) {
+            if (!getStringDataTypeList().contains(dataType)) {
+                if (lowLimit != null) {
 
-                if ((!highLimit.isEmpty()) && (!lowLimit.isEmpty())) {
-                    if (Long.parseLong(highLimit) < Long.parseLong(lowLimit)) {
-                        return LOW_LIMIT_GREATER_HIGH_LIMIT;
+                    if ((!highLimit.isEmpty()) && (!lowLimit.isEmpty())) {
+                        if (Long.parseLong(highLimit) < Long.parseLong(lowLimit)) {
+                            return LOW_LIMIT_GREATER_HIGH_LIMIT;
+                        }
                     }
                 }
             }
@@ -457,10 +527,14 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
                         return false;
                     }
                 } else {
-                    Long val = Long.valueOf(value);
-                    if (val < 0) {
+
+                    if (value.equalsIgnoreCase("-")) {
                         return false;
                     }
+                    if (value.equalsIgnoreCase(" ")) {
+                        return false;
+                    }
+
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -490,35 +564,43 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
         }
         try {
             defaultVal = (String) value;
-            if (!isValueValid(defaultVal)) {
-                return MessageFormat.format(INVALID_VALUE, defaultVal);
-            }
-            Long defaultValue = (long) 0;
-            if (defaultVal.contains("0x")) {
-                defaultVal = defaultVal.substring(2);
-                defaultValue = Long.valueOf(defaultVal, 16);
-            } else {
-                defaultValue = Long.valueOf(defaultVal);
-            }
-
-            if (plkObject.getHighLimit() != null) {
-                if (!plkObject.getHighLimit().isEmpty()) {
-                    Long highlimitVal = Long.valueOf(plkObject.getHighLimit());
-                    if (defaultValue > highlimitVal) {
-                        return MessageFormat.format(DEFAULT_VALUE_EXCEEDS_HIGH_LIMIT, defaultValue, highlimitVal);
-                    }
+            if (!defaultVal.isEmpty()) {
+                if (!isValueValid(defaultVal)) {
+                    return MessageFormat.format(INVALID_VALUE, defaultVal);
                 }
-            }
 
-            if (plkObject.getLowLimit() != null) {
-                if (!plkObject.getLowLimit().isEmpty()) {
-                    Long lowLimitVal = Long.valueOf(plkObject.getLowLimit());
-                    if (defaultValue < lowLimitVal) {
-                        return MessageFormat.format(DEFAULT_VALUE_LESS_THAN_LOW_LIMIT, defaultValue, lowLimitVal);
+                if (!getStringDataTypeList().contains(dataType)) {
+                    Long defaultValue = (long) 0;
+                    if (defaultVal.contains("0x")) {
+                        defaultVal = defaultVal.substring(2);
+                        defaultValue = Long.parseLong(defaultVal, 16);
+                    } else {
+                        defaultValue = Long.parseLong(defaultVal);
+                    }
+
+                    if (plkObject.getHighLimit() != null) {
+                        if (!plkObject.getHighLimit().isEmpty()) {
+                            Long highlimitVal = Long.valueOf(plkObject.getHighLimit());
+                            if (defaultValue > highlimitVal) {
+                                return MessageFormat.format(DEFAULT_VALUE_EXCEEDS_HIGH_LIMIT, defaultValue,
+                                        highlimitVal);
+                            }
+                        }
+                    }
+
+                    if (plkObject.getLowLimit() != null) {
+                        if (!plkObject.getLowLimit().isEmpty()) {
+                            Long lowLimitVal = Long.valueOf(plkObject.getLowLimit());
+                            if (defaultValue < lowLimitVal) {
+                                return MessageFormat.format(DEFAULT_VALUE_LESS_THAN_LOW_LIMIT, defaultValue,
+                                        lowLimitVal);
+                            }
+                        }
                     }
                 }
             }
         } catch (NumberFormatException ex) {
+            ex.printStackTrace();
             return MessageFormat.format(INVALID_VALUE, defaultVal);
         }
         return isValidVal(defaultVal, "Default value", dataType);
@@ -1094,18 +1176,11 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
                         String val = DATA_TYPE_LIST[(int) value];
                         if (!val.isEmpty()) {
                             byte[] dataType = DatatypeConverter.parseHexBinary(getDataTypeVal(val));
-                            MessageDialog dialog = new MessageDialog(null, "Change Data Type?", null,
-                                    "Changing the data type will remove the current values in 'Default value' , 'Low lmit' and 'High Limit'. \n\nAre you sure you want to change?",
-                                    MessageDialog.WARNING, new String[] { "Yes", "No" }, 1);
 
-                            int result = dialog.open();
-                            if (result == 0) {
-
-                                plkObject.setDataType(dataType);
-                                plkObject.setDefaultValue(StringUtils.EMPTY);
-                                plkObject.setLowLimit(StringUtils.EMPTY);
-                                plkObject.setHighLimit(StringUtils.EMPTY);
-                            }
+                            plkObject.setDataType(dataType);
+                            plkObject.setDefaultValue(StringUtils.EMPTY);
+                            plkObject.setLowLimit(StringUtils.EMPTY);
+                            plkObject.setHighLimit(StringUtils.EMPTY);
 
                         } else {
                             plkObject.setDataType(null);
@@ -1144,9 +1219,21 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
                     break;
                 }
                 updateDocument(getDocumentRoot());
-                for (IProject project : ResourcesPlugin.getWorkspace().getRoot().getProjects()) {
-                    project.refreshLocal(IResource.DEPTH_INFINITE, new NullProgressMonitor());
-                }
+
+                Display.getDefault().asyncExec(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        IEditorPart editorPart = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+                                .getActiveEditor();
+                        if (editorPart instanceof DeviceDescriptionFileEditor) {
+                            DeviceDescriptionFileEditor edit = (DeviceDescriptionFileEditor) editorPart;
+                            edit.getobjectDictionaryEditorpage().handleRefresh();
+                        }
+
+                    }
+
+                });
 
             }
 

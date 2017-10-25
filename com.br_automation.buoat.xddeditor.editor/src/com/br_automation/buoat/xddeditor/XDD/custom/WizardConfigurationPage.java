@@ -253,7 +253,7 @@ public class WizardConfigurationPage extends WizardPage {
         lblProductID.setBounds(10, 94, 118, 15);
 
         this.txtProductID = new Text(grpAda, SWT.BORDER);
-        this.txtProductID.setText("EPSG-001"); //$NON-NLS-1$
+        this.txtProductID.setText("0x00000000"); //$NON-NLS-1$
         this.txtProductID.setBounds(128, 91, 143, 21);
 
         Label lblFirmwareVersionNr = new Label(grpAda, SWT.NONE);

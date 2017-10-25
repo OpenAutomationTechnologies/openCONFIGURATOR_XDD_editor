@@ -360,7 +360,6 @@ public class StoreParamSubObjectDetailsPage extends EEFAdvancedPropertySection i
         nameLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
         nameLabel.setText(IPowerlinkConstants.OBJECT_NAME);
         managedForm.getToolkit().adapt(nameLabel, true, true);
-        nameLabel.setForeground(managedForm.getToolkit().getColors().getColor(IFormColors.TITLE));
 
         nameText = new Text(grpMandatoryData, SWT.BORDER | SWT.WRAP);
         nameText.setLayoutData(mandatoryvalsec);
@@ -372,7 +371,6 @@ public class StoreParamSubObjectDetailsPage extends EEFAdvancedPropertySection i
         objTypelabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
         objTypelabel.setText(IPowerlinkConstants.OBJECT_TYPE);
         managedForm.getToolkit().adapt(objTypelabel, true, true);
-        objTypelabel.setForeground(managedForm.getToolkit().getColors().getColor(IFormColors.TITLE));
 
         objTypeText = new Text(grpMandatoryData, SWT.BORDER | SWT.WRAP);
         objTypeText.setLayoutData(mandatoryvalsec);
@@ -384,7 +382,6 @@ public class StoreParamSubObjectDetailsPage extends EEFAdvancedPropertySection i
         indexLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
         indexLabel.setText(IPowerlinkConstants.SUB_OBJECT_INDEX);
         managedForm.getToolkit().adapt(indexLabel, true, true);
-        indexLabel.setForeground(managedForm.getToolkit().getColors().getColor(IFormColors.TITLE));
 
         subIndexText = new Text(grpMandatoryData, SWT.BORDER | SWT.WRAP);
         subIndexText.setLayoutData(mandatoryvalsec);

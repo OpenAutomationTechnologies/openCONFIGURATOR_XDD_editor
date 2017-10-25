@@ -32,8 +32,13 @@
 package com.br_automation.buoat.xddeditor.editor.adapters;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
@@ -185,13 +190,13 @@ public class AbstractObjectPropertySource {
             OBJ_OBJFLAGS_EDITABLE_ID, OBJ_OBJFLAGS_LABEL);
 
     public static final String BOOLEAN_OUT_OF_RANGE = "{0} is out of range (0 to 1).";
-    public static final String INTEGER8_OUT_OF_RANGE = "{0} is out of range (-256 to 255).";
-    public static final String INTEGER16_OUT_OF_RANGE = "{0} is out of range (-65,536 to 65,535 ).";
-    public static final String INTEGER32_OUT_OF_RANGE = "{0}  is out of range (-4,294,967,296 to 4,294,967,295).";
+    public static final String INTEGER8_OUT_OF_RANGE = "{0} is out of range (-128 to 127).";
+    public static final String INTEGER16_OUT_OF_RANGE = "{0} is out of range (-32768 to 32767 ).";
+    public static final String INTEGER32_OUT_OF_RANGE = "{0}  is out of range (-2147483648 to 2147483647).";
     public static final String UNSIGNED8_OUT_OF_RANGE = "{0} is out of range (0 to 255).";
     public static final String UNSIGNED16_OUT_OF_RANGE = "{0} is out of range (0 to 65,535).";
     public static final String UNSIGNED32_OUT_OF_RANGE = "{0} is out of range (0 to 4,294,967,295).";
-    public static final String INTEGER24_OUT_OF_RANGE = "{0}  is out of range (8,388,608 to 8,388,607).";
+    public static final String INTEGER24_OUT_OF_RANGE = "{0}  is out of range (-8,388,608 to 8,388,607).";
     public static final String INTEGER40_OUT_OF_RANGE = "{0}  is out of range (-549,755,813,888 to 549,755,813,887).";
     public static final String INTEGER48_OUT_OF_RANGE = "{0} is out of range (-140,737,488,355,328 to 140,737,488,355,327).";
     public static final String INTEGER56_OUT_OF_RANGE = "{0} is out of range (-36,028,797,018,963,968 to 36,028,797,018,963,967).";
@@ -200,7 +205,7 @@ public class AbstractObjectPropertySource {
     public static final String UNSIGNED40_OUT_OF_RANGE = "{0} is out of range (0 to 1,099,511,627,775).";
     public static final String UNSIGNED48_OUT_OF_RANGE = "{0}  is out of range (0 to 281,474,976,710,655).";
     public static final String UNSIGNED56_OUT_OF_RANGE = "{0} is out of range (0 to 72,057,594,037,927,935).";
-    public static final String UNSIGNED64_OUT_OF_RANGE = "{0}  out of range (0 to " + Long.MAX_VALUE + ").";
+    public static final String UNSIGNED64_OUT_OF_RANGE = "{0}  out of range (0 to to 2^63 -1).";
     public static final String DOMAIN_OUT_OF_RANGE = "{0}  is out of range (0 to 4,294,967,295).";
 
     /**
@@ -218,6 +223,22 @@ public class AbstractObjectPropertySource {
      */
     public void setEditor(DeviceDescriptionFileEditor editor) {
         this.editor = editor;
+    }
+
+    public static List<String> getStringDataTypeList() {
+        List<String> stringDataTypeList = new ArrayList<String>();
+        stringDataTypeList.add("Visible_String");
+        stringDataTypeList.add("Octet_String");
+        stringDataTypeList.add("Unicode_String");
+        stringDataTypeList.add("Time_of_Day");
+        stringDataTypeList.add("Time_Diff");
+        stringDataTypeList.add("Real32");
+        stringDataTypeList.add("Real64");
+        stringDataTypeList.add("MAC_ADDRESS");
+        stringDataTypeList.add("IP_ADDRESS");
+        stringDataTypeList.add("NETTIME");
+
+        return stringDataTypeList;
     }
 
     /**
@@ -277,6 +298,7 @@ public class AbstractObjectPropertySource {
             try {
                 valueToBeChecked = getValueToBeChecked(value, dataType);
             } catch (Exception e) {
+                e.printStackTrace();
                 return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
             }
             switch (dataType) {
@@ -527,12 +549,114 @@ public class AbstractObjectPropertySource {
                             || valueToBeChecked > DataTypeRange.Unsigned32_max) {
                         return MessageFormat.format(DOMAIN_OUT_OF_RANGE, label);
 
-                    } else
+                    } else {
                         return emptyString;
+                    }
                 } catch (NumberFormatException e) {
                     return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
                 }
             }
+
+            case "Real32":
+            case "Real64": {
+                char[] valueToBeVerified = value.toCharArray();
+                int decimalCount = 0;
+
+                for (int i = 0; i < valueToBeVerified.length; i++) {
+                    if (valueToBeVerified[i] == '.') {
+                        decimalCount = decimalCount + 1;
+                    }
+
+                    if (!Character.isDigit(valueToBeVerified[i])) {
+                        if (valueToBeVerified[i] == '-') {
+                            if (i != 0) {
+                                return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
+                            }
+                        }
+                        if (valueToBeVerified[i] == '.') {
+                            if (decimalCount > 1) {
+                                return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
+                            }
+                        } else {
+                            return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
+                        }
+
+                    }
+                }
+
+            }
+                break;
+            case "MAC_ADDRESS": {
+                char[] valueToBeVerified = value.toCharArray();
+                int lengthOfMacAddress = valueToBeVerified.length;
+                if (!value.contains("0x")) {
+                    if (lengthOfMacAddress > 17) {
+                        return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
+                    }
+
+                    for (int i = 0; i < valueToBeVerified.length; i++) {
+                        if (valueToBeVerified[i] == ':') {
+                            if (i == 2 || i == 5 || i == 8 || i == 11) {
+                                continue;
+                            } else {
+                                return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
+                            }
+                        }
+
+                        if (Character.isLetter(valueToBeVerified[i])) {
+                            char charValue = valueToBeVerified[i];
+                            if (charValue == 'A' || charValue == 'B' || charValue == 'C' || charValue == 'D'
+                                    || charValue == 'E' || charValue == 'F' || charValue == 'a' || charValue == 'b'
+                                    || charValue == 'c' || charValue == 'd' || charValue == 'e' || charValue == 'f') {
+                                continue;
+                            } else {
+                                return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
+                            }
+
+                        } else if (!Character.isDigit(valueToBeVerified[i])) {
+                            return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
+                        }
+                    }
+                } else {
+                    try {
+                        value = value.substring(2);
+                        Long macAddress = Long.parseLong(value, 16);
+                        if (macAddress < DataTypeRange.Unsigned32_min || macAddress > DataTypeRange.Unsigned32_max) {
+                            return MessageFormat.format(UNSIGNED32_OUT_OF_RANGE, label);
+
+                        } else {
+                            return emptyString;
+                        }
+                    } catch (Exception e) {
+                        return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
+                    }
+                }
+            }
+                break;
+
+            case "IP_ADDRESS":
+                if (!value.contains("0x")) {
+                    Pattern timePattern = Pattern.compile("(.+).(.+)");
+                    Matcher match = timePattern.matcher(value);
+                    if (!match.matches()) {
+                        return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
+                    }
+                } else {
+                    try {
+                        value = value.substring(2);
+                        Long macAddress = Long.parseLong(value, 16);
+                        if (macAddress < DataTypeRange.Unsigned32_min || macAddress > DataTypeRange.Unsigned32_max) {
+                            return MessageFormat.format(UNSIGNED32_OUT_OF_RANGE, label);
+
+                        } else {
+                            return emptyString;
+                        }
+                    } catch (Exception e) {
+                        return (MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataType));
+                    }
+
+                }
+                break;
 
             default:
                 return emptyString;

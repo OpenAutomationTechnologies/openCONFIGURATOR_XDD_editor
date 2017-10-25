@@ -95,13 +95,13 @@ public final class NetworkManagementEditorPage extends FormPage {
     private static final String CN_FEATURES_SECTION = "Node Features";
     private static final String GENERAL_FEATURES_SECTION_HEADING_DESCRIPTION = "Provides information about the general network management features.";
     private static final String CN_FEATURES_SECTION_HEADING_DESCRIPTION = "Provides information about the network management features of node.";
-    private static final String TIME_FOR_PREQ_LABEL = "Time for PReq (ns):";
-    private static final String NETWORK_IP_SUPPORT_LABEL = "Network IP Support:";
+    private static final String TIME_FOR_PREQ_LABEL = "Time for SoC to PReq (ns):";
+    private static final String NETWORK_IP_SUPPORT_LABEL = "Network IP Support";
     private static final String TOTAL_NETWORK_ERROR_ENTRIES_LABEL = "Total Network Error Entries:";
     private static final String MAXIMUM_CYCLE_TIME_LABEL = "Maximum Cycle Time (\u00B5s):";
 
     private static final String MINIMUM_CYCLE_TIME_LABEL = "Minimum Cycle Time (\u00B5s):";
-    private static final String NETWORK_BOOT_TIME_LABEL = "Network Boot Time  (\u00B5s):";
+    private static final String NETWORK_BOOT_TIME_LABEL = "Network Boot Time (\u00B5s):";
 
     private static final String MULTIPLEXED_COMMUNICATION_LABEL = "Multiplexed Communication";
     private static final String POLL_RESPONSE_COMMUNICATION_LABEL = "Poll Response Chaining Communication";
@@ -110,7 +110,7 @@ public final class NetworkManagementEditorPage extends FormPage {
 
     public static final String INVALID_PREQ_TIME_VALUE_EMPTY_ERROR = "PReq time cannot be empty.";
     public static final String INVALID_NETWORK_EMPTY_ERROR_ENTRIES = "Network error entries cannot be empty.";
-    public static final String INVALID_MAX_CYCLE_TIME = "Maximum cycle time value invalid.";
+    public static final String INVALID_MAX_CYCLE_TIME = "Invalid maximum cycle time value.";
     public static final String INVALID_MIN_CYCLE_TIME = "Invalid minimum cycle time value.";
     public static final String EMPTY_CYCLE_TIME_ERROR_MESSAGE = "Cycle time cannot be empty.";
     public static final String EMPTY_MIN_CYCLE_TIME_ERROR_MESSAGE = "Minimum cycle time cannot be empty.";
@@ -121,12 +121,12 @@ public final class NetworkManagementEditorPage extends FormPage {
     private static final String INVALID_NETWORK_BOOT_TIME_SPACE_ERROR = "Network boot time cannot start with spaces.";
     private static final String INVALID_NETWORK_ERROR_ENTRIES_SPACE_ERROR = "Network error entries cannot start with spaces.";
 
-    private static final String MAXIMUM_CYCLE_TIME_OUT_OF_RANGE = "Maximum cycle time value {0} does not fit within the range (0 - 4,294,967,295) of data type 'Unsigned32'.";
+    private static final String MAXIMUM_CYCLE_TIME_OUT_OF_RANGE = "Maximum cycle time value {0} does not fit within the range (0 - 4,294,967,295).";
     private static final String MAXIMUM_CYCLE_LESS_THAN_MINIMUM_CYCLE_TIME = "Maximum cycle time value {0} cannot be lesser than minimum cycle time value {1}.";
-    private static final String MINIMUM_CYCLE_TIME_OUT_OF_RANGE = "Minimum cycle time value {0} does not fit within the range (0 - 4,294,967,295) of data type 'Unsigned32'.";
+    private static final String MINIMUM_CYCLE_TIME_OUT_OF_RANGE = "Minimum cycle time value {0} does not fit within the range (0 - 4,294,967,295).";
     private static final String MINIMUM_CYCLE_GREATER_MAXIMUM_CYCLE_TIME = "Minimum cycle time value {0} cannot be greater than maximum cycle time value {1}.";
-    private static final String NETWORK_BOOT_TIME_OUT_OF_RANGE = "Network boot time value {0} does not fit within the range (0 - 4,294,967,295) of data type 'Unsigned32'.";
-    private static final String TIME_FOR_PREQ_OUT_OF_RANGE = "Time for PReq value {0} does not fit within the range (0 - 4,294,967,295) of data type 'Unsigned32'.";
+    private static final String NETWORK_BOOT_TIME_OUT_OF_RANGE = "Network boot time value {0} does not fit within the range (0 - 4,294,967,295).";
+    private static final String TIME_FOR_PREQ_OUT_OF_RANGE = "Time for PReq value {0} does not fit within the range (0 - 4,294,967,295).";
 
     /**
      * Form size
@@ -371,7 +371,8 @@ public final class NetworkManagementEditorPage extends FormPage {
 
                 Long value = Long.parseLong(timeforPreqText);
                 if (value < DataTypeRange.Unsigned32_min || value > DataTypeRange.Unsigned32_max) {
-                    setErrorMessage(MessageFormat.format(TIME_FOR_PREQ_OUT_OF_RANGE, timeforPreqText));
+                    setErrorMessage(MessageFormat.format(TIME_FOR_PREQ_OUT_OF_RANGE, timeforPreqText),
+                            TIME_FOR_PREQ_LABEL);
                     return;
 
                 }
@@ -417,7 +418,8 @@ public final class NetworkManagementEditorPage extends FormPage {
 
                 Long value = Long.parseLong(totalNetworkEntry);
                 if (value < DataTypeRange.Unsigned32_min || value > DataTypeRange.Unsigned32_max) {
-                    setErrorMessage(MessageFormat.format(NETWORK_BOOT_TIME_OUT_OF_RANGE, totalNetworkEntry));
+                    setErrorMessage(MessageFormat.format(NETWORK_BOOT_TIME_OUT_OF_RANGE, totalNetworkEntry),
+                            TOTAL_NETWORK_ERROR_ENTRIES_LABEL);
                     return;
 
                 }
@@ -500,7 +502,8 @@ public final class NetworkManagementEditorPage extends FormPage {
 
                 Long value = Long.parseLong(maximumCycleTime);
                 if (value < DataTypeRange.Unsigned32_min || value > DataTypeRange.Unsigned32_max) {
-                    setErrorMessage(MessageFormat.format(MAXIMUM_CYCLE_TIME_OUT_OF_RANGE, maximumCycleTime));
+                    setErrorMessage(MessageFormat.format(MAXIMUM_CYCLE_TIME_OUT_OF_RANGE, maximumCycleTime),
+                            MAXIMUM_CYCLE_TIME_LABEL);
                     return;
 
                 }
@@ -509,7 +512,7 @@ public final class NetworkManagementEditorPage extends FormPage {
                     Long minValue = Long.parseLong(minimumCycleTime);
                     if (value < minValue) {
                         setErrorMessage(MessageFormat.format(MAXIMUM_CYCLE_LESS_THAN_MINIMUM_CYCLE_TIME, value,
-                                minimumCycleTime));
+                                minimumCycleTime), MAXIMUM_CYCLE_TIME_LABEL);
                     }
                 }
 
@@ -555,7 +558,8 @@ public final class NetworkManagementEditorPage extends FormPage {
 
                 Long value = Long.parseLong(minimumCycleTime);
                 if (value < DataTypeRange.Unsigned32_min || value > DataTypeRange.Unsigned32_max) {
-                    setErrorMessage(MessageFormat.format(MINIMUM_CYCLE_TIME_OUT_OF_RANGE, minimumCycleTime));
+                    setErrorMessage(MessageFormat.format(MINIMUM_CYCLE_TIME_OUT_OF_RANGE, minimumCycleTime),
+                            MINIMUM_CYCLE_TIME_LABEL);
                     return;
 
                 }
@@ -563,8 +567,9 @@ public final class NetworkManagementEditorPage extends FormPage {
                 if (!maximumCycleTime.isEmpty()) {
                     Long maxValue = Long.parseLong(maximumCycleTime);
                     if (value > maxValue) {
-                        setErrorMessage(MessageFormat.format(MINIMUM_CYCLE_GREATER_MAXIMUM_CYCLE_TIME, value,
-                                maximumCycleTime));
+                        setErrorMessage(
+                                MessageFormat.format(MINIMUM_CYCLE_GREATER_MAXIMUM_CYCLE_TIME, value, maximumCycleTime),
+                                MINIMUM_CYCLE_TIME_LABEL);
                     }
                 }
 
@@ -610,7 +615,8 @@ public final class NetworkManagementEditorPage extends FormPage {
 
                 Long value = Long.parseLong(networkBootTime);
                 if (value < DataTypeRange.Unsigned32_min || value > DataTypeRange.Unsigned32_max) {
-                    setErrorMessage(MessageFormat.format(NETWORK_BOOT_TIME_OUT_OF_RANGE, networkBootTime));
+                    setErrorMessage(MessageFormat.format(NETWORK_BOOT_TIME_OUT_OF_RANGE, networkBootTime),
+                            NETWORK_BOOT_TIME_LABEL);
                     return;
 
                 }
@@ -705,6 +711,7 @@ public final class NetworkManagementEditorPage extends FormPage {
             networkBootTimeText = new Text(client, SWT.BORDER | SWT.WRAP);
             networkBootTimeText.setLayoutData(gensec);
             toolkit.adapt(networkBootTimeText, true, true);
+            networkBootTimeText.setTextLimit(50);
 
             Label minimumCycleTime = new Label(client, SWT.NONE);
             minimumCycleTime.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
@@ -715,6 +722,7 @@ public final class NetworkManagementEditorPage extends FormPage {
             minimumCycleTimeText = new Text(client, SWT.BORDER | SWT.WRAP);
             minimumCycleTimeText.setLayoutData(gensec);
             toolkit.adapt(minimumCycleTimeText, true, true);
+            minimumCycleTimeText.setTextLimit(50);
 
             Label maximumCycleTimeLabel = new Label(client, SWT.NONE);
             maximumCycleTimeLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
@@ -725,6 +733,7 @@ public final class NetworkManagementEditorPage extends FormPage {
             maximumCycleTimeText = new Text(client, SWT.BORDER | SWT.WRAP);
             maximumCycleTimeText.setLayoutData(gensec);
             toolkit.adapt(maximumCycleTimeText, true, true);
+            maximumCycleTimeText.setTextLimit(50);
 
             Label totalNetworkErrorEntries = new Label(client, SWT.NONE);
             totalNetworkErrorEntries.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
@@ -735,6 +744,7 @@ public final class NetworkManagementEditorPage extends FormPage {
             totalNetworkErrorEntriesText = new Text(client, SWT.BORDER | SWT.WRAP);
             totalNetworkErrorEntriesText.setLayoutData(gensec);
             toolkit.adapt(totalNetworkErrorEntriesText, true, true);
+            totalNetworkErrorEntriesText.setTextLimit(50);
 
             Label networkIpSupportLabel = new Label(client, SWT.NONE);
             networkIpSupportLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
@@ -743,7 +753,7 @@ public final class NetworkManagementEditorPage extends FormPage {
             networkIpSupportLabel.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
 
             networkIpButton = new Button(client, SWT.CHECK);
-            networkIpButton.setLayoutData(gensec);
+            networkIpButton.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1));
             toolkit.adapt(networkIpButton, true, true);
 
             updateGeneralFeatureFields();
@@ -803,7 +813,7 @@ public final class NetworkManagementEditorPage extends FormPage {
             multiplexedCommunicationlabel.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
 
             multiplexedCommunicationChkBox = new Button(client, SWT.CHECK);
-            multiplexedCommunicationChkBox.setLayoutData(cnsec);
+            multiplexedCommunicationChkBox.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1));
             toolkit.adapt(multiplexedCommunicationChkBox, true, true);
 
             Label pollresponseChainLabel = new Label(client, SWT.NONE);
@@ -813,7 +823,7 @@ public final class NetworkManagementEditorPage extends FormPage {
             pollresponseChainLabel.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
 
             pollResponseCommunication = new Button(client, SWT.CHECK);
-            pollResponseCommunication.setLayoutData(cnsec);
+            pollResponseCommunication.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1));
             toolkit.adapt(pollResponseCommunication, true, true);
 
             Label timeForPreq = new Label(client, SWT.NONE);
@@ -825,6 +835,7 @@ public final class NetworkManagementEditorPage extends FormPage {
             timeForPreqText = new Text(client, SWT.BORDER | SWT.WRAP);
             timeForPreqText.setLayoutData(cnsec);
             toolkit.adapt(timeForPreqText, true, true);
+            timeForPreqText.setTextLimit(50);
 
             updateCnFeatureFields();
         }

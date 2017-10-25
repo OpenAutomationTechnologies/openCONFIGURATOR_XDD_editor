@@ -325,7 +325,7 @@ public final class ModelLoader {
         tDeviceIdentity.getVersion().get(1).setValue(wizardConfigurationPage.getSoftwareversString());
         tDeviceIdentity.getVersion().add(XDDFactory.eINSTANCE.createTVersion());
         TVersion fwVersion = tDeviceIdentity.getVersion().get(2);
-        fwVersion.setVersionType(VersionTypeType.HW);
+        fwVersion.setVersionType(VersionTypeType.FW);
         fwVersion.setReadOnly(true);
         fwVersion.setValue(wizardConfigurationPage.getFirmwareversString());
 

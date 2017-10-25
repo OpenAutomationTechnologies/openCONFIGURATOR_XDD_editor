@@ -405,7 +405,6 @@ public class Index1000DetailsPage implements IDetailsPage {
         Label nameLabel = new Label(grpMandatoryData, SWT.NONE);
         nameLabel.setText(IPowerlinkConstants.OBJECT_NAME);
         managedForm.getToolkit().adapt(nameLabel, true, true);
-        nameLabel.setForeground(managedForm.getToolkit().getColors().getColor(IFormColors.TITLE));
 
         nameText = new Text(grpMandatoryData, SWT.BORDER | SWT.WRAP);
         GridData gd_nameText = new GridData(SWT.LEFT, SWT.CENTER, true, false, 5, 1);
@@ -413,11 +412,11 @@ public class Index1000DetailsPage implements IDetailsPage {
         nameText.setLayoutData(gd_nameText);
         managedForm.getToolkit().adapt(nameText, true, true);
         nameText.setEditable(false);
+        nameText.setEnabled(false);
 
         Label objTypelabel = new Label(grpMandatoryData, SWT.NONE);
         objTypelabel.setText(IPowerlinkConstants.OBJECT_TYPE);
         managedForm.getToolkit().adapt(objTypelabel, true, true);
-        objTypelabel.setForeground(managedForm.getToolkit().getColors().getColor(IFormColors.TITLE));
 
         objTypeText = new Text(grpMandatoryData, SWT.BORDER | SWT.WRAP);
         GridData gd_objTypeText = new GridData(SWT.LEFT, SWT.CENTER, true, false, 5, 1);
@@ -425,11 +424,11 @@ public class Index1000DetailsPage implements IDetailsPage {
         objTypeText.setLayoutData(gd_objTypeText);
         managedForm.getToolkit().adapt(objTypeText, true, true);
         objTypeText.setEditable(false);
+        objTypeText.setEnabled(false);
 
         Label indexLabel = new Label(grpMandatoryData, SWT.NONE);
         indexLabel.setText(IPowerlinkConstants.OBJECT_INDEX);
         managedForm.getToolkit().adapt(indexLabel, true, true);
-        indexLabel.setForeground(managedForm.getToolkit().getColors().getColor(IFormColors.TITLE));
 
         indexText = new Text(grpMandatoryData, SWT.BORDER | SWT.WRAP);
         GridData gd_indexText = new GridData(SWT.LEFT, SWT.CENTER, true, false, 5, 1);
@@ -437,6 +436,7 @@ public class Index1000DetailsPage implements IDetailsPage {
         indexText.setLayoutData(gd_indexText);
         managedForm.getToolkit().adapt(indexText, true, true);
         indexText.setEditable(false);
+        indexText.setEnabled(false);
 
         Composite groupComposite2 = new Composite(clientComposite, SWT.NONE);
         GridData gd_groupComposite2 = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);

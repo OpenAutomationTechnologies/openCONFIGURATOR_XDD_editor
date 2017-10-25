@@ -124,7 +124,7 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
     private static final String DEVICE_IMAGE_SECTION_HEADING_DESCRIPTION = "Provides the image and connector information of device.";
 
     private static final String GENERAL_INFORMATION_SECTION = "General Information";
-    private static final String GENERAL_SECTION_HEADING_DESCRIPTION = "Provides general information about device descripton file.";
+    private static final String GENERAL_SECTION_HEADING_DESCRIPTION = "Provides general information about device description file.";
     private static final String PRODUCT_ID_LABEL = "Product ID:";
     private static final String PRODUCT_NAME_LABEL = "Product Name:";
     private static final String FIRMWARE_VERSION_LABEL = "F/W Version:";
@@ -159,6 +159,11 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
     private static final String INVALID_HARDWARE_VERSION_VALUE = "Hardware version value {0} is invalid for the device.";
     private static final String INVALID_SOFTWARE_VERSION_VALUE = "Software version value {0} is invalid for the device.";
     private static final String INVALID_FIRMWARE_VERSION_VALUE = "Firmware version value {0} is invalid for the device.";
+    private static final String SPACE_ERROR_MESSAGE_HARDWARE_VERSION = "Hardware version value cannot have space as the first character.";
+    private static final String SPACE_ERROR_MESSAGE_SOFTWARE_VERSION = "Software version value cannot have space as the first character.";
+    private static final String SPACE_ERROR_MESSAGE_FIRMWARE_VERSION = "Firmware version value cannot have space as the first character.";
+    private static final String SPACE_ERROR_MESSAGE_VENDOR_NAME_VERSION = "Vendor name cannot have space as the first character.";
+    private static final String SPACE_ERROR_MESSAGE_PRODUCT_NAME_VERSION = "Product name value cannot have space as the first character.";
     private static final String INVALID_PRODUCT_ID_VALUE = "Invalid product ID for the device.";
     private static final String INVALID_VENDOR_NAME_EMPTY_ERROR = "Vendor name cannot be empty.";
     private static final String OBJECT_DICTIONARY_HYPERLINK_DESCRIPTION = ": Edit the POWERLINK object dictionary of the device.";
@@ -538,9 +543,11 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
         toolkit.adapt(vendorIdLabel, true, true);
         vendorIdLabel.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
 
-        vendorIdText = new Text(client, SWT.BORDER | SWT.WRAP);
+        vendorIdText = new Text(client, SWT.BORDER | SWT.WRAP | SWT.SEARCH);
         vendorIdText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         toolkit.adapt(vendorIdText, true, true);
+        vendorIdText.setMessage("Ex: 0x00000000");
+        vendorIdText.setTextLimit(50);
 
         Label vendorNameLabel = new Label(client, SWT.NONE);
         vendorNameLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
@@ -551,6 +558,7 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
         vendorNameText = new Text(client, SWT.BORDER | SWT.WRAP);
         vendorNameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         toolkit.adapt(vendorNameText, true, true);
+        vendorNameText.setTextLimit(50);
 
         Label hwVersionLabel = new Label(client, SWT.NONE);
         hwVersionLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
@@ -561,6 +569,7 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
         hwVersionText = new Text(client, SWT.BORDER | SWT.WRAP);
         hwVersionText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         toolkit.adapt(hwVersionText, true, true);
+        hwVersionText.setTextLimit(50);
 
         Label swVersionLabel = new Label(client, SWT.NONE);
         swVersionLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
@@ -571,6 +580,7 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
         swVersionText = new Text(client, SWT.BORDER | SWT.WRAP);
         swVersionText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         toolkit.adapt(swVersionText, true, true);
+        swVersionText.setTextLimit(50);
 
         Label fwVersionLabel = new Label(client, SWT.NONE);
         fwVersionLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
@@ -581,6 +591,7 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
         fwVersionText = new Text(client, SWT.BORDER | SWT.WRAP);
         fwVersionText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         toolkit.adapt(fwVersionText, true, true);
+        fwVersionText.setTextLimit(50);
 
         Label productnameLabel = new Label(client, SWT.NONE);
         productnameLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
@@ -591,6 +602,7 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
         productNameText = new Text(client, SWT.BORDER | SWT.WRAP);
         productNameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         toolkit.adapt(productNameText, true, true);
+        productNameText.setTextLimit(50);
 
         Label productIdlabel = new Label(client, SWT.NONE);
         productIdlabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
@@ -601,7 +613,8 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
         productIdText = new Text(client, SWT.BORDER | SWT.WRAP | SWT.SEARCH);
         productIdText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         toolkit.adapt(productIdText, true, true);
-        productIdText.setMessage("Ex: 0x00000001");
+        productIdText.setMessage("Ex: 0x00000000");
+        productIdText.setTextLimit(50);
 
         updateGeneralInfoFields();
         addListenersToControls();
@@ -806,6 +819,10 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
                     return;
                 }
 
+                if (productName.startsWith(" ")) {
+                    setErrorMessage(SPACE_ERROR_MESSAGE_PRODUCT_NAME_VERSION, PRODUCT_NAME_LABEL);
+                }
+
                 if (getDeviceIdentity().getProductName() != null) {
                     getDeviceIdentity().getProductName().setValue(productName);
                 } else {
@@ -832,6 +849,10 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
 
             String hardwareVerText = hwVersionText.getText();
             try {
+
+                if (hardwareVerText.startsWith(" ")) {
+                    setErrorMessage(SPACE_ERROR_MESSAGE_HARDWARE_VERSION, HARDWARE_VERSION_LABEL);
+                }
 
                 if (getDeviceIdentity().getVersion() != null) {
                     List<TVersion> deviceIdentityVersion = getDeviceIdentity().getVersion();
@@ -872,6 +893,10 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
             String softwareVerText = swVersionText.getText();
             try {
 
+                if (softwareVerText.startsWith(" ")) {
+                    setErrorMessage(SPACE_ERROR_MESSAGE_SOFTWARE_VERSION, SOFTWARE_VERSION_LABEL);
+                }
+
                 if (getDeviceIdentity().getVersion() != null) {
                     List<TVersion> deviceIdentityVersion = getDeviceIdentity().getVersion();
                     boolean swVersionAvailable = false;
@@ -889,6 +914,7 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
                     }
 
                 }
+
                 updateDocument(documentRoot);
             } catch (NumberFormatException ex) {
                 setErrorMessage(MessageFormat.format(INVALID_SOFTWARE_VERSION_VALUE, "'" + softwareVerText + "'"),
@@ -910,6 +936,10 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
             String firmwareVerText = fwVersionText.getText();
             try {
 
+                if (firmwareVerText.startsWith(" ")) {
+                    setErrorMessage(SPACE_ERROR_MESSAGE_FIRMWARE_VERSION, FIRMWARE_VERSION_LABEL);
+                }
+
                 if (getDeviceIdentity().getVersion() != null) {
                     List<TVersion> deviceIdentityVersion = getDeviceIdentity().getVersion();
                     boolean swVersionAvailable = false;
@@ -927,6 +957,7 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
                     }
 
                 }
+
                 updateDocument(documentRoot);
             } catch (NumberFormatException ex) {
                 setErrorMessage(MessageFormat.format(INVALID_FIRMWARE_VERSION_VALUE, "'" + firmwareVerText + "'"),
@@ -1020,6 +1051,10 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
                 if (vendorName.length() <= 0) {
                     setErrorMessage(INVALID_VENDOR_NAME_EMPTY_ERROR, VENDOR_NAME_LABEL);
                     return;
+                }
+
+                if (vendorName.startsWith(" ")) {
+                    setErrorMessage(SPACE_ERROR_MESSAGE_VENDOR_NAME_VERSION, VENDOR_NAME_LABEL);
                 }
 
                 if (getDeviceIdentity().getVendorName() != null) {

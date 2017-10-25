@@ -97,7 +97,6 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.forms.widgets.TableWrapLayout;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.eclipse.ui.views.properties.PropertySheet;
 
 import com.br_automation.buoat.xddeditor.XDD.DocumentRoot;
 import com.br_automation.buoat.xddeditor.XDD.ISO15745ProfileType;
@@ -720,7 +719,7 @@ public class ObjectDictionaryEditorPage extends FormPage implements IPropertyLis
 
                         boolean isPropertyAvailable = false;
                         for (IViewReference view : viewList) {
-                            if (view instanceof PropertySheet) {
+                            if (view.getPartName().equalsIgnoreCase("Properties")) {
                                 isPropertyAvailable = true;
                             }
                         }
@@ -842,6 +841,16 @@ public class ObjectDictionaryEditorPage extends FormPage implements IPropertyLis
         toolBarManager.add(hideUserDefinedObjects);
         toolBarManager.update(true);
         objectDictionarySection.setTextClient(toolbar);
+
+    }
+
+    /**
+     * Refreshes the network view
+     */
+    public void handleRefresh() {
+        listViewer.setInput(XDDPackage.eINSTANCE.getTObject());
+        listViewer.refresh();
+        listViewer.setSelection(listViewer.getSelection());
 
     }
 
@@ -1130,8 +1139,8 @@ public class ObjectDictionaryEditorPage extends FormPage implements IPropertyLis
 
     @Override
     public void propertyChanged(Object source, int propId) {
-        // TODO Auto-generated method stub
-
+        listViewer.setInput(XDDPackage.eINSTANCE.getTObject());
+        listViewer.refresh();
     }
 
 }

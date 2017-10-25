@@ -32,6 +32,10 @@
 package com.br_automation.buoat.xddeditor.editor.adapters;
 
 import org.eclipse.core.runtime.IAdapterFactory;
+import org.eclipse.jface.action.IContributionItem;
+import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.IPageLayout;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.IPropertySource;
 
 import com.br_automation.buoat.xddeditor.XDD.SubObjectType;
