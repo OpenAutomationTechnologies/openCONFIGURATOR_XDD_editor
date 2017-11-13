@@ -1,16 +1,17 @@
 /**
  * @since 11.04.2013
- * @author Joris Lückenga, Bernecker + Rainer Industrie Elektronik Ges.m.b.H.
+ * @author Joris Lückenga, B&R Industrial Automation GmbH
  */
 
 package com.br_automation.buoat.xddeditor.XDD.custom;
 
 /**
  * @brief Class containing constants of EPL Specification
- * 
+ *
  * @author Joris Lückenga
  */
-public final class EPLGeneralConstants { // NOPMD by lueckengaj on 18.04.13 09:24
+public final class EPLGeneralConstants { // NOPMD by lueckengaj on 18.04.13
+                                         // 09:24
 
     public static final int FF_OFFESET_MULTIPLEXED_ACCESS = 9;
     public static final int FF_OFFSET_CONFIGURATION_MANAGER = 8;
@@ -44,4 +45,4 @@ public final class EPLGeneralConstants { // NOPMD by lueckengaj on 18.04.13 09:2
     private EPLGeneralConstants() {
     }
 
-} //EPLGeneralConstants
+} // EPLGeneralConstants

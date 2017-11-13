@@ -1,7 +1,31 @@
 /**
  * @since 21.3.2013
- * @author Joris Lückenga, Bernecker + Rainer Industrie Elektronik Ges.m.b.H.
- */
+ * @author Joris Lückenga, B&R Industrial Automation GmbH
+
+ * @copyright (c) 2017, B&R Industrial Automation GmbH
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *   * Redistributions of source code must retain the above copyright
+ *     notice, this list of conditions and the following disclaimer.
+ *   * Redistributions in binary form must reproduce the above copyright
+ *     notice, this list of conditions and the following disclaimer in the
+ *     documentation and/or other materials provided with the distribution.
+ *   * Neither the name of the copyright holders nor the
+ *     names of its contributors may be used to endorse or promote products
+ *     derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDERS BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *******************************************************************************/
 
 package com.br_automation.buoat.xddeditor.XDD.custom.propertypages;
 
@@ -35,30 +59,16 @@ import com.br_automation.buoat.xddeditor.XDD.provider.TObjectItemProvider;
 
 /**
  * @brief PropertySection for DeviceType Object with index 0x1000.
- * 
+ *
  *        Contains different controls for the DeviceType object like a combo-box
  *        with several DeviceProfiles and an additional-info textbox. Generates
  *        default values for the user.
- * 
+ *
  * @author Joris Lückenga
- * */
+ */
 public class AdvancedDeviceTypePropertySection extends AbstractPropertySection {
 
     private AdapterFactory adapterFactory;
-
-    private final FocusAdapter additionalInfoFocuslistener = new FocusAdapter() {
-
-        @Override
-        public void focusLost(FocusEvent arg0) {
-            AdvancedDeviceTypePropertySection.this.additionalInfoValue = (Long.decode("0x" //$NON-NLS-1$
-                + AdvancedDeviceTypePropertySection.this.txtAdditionalInfo.getText())) << 16;
-            AdvancedDeviceTypePropertySection.this.setDefaultValue();
-        }
-    };
-
-    private RegexVerifyListener additionalInfoListener = new RegexVerifyListener(
-        RegexVerifyListener.PATTERN_HEX, Arrays.asList(
-            Character.valueOf((char) 0x7f), Character.valueOf((char) 0x8)), true);
 
     private long additionalInfoValue;
     private CCombo cmbDeviceProfileNr;
@@ -66,22 +76,36 @@ public class AdvancedDeviceTypePropertySection extends AbstractPropertySection {
     private CLabel lblError;
     private long maskLSB;
     private long maskMSB;
+
+    private long profileValue;
+    private TObject tobject;
+    private TObjectComposite tObjectComposite;
+    private TObjectItemProvider tObjectProvider;
+    private Text txtAdditionalInfo;
+
+    private final FocusAdapter additionalInfoFocuslistener = new FocusAdapter() {
+
+        @Override
+        public void focusLost(FocusEvent arg0) {
+            AdvancedDeviceTypePropertySection.this.additionalInfoValue = (Long.decode("0x" //$NON-NLS-1$
+                    + AdvancedDeviceTypePropertySection.this.txtAdditionalInfo.getText())) << 16;
+            AdvancedDeviceTypePropertySection.this.setDefaultValue();
+        }
+    };
+
+    private RegexVerifyListener additionalInfoListener = new RegexVerifyListener(RegexVerifyListener.PATTERN_HEX,
+            Arrays.asList(Character.valueOf((char) 0x7f), Character.valueOf((char) 0x8)), true);
+
     private ModifyListener profileListener = new ModifyListener() {
         @Override
         public void modifyText(ModifyEvent e) {
             AdvancedDeviceTypePropertySection.this.lblError.setText(""); //$NON-NLS-1$
             if (!AdvancedDeviceTypePropertySection.this.cmbDeviceProfileNr.getText().isEmpty())
                 AdvancedDeviceTypePropertySection.this.profileValue = Long
-                    .parseLong(AdvancedDeviceTypePropertySection.this.cmbDeviceProfileNr.getText()
-                        .substring(4, 7));
+                        .parseLong(AdvancedDeviceTypePropertySection.this.cmbDeviceProfileNr.getText().substring(4, 7));
             AdvancedDeviceTypePropertySection.this.setDefaultValue();
         }
     };
-    private long profileValue;
-    private TObject tobject;
-    private TObjectComposite tObjectComposite;
-    private TObjectItemProvider tObjectProvider;
-    private Text txtAdditionalInfo;
 
     @Override
     public void createControls(Composite parent, TabbedPropertySheetPage aTabbedPropertySheetPage) {
@@ -91,14 +115,14 @@ public class AdvancedDeviceTypePropertySection extends AbstractPropertySection {
         FormData data;
         this.tObjectProvider = new TObjectItemProvider(this.getAdapterFactory());
         this.maskLSB = 0xFFFF;
-        this.maskMSB = 0xFFFF0000; //$NON-NLS-1$
+        this.maskMSB = 0xFFFF0000; // $NON-NLS-1$
 
         this.tObjectComposite = new TObjectComposite(composite, 0, this.getAdapterFactory());
         data = new FormData();
         data.top = new FormAttachment(0, 0);
         this.tObjectComposite.setLayoutData(data);
 
-        //lblDefaultValueValue Label
+        // lblDefaultValueValue Label
         this.lblDefaultValueValue = this.getWidgetFactory().createCLabel(composite, ""); //$NON-NLS-1$
         data = new FormData();
         data.top = new FormAttachment(this.tObjectComposite, 0);
@@ -118,20 +142,19 @@ public class AdvancedDeviceTypePropertySection extends AbstractPropertySection {
         data.left = new FormAttachment(0, 7);
         lblProfileType.setLayoutData(data);
 
-        CLabel lblAdditionalInfo = this.getWidgetFactory().createCLabel(
-            composite, "Additional Info:"); //$NON-NLS-1$
+        CLabel lblAdditionalInfo = this.getWidgetFactory().createCLabel(composite, "Additional Info:"); //$NON-NLS-1$
         data = new FormData();
         data.top = new FormAttachment(lblProfileType, 0);
         data.left = new FormAttachment(0, 7);
         lblAdditionalInfo.setLayoutData(data);
 
-        this.lblError = this.getWidgetFactory().createCLabel(
-            composite, "                                                  "); //$NON-NLS-1$
+        this.lblError = this.getWidgetFactory().createCLabel(composite,
+                "                                                  "); //$NON-NLS-1$
         data = new FormData();
         data.top = new FormAttachment(lblAdditionalInfo, 0);
         this.lblError.setLayoutData(data);
 
-        //----Combobox
+        // ----Combobox
 
         this.cmbDeviceProfileNr = this.getWidgetFactory().createCCombo(composite);
         data = new FormData();
@@ -161,11 +184,11 @@ public class AdvancedDeviceTypePropertySection extends AbstractPropertySection {
         data.left = new FormAttachment(this.txtAdditionalInfo, -5);
         hex.setLayoutData(data);
 
-    } //createControls
+    } // createControls
 
     /**
      * @return The default AdapterFactory.
-     * */
+     */
     public AdapterFactory getAdapterFactory() {
         if (this.adapterFactory == null)
             this.adapterFactory = EEFRuntimePlugin.getDefault().getAdapterFactory();
@@ -178,53 +201,52 @@ public class AdvancedDeviceTypePropertySection extends AbstractPropertySection {
     @Override
     public void setInput(IWorkbenchPart part, ISelection selection) {
         super.setInput(part, selection);
-        Object input = ((IStructuredSelection) selection).getFirstElement();
-        this.tobject = (TObject) input;
-        this.lblError.setText(""); //$NON-NLS-1$
+        if (selection instanceof IStructuredSelection) {
+            Object input = ((IStructuredSelection) selection).getFirstElement();
+            this.tobject = (TObject) input;
+            this.lblError.setText(""); //$NON-NLS-1$
 
-        this.tObjectComposite.setObject(this.tobject);
+            this.tObjectComposite.setObject(this.tobject);
 
-        if (this.tobject.getDefaultValue() != null && this.tobject.getDefaultValue().length() > 0) {
-            try {
-                this.lblDefaultValueValue.setText(this.tobject.getDefaultValue());
-                this.profileValue = Long.decode(this.tobject.getDefaultValue()) & this.maskLSB; //get 16 LSB
-                this.additionalInfoValue = Long.decode(this.tobject.getDefaultValue())
-                    & this.maskMSB;
+            if (this.tobject.getDefaultValue() != null && this.tobject.getDefaultValue().length() > 0) {
+                try {
+                    this.lblDefaultValueValue.setText(this.tobject.getDefaultValue());
+                    this.profileValue = Long.decode(this.tobject.getDefaultValue()) & this.maskLSB; // get
+                                                                                                    // 16
+                                                                                                    // LSB
+                    this.additionalInfoValue = Long.decode(this.tobject.getDefaultValue()) & this.maskMSB;
 
-                this.txtAdditionalInfo.setText(String.format("%04x", this.additionalInfoValue) //$NON-NLS-1$
-                    .toUpperCase());
-                this.txtAdditionalInfo.addVerifyListener(this.additionalInfoListener);
+                    this.txtAdditionalInfo.setText(String.format("%04x", this.additionalInfoValue) //$NON-NLS-1$
+                            .toUpperCase());
+                    this.txtAdditionalInfo.addVerifyListener(this.additionalInfoListener);
 
-                String selectedProfileString = null;
-                selectedProfileString = (String) this.cmbDeviceProfileNr.getData(Long
-                    .toString(this.profileValue));
-                if (selectedProfileString != null) {
-                    this.cmbDeviceProfileNr.select(this.cmbDeviceProfileNr
-                        .indexOf(selectedProfileString));
-                    this.lblError.setText(""); //$NON-NLS-1$
-                } else if (this.profileValue != 0) {
-                    this.cmbDeviceProfileNr.setText(""); //$NON-NLS-1$
-                    this.lblError
-                        .setText(Messages.advancedDeviceTypePropertySection_CiA_Profile_not_found);
+                    String selectedProfileString = null;
+                    selectedProfileString = (String) this.cmbDeviceProfileNr.getData(Long.toString(this.profileValue));
+                    if (selectedProfileString != null) {
+                        this.cmbDeviceProfileNr.select(this.cmbDeviceProfileNr.indexOf(selectedProfileString));
+                        this.lblError.setText(""); //$NON-NLS-1$
+                    } else if (this.profileValue != 0) {
+                        this.cmbDeviceProfileNr.setText(""); //$NON-NLS-1$
+                        this.lblError.setText(Messages.advancedDeviceTypePropertySection_CiA_Profile_not_found);
+                        this.lblError.setForeground(XDDUtilities.getRed(Display.getCurrent()));
+                    }
+
+                } catch (NumberFormatException e) {
+                    this.lblError.setText(Messages.general_error_defaultValueInvalid);
                     this.lblError.setForeground(XDDUtilities.getRed(Display.getCurrent()));
                 }
-
-            } catch (NumberFormatException e) {
-                this.lblError
-                    .setText(Messages.general_error_defaultValueInvalid);
-                this.lblError.setForeground(XDDUtilities.getRed(Display.getCurrent()));
             }
         }
-    } //setInput
+    } // setInput
 
     /**
      * @brief Sets the new Defaultvalue to the Object based on made selections.
-     * */
+     */
     private void setDefaultValue() {
         Long newDefaultValue = (this.additionalInfoValue) + this.profileValue;
         this.tObjectProvider.setPropertyValue(this.tobject, "defaultValue", "0x" //$NON-NLS-1$ //$NON-NLS-2$
-            + String.format("%08x", newDefaultValue).toUpperCase()); //$NON-NLS-1$
+                + String.format("%08x", newDefaultValue).toUpperCase()); //$NON-NLS-1$
         this.lblDefaultValueValue.setText(this.tobject.getDefaultValue());
     }
 
-} //AdvancedDeviceTypePropertySection
+} // AdvancedDeviceTypePropertySection
