@@ -381,6 +381,10 @@ public class AddSubObjectWizardPage extends WizardPage {
         @Override
         public void widgetSelected(SelectionEvent e) {
             subDataType = comboDataType.getText();
+
+            txtLowLimit.addModifyListener(txtLowLimitModifyListener);
+            txtHighLimit.addModifyListener(txtHighLimitModifyListener);
+            txtDefaultValue.addModifyListener(txtdefaultValueModifyListener);
             if (subDataType.contentEquals("Boolean")) {
                 txtDefaultValue.setEnabled(false);
                 txtHighLimit.setEnabled(false);
@@ -429,41 +433,47 @@ public class AddSubObjectWizardPage extends WizardPage {
                 }
             }
 
-            if ((!highLimit.isEmpty()) && (!lowLimit.isEmpty())) {
-                if (Integer.parseInt(lowLimit) > Integer.parseInt(highLimit)) {
-                    setErrorMessage(LOW_LIMIT_GREATER_THAN_HIGH_LIMIT);
-                    setPageComplete(false);
-                } else {
-                    setPageComplete(true);
-                    setErrorMessage(null);
+            if (!AbstractObjectPropertySource.getStringDataTypeList().contains(subDataType)) {
+                if ((!highLimit.isEmpty()) && (!lowLimit.isEmpty())) {
+                    Long lowLimitVal = AbstractObjectPropertySource.getValue(lowLimit);
+                    Long highLimitVal = AbstractObjectPropertySource.getValue(highLimit);
+                    if (lowLimitVal > highLimitVal) {
+                        setErrorMessage(LOW_LIMIT_GREATER_THAN_HIGH_LIMIT);
+                        setPageComplete(false);
+                    } else {
+                        setPageComplete(true);
+                        setErrorMessage(null);
+                    }
+                }
+
+                if (!highLimit.isEmpty() && (!defaultVal.isEmpty())) {
+                    Long defaultValue = AbstractObjectPropertySource.getValue(defaultVal);
+                    Long highLimitVal = AbstractObjectPropertySource.getValue(highLimit);
+                    if (defaultValue > highLimitVal) {
+                        setErrorMessage(MessageFormat.format(DEFAULT_VALUE_GREATER_THAN_HIGH_LIMIT, defaultValue,
+                                highLimitVal));
+                        setPageComplete(false);
+                    } else {
+                        setPageComplete(true);
+                        setErrorMessage(null);
+                    }
+                }
+
+                if (!lowLimit.isEmpty() && (!defaultVal.isEmpty())) {
+                    Long defaultValue = AbstractObjectPropertySource.getValue(defaultVal);
+                    Long lowLimitVal = AbstractObjectPropertySource.getValue(lowLimit);
+                    if (defaultValue < lowLimitVal) {
+                        setErrorMessage(
+                                MessageFormat.format(DEFAULT_VALUE_GREATER_THAN_HIGH_LIMIT, defaultValue, lowLimitVal));
+                        setPageComplete(false);
+                    } else {
+                        setPageComplete(true);
+                        setErrorMessage(null);
+                    }
                 }
             }
 
-            if (!highLimit.isEmpty() && (!defaultVal.isEmpty())) {
-                Integer highlimitVal = Integer.valueOf(highLimit);
-                Integer defaultValue = Integer.valueOf(defaultVal);
-                if (defaultValue > highlimitVal) {
-                    setErrorMessage(
-                            MessageFormat.format(DEFAULT_VALUE_GREATER_THAN_HIGH_LIMIT, defaultValue, highlimitVal));
-                    setPageComplete(false);
-                } else {
-                    setPageComplete(true);
-                    setErrorMessage(null);
-                }
-            }
-
-            if (!lowLimit.isEmpty() && (!defaultVal.isEmpty())) {
-                Integer lowLimitVal = Integer.valueOf(lowLimit);
-                Integer defaultValue = Integer.valueOf(defaultVal);
-                if (defaultValue < lowLimitVal) {
-                    setErrorMessage(
-                            MessageFormat.format(DEFAULT_VALUE_GREATER_THAN_HIGH_LIMIT, defaultValue, lowLimitVal));
-                    setPageComplete(false);
-                } else {
-                    setPageComplete(true);
-                    setErrorMessage(null);
-                }
-            }
+            isPageComplete();
 
         }
     };
@@ -891,6 +901,7 @@ public class AddSubObjectWizardPage extends WizardPage {
     }
 
     private boolean validateObjectModel() {
+
         String index = getTxtSubObjIndex();
         String defaultVal = getTxtDefaultValue();
         String lowLimit = getTxtLowLimit();
@@ -902,110 +913,101 @@ public class AddSubObjectWizardPage extends WizardPage {
         comboSubObjType.select(0);
         comboSubObjType.setEnabled(false);
         String dataTypeVal = comboDataType.getText();
-
-        if (selObj.getDataType() != null) {
-            if (selObj.getObjectType() == 8) {
-                String objDataType = DatatypeConverter.printHexBinary(selObj.getDataType());
-                List<SubObjectType> subObjList = selObj.getSubObject();
-                if (!subObjList.isEmpty()) {
-                    for (SubObjectType subObj : subObjList) {
-                        String subIndex = DatatypeConverter.printHexBinary(subObj.getSubIndex());
-                        if (subIndex.equalsIgnoreCase("01")) {
-                            validDataType = DatatypeConverter.printHexBinary(subObj.getDataType());
-                            int typeIndex = comboDataType.indexOf(getDataType(validDataType));
-                            comboDataType.select(typeIndex);
-                            comboDataType.setEnabled(false);
+        try {
+            if (selObj.getDataType() != null) {
+                if (selObj.getObjectType() == 8) {
+                    String objDataType = DatatypeConverter.printHexBinary(selObj.getDataType());
+                    List<SubObjectType> subObjList = selObj.getSubObject();
+                    if (!subObjList.isEmpty()) {
+                        for (SubObjectType subObj : subObjList) {
+                            String subIndex = DatatypeConverter.printHexBinary(subObj.getSubIndex());
+                            if (subIndex.equalsIgnoreCase("01")) {
+                                validDataType = DatatypeConverter.printHexBinary(subObj.getDataType());
+                                int typeIndex = comboDataType.indexOf(getDataType(validDataType));
+                                comboDataType.select(typeIndex);
+                                comboDataType.setEnabled(false);
+                            }
                         }
-                    }
-                } else {
-                    int typeIndex = comboDataType.indexOf(getDataType(objDataType));
-                    comboDataType.select(typeIndex);
-                    comboDataType.setEnabled(false);
-                    comboSubObjType.select(0);
-                    comboSubObjType.setEnabled(false);
-                }
-            }
-        } else {
-            if (selObj.getObjectType() == 8) {
-                List<SubObjectType> subObjList = selObj.getSubObject();
-                if (!subObjList.isEmpty()) {
-                    for (SubObjectType subObj : subObjList) {
-                        String subIndex = DatatypeConverter.printHexBinary(subObj.getSubIndex());
-                        if (subIndex.equalsIgnoreCase("01")) {
-                            validDataType = DatatypeConverter.printHexBinary(subObj.getDataType());
-                            int typeIndex = comboDataType.indexOf(getDataType(validDataType));
-                            comboDataType.select(typeIndex);
-                            comboDataType.setEnabled(false);
-                        }
+                    } else {
+                        int typeIndex = comboDataType.indexOf(getDataType(objDataType));
+                        comboDataType.select(typeIndex);
+                        comboDataType.setEnabled(false);
+                        comboSubObjType.select(0);
+                        comboSubObjType.setEnabled(false);
                     }
                 }
-            }
-        }
-
-        setErrorMessage(null);
-        if (index.isEmpty()) {
-            setErrorMessage(ENTER_VALID_SUB_OBJECT_INDEX);
-            return false;
-        }
-
-        if (index.contains("0x")) {
-            if (index.length() > 4) {
-                setErrorMessage(ENTER_VALID_SUB_OBJECT_INDEX);
-                return false;
-            }
-        } else {
-            if (index.length() > 2) {
-                setErrorMessage(ENTER_VALID_SUB_OBJECT_INDEX);
-                return false;
-            }
-        }
-
-        if (!isSubObjectIndexValid(index)) {
-            setErrorMessage(SUB_OBJECT_INDEX_OUT_OF_RANGE);
-            return false;
-        }
-
-        if (!isValidDataType(dataType)) {
-            String objectType = getObjectType(selObj.getObjectType());
-            String dataTypeValue = getDataType(validDataType);
-            setErrorMessage(MessageFormat.format(SELECT_VALID_DATA_TYPE, objIndex, objectType, dataTypeValue));
-            return false;
-        }
-
-        if (!isSubObjectIndexAvailable(index)) {
-            setErrorMessage(MessageFormat.format(SUB_OBJECT_ALREADY_EXISTS_ERROR_MESSAGE, index,
-                    editor.getActiveEditor().getTitle()));
-            return false;
-        }
-
-        String objName = getTxtSubObjName();
-        if (objName.isEmpty()) {
-            setErrorMessage(ENTER_SUB_OBJECT_NAME);
-            return false;
-        }
-
-        if (!isPdoMappingValueValid(pdoMapping)) {
-            setErrorMessage(MessageFormat.format(SUB_OBJECT_ACCESS_TYPE_INVALID_PDO_MAPPING, accessType, pdoMapping));
-            return false;
-        }
-
-        txtDefaultValue.setEnabled(true);
-        txtHighLimit.setEnabled(true);
-        txtLowLimit.setEnabled(true);
-
-        if (!defaultVal.isEmpty()) {
-            String errorMessage = AbstractObjectPropertySource.isValidVal(defaultVal, "'Default value'", dataTypeVal);
-            if (!errorMessage.isEmpty()) {
-                setErrorMessage(errorMessage);
-                return false;
             } else {
-                setErrorMessage(null);
+                if (selObj.getObjectType() == 8) {
+                    List<SubObjectType> subObjList = selObj.getSubObject();
+                    if (!subObjList.isEmpty()) {
+                        for (SubObjectType subObj : subObjList) {
+                            String subIndex = DatatypeConverter.printHexBinary(subObj.getSubIndex());
+                            if (subIndex.equalsIgnoreCase("01")) {
+                                validDataType = DatatypeConverter.printHexBinary(subObj.getDataType());
+                                int typeIndex = comboDataType.indexOf(getDataType(validDataType));
+                                comboDataType.select(typeIndex);
+                                comboDataType.setEnabled(false);
+                            }
+                        }
+                    }
+                }
             }
-        }
-        if (!AbstractObjectPropertySource.getStringDataTypeList().contains(dataType)) {
 
-            if (!lowLimit.isEmpty()) {
-                String errorMessage = AbstractObjectPropertySource.isValidVal(lowLimit, "'Low limit'", dataTypeVal);
+            setErrorMessage(null);
+            if (index.isEmpty()) {
+                setErrorMessage(ENTER_VALID_SUB_OBJECT_INDEX);
+                return false;
+            }
+
+            if (index.contains("0x")) {
+                if (index.length() > 4) {
+                    setErrorMessage(ENTER_VALID_SUB_OBJECT_INDEX);
+                    return false;
+                }
+            } else {
+                if (index.length() > 2) {
+                    setErrorMessage(ENTER_VALID_SUB_OBJECT_INDEX);
+                    return false;
+                }
+            }
+
+            if (!isSubObjectIndexValid(index)) {
+                setErrorMessage(SUB_OBJECT_INDEX_OUT_OF_RANGE);
+                return false;
+            }
+
+            if (!isValidDataType(dataType)) {
+                String objectType = getObjectType(selObj.getObjectType());
+                String dataTypeValue = getDataType(validDataType);
+                setErrorMessage(MessageFormat.format(SELECT_VALID_DATA_TYPE, objIndex, objectType, dataTypeValue));
+                return false;
+            }
+
+            if (!isSubObjectIndexAvailable(index)) {
+                setErrorMessage(MessageFormat.format(SUB_OBJECT_ALREADY_EXISTS_ERROR_MESSAGE, index,
+                        editor.getActiveEditor().getTitle()));
+                return false;
+            }
+
+            String objName = getTxtSubObjName();
+            if (objName.isEmpty()) {
+                setErrorMessage(ENTER_SUB_OBJECT_NAME);
+                return false;
+            }
+
+            if (!isPdoMappingValueValid(pdoMapping)) {
+                setErrorMessage(
+                        MessageFormat.format(SUB_OBJECT_ACCESS_TYPE_INVALID_PDO_MAPPING, accessType, pdoMapping));
+                return false;
+            }
+
+            txtDefaultValue.setEnabled(true);
+            txtHighLimit.setEnabled(true);
+            txtLowLimit.setEnabled(true);
+
+            if (!defaultVal.isEmpty()) {
+                String errorMessage = AbstractObjectPropertySource.isValidVal(defaultVal, "'Default value'",
+                        dataTypeVal);
                 if (!errorMessage.isEmpty()) {
                     setErrorMessage(errorMessage);
                     return false;
@@ -1013,43 +1015,61 @@ public class AddSubObjectWizardPage extends WizardPage {
                     setErrorMessage(null);
                 }
             }
+            if (!AbstractObjectPropertySource.getStringDataTypeList().contains(dataType)) {
 
-            if (!highLimit.isEmpty()) {
-                String errorMessage = AbstractObjectPropertySource.isValidVal(highLimit, "'High limit'", dataTypeVal);
-                if (!errorMessage.isEmpty()) {
-                    setErrorMessage(errorMessage);
-                    return false;
-                } else {
-                    setErrorMessage(null);
+                if (!lowLimit.isEmpty()) {
+                    String errorMessage = AbstractObjectPropertySource.isValidVal(lowLimit, "'Low limit'", dataTypeVal);
+                    if (!errorMessage.isEmpty()) {
+                        setErrorMessage(errorMessage);
+                        return false;
+                    } else {
+                        setErrorMessage(null);
+                    }
+                }
+
+                if (!highLimit.isEmpty()) {
+                    String errorMessage = AbstractObjectPropertySource.isValidVal(highLimit, "'High limit'",
+                            dataTypeVal);
+                    if (!errorMessage.isEmpty()) {
+                        setErrorMessage(errorMessage);
+                        return false;
+                    } else {
+                        setErrorMessage(null);
+                    }
+                }
+
+                if ((!highLimit.isEmpty()) && (!lowLimit.isEmpty())) {
+                    Long highLimitVal = AbstractObjectPropertySource.getValue(highLimit);
+                    Long lowLimitVal = AbstractObjectPropertySource.getValue(lowLimit);
+                    if (lowLimitVal > highLimitVal) {
+                        setErrorMessage(LOW_LIMIT_GREATER_THAN_HIGH_LIMIT);
+                        return false;
+                    }
+                }
+
+                if (!highLimit.isEmpty() && (!defaultVal.isEmpty())) {
+                    Long highLimitVal = AbstractObjectPropertySource.getValue(highLimit);
+                    Long defaultValue = AbstractObjectPropertySource.getValue(defaultVal);
+                    if (defaultValue > highLimitVal) {
+                        setErrorMessage(MessageFormat.format(DEFAULT_VALUE_GREATER_THAN_HIGH_LIMIT, defaultValue,
+                                highLimitVal));
+                        return false;
+                    }
+                }
+
+                if (!lowLimit.isEmpty() && (!defaultVal.isEmpty())) {
+                    Long lowLimitVal = AbstractObjectPropertySource.getValue(lowLimit);
+                    Long defaultValue = AbstractObjectPropertySource.getValue(defaultVal);
+                    if (defaultValue < lowLimitVal) {
+                        setErrorMessage(
+                                MessageFormat.format(DEFAULT_VALUE_GREATER_THAN_HIGH_LIMIT, defaultValue, lowLimitVal));
+                        return false;
+                    }
                 }
             }
-
-            if ((!highLimit.isEmpty()) && (!lowLimit.isEmpty())) {
-                if (Integer.parseInt(lowLimit) > Integer.parseInt(highLimit)) {
-                    setErrorMessage(LOW_LIMIT_GREATER_THAN_HIGH_LIMIT);
-                    return false;
-                }
-            }
-
-            if (!highLimit.isEmpty() && (!defaultVal.isEmpty())) {
-                Integer highlimitVal = Integer.valueOf(highLimit);
-                Integer defaultValue = Integer.valueOf(defaultVal);
-                if (defaultValue > highlimitVal) {
-                    setErrorMessage(
-                            MessageFormat.format(DEFAULT_VALUE_GREATER_THAN_HIGH_LIMIT, defaultValue, highlimitVal));
-                    return false;
-                }
-            }
-
-            if (!lowLimit.isEmpty() && (!defaultVal.isEmpty())) {
-                Integer lowLimitVal = Integer.valueOf(lowLimit);
-                Integer defaultValue = Integer.valueOf(defaultVal);
-                if (defaultValue < lowLimitVal) {
-                    setErrorMessage(
-                            MessageFormat.format(DEFAULT_VALUE_GREATER_THAN_HIGH_LIMIT, defaultValue, lowLimitVal));
-                    return false;
-                }
-            }
+        } catch (Exception e) {
+            setErrorMessage(MessageFormat.format(INVALID_DATA_TYPE_VALUE, dataTypeVal));
+            return false;
         }
         return true;
     }

@@ -367,14 +367,21 @@ public final class ModelLoader {
         cnFeatures.setNMTCNSoC2PReq(wizardConfigurationPage.getNMTCNSoC2PReq());
 
         cnFeatures.setDLLCNFeatureMultiplex(wizardConfigurationPage.isCnMultiplexFeature());
-        if (wizardConfigurationPage.isCnMultiplexFeature())
-            ModelLoader.setMultiplexFeatureObjects(true, root);
-        if (wizardConfigurationPage.isNWLIPSupport())
-            ModelLoader.setIPSupportObjects(true, root);
-        if (wizardConfigurationPage.isResponseChaining())
-            ModelLoader.setPResChainingObjects(true, root);
-        if (wizardConfigurationPage.isMultipleASnd())
-            ModelLoader.setPResChainingObjects(true, root);
+        if (wizardConfigurationPage.isCnMultiplexFeature()) {
+            cnFeatures.setDLLCNFeatureMultiplex(true);
+        }
+
+        if (wizardConfigurationPage.isNWLIPSupport()) {
+            generalFeatures.setNWLIPSupport(true);
+
+        }
+        if (wizardConfigurationPage.isResponseChaining()) {
+            cnFeatures.setDLLCNPResChaining(true);
+        }
+
+        if (wizardConfigurationPage.isMultipleASnd()) {
+            cnFeatures.setDLLCNPResChaining(true);
+        }
         return root;
     }
 

@@ -216,6 +216,24 @@ public class AbstractObjectPropertySource {
     }
 
     /**
+     * Get long value of high limit or low limit
+     *
+     * @param value
+     *            String value to be converted
+     * @return Long value
+     */
+    public static Long getValue(String value) {
+        Long defaultVal = (long) 0;
+        if (value.contains("0x")) {
+            value = value.substring(2);
+            defaultVal = Long.valueOf(value, 16);
+        } else {
+            defaultVal = Long.parseLong(value);
+        }
+        return defaultVal;
+    }
+
+    /**
      * Set instance of editor
      *
      * @param editor

@@ -386,20 +386,35 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
         String lowLimit = (String) value;
         String highLimit = plkObject.getHighLimit();
         String dataType = StringUtils.EMPTY;
-        if (plkObject.getDataType() != null) {
-            String dataTypeVal = DatatypeConverter.printHexBinary(plkObject.getDataType());
-            dataType = getDataType(dataTypeVal);
-        }
-
         try {
+            if (plkObject.getDataType() != null) {
+                String dataTypeVal = DatatypeConverter.printHexBinary(plkObject.getDataType());
+                dataType = getDataType(dataTypeVal);
+            }
+
+            if (!plkObject.getDefaultValue().isEmpty()) {
+                String defaultValue = plkObject.getDefaultValue();
+                Long defaultVal = getValue(defaultValue);
+                if(!lowLimit.isEmpty()) {
+                Long lowlimitVal = getValue(lowLimit);
+
+                if (defaultVal < lowlimitVal) {
+                    return MessageFormat.format(DEFAULT_VALUE_LESS_THAN_LOW_LIMIT, defaultVal, lowlimitVal);
+                }
+                }
+            }
+
             if (!getStringDataTypeList().contains(dataType)) {
                 if (highLimit != null) {
-                    if ((!highLimit.isEmpty()) && (!lowLimit.isEmpty()))
+                    if ((!highLimit.isEmpty()) && (!lowLimit.isEmpty())) {
+                        Long highLimitVal = getValue(highLimit);
+                        Long lowlimitVal = getValue(lowLimit);
 
-                        if (Long.parseLong(lowLimit) > Long.parseLong(highLimit)) {
+                        if (lowlimitVal > highLimitVal) {
                             return LOW_LIMIT_GREATER_HIGH_LIMIT;
 
                         }
+                    }
                 }
             }
         } catch (NumberFormatException ex) {
@@ -498,11 +513,27 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
             dataType = getDataType(dataTypeVal);
         }
         try {
+
+            if (!plkObject.getDefaultValue().isEmpty()) {
+                String defaultValue = plkObject.getDefaultValue();
+                Long defaultVal = getValue(defaultValue);
+                if(!highLimit.isEmpty()) {
+                Long highLimitVal = getValue(highLimit);
+
+                if (defaultVal > highLimitVal) {
+                    return MessageFormat.format(DEFAULT_VALUE_EXCEEDS_HIGH_LIMIT, defaultVal, highLimitVal);
+                }
+            }
+            }
+
             if (!getStringDataTypeList().contains(dataType)) {
                 if (lowLimit != null) {
 
                     if ((!highLimit.isEmpty()) && (!lowLimit.isEmpty())) {
-                        if (Long.parseLong(highLimit) < Long.parseLong(lowLimit)) {
+                        Long highLimitVal = getValue(highLimit);
+                        Long lowlimitVal = getValue(lowLimit);
+
+                        if (highLimitVal < lowlimitVal) {
                             return LOW_LIMIT_GREATER_HIGH_LIMIT;
                         }
                     }
@@ -510,6 +541,7 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
             }
 
         } catch (NumberFormatException ex) {
+
             return MessageFormat.format(INVALID_VALUE, highLimit);
         }
 
@@ -570,17 +602,11 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
                 }
 
                 if (!getStringDataTypeList().contains(dataType)) {
-                    Long defaultValue = (long) 0;
-                    if (defaultVal.contains("0x")) {
-                        defaultVal = defaultVal.substring(2);
-                        defaultValue = Long.parseLong(defaultVal, 16);
-                    } else {
-                        defaultValue = Long.parseLong(defaultVal);
-                    }
+                    Long defaultValue = getValue(defaultVal);
 
                     if (plkObject.getHighLimit() != null) {
                         if (!plkObject.getHighLimit().isEmpty()) {
-                            Long highlimitVal = Long.valueOf(plkObject.getHighLimit());
+                            Long highlimitVal = getValue(plkObject.getHighLimit());
                             if (defaultValue > highlimitVal) {
                                 return MessageFormat.format(DEFAULT_VALUE_EXCEEDS_HIGH_LIMIT, defaultValue,
                                         highlimitVal);
@@ -590,7 +616,7 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
 
                     if (plkObject.getLowLimit() != null) {
                         if (!plkObject.getLowLimit().isEmpty()) {
-                            Long lowLimitVal = Long.valueOf(plkObject.getLowLimit());
+                            Long lowLimitVal = getValue(plkObject.getLowLimit());
                             if (defaultValue < lowLimitVal) {
                                 return MessageFormat.format(DEFAULT_VALUE_LESS_THAN_LOW_LIMIT, defaultValue,
                                         lowLimitVal);
@@ -600,7 +626,6 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
                 }
             }
         } catch (NumberFormatException ex) {
-            ex.printStackTrace();
             return MessageFormat.format(INVALID_VALUE, defaultVal);
         }
         return isValidVal(defaultVal, "Default value", dataType);
@@ -744,9 +769,6 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
             case OBJ_LOW_LIMIT_EDITABLE_ID:
                 if (plkObject.getLowLimit() != null) {
                     String lowLimit = plkObject.getLowLimit();
-                    if (lowLimit.contains("0x")) {
-                        lowLimit = String.valueOf(Long.decode(lowLimit));
-                    }
                     retObj = lowLimit;
                 } else {
                     retObj = StringUtils.EMPTY;
@@ -756,9 +778,6 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
             case OBJ_HIGH_LIMIT_EDITABLE_ID:
                 if (plkObject.getHighLimit() != null) {
                     String highLimit = plkObject.getHighLimit();
-                    if (highLimit.contains("0x")) {
-                        highLimit = String.valueOf(Long.decode(highLimit));
-                    }
                     retObj = highLimit;
                 } else {
                     retObj = StringUtils.EMPTY;

@@ -447,9 +447,6 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
             case OBJ_LOW_LIMIT_EDITABLE_ID:
                 if (plkSubObject.getLowLimit() != null) {
                     String lowLimit = plkSubObject.getLowLimit();
-                    if (lowLimit.contains("0x")) {
-                        lowLimit = String.valueOf(Long.decode(lowLimit));
-                    }
                     retObj = lowLimit;
                 } else {
                     retObj = StringUtils.EMPTY;
@@ -459,9 +456,6 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
             case OBJ_HIGH_LIMIT_EDITABLE_ID:
                 if (plkSubObject.getHighLimit() != null) {
                     String highLimit = plkSubObject.getHighLimit();
-                    if (highLimit.contains("0x")) {
-                        highLimit = String.valueOf(Long.decode(highLimit));
-                    }
                     retObj = highLimit;
                 } else {
                     retObj = StringUtils.EMPTY;
@@ -497,9 +491,6 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
             case OBJ_DEFAULT_VALUE_EDITABLE_ID:
                 if (plkSubObject.getDefaultValue() != null) {
                     String defaultValue = plkSubObject.getDefaultValue();
-                    if (defaultValue.contains("0x")) {
-                        defaultValue = String.valueOf(Long.decode(defaultValue));
-                    }
                     retObj = defaultValue;
                 } else {
                     retObj = StringUtils.EMPTY;
@@ -669,13 +660,29 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
         String dataTypeVal = DatatypeConverter.printHexBinary(plkSubObject.getDataType());
         String dataType = getDataType(dataTypeVal);
         try {
+
+            if (!plkSubObject.getDefaultValue().isEmpty()) {
+                String defaultValue = plkSubObject.getDefaultValue();
+                Long defaultVal = getValue(defaultValue);
+                if (!lowLimit.isEmpty()) {
+                    Long lowlimitVal = getValue(lowLimit);
+
+                    if (defaultVal < lowlimitVal) {
+                        return MessageFormat.format(DEFAULT_VALUE_LESS_THAN_LOW_LIMIT, defaultVal, lowlimitVal);
+                    }
+                }
+            }
+
             if (!getStringDataTypeList().contains(dataType)) {
                 if (highLimit != null) {
-                    if ((!highLimit.isEmpty()) && (!lowLimit.isEmpty()))
-                        if (Long.parseLong(lowLimit) > Long.parseLong(highLimit)) {
+                    if ((!highLimit.isEmpty()) && (!lowLimit.isEmpty())) {
+                        Long highLimitVal = getValue(highLimit);
+                        Long lowlimitVal = getValue(lowLimit);
+                        if (lowlimitVal > highLimitVal) {
                             return LOW_LIMIT_GREATER_HIGH_LIMIT;
 
                         }
+                    }
                 }
             }
         } catch (NumberFormatException ex) {
@@ -747,13 +754,30 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
         String dataTypeVal = DatatypeConverter.printHexBinary(plkSubObject.getDataType());
         String dataType = getDataType(dataTypeVal);
         try {
+
+            if (!plkSubObject.getDefaultValue().isEmpty()) {
+                String defaultValue = plkSubObject.getDefaultValue();
+                Long defaultVal = getValue(defaultValue);
+                if (!highLimit.isEmpty()) {
+                    Long highLimitVal = getValue(highLimit);
+
+                    if (defaultVal > highLimitVal) {
+                        return MessageFormat.format(DEFAULT_VALUE_EXCEEDS_HIGH_LIMIT, defaultVal, highLimitVal);
+                    }
+                }
+            }
+
             if (!getStringDataTypeList().contains(dataType)) {
                 if (lowLimit != null) {
-                    if ((!highLimit.isEmpty()) && (!lowLimit.isEmpty()))
-                        if (Long.parseLong(lowLimit) > Long.parseLong(highLimit)) {
+                    if ((!highLimit.isEmpty()) && (!lowLimit.isEmpty())) {
+                        Long highLimitVal = getValue(highLimit);
+                        Long lowlimitVal = getValue(lowLimit);
+
+                        if (lowlimitVal > highLimitVal) {
                             return LOW_LIMIT_GREATER_HIGH_LIMIT;
 
                         }
+                    }
                 }
             }
         } catch (NumberFormatException ex) {
@@ -812,14 +836,11 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
             }
 
             if (!getStringDataTypeList().contains(dataType)) {
-                if (defaultVal.contains("0x")) {
-                    defaultVal = defaultVal.substring(2);
-                }
-                Long defaultValue = Long.valueOf(defaultVal);
+                Long defaultValue = getValue(defaultVal);
 
                 if (plkSubObject.getHighLimit() != null) {
                     if (!plkSubObject.getHighLimit().isEmpty()) {
-                        Long highlimitVal = Long.valueOf(plkSubObject.getHighLimit());
+                        Long highlimitVal = getValue(plkSubObject.getHighLimit());
                         if (defaultValue > highlimitVal) {
                             return MessageFormat.format(DEFAULT_VALUE_EXCEEDS_HIGH_LIMIT, defaultValue, highlimitVal);
                         }
@@ -828,7 +849,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
 
                 if (plkSubObject.getLowLimit() != null) {
                     if (!plkSubObject.getLowLimit().isEmpty()) {
-                        Long lowLimitVal = Long.valueOf(plkSubObject.getLowLimit());
+                        Long lowLimitVal = getValue(plkSubObject.getLowLimit());
                         if (defaultValue < lowLimitVal) {
                             return MessageFormat.format(DEFAULT_VALUE_LESS_THAN_LOW_LIMIT, defaultValue, lowLimitVal);
                         }

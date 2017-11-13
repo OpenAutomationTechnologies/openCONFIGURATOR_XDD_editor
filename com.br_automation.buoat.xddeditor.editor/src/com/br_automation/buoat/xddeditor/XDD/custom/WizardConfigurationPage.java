@@ -110,16 +110,17 @@ public class WizardConfigurationPage extends WizardPage {
     private static final String INVALID_PREQ_TIME_SPACE_ERROR = "PReq time cannot start with spaces.";
     private static final String INVALID_NETWORK_BOOT_TIME_SPACE_ERROR = "Network boot time cannot start with spaces.";
     private static final String INVALID_NETWORK_ERROR_ENTRIES_SPACE_ERROR = "Network error entries cannot start with spaces.";
+    private static final String INVALID_PREQ_TIME_ERROR = "Invalid SoC to PReq time value.";
 
-    private static final String MAXIMUM_CYCLE_TIME_OUT_OF_RANGE = "Maximum cycle time value {0} does not fit within the range (0 - 4,294,967,295) of data type 'Unsigned32'.";
+    private static final String MAXIMUM_CYCLE_TIME_OUT_OF_RANGE = "Maximum cycle time value {0} does not fit within the range (0 - 4,294,967,295).";
     private static final String MAXIMUM_CYCLE_LESS_THAN_MINIMUM_CYCLE_TIME = "Maximum cycle time value {0} cannot be lesser than minimum cycle time value {1}.";
-    private static final String MINIMUM_CYCLE_TIME_OUT_OF_RANGE = "Minimum cycle time value {0} does not fit within the range (0 - 4,294,967,295) of data type 'Unsigned32'.";
+    private static final String MINIMUM_CYCLE_TIME_OUT_OF_RANGE = "Minimum cycle time value {0} does not fit within the range (0 - 4,294,967,295).";
     private static final String MINIMUM_CYCLE_GREATER_MAXIMUM_CYCLE_TIME = "Minimum cycle time value {0} cannot be greater than maximum cycle time value {1}.";
-    private static final String NETWORK_BOOT_TIME_OUT_OF_RANGE = "Network boot time value {0} does not fit within the range (0 - 4,294,967,295) of data type 'Unsigned32'.";
-    private static final String TIME_FOR_PREQ_OUT_OF_RANGE = "Time for PReq value {0} does not fit within the range (0 - 4,294,967,295) of data type 'Unsigned32'.";
-    private static final String TOTAL_NETWORK_ENTRIES_OUT_OF_RANGE = "Total network error entries {0} does not fit within the range (0 - 4,294,967,295) of data type 'Unsigned32'.";
-    private static final String VENDOR_ID_OUT_OF_RANGE = "Vendor ID value {0} does not fit within the range (0 - 4,294,967,295) of data type 'Unsigned32'.";
-    private static final String PRODUCT_ID_OUT_OF_RANGE = "Product ID value {0} does not fit within the range (0 - 4,294,967,295) of data type 'Unsigned32'.";
+    private static final String NETWORK_BOOT_TIME_OUT_OF_RANGE = "Network boot time value {0} does not fit within the range (0 - 4,294,967,295).";
+    private static final String TIME_FOR_PREQ_OUT_OF_RANGE = "Time for PReq value {0} does not fit within the range (0 - 4,294,967,295).";
+    private static final String TOTAL_NETWORK_ENTRIES_OUT_OF_RANGE = "Total network error entries {0} does not fit within the range (0 - 4,294,967,295).";
+    private static final String VENDOR_ID_OUT_OF_RANGE = "Vendor ID value {0} does not fit within the range (0 - 4,294,967,295).";
+    private static final String PRODUCT_ID_OUT_OF_RANGE = "Product ID value {0} does not fit within the range (0 - 4,294,967,295).";
 
     /**
      * @param pageID
@@ -280,13 +281,13 @@ public class WizardConfigurationPage extends WizardPage {
 
         Label lblSoc = new Label(grpNodeFeatures, SWT.NONE);
         lblSoc.setToolTipText(Messages.wizardConfigurationPage_Time_for_cn_to_process_Soc_tooltip);
-        lblSoc.setText("Time for Soc to PReq (ns):"); //$NON-NLS-1$
-        lblSoc.setBounds(10, 66, 124, 15);
+        lblSoc.setText("Time for SoC to PReq (ns):"); //$NON-NLS-1$
+        lblSoc.setBounds(10, 66, 145, 15);
 
         this.txtNMTCNSoC2PReq = new Text(grpNodeFeatures, SWT.BORDER);
-        this.txtNMTCNSoC2PReq.setText("25"); //$NON-NLS-1$
+        this.txtNMTCNSoC2PReq.setText("960"); //$NON-NLS-1$
         this.txtNMTCNSoC2PReq.setToolTipText(Messages.wizardConfigurationPage_time_for_CN_tro_process_SoC_tooltip);
-        this.txtNMTCNSoC2PReq.setBounds(140, 63, 92, 21);
+        this.txtNMTCNSoC2PReq.setBounds(161, 63, 83, 21);
 
         Group grpGeneralFeatures = new Group(container, SWT.SHADOW_OUT);
         grpGeneralFeatures.setFont(SWTResourceManager.getFont("Segoe UI", 9, SWT.NORMAL)); //$NON-NLS-1$
@@ -374,6 +375,7 @@ public class WizardConfigurationPage extends WizardPage {
 
                 }
             } catch (Exception ex) {
+                setErrorMessage(INVALID_PREQ_TIME_ERROR);
                 ex.printStackTrace();
                 setPageComplete(false);
             }
@@ -592,7 +594,6 @@ public class WizardConfigurationPage extends WizardPage {
                 ex.printStackTrace();
                 setPageComplete(false);
             }
-            setPageComplete(false);
 
         }
 
