@@ -368,19 +368,16 @@ public final class ModelLoader {
 
         cnFeatures.setDLLCNFeatureMultiplex(wizardConfigurationPage.isCnMultiplexFeature());
         if (wizardConfigurationPage.isCnMultiplexFeature()) {
-            cnFeatures.setDLLCNFeatureMultiplex(true);
+            ModelLoader.setMultiplexFeatureObjects(true, root);
         }
-
         if (wizardConfigurationPage.isNWLIPSupport()) {
-            generalFeatures.setNWLIPSupport(true);
-
+            ModelLoader.setIPSupportObjects(true, root);
         }
         if (wizardConfigurationPage.isResponseChaining()) {
-            cnFeatures.setDLLCNPResChaining(true);
+            ModelLoader.setPResChainingObjects(true, root);
         }
-
         if (wizardConfigurationPage.isMultipleASnd()) {
-            cnFeatures.setDLLCNPResChaining(true);
+            ModelLoader.setMultipleASndObjects(true, root);
         }
         return root;
     }
