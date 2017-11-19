@@ -38,7 +38,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
-import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
@@ -191,7 +190,7 @@ public class AbstractObjectPropertySource {
 
     public static final String BOOLEAN_OUT_OF_RANGE = "{0} is out of range (0 to 1).";
     public static final String INTEGER8_OUT_OF_RANGE = "{0} is out of range (-128 to 127).";
-    public static final String INTEGER16_OUT_OF_RANGE = "{0} is out of range (-32768 to 32767 ).";
+    public static final String INTEGER16_OUT_OF_RANGE = "{0} is out of range (-32768 to 32767).";
     public static final String INTEGER32_OUT_OF_RANGE = "{0}  is out of range (-2147483648 to 2147483647).";
     public static final String UNSIGNED8_OUT_OF_RANGE = "{0} is out of range (0 to 255).";
     public static final String UNSIGNED16_OUT_OF_RANGE = "{0} is out of range (0 to 65,535).";
@@ -475,8 +474,8 @@ public class AbstractObjectPropertySource {
             case "Integer64": {
                 try {
 
-                    if (valueToBeChecked <= DataTypeRange.Integer64_min
-                            || valueToBeChecked >= DataTypeRange.Integer64_max) {
+                    if (valueToBeChecked < DataTypeRange.Integer64_min
+                            || valueToBeChecked > DataTypeRange.Integer64_max) {
                         return MessageFormat.format(INTEGER64_OUT_OF_RANGE, label);
 
                     } else

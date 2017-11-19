@@ -31,8 +31,6 @@
 
 package com.br_automation.buoat.xddeditor.XDD.wizards;
 
-import java.math.BigInteger;
-
 /**
  * Range of different data types
  *

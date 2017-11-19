@@ -44,10 +44,6 @@ import javax.xml.bind.DatatypeConverter;
 
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.xmi.XMLResource;
@@ -96,7 +92,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
     public static final String INVALID_CONST_OPTIONAL_MAPPING = "Sub-object with access type 'const' does not allow optional mapping";
     public static final String INVALID_CONST_TPDO_MAPPING = "Sub-object with access type 'const' does not allow TPDO mapping";
     public static final String INVALID_CONST_RPDO_MAPPING = "Sub-object with access type 'const' does not allow RPDO mapping";
-    public static final String INVALID_RW_TPDO_MAPPING = "Sub-object with access type 'rw' does not allow TPDO mapping";
+    public static final String INVALID_WO_TPDO_MAPPING = "Sub-object with access type 'wo' does not allow TPDO mapping";
     public static final String INVALID_RO_RPDO_MAPPING = "Sub-object with access type 'ro' does not allow RPDO mapping";
     public static final String NO_CHANGE_IN_DATA_TYPE = "No change in data type.";
 
@@ -180,6 +176,15 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
 
         accessTypeDescriptor.setCategory(IPropertySourceSupport.OBJECT_ATTRIBUTES_CATEGORY);
         editAccessTypeDescriptor.setCategory(IPropertySourceSupport.OBJECT_ATTRIBUTES_CATEGORY);
+        editAccessTypeDescriptor.setValidator(new ICellEditorValidator() {
+
+            @Override
+            public String isValid(Object value) {
+
+                return handleAccessTypeValue(value);
+            }
+
+        });
 
         defaultValueDescriptor.setCategory(IPropertySourceSupport.INITIAL_VALUE_CATEGORY);
         editDefaultValueDescriptor.setCategory(IPropertySourceSupport.INITIAL_VALUE_CATEGORY);
@@ -719,8 +724,8 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
                 if (accessType == TObjectAccessType.CONST) {
                     return INVALID_CONST_TPDO_MAPPING;
                 }
-                if (accessType == TObjectAccessType.RW) {
-                    return INVALID_RW_TPDO_MAPPING;
+                if (accessType == TObjectAccessType.WO) {
+                    return INVALID_WO_TPDO_MAPPING;
                 }
                 break;
             case "RPDO":
@@ -730,6 +735,40 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
                 if (accessType == TObjectAccessType.RO) {
                     return INVALID_RO_RPDO_MAPPING;
                 }
+                break;
+            default:
+                break;
+
+            }
+        }
+        return StringUtils.EMPTY;
+    }
+
+    private String handleAccessTypeValue(Object value) {
+        if (value instanceof Integer) {
+            String accessTypeVlaue = ACCESS_TYPE_LIST[(int) value];
+            TObjectPDOMapping pdoMapping = plkSubObject.getPDOmapping();
+            switch (accessTypeVlaue) {
+            case "Constant":
+                if (pdoMapping == TObjectPDOMapping.TPDO) {
+                    return INVALID_CONST_TPDO_MAPPING;
+                }
+
+                if (pdoMapping == TObjectPDOMapping.RPDO) {
+                    return INVALID_CONST_RPDO_MAPPING;
+                }
+                break;
+            case "Read only":
+                if (pdoMapping == TObjectPDOMapping.RPDO) {
+                    return INVALID_RO_RPDO_MAPPING;
+                }
+                break;
+            case "Write only":
+                if (pdoMapping == TObjectPDOMapping.TPDO) {
+                    return INVALID_WO_TPDO_MAPPING;
+                }
+                break;
+            case "Read/Write":
                 break;
             default:
                 break;
@@ -750,7 +789,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
      */
     protected String handleHighLimitValue(Object value) {
         String highLimit = (String) value;
-        String lowLimit = plkSubObject.getHighLimit();
+        String lowLimit = plkSubObject.getLowLimit();
         String dataTypeVal = DatatypeConverter.printHexBinary(plkSubObject.getDataType());
         String dataType = getDataType(dataTypeVal);
         try {

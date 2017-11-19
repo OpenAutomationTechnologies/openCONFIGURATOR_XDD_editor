@@ -83,9 +83,15 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
     public static final String INVALID_OBJECT_TYPE = "Object type cannot be '7 - VAR' for object {0} with sub-objects.";
     public static final String INVALID_ARRAY_OBJECT_TYPE = "Object type cannot be '8 - ARRAY' for object {0} with sub-objects.";
     private static final String EMPTY_OBJECT_NAME = "Object name cannot be empty.";
-    private static final String INVALID_OBJECT_NAME = "Invalid object name";
+    private static final String INVALID_OBJECT_NAME = "Invalid object name.";
     private static final String DEFAULT_VALUE_EXCEEDS_HIGH_LIMIT = "Default value {0} exceeds the high limit value {1}.";
     private static final String DEFAULT_VALUE_LESS_THAN_LOW_LIMIT = "Default value {0} cannot be lesser than low limit value {1}.";
+    public static final String INVALID_CONST_OPTIONAL_MAPPING = "Object with access type 'const' does not allow optional mapping.";
+    public static final String INVALID_CONST_TPDO_MAPPING = "Object with access type 'const' does not allow TPDO mapping.";
+    public static final String INVALID_CONST_RPDO_MAPPING = "Object with access type 'const' does not allow RPDO mapping.";
+    public static final String INVALID_WO_TPDO_MAPPING = "Object with access type 'wo' does not allow TPDO mapping.";
+    public static final String INVALID_RO_RPDO_MAPPING = "Object with access type 'ro' does not allow RPDO mapping.";
+    public static final String NO_CHANGE_IN_DATA_TYPE = "No change in data type.";
 
     /**
      * Constructor to initialize the property descriptors for object
@@ -166,6 +172,15 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
 
         accessTypeDescriptor.setCategory(IPropertySourceSupport.OBJECT_ATTRIBUTES_CATEGORY);
         editAccessTypeDescriptor.setCategory(IPropertySourceSupport.OBJECT_ATTRIBUTES_CATEGORY);
+        editAccessTypeDescriptor.setValidator(new ICellEditorValidator() {
+
+            @Override
+            public String isValid(Object value) {
+
+                return handleAccessTypeValue(value);
+            }
+
+        });
 
         defaultValueDescriptor.setCategory(IPropertySourceSupport.INITIAL_VALUE_CATEGORY);
         editDefaultValueDescriptor.setCategory(IPropertySourceSupport.INITIAL_VALUE_CATEGORY);
@@ -201,6 +216,40 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
 
         objectErrorDescriptor.setCategory(IPropertySourceSupport.OBJECT_ATTRIBUTES_CATEGORY);
 
+    }
+
+    private String handleAccessTypeValue(Object value) {
+        if (value instanceof Integer) {
+            String accessTypeVlaue = ACCESS_TYPE_LIST[(int) value];
+            TObjectPDOMapping pdoMapping = plkObject.getPDOmapping();
+            switch (accessTypeVlaue) {
+            case "Constant":
+                if (pdoMapping == TObjectPDOMapping.TPDO) {
+                    return INVALID_CONST_TPDO_MAPPING;
+                }
+
+                if (pdoMapping == TObjectPDOMapping.RPDO) {
+                    return INVALID_CONST_RPDO_MAPPING;
+                }
+                break;
+            case "Read only":
+                if (pdoMapping == TObjectPDOMapping.RPDO) {
+                    return INVALID_RO_RPDO_MAPPING;
+                }
+                break;
+            case "Write only":
+                if (pdoMapping == TObjectPDOMapping.TPDO) {
+                    return INVALID_WO_TPDO_MAPPING;
+                }
+                break;
+            case "Read/Write":
+                break;
+            default:
+                break;
+
+            }
+        }
+        return StringUtils.EMPTY;
     }
 
     private String handleObjectType(Object value) {
@@ -272,7 +321,7 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
 
                             return null;
                         } else {
-                            return "No change in data type.";
+                            return NO_CHANGE_IN_DATA_TYPE;
                         }
                     }
                 }
@@ -395,12 +444,12 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
             if (!plkObject.getDefaultValue().isEmpty()) {
                 String defaultValue = plkObject.getDefaultValue();
                 Long defaultVal = getValue(defaultValue);
-                if(!lowLimit.isEmpty()) {
-                Long lowlimitVal = getValue(lowLimit);
+                if (!lowLimit.isEmpty()) {
+                    Long lowlimitVal = getValue(lowLimit);
 
-                if (defaultVal < lowlimitVal) {
-                    return MessageFormat.format(DEFAULT_VALUE_LESS_THAN_LOW_LIMIT, defaultVal, lowlimitVal);
-                }
+                    if (defaultVal < lowlimitVal) {
+                        return MessageFormat.format(DEFAULT_VALUE_LESS_THAN_LOW_LIMIT, defaultVal, lowlimitVal);
+                    }
                 }
             }
 
@@ -517,13 +566,13 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
             if (!plkObject.getDefaultValue().isEmpty()) {
                 String defaultValue = plkObject.getDefaultValue();
                 Long defaultVal = getValue(defaultValue);
-                if(!highLimit.isEmpty()) {
-                Long highLimitVal = getValue(highLimit);
+                if (!highLimit.isEmpty()) {
+                    Long highLimitVal = getValue(highLimit);
 
-                if (defaultVal > highLimitVal) {
-                    return MessageFormat.format(DEFAULT_VALUE_EXCEEDS_HIGH_LIMIT, defaultVal, highLimitVal);
+                    if (defaultVal > highLimitVal) {
+                        return MessageFormat.format(DEFAULT_VALUE_EXCEEDS_HIGH_LIMIT, defaultVal, highLimitVal);
+                    }
                 }
-            }
             }
 
             if (!getStringDataTypeList().contains(dataType)) {
@@ -660,7 +709,7 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
                     return MessageFormat.format(OBJECT_ACCESS_TYPE_INVALID_PDO_MAPPING, accessType.getName(),
                             pdoMappingValue);
                 }
-                if (accessType == TObjectAccessType.RW) {
+                if (accessType == TObjectAccessType.WO) {
                     return MessageFormat.format(OBJECT_ACCESS_TYPE_INVALID_PDO_MAPPING, accessType.getName(),
                             pdoMappingValue);
                 }

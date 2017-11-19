@@ -372,12 +372,13 @@ public final class ModelLoader {
         }
         if (wizardConfigurationPage.isNWLIPSupport()) {
             ModelLoader.setIPSupportObjects(true, root);
+            generalFeatures.setNWLForward(true);
         }
         if (wizardConfigurationPage.isResponseChaining()) {
             ModelLoader.setPResChainingObjects(true, root);
         }
         if (wizardConfigurationPage.isMultipleASnd()) {
-            ModelLoader.setMultipleASndObjects(true, root);
+            ModelLoader.setPResChainingObjects(true, root);
         }
         return root;
     }
