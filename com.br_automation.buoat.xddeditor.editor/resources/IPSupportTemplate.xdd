@@ -1,79 +1,79 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ISO15745ProfileContainer xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.ethernet-powerlink.org" xsi:schemaLocation="http://www.ethernet-powerlink.org Powerlink_Main.xsd">
-  <ISO15745Profile>
-    <ProfileHeader>
-      <ProfileIdentification>Powerlink_Device_Profile</ProfileIdentification>
-      <ProfileRevision>1</ProfileRevision>
-      <ProfileName>MyDevice static device profile</ProfileName>
-      <ProfileSource></ProfileSource>
-      <ProfileClassID>Device</ProfileClassID>
-      <ISO15745Reference>
-        <ISO15745Part>4</ISO15745Part>
-        <ISO15745Edition>1</ISO15745Edition>
-        <ProfileTechnology>Powerlink</ProfileTechnology>
-      </ISO15745Reference>
-    </ProfileHeader>
-    <ProfileBody xsi:type="ProfileBody_Device_Powerlink" fileCreationDate="2010-11-08" fileCreationTime="12:00:00+01:00" fileCreator="Ethernet POWERLINK Standardization Group" fileModificationDate="2013-04-12" fileModificationTime="11:14:52+02:00" fileModifiedBy="lueckengaj" fileName="00000000_MyDevice_static.xdd" fileVersion="01.00" supportedLanguages="en">
-      <DeviceIdentity>
-        <vendorName>Unknown vendor</vendorName>
-        <vendorID>0x00000000</vendorID>
-        <productName>MyDevice static</productName>
-        <version versionType="HW">1.00</version>
-        <version versionType="SW">1.00</version>
-      </DeviceIdentity>
-      <DeviceFunction>
-        <capabilities>
-          <characteristicsList>
-            <characteristic>
-              <characteristicName>
-                <label lang="en">Transfer rate</label>
-              </characteristicName>
-              <characteristicContent>
-                <label lang="en">100 MBit/s</label>
-              </characteristicContent>
-            </characteristic>
-          </characteristicsList>
-        </capabilities>
-      </DeviceFunction>
-    </ProfileBody>
-  </ISO15745Profile>
-  <ISO15745Profile>
-    <ProfileHeader>
-      <ProfileIdentification>Powerlink_Communication_Profile</ProfileIdentification>
-      <ProfileRevision>1</ProfileRevision>
-      <ProfileName>MyDevice static communication profile</ProfileName>
-      <ProfileSource></ProfileSource>
-      <ProfileClassID>CommunicationNetwork</ProfileClassID>
-      <ISO15745Reference>
-        <ISO15745Part>4</ISO15745Part>
-        <ISO15745Edition>1</ISO15745Edition>
-        <ProfileTechnology>Powerlink</ProfileTechnology>
-      </ISO15745Reference>
-    </ProfileHeader>
-    <ProfileBody xsi:type="ProfileBody_CommunicationNetwork_Powerlink" fileCreationDate="2010-11-08" fileCreationTime="12:00:00+01:00" fileCreator="Ethernet POWERLINK Standardization Group" fileModificationDate="2013-04-12" fileModificationTime="11:14:52+02:00" fileModifiedBy="lueckengaj" fileName="" fileVersion="01.00" supportedLanguages="en">
-      <ApplicationLayers>
-        <ObjectList>
-          <Object dataType="0426" index="1E40" name="NWL_IpAddrTable_0h_REC" objectType="9">
-            <SubObject accessType="const" dataType="0005" defaultValue="5" name="NumberOfEntries" objectType="7" PDOmapping="no" subIndex="00"/>
-            <SubObject accessType="ro" dataType="0006" name="IfIndex_U16" objectType="7" PDOmapping="no" subIndex="01"/>
-            <SubObject accessType="rw" dataType="0402" name="Addr_IPAD" objectType="7" PDOmapping="no" subIndex="02"/>
-            <SubObject accessType="rw" dataType="0402" name="NetMask_IPAD" objectType="7" PDOmapping="no" subIndex="03"/>
-            <SubObject accessType="ro" dataType="0006" name="ReasmMaxSize_U16" objectType="7" PDOmapping="no" subIndex="04"/>
-            <SubObject accessType="rw" dataType="0402" name="DefaultGateway_IPAD" objectType="7" PDOmapping="no" subIndex="05"/>
-          </Object>
-          <Object dataType="0425" index="1E4A" name="NWL_IpGroup_REC" objectType="9">
-            <SubObject accessType="const" dataType="0005" defaultValue="3" name="NumberOfEntries" objectType="7" PDOmapping="no" subIndex="00"/>
-            <SubObject accessType="rw" dataType="0001" defaultValue="false" name="Forwarding_BOOL" objectType="7" PDOmapping="no" subIndex="01"/>
-            <SubObject accessType="rw" dataType="0006" defaultValue="64" name="DefaultTTL_U16" objectType="7" PDOmapping="no" subIndex="02"/>
-            <SubObject accessType="ro" dataType="0007" name="ForwardDatagrams_U32" objectType="7" PDOmapping="no" subIndex="03"/>
-          </Object>
-          <Object accessType="rw" dataType="0009" index="1F9A" name="NMT_HostName_VSTR" objectType="7" PDOmapping="no"/>
-        </ObjectList>
-      </ApplicationLayers>
-      <TransportLayers/>
-      <NetworkManagement>
-        <Diagnostic/>
-      </NetworkManagement>
-    </ProfileBody>
-  </ISO15745Profile>
+	<ISO15745Profile>
+		<ProfileHeader>
+			<ProfileIdentification>Powerlink_Device_Profile</ProfileIdentification>
+			<ProfileRevision>1</ProfileRevision>
+			<ProfileName>MyDevice static device profile</ProfileName>
+			<ProfileSource/>
+			<ProfileClassID>Device</ProfileClassID>
+			<ISO15745Reference>
+				<ISO15745Part>4</ISO15745Part>
+				<ISO15745Edition>1</ISO15745Edition>
+				<ProfileTechnology>Powerlink</ProfileTechnology>
+			</ISO15745Reference>
+		</ProfileHeader>
+		<ProfileBody xsi:type="ProfileBody_Device_Powerlink" fileCreationDate="2010-11-08" fileCreationTime="12:00:00+01:00" fileCreator="Ethernet POWERLINK Standardization Group" fileModificationDate="2013-04-12" fileModificationTime="11:14:52+02:00" fileModifiedBy="lueckengaj" fileName="00000000_MyDevice_static.xdd" fileVersion="01.00" supportedLanguages="en">
+			<DeviceIdentity>
+				<vendorName>Unknown vendor</vendorName>
+				<vendorID>0x00000000</vendorID>
+				<productName>MyDevice static</productName>
+				<version versionType="HW">1.00</version>
+				<version versionType="SW">1.00</version>
+			</DeviceIdentity>
+			<DeviceFunction>
+				<capabilities>
+					<characteristicsList>
+						<characteristic>
+							<characteristicName>
+								<label lang="en">Transfer rate</label>
+							</characteristicName>
+							<characteristicContent>
+								<label lang="en">100 MBit/s</label>
+							</characteristicContent>
+						</characteristic>
+					</characteristicsList>
+				</capabilities>
+			</DeviceFunction>
+		</ProfileBody>
+	</ISO15745Profile>
+	<ISO15745Profile>
+		<ProfileHeader>
+			<ProfileIdentification>Powerlink_Communication_Profile</ProfileIdentification>
+			<ProfileRevision>1</ProfileRevision>
+			<ProfileName>MyDevice static communication profile</ProfileName>
+			<ProfileSource/>
+			<ProfileClassID>CommunicationNetwork</ProfileClassID>
+			<ISO15745Reference>
+				<ISO15745Part>4</ISO15745Part>
+				<ISO15745Edition>1</ISO15745Edition>
+				<ProfileTechnology>Powerlink</ProfileTechnology>
+			</ISO15745Reference>
+		</ProfileHeader>
+		<ProfileBody xsi:type="ProfileBody_CommunicationNetwork_Powerlink" fileCreationDate="2010-11-08" fileCreationTime="12:00:00+01:00" fileCreator="Ethernet POWERLINK Standardization Group" fileModificationDate="2013-04-12" fileModificationTime="11:14:52+02:00" fileModifiedBy="lueckengaj" fileName="" fileVersion="01.00" supportedLanguages="en">
+			<ApplicationLayers>
+				<ObjectList>
+					<Object dataType="0426" index="1E40" name="NWL_IpAddrTable_0h_REC" objectType="9">
+						<SubObject accessType="const" dataType="0005" defaultValue="5" name="NumberOfEntries" objectType="7" PDOmapping="no" subIndex="00"/>
+						<SubObject accessType="ro" dataType="0006" name="IfIndex_U16" objectType="7" PDOmapping="no" subIndex="01"/>
+						<SubObject accessType="rw" dataType="0402" name="Addr_IPAD" objectType="7" PDOmapping="no" subIndex="02"/>
+						<SubObject accessType="rw" dataType="0402" name="NetMask_IPAD" objectType="7" PDOmapping="no" subIndex="03"/>
+						<SubObject accessType="ro" dataType="0006" name="ReasmMaxSize_U16" objectType="7" PDOmapping="no" subIndex="04"/>
+						<SubObject accessType="rw" dataType="0402" name="DefaultGateway_IPAD" objectType="7" PDOmapping="no" subIndex="05"/>
+					</Object>
+					<Object dataType="0425" index="1E4A" name="NWL_IpGroup_REC" objectType="9">
+						<SubObject accessType="const" dataType="0005" defaultValue="3" name="NumberOfEntries" objectType="7" PDOmapping="no" subIndex="00"/>
+						<SubObject accessType="rw" dataType="0001" defaultValue="false" name="Forwarding_BOOL" objectType="7" PDOmapping="no" subIndex="01"/>
+						<SubObject accessType="rw" dataType="0006" defaultValue="64" name="DefaultTTL_U16" objectType="7" PDOmapping="no" subIndex="02"/>
+						<SubObject accessType="ro" dataType="0007" name="ForwardDatagrams_U32" objectType="7" PDOmapping="no" subIndex="03"/>
+					</Object>
+					<Object accessType="rw" dataType="0009" index="1F9A" name="NMT_HostName_VSTR" objectType="7" PDOmapping="no"/>
+				</ObjectList>
+			</ApplicationLayers>
+			<TransportLayers/>
+			<NetworkManagement>
+				<Diagnostic/>
+			</NetworkManagement>
+		</ProfileBody>
+	</ISO15745Profile>
 </ISO15745ProfileContainer>

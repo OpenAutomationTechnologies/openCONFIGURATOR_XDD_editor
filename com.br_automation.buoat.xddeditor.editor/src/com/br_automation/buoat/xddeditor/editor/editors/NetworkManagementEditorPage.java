@@ -96,15 +96,15 @@ public final class NetworkManagementEditorPage extends FormPage {
     private static final String GENERAL_FEATURES_SECTION_HEADING_DESCRIPTION = "Provides information about the general network management features.";
     private static final String CN_FEATURES_SECTION_HEADING_DESCRIPTION = "Provides information about the network management features of node.";
     private static final String TIME_FOR_PREQ_LABEL = "Time for SoC to PReq (ns):";
-    private static final String NETWORK_IP_SUPPORT_LABEL = "Network IP Support";
+    private static final String NETWORK_IP_SUPPORT_LABEL = "Network IP Support:";
     private static final String TOTAL_NETWORK_ERROR_ENTRIES_LABEL = "Total Network Error Entries:";
     private static final String MAXIMUM_CYCLE_TIME_LABEL = "Maximum Cycle Time (\u00B5s):";
 
     private static final String MINIMUM_CYCLE_TIME_LABEL = "Minimum Cycle Time (\u00B5s):";
     private static final String NETWORK_BOOT_TIME_LABEL = "Network Boot Time (\u00B5s):";
 
-    private static final String MULTIPLEXED_COMMUNICATION_LABEL = "Multiplexed Communication";
-    private static final String POLL_RESPONSE_COMMUNICATION_LABEL = "Poll Response Chaining Communication";
+    private static final String MULTIPLEXED_COMMUNICATION_LABEL = "Multiplexed Communication:";
+    private static final String POLL_RESPONSE_COMMUNICATION_LABEL = "Poll Response Chaining Communication:";
 
     private static final String FORM_EDITOR_PAGE_TITLE = "Device Description File Editor";
 

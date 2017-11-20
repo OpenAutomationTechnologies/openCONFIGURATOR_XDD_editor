@@ -12,27 +12,27 @@
  File:		  00000000_MyDevice_static.xdd
  Version:	  03.00
 
- 
+
 *******************************************************************************
 
  This example XDD file can be used as blueprint and starting point for
  XDD files for a real device (controlled node only). It implements only
  mandatory objects in the object dictionary and defines 1 RPDO and 1 TPDO
  with static mapping of example objects.
- 
+
  File naming:
  use the form "00000000_MyDevice_static.xdd"
 			   |		|
 			   |		+_________ unique device MyDevice within your organization
 			   +__________________ vendor ID in 8 digit hex
- 
-  
+
+
  For more details see:
- [] Ethernet POWERLINK, XML Device Description, Draft Standard 311, 
+ [] Ethernet POWERLINK, XML Device Description, Draft Standard 311,
 	Version 1.0.0, (c) EPSG (Ethernet POWERLINK Standardisation Group) 2007
- [] Ethernet POWERLINK, Communication Profile Specification, Draft Standard 301, 
+ [] Ethernet POWERLINK, Communication Profile Specification, Draft Standard 301,
 	Version 1.1.0, (c) EPSG (Ethernet POWERLINK Standardisation Group) 2008
- 
+
 *******************************************************************************
 -->
 <ISO15745ProfileContainer
@@ -236,7 +236,7 @@
 						<SubObject subIndex="02" name="MappingVersion_U8" objectType="7" dataType="0005" accessType="ro" PDOmapping="no" defaultValue="0"/>
 					</Object>
 					<Object index="1600" name="PDO_RxMappParam_00h_AU64" objectType="8">
-						<SubObject subIndex="00" name="NumberOfEntries" objectType="7" dataType="0005" accessType="ro" PDOmapping="no" defaultValue="3"/>
+						<SubObject subIndex="00" name="NumberOfEntries" objectType="7" dataType="0005" accessType="rw" PDOmapping="no" defaultValue="3"/>
 						<SubObject subIndex="01" name="ObjectMapping" objectType="7" dataType="001B" accessType="ro" PDOmapping="no" defaultValue="0x0008000000002001"/>
 						<SubObject subIndex="02" name="ObjectMapping" objectType="7" dataType="001B" accessType="ro" PDOmapping="no" defaultValue="0x0010000800022002"/>
 						<SubObject subIndex="03" name="ObjectMapping" objectType="7" dataType="001B" accessType="ro" PDOmapping="no" defaultValue="0x0008001800032002"/>
@@ -247,7 +247,7 @@
 						<SubObject subIndex="02" name="MappingVersion_U8" objectType="7" dataType="0005" accessType="ro" PDOmapping="no" defaultValue="0"/>
 					</Object>
 					<Object index="1A00" name="PDO_TxMappParam_00h_AU64" objectType="8">
-						<SubObject subIndex="00" name="NumberOfEntries" objectType="7" dataType="0005" accessType="ro" PDOmapping="no" defaultValue="1"/>
+						<SubObject subIndex="00" name="NumberOfEntries" objectType="7" dataType="0005" accessType="rw" PDOmapping="no" defaultValue="1"/>
 						<SubObject subIndex="01" name="ObjectMapping" objectType="7" dataType="001B" accessType="ro" PDOmapping="no" defaultValue="0x0020000000012002"/>
 					</Object>
 					<Object index="1C0B" name="DLL_CNLossSoC_REC" objectType="9">
