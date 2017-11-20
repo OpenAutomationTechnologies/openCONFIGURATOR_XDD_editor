@@ -1,7 +1,34 @@
 /**
- * @since 25.3.2013
- * @author Joris Lückenga, Bernecker + Rainer Industrie Elektronik Ges.m.b.H.
- */
+ * @since 19.3.2013
+ * @author Joris Lückenga, B&R Industrial Automation GmbH
+ *
+ *  @copyright (c) 2017, Kalycito Infotech Private Limited
+ *
+ *  @copyright (c) 2017, B&R Industrial Automation GmbH
+ *            All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *   * Redistributions of source code must retain the above copyright
+ *     notice, this list of conditions and the following disclaimer.
+ *   * Redistributions in binary form must reproduce the above copyright
+ *     notice, this list of conditions and the following disclaimer in the
+ *     documentation and/or other materials provided with the distribution.
+ *   * Neither the name of the copyright holders nor the
+ *     names of its contributors may be used to endorse or promote products
+ *     derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDERS BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *******************************************************************************/
 
 package com.br_automation.buoat.xddeditor.XDD.custom.propertypages;
 
@@ -33,21 +60,21 @@ import com.br_automation.buoat.xddeditor.XDD.provider.SubObjectTypeItemProvider;
 
 /**
  * @brief PropertySection for Store-Parameter SubObjectTypes.
- * 
+ *
  *        This section only applies for subobjects of object 0x1010.Shows
  *        different radio-buttons to set parameters and calculates the default
  *        value based on the selection. Uses "StoreParamComposite".
- * 
+ *
  * @author Joris Lückenga
  */
 public class AdvancedStoreParamPropertySection extends AbstractPropertySection {
 
     /**
-     * 
+     *
      * @brief Composite showing radiobuttons for device save options.
-     * 
+     *
      *        Generates a default value based on the selection.
-     * 
+     *
      * @author Joris Lückenga
      */
     private class StoreParamComposite extends Composite {
@@ -67,8 +94,7 @@ public class AdvancedStoreParamPropertySection extends AbstractPropertySection {
          * @param style
          *            See Composite#Composite(Composite, int)
          */
-        public StoreParamComposite(Composite parent,
-            int style) {
+        public StoreParamComposite(Composite parent, int style) {
             super(parent, style);
             this.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
             Group grpStorageParameters = new Group(this, SWT.NONE);
@@ -117,7 +143,7 @@ public class AdvancedStoreParamPropertySection extends AbstractPropertySection {
             this.lblError.setText(Messages.general_error_defaultValueInvalid);
         }
 
-        //Not used
+        // Not used
         @Override
         protected void checkSubclass() {
             // Disable the check that prevents subclassing of SWT components
@@ -129,11 +155,11 @@ public class AdvancedStoreParamPropertySection extends AbstractPropertySection {
          *            Is generated depending on selected radio-button.
          */
         private void setDefaultValue(int settedValue) {
-            AdvancedStoreParamPropertySection.this.lblDefaultvalValue.setForeground(XDDUtilities
-                .getBlack(Display.getCurrent()));
+            AdvancedStoreParamPropertySection.this.lblDefaultvalValue
+                    .setForeground(XDDUtilities.getBlack(Display.getCurrent()));
             this.lblError.setVisible(false);
             this.subobjectItemProvider.setPropertyValue(this.subobject, "defaultValue", //$NON-NLS-1$
-                ("0x" + String.format(String.format("%08x", settedValue)))); //$NON-NLS-1$ //$NON-NLS-2$
+                    ("0x" + String.format(String.format("%08x", settedValue)))); //$NON-NLS-1$ //$NON-NLS-2$
             this.lblsubObjectDefaultValue.setText(this.subobject.getDefaultValue());
         }
 
@@ -147,44 +173,44 @@ public class AdvancedStoreParamPropertySection extends AbstractPropertySection {
          *            The label displaying the actual default value in the
          *            PropertySection.
          */
-        private void setSubObject(final SubObjectType subobjecttype,
-            final SubObjectTypeItemProvider provider,
-            final CLabel lblDefaultValue) {
+        private void setSubObject(final SubObjectType subobjecttype, final SubObjectTypeItemProvider provider,
+                final CLabel lblDefaultValue) {
             this.subobject = subobjecttype;
             this.lblError.setVisible(false);
             this.subobjectItemProvider = provider;
             this.lblsubObjectDefaultValue = lblDefaultValue;
             int storageType;
             try {
-                if (this.subobject.getDefaultValue() != null
-                    && !this.subobject.getDefaultValue().isEmpty()) {
+                if (this.subobject.getDefaultValue() != null && !this.subobject.getDefaultValue().isEmpty()) {
 
-                    storageType = Integer.decode(this.subobject.getDefaultValue()); //Get 2 LSB
+                    storageType = Integer.decode(this.subobject.getDefaultValue()); // Get
+                                                                                    // 2
+                                                                                    // LSB
                     this.lblsubObjectDefaultValue.setText(this.subobject.getDefaultValue());
                 } else
                     storageType = 0;
 
                 switch (storageType) {
-                    case 2:
-                        this.btnAutoSave.setSelection(true);
-                        this.btnCmdSave.setSelection(false);
-                        this.btnNoSave.setSelection(false);
-                        break;
-                    case 1:
-                        this.btnCmdSave.setSelection(true);
-                        this.btnNoSave.setSelection(false);
-                        this.btnAutoSave.setSelection(false);
-                        break;
-                    case 0:
-                        this.btnNoSave.setSelection(true);
-                        this.btnCmdSave.setSelection(false);
-                        this.btnAutoSave.setSelection(false);
-                        break;
-                    default:
-                        this.lblError.setVisible(true);
-                        this.btnNoSave.setSelection(false);
-                        this.btnCmdSave.setSelection(false);
-                        this.btnAutoSave.setSelection(false);
+                case 2:
+                    this.btnAutoSave.setSelection(true);
+                    this.btnCmdSave.setSelection(false);
+                    this.btnNoSave.setSelection(false);
+                    break;
+                case 1:
+                    this.btnCmdSave.setSelection(true);
+                    this.btnNoSave.setSelection(false);
+                    this.btnAutoSave.setSelection(false);
+                    break;
+                case 0:
+                    this.btnNoSave.setSelection(true);
+                    this.btnCmdSave.setSelection(false);
+                    this.btnAutoSave.setSelection(false);
+                    break;
+                default:
+                    this.lblError.setVisible(true);
+                    this.btnNoSave.setSelection(false);
+                    this.btnCmdSave.setSelection(false);
+                    this.btnAutoSave.setSelection(false);
                 }
             } catch (NumberFormatException e) {
                 lblDefaultValue.setText(Messages.general_error_defaultValueInvalid);
@@ -209,14 +235,14 @@ public class AdvancedStoreParamPropertySection extends AbstractPropertySection {
         this.subObjectItemProvider = new SubObjectTypeItemProvider(this.getAdapterFactory());
         FormData data;
 
-        //Index Label (from Parent!)
+        // Index Label (from Parent!)
         CLabel lblIndex = this.getWidgetFactory().createCLabel(composite, "Index:"); //$NON-NLS-1$
         data = new FormData();
         data.top = new FormAttachment(0, -5);
         data.left = new FormAttachment(0, 10);
         lblIndex.setLayoutData(data);
 
-        //Index Value (from Parent!)
+        // Index Value (from Parent!)
         this.lblIndexValue = this.getWidgetFactory().createCLabel(composite, "       "); //$NON-NLS-1$
         data = new FormData();
         data.left = new FormAttachment(0, AbstractPropertySection.STANDARD_LABEL_WIDTH + 20);
@@ -225,24 +251,24 @@ public class AdvancedStoreParamPropertySection extends AbstractPropertySection {
         this.lblIndexValue.setLayoutData(data);
         this.lblIndexValue.setText("1010 (NTM_StoreParam)"); //$NON-NLS-1$
 
-        //lblDefaultValueValue Label (Actual value)
-        this.lblDefaultvalValue = this.getWidgetFactory().createCLabel(
-            composite, Messages.advancedMappingObjectPropertySection_No_Value_Set);
+        // lblDefaultValueValue Label (Actual value)
+        this.lblDefaultvalValue = this.getWidgetFactory().createCLabel(composite,
+                Messages.advancedMappingObjectPropertySection_No_Value_Set);
         data = new FormData();
         data.top = new FormAttachment(this.lblIndexValue, -5);
         data.left = new FormAttachment(0, AbstractPropertySection.STANDARD_LABEL_WIDTH + 20);
         data.right = new FormAttachment(80, 0);
         this.lblDefaultvalValue.setLayoutData(data);
 
-        //lblDefaultvalue
-        CLabel lblDefaultValue = this.getWidgetFactory().createCLabel(
-            composite, Messages.advancedMappingObjectPropertySection_lbl_Default_Value);
+        // lblDefaultvalue
+        CLabel lblDefaultValue = this.getWidgetFactory().createCLabel(composite,
+                Messages.advancedMappingObjectPropertySection_lbl_Default_Value);
         data = new FormData();
         data.top = new FormAttachment(lblIndex, -5);
         data.left = new FormAttachment(0, 10);
         lblDefaultValue.setLayoutData(data);
 
-        //TObjectComposite
+        // TObjectComposite
         this.tObjectComposite = new TObjectComposite(composite, 0, this.getAdapterFactory());
         data = new FormData();
         data.top = new FormAttachment(lblDefaultValue, 0);
@@ -252,11 +278,11 @@ public class AdvancedStoreParamPropertySection extends AbstractPropertySection {
         data = new FormData();
         data.top = new FormAttachment(this.tObjectComposite, 0);
         this.storeparam.setLayoutData(data);
-    } //createControls
+    } // createControls
 
     /**
      * @return AdapterFactory for ItemProviders.
-     * */
+     */
     public AdapterFactory getAdapterFactory() {
         if (this.adapterFactory == null)
             this.adapterFactory = EEFRuntimePlugin.getDefault().getAdapterFactory();
@@ -271,13 +297,18 @@ public class AdvancedStoreParamPropertySection extends AbstractPropertySection {
         SubObjectType subObject;
         TObject tobject;
         super.setInput(part, selection);
-        Object input = ((IStructuredSelection) selection).getFirstElement();
-        subObject = (SubObjectType) input;
-        tobject = (TObject) subObject.eContainer();
-        this.tObjectComposite.setObject(subObject);
-        this.lblIndexValue.setText("0x1010 (" + tobject.getName() + ")"); //$NON-NLS-1$ //$NON-NLS-2$
-        this.storeparam
-            .setSubObject(subObject, this.subObjectItemProvider, this.lblDefaultvalValue);
+        if (selection instanceof IStructuredSelection) {
+            Object input = ((IStructuredSelection) selection).getFirstElement();
+            subObject = (SubObjectType) input;
+            tobject = (TObject) subObject.eContainer();
+            if (tObjectComposite != null) {
+                this.tObjectComposite.setObject(subObject);
+            }
+            if (lblIndexValue != null) {
+                this.lblIndexValue.setText("0x1010 (" + tobject.getName() + ")"); //$NON-NLS-1$
+            }
+            this.storeparam.setSubObject(subObject, this.subObjectItemProvider, this.lblDefaultvalValue);
+        }
     }
 
-} //AdvancedStoreParamPropertySection
+} // AdvancedStoreParamPropertySection

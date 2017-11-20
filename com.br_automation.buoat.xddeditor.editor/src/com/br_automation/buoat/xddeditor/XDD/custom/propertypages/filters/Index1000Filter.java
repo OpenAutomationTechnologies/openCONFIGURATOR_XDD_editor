@@ -1,6 +1,6 @@
 /**
  * @since 19.3.2013
- * @author Joris Lückenga, Bernecker + Rainer Industrie Elektronik Ges.m.b.H.
+ * @author Joris Lückenga, B&R Industrial Automation GmbH
  */
 
 package com.br_automation.buoat.xddeditor.XDD.custom.propertypages.filters;
@@ -14,7 +14,7 @@ import com.br_automation.buoat.xddeditor.XDD.custom.EPLGeneralConstants;
 
 /**
  * @brief Filters for TObjects with Index set to 0x1000.
- * 
+ *
  * @author Joris Lückenga
  */
 public class Index1000Filter implements IFilter {
@@ -26,4 +26,4 @@ public class Index1000Filter implements IFilter {
         return false;
     }
 
-} //Index1000Filter
+} // Index1000Filter

@@ -6,10 +6,14 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-ClassPath: .
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: com.br_automation.buoat.xddeditor.XDD,
  com.br_automation.buoat.xddeditor.XDD.impl,
- com.br_automation.buoat.xddeditor.XDD.util
+ com.br_automation.buoat.xddeditor.XDD.util,
+ FwSchema,
+ FwSchema.impl,
+ FwSchema.util
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf.ecore;visibility:=reexport,
  org.eclipse.emf.ecore.xmi;visibility:=reexport
+Bundle-ActivationPolicy: lazy

@@ -21,15 +21,15 @@
 
    <extension point="org.eclipse.ui.editors">
       <editor
-            id="com.br_automation.buoat.xddeditor.XDD.presentation.XDDEditorID"
-            name="%_UI_XDDEditor_label"
+            class="com.br_automation.buoat.xddeditor.editor.editors.DeviceDescriptionFileEditor"
+            default="true"
+            extensions="xdd, xdc,XDD,XDC"
             icon="icons/full/obj16/XDDModelFile.gif"
-            extensions="xdd"
-            class="com.br_automation.buoat.xddeditor.XDD.presentation.XDDEditor"
-            contributorClass="com.br_automation.buoat.xddeditor.XDD.presentation.XDDActionBarContributor">
+            id="com.br_automation.buoat.xddeditor.editor.XDD"
+            name="XDD Editor">
       </editor>
    </extension>
-   
+
    <extension
          point="org.eclipse.ui.perspectiveExtensions">
       <perspectiveExtension
@@ -39,7 +39,7 @@
          </newWizardShortcut>
       </perspectiveExtension>
    </extension>
-   
+
    <extension
          point="org.eclipse.ui.navigator.navigatorContent">
       <commonWizard
@@ -158,6 +158,52 @@
          </propertySection>
       </propertySections>
    </extension>
-   
+   <extension
+         point="org.eclipse.ui.navigator.viewer">
+      <viewerActionBinding
+            viewerId="com.br_automation.buoat.xddeditor.editor.viewerActionBinding">
+         <includes>
+            <actionExtension
+                  pattern="org.eclipse.ui.navigator.resources.*">
+            </actionExtension>
+         </includes>
+      </viewerActionBinding>
+      <viewerContentBinding
+            viewerId="com.br_automation.buoat.xddeditor.editor.viewerContentBinding">
+         <includes>
+            <contentExtension
+                  pattern="org.eclipse.ui.navigator.resourceContent">
+            </contentExtension>
+            <contentExtension
+                  pattern="org.eclipse.ui.navigator.resources.workingSets">
+            </contentExtension>
+            <contentExtension
+                  pattern="org.eclipse.ui.navigator.resources.linkHelper">
+            </contentExtension>
+            <contentExtension
+                  pattern="org.eclipse.ui.navigator.resources.filters.*">
+            </contentExtension>
+         </includes>
+      </viewerContentBinding>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            adaptableType="com.br_automation.buoat.xddeditor.XDD.impl.TObjectImpl"
+            class="com.br_automation.buoat.xddeditor.editor.adapters.ObjectAdapterFactory">
+         <adapter
+               type="org.eclipse.ui.views.properties.IPropertySource">
+         </adapter>
+      </factory>
+      <factory
+            adaptableType="com.br_automation.buoat.xddeditor.XDD.SubObjectType"
+            class="com.br_automation.buoat.xddeditor.editor.adapters.ObjectAdapterFactory">
+         <adapter
+               type="org.eclipse.ui.views.properties.IPropertySource">
+         </adapter>
+      </factory>
+   </extension>
+
+
 
 </plugin>

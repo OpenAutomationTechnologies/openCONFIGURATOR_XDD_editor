@@ -1,7 +1,32 @@
 /**
  * @since 19.3.2013
- * @author Joris Lückenga, Bernecker + Rainer Industrie Elektronik Ges.m.b.H.
- */
+ * @author Joris Lückenga, B&R Industrial Automation GmbH
+ *
+ *  @copyright (c) 2017, B&R Industrial Automation GmbH
+ *                    All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *   * Redistributions of source code must retain the above copyright
+ *     notice, this list of conditions and the following disclaimer.
+ *   * Redistributions in binary form must reproduce the above copyright
+ *     notice, this list of conditions and the following disclaimer in the
+ *     documentation and/or other materials provided with the distribution.
+ *   * Neither the name of the copyright holders nor the
+ *     names of its contributors may be used to endorse or promote products
+ *     derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDERS BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *******************************************************************************/
 
 package com.br_automation.buoat.xddeditor.XDD.custom;
 
@@ -13,7 +38,6 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 
 import com.br_automation.buoat.xddeditor.XDD.DocumentRoot;
-import com.br_automation.buoat.xddeditor.XDD.ISO15745ProfileContainerType;
 import com.br_automation.buoat.xddeditor.XDD.ISO15745ProfileType;
 import com.br_automation.buoat.xddeditor.XDD.IdentityType;
 import com.br_automation.buoat.xddeditor.XDD.ObjectListType;
@@ -31,12 +55,12 @@ import com.br_automation.buoat.xddeditor.XDD.XDDFactory;
 import com.br_automation.buoat.xddeditor.XDD.XDDPackage;
 
 /**
- * @brief Provides methods to create an Initial model based on data configured
+ * @brief Provides methods to create an initial model based on data configured
  *        in the Wizard.
- * 
+ *
  *        Gets the user-input from the CustomXDDWizard-Pages and adds the needed
  *        objects to the root. Also adds the correct time,user etc.
- * 
+ *
  * @author Joris Lückenga
  */
 public final class ModelLoader {
@@ -52,39 +76,34 @@ public final class ModelLoader {
      * @param wizardTemplatePage
      *            The first configuration page.
      * @param wizardConfigurationPage1
-     *            The advanced wizard page with userdata.
+     *            The advanced wizard page with user data.
      * @return DocumentRoot with appended data.
      */
     public static DocumentRoot createXDDFromWizardData(WizardTemplatePage wizardTemplatePage,
-        WizardConfigurationPage1 wizardConfigurationPage1) {
-        //check which Template is used (static etc.)
+            WizardConfigurationPage wizardConfigurationPage) {
+        // check which Template is used (static etc.)
         String resourceName;
-        if (wizardTemplatePage.getLoadEmpty())
-            return ModelLoader.getEmptyModel();
-        else {
-            String choice = wizardTemplatePage.getTemplateCombo().getText();
-            if (choice.contentEquals("Default device")) //$NON-NLS-1$
-                resourceName = Messages.modelLoader_resourceTemplate_XDDdefault;
-            else if (choice.contentEquals("Default extended device")) //$NON-NLS-1$
-                resourceName = Messages.modelLoader_resourceTemplate_XDDextended;
-            else
-                resourceName = Messages.modelLoader_resourceTemplate_XDDstatic;
-        }
+
+        String choice = wizardTemplatePage.getTemplateCombo().getText();
+        if (choice.contentEquals("Default device")) //$NON-NLS-1$
+            resourceName = Messages.modelLoader_resourceTemplate_XDDdefault;
+        else if (choice.contentEquals("Default extended device")) //$NON-NLS-1$
+            resourceName = Messages.modelLoader_resourceTemplate_XDDextended;
+        else
+            resourceName = Messages.modelLoader_resourceTemplate_XDDstatic;
+
         DocumentRoot root = XDDUtilities.loadXDD(ModelLoader.class.getResource(resourceName));
 
         if (wizardTemplatePage.isConfigurationWizardStatus())
-            ModelLoader.appendUserData(root, wizardConfigurationPage1);
+            ModelLoader.appendUserData(root, wizardConfigurationPage);
         else
-            ModelLoader.appendMetaData(root, wizardConfigurationPage1);
+            ModelLoader.appendMetaData(root, wizardConfigurationPage);
         return root;
-    } //createXDDFromWizardData
-
-
-
+    } // createXDDFromWizardData
 
     /**
      * @brief Add/Remove objects required for IP-Support.
-     * 
+     *
      * @param status
      *            <code>True</code> to add objects, <code>false</code>
      *            otherwise. <code>False</code> is not implemented yet.
@@ -92,7 +111,7 @@ public final class ModelLoader {
      *            The DocumentRoot where IP-Support objects should be set.
      */
     public static void setIPSupportObjects(boolean status, DocumentRoot root) {
-        //Get all iPSupportIndices
+        // Get all iPSupportIndices
         List<Integer> ipSupportObjects = new ArrayList<Integer>();
         ipSupportObjects.add(EPLGeneralConstants.NWL_HOSTNAME_VSTR);
         ipSupportObjects.add(EPLGeneralConstants.NWL_IPGROUP_TYPE);
@@ -100,14 +119,14 @@ public final class ModelLoader {
             ipSupportObjects.add(i);
         if (status) {
             List<TObject> objectsToAdd = XDDUtilities.getTObjectsFromResource(
-                ModelLoader.class
-                .getResource(Messages.modelLoader_resourceTemplate_ipSupportObjects),
-                ipSupportObjects);
-            //Add Objects to Resource
+                    ModelLoader.class.getResource(Messages.modelLoader_resourceTemplate_ipSupportObjects),
+                    ipSupportObjects);
+            // Add Objects to Resource
             XDDUtilities.addTObjects(objectsToAdd, root);
         }
 
-        List<TGeneralFeatures> generalFeatures = XDDUtilities.findEObjects(root, XDDPackage.eINSTANCE.getTGeneralFeatures());
+        List<TGeneralFeatures> generalFeatures = XDDUtilities.findEObjects(root,
+                XDDPackage.eINSTANCE.getTGeneralFeatures());
         if (!generalFeatures.isEmpty()) {
             generalFeatures.get(0).setNWLIPSupport(status);
         }
@@ -115,7 +134,7 @@ public final class ModelLoader {
 
     /**
      * @brief Add/Remove objects required for Multi-ASnd
-     * 
+     *
      * @param status
      *            <code>True</code> to add objects, <code>false</code>
      *            otherwise. <code>False</code> is not implemented yet.
@@ -131,19 +150,18 @@ public final class ModelLoader {
 
         if (status) {
             List<TObject> objectsToAdd = XDDUtilities.getTObjectsFromResource(
-                ModelLoader.class
-                .getResource(Messages.modelLoader_resourceTemplate_multiASndObjects),
-                multipleASndObjectIndices);
-            //Set Objects to Resource
+                    ModelLoader.class.getResource(Messages.modelLoader_resourceTemplate_multiASndObjects),
+                    multipleASndObjectIndices);
+            // Set Objects to Resource
             XDDUtilities.addTObjects(objectsToAdd, root);
-            //SET Properties in FeatureFlags & TCNFeatures/GeneralFeatures
+            // SET Properties in FeatureFlags & TCNFeatures/GeneralFeatures
             XDDUtilities.setFeatureFlag(status, EPLGeneralConstants.FF_OFFSET_MULTIPLE_ASND, root);
         }
     }
 
     /**
      * @brief Add/Remove objects required for Multiplexing-feature
-     * 
+     *
      * @param status
      *            <code>True</code> to add objects, <code>false</code>
      *            otherwise. <code>False</code> is not implemented yet.
@@ -152,10 +170,8 @@ public final class ModelLoader {
      *            set.
      */
     public static void setMultiplexFeatureObjects(boolean status, DocumentRoot root) {
-        List<TCNFeatures> tCNfeaturesList = XDDUtilities.findEObjects(
-            root, XDDPackage.eINSTANCE.getTCNFeatures());
-        List<ObjectListType> objectsList = XDDUtilities.findEObjects(
-            root, XDDPackage.eINSTANCE.getObjectListType());
+        List<TCNFeatures> tCNfeaturesList = XDDUtilities.findEObjects(root, XDDPackage.eINSTANCE.getTCNFeatures());
+        List<ObjectListType> objectsList = XDDUtilities.findEObjects(root, XDDPackage.eINSTANCE.getObjectListType());
 
         if (objectsList.isEmpty() || tCNfeaturesList.isEmpty())
             return;
@@ -165,14 +181,19 @@ public final class ModelLoader {
         EList<TObject> objects = objectsList.get(0).getObject();
 
         for (TObject tObject : objects)
-            if (EPLGeneralConstants.NMT_FEATUREFLAGS_U32 == new BigInteger(tObject.getIndex()) // NOPMD by lueckengaj on 18.04.13 09:23
-            .intValue())
+            if (EPLGeneralConstants.NMT_FEATUREFLAGS_U32 == new BigInteger(tObject.getIndex()) // NOPMD
+                                                                                                // by
+                                                                                                // lueckengaj
+                                                                                                // on
+                                                                                                // 18.04.13
+                                                                                                // 09:23
+                    .intValue())
                 if (status)
                     tObject.setDefaultValue("0x" //$NON-NLS-1$
-                        + Long.toHexString((Long.decode(tObject.getDefaultValue()) | 512)));
+                            + Long.toHexString((Long.decode(tObject.getDefaultValue()) | 512)));
                 else
                     tObject.setDefaultValue("0x" //$NON-NLS-1$
-                        + Long.toHexString((Long.decode(tObject.getDefaultValue()) & ~512)));
+                            + Long.toHexString((Long.decode(tObject.getDefaultValue()) & ~512)));
 
         List<Integer> multiplexFeatureObjects = new ArrayList<Integer>(3);
         multiplexFeatureObjects.add(EPLGeneralConstants.NMT_ISOCHSLOTASSIGN_AU8);
@@ -181,12 +202,11 @@ public final class ModelLoader {
         multiplexFeatureObjects.add(EPLGeneralConstants.NMT_FEATUREFLAGS_U32);
 
         if (status) {
-            //Get Needed Objects for Multiplex Support
+            // Get Needed Objects for Multiplex Support
             List<TObject> objectsToAdd = XDDUtilities.getTObjectsFromResource(
-                ModelLoader.class
-                .getResource(Messages.modelLoader_resourceTemplate_multiplexFeatureObjects),
-                multiplexFeatureObjects);
-            //Set Objects to Resource
+                    ModelLoader.class.getResource(Messages.modelLoader_resourceTemplate_multiplexFeatureObjects),
+                    multiplexFeatureObjects);
+            // Set Objects to Resource
             XDDUtilities.addTObjects(objectsToAdd, root);
         }
 
@@ -194,7 +214,7 @@ public final class ModelLoader {
 
     /**
      * @brief Add/Remove objects required for PRes-Chaining feature
-     * 
+     *
      * @param status
      *            <code>True</code> to add objects, <code>false</code>
      *            otherwise. <code>False</code> is not implemented yet.
@@ -211,12 +231,11 @@ public final class ModelLoader {
 
         if (status) {
             List<TObject> objectsToAdd = XDDUtilities.getTObjectsFromResource(
-                ModelLoader.class
-                .getResource(Messages.modelLoader_resourceTemplate_prespChainingObjects),
-                prespChainingObjects);
-            //Set Objects to Resource
+                    ModelLoader.class.getResource(Messages.modelLoader_resourceTemplate_prespChainingObjects),
+                    prespChainingObjects);
+            // Set Objects to Resource
             XDDUtilities.addTObjects(objectsToAdd, root);
-            //Set Properties in FeatureFlags, TCN- / General Features
+            // Set Properties in FeatureFlags, TCN- / General Features
             XDDUtilities.setFeatureFlag(status, 18, root);
         }
     }
@@ -225,44 +244,42 @@ public final class ModelLoader {
      * @brief Appends reduced data when advanced wizard is not used.
      * @param root
      *            DocumentRoot of the new Resource.
-     * @param wizardConfigurationPage1
+     * @param wizardConfigurationPage
      *            Instance of the WizardConfigurationPage fetch user-input.
      * @return DocumentRoot with appended meta-data gathered from the system.
      */
-    private static DocumentRoot appendMetaData(DocumentRoot root,
-        WizardConfigurationPage1 wizardConfigurationPage1) {
+    private static DocumentRoot appendMetaData(DocumentRoot root, WizardConfigurationPage wizardConfigurationPage) {
 
-        EList<ISO15745ProfileType> profiles = root.getISO15745ProfileContainer()
-            .getISO15745Profile();
+        EList<ISO15745ProfileType> profiles = root.getISO15745ProfileContainer().getISO15745Profile();
         ISO15745ProfileType profile1 = profiles.get(0);
         ISO15745ProfileType profile2 = profiles.get(1);
         ProfileHeaderDataType header1 = profile1.getProfileHeader();
         header1.setProfileIdentification("Powerlink_" //$NON-NLS-1$
-            + wizardConfigurationPage1.getDeviceNameString() + "_Profile"); //$NON-NLS-1$
-        header1.setProfileName(wizardConfigurationPage1.getDeviceNameString() + " Profile"); //$NON-NLS-1$
+                + wizardConfigurationPage.getDeviceNameString() + "_Profile"); //$NON-NLS-1$
+        header1.setProfileName(wizardConfigurationPage.getDeviceNameString() + " Profile"); //$NON-NLS-1$
 
-        //Setzen der Body-Werte im Profil 1
+        // Setzen der Body-Werte im Profil 1
         ProfileBodyDataType body1 = profile1.getProfileBody();
-        body1.setFileCreationDate(wizardConfigurationPage1.getCreationDateXML());
-        body1.setFileCreationTime(wizardConfigurationPage1.getCreationTimeXML());
-        body1.setFileCreator(wizardConfigurationPage1.getCreatorString());
-        body1.setFileName(wizardConfigurationPage1.getFileNameString());
-        body1.setFileModificationDate(wizardConfigurationPage1.getCreationDateXML());
-        body1.setFileModificationTime(wizardConfigurationPage1.getCreationTimeXML());
-        body1.setFileVersion(wizardConfigurationPage1.getFileVersionString());
+        body1.setFileCreationDate(wizardConfigurationPage.getCreationDateXML());
+        body1.setFileCreationTime(wizardConfigurationPage.getCreationTimeXML());
+        body1.setFileCreator(wizardConfigurationPage.getCreatorString());
+        body1.setFileName(wizardConfigurationPage.getFileNameString());
+        body1.setFileModificationDate(wizardConfigurationPage.getCreationDateXML());
+        body1.setFileModificationTime(wizardConfigurationPage.getCreationTimeXML());
+        body1.setFileVersion(wizardConfigurationPage.getFileVersionString());
 
-        //Setzen der Body-Werte im Profil 2
+        // Setzen der Body-Werte im Profil 2
         ProfileBodyDataType body2 = profile2.getProfileBody();
-        body2.setFileCreationDate(wizardConfigurationPage1.getCreationDateXML());
-        body2.setFileCreationTime(wizardConfigurationPage1.getCreationTimeXML());
-        body2.setFileCreator(wizardConfigurationPage1.getCreatorString());
-        body2.setFileName(wizardConfigurationPage1.getFileNameString());
-        body2.setFileModificationDate(wizardConfigurationPage1.getCreationDateXML());
-        body2.setFileModificationTime(wizardConfigurationPage1.getCreationTimeXML());
-        body2.setFileVersion(wizardConfigurationPage1.getFileNameString());
+        body2.setFileCreationDate(wizardConfigurationPage.getCreationDateXML());
+        body2.setFileCreationTime(wizardConfigurationPage.getCreationTimeXML());
+        body2.setFileCreator(wizardConfigurationPage.getCreatorString());
+        body2.setFileName(wizardConfigurationPage.getFileNameString());
+        body2.setFileModificationDate(wizardConfigurationPage.getCreationDateXML());
+        body2.setFileModificationTime(wizardConfigurationPage.getCreationTimeXML());
+        body2.setFileVersion(wizardConfigurationPage.getFileNameString());
 
-        //For further Saves -> Give Utilites the creator name
-        XDDUtilities.setCreator(wizardConfigurationPage1.getCreatorString());
+        // For further Saves -> Give Utilites the creator name
+        XDDUtilities.setCreator(wizardConfigurationPage.getCreatorString());
 
         return root;
     }
@@ -271,115 +288,99 @@ public final class ModelLoader {
      * @brief Appends the userdata from WizardConfigurationPage1.
      * @param root
      *            DocumentRoot of the new Resource.
-     * @param wizardConfigurationPage1
+     * @param wizardConfigurationPage
      *            Instance of the WizardConfigurationPage fetch user-input.
      * @return DocumentRoot with appended userdata from WizardConfigurationPage.
      */
-    private static DocumentRoot appendUserData(DocumentRoot root,
-        WizardConfigurationPage1 wizardConfigurationPage1) {
+    private static DocumentRoot appendUserData(DocumentRoot root, WizardConfigurationPage wizardConfigurationPage) {
 
-        EList<ISO15745ProfileType> profiles = root.getISO15745ProfileContainer()
-            .getISO15745Profile();
+        EList<ISO15745ProfileType> profiles = root.getISO15745ProfileContainer().getISO15745Profile();
         ISO15745ProfileType profile1 = profiles.get(0);
         ISO15745ProfileType profile2 = profiles.get(1);
 
         ProfileHeaderDataType header1 = profile1.getProfileHeader();
         header1.setProfileIdentification("Powerlink_" //$NON-NLS-1$
-            + wizardConfigurationPage1.getDeviceNameString() + "_Profile"); //$NON-NLS-1$
-        header1.setProfileName(wizardConfigurationPage1.getDeviceNameString() + " Profile"); //$NON-NLS-1$
-        XDDUtilities.setCreator(wizardConfigurationPage1.getCreatorString());
-        //Setzen der Body-Werte im Profil 1
+                + wizardConfigurationPage.getDeviceNameString() + "_Profile"); //$NON-NLS-1$
+        header1.setProfileName(wizardConfigurationPage.getDeviceNameString() + " Profile"); //$NON-NLS-1$
+        XDDUtilities.setCreator(wizardConfigurationPage.getCreatorString());
+        // Setzen der Body-Werte im Profil 1
         ProfileBodyDataType body1 = profile1.getProfileBody();
-        body1.setFileCreationDate(wizardConfigurationPage1.getCreationDateXML());
-        body1.setFileCreationTime(wizardConfigurationPage1.getCreationTimeXML());
-        body1.setFileCreator(wizardConfigurationPage1.getCreatorString());
-        body1.setFileName(wizardConfigurationPage1.getFileNameString());
-        body1.setFileModificationDate(wizardConfigurationPage1.getCreationDateXML());
-        body1.setFileModificationTime(wizardConfigurationPage1.getCreationTimeXML());
-        body1.setFileModifiedBy(wizardConfigurationPage1.getCreatorString());
-        body1.setFileVersion(wizardConfigurationPage1.getFileVersionString());
+        body1.setFileCreationDate(wizardConfigurationPage.getCreationDateXML());
+        body1.setFileCreationTime(wizardConfigurationPage.getCreationTimeXML());
+        body1.setFileCreator(wizardConfigurationPage.getCreatorString());
+        body1.setFileName(wizardConfigurationPage.getFileNameString());
+        body1.setFileModificationDate(wizardConfigurationPage.getCreationDateXML());
+        body1.setFileModificationTime(wizardConfigurationPage.getCreationTimeXML());
+        body1.setFileModifiedBy(wizardConfigurationPage.getCreatorString());
+        body1.setFileVersion(wizardConfigurationPage.getFileVersionString());
 
-        //Setzen der Vendor-Werte im Body 1
+        // Setzen der Vendor-Werte im Body 1
         EList<EObject> bodyContents = body1.eContents();
         EObject identity = bodyContents.get(0);
         TDeviceIdentity tDeviceIdentity = (TDeviceIdentity) identity;
-        tDeviceIdentity.getVendorName().setValue(wizardConfigurationPage1.getVendorNameString());
-        tDeviceIdentity.getVendorID().setValue(wizardConfigurationPage1.getVendorIDString());
-        tDeviceIdentity.getProductName().setValue(wizardConfigurationPage1.getProductNameString());
-        tDeviceIdentity.getVersion().get(0)
-        .setValue(wizardConfigurationPage1.getHardwareversString());
-        tDeviceIdentity.getVersion().get(1)
-        .setValue(wizardConfigurationPage1.getSoftwareversString());
+        tDeviceIdentity.getVendorName().setValue(wizardConfigurationPage.getVendorNameString());
+        tDeviceIdentity.getVendorID().setValue(wizardConfigurationPage.getVendorIDString());
+        tDeviceIdentity.getProductName().setValue(wizardConfigurationPage.getProductNameString());
+        tDeviceIdentity.getVersion().get(0).setValue(wizardConfigurationPage.getHardwareversString());
+        tDeviceIdentity.getVersion().get(1).setValue(wizardConfigurationPage.getSoftwareversString());
         tDeviceIdentity.getVersion().add(XDDFactory.eINSTANCE.createTVersion());
         TVersion fwVersion = tDeviceIdentity.getVersion().get(2);
-        fwVersion.setVersionType(VersionTypeType.HW);
+        fwVersion.setVersionType(VersionTypeType.FW);
         fwVersion.setReadOnly(true);
-        fwVersion.setValue(wizardConfigurationPage1.getFirmwareversString());
+        fwVersion.setValue(wizardConfigurationPage.getFirmwareversString());
 
-        //Set unsetted Value of ProductID of template
+        // Set unsetted Value of ProductID of template
         tDeviceIdentity.setProductID(XDDFactory.eINSTANCE.createTProductID());
-        tDeviceIdentity.getProductID().setValue(wizardConfigurationPage1.getProductIDString());
+        tDeviceIdentity.getProductID().setValue(wizardConfigurationPage.getProductIDString());
 
-        //Setzen der Body-Werte im Profil 2
+        // Setzen der Body-Werte im Profil 2
         ProfileBodyDataType body2 = profile2.getProfileBody();
-        body2.setFileCreationDate(wizardConfigurationPage1.getCreationDateXML());
-        body2.setFileCreationTime(wizardConfigurationPage1.getCreationTimeXML());
-        body2.setFileCreator(wizardConfigurationPage1.getCreatorString());
-        body2.setFileName(wizardConfigurationPage1.getFileNameString());
-        body2.setFileModificationDate(wizardConfigurationPage1.getCreationDateXML());
-        body2.setFileModificationTime(wizardConfigurationPage1.getCreationTimeXML());
-        body2.setFileModifiedBy(wizardConfigurationPage1.getCreatorString());
-        body2.setFileVersion(wizardConfigurationPage1.getFileVersionString());
+        body2.setFileCreationDate(wizardConfigurationPage.getCreationDateXML());
+        body2.setFileCreationTime(wizardConfigurationPage.getCreationTimeXML());
+        body2.setFileCreator(wizardConfigurationPage.getCreatorString());
+        body2.setFileName(wizardConfigurationPage.getFileNameString());
+        body2.setFileModificationDate(wizardConfigurationPage.getCreationDateXML());
+        body2.setFileModificationTime(wizardConfigurationPage.getCreationTimeXML());
+        body2.setFileModifiedBy(wizardConfigurationPage.getCreatorString());
+        body2.setFileVersion(wizardConfigurationPage.getFileVersionString());
 
-        //Setzen der Vendor.ID im Communication Body
+        // Setzen der Vendor.ID im Communication Body
         EList<EObject> bodyContents2 = body2.eContents();
         TApplicationLayers apllayers = (TApplicationLayers) bodyContents2.get(0);
         IdentityType identity2 = apllayers.getIdentity();
-        identity2.getVendorID().setValue(wizardConfigurationPage1.getVendorIDString());
+        identity2.getVendorID().setValue(wizardConfigurationPage.getVendorIDString());
         identity2.setProductID(XDDFactory.eINSTANCE.createTProductID());
-        identity2.getProductID().setValue(wizardConfigurationPage1.getProductIDString());
+        identity2.getProductID().setValue(wizardConfigurationPage.getProductIDString());
 
-        //Setzen der General Features aus dem Wizard
+        // Setzen der General Features aus dem Wizard
         TNetworkManagement tnmg = (TNetworkManagement) body2.eContents().get(2);
         TGeneralFeatures generalFeatures = tnmg.getGeneralFeatures();
-        generalFeatures.setNMTBootTimeNotActive(wizardConfigurationPage1.getNMTBootTimeNotActive());
-        generalFeatures.setNMTCycleTimeMax(wizardConfigurationPage1.getNMTCycleTimeMax());
-        generalFeatures.setNMTCycleTimeMin(wizardConfigurationPage1.getNMTCycleTimeMin());
-        generalFeatures.setNMTErrorEntries(wizardConfigurationPage1.getNMTErrorEntries());
+        generalFeatures.setNMTBootTimeNotActive(wizardConfigurationPage.getNMTBootTimeNotActive());
+        generalFeatures.setNMTCycleTimeMax(wizardConfigurationPage.getNMTCycleTimeMax());
+        generalFeatures.setNMTCycleTimeMin(wizardConfigurationPage.getNMTCycleTimeMin());
+        generalFeatures.setNMTErrorEntries(wizardConfigurationPage.getNMTErrorEntries());
         generalFeatures.setDLLFeatureMN(false);
 
-        //Setzen der CN Features aus dem Wizard
+        // Setzen der CN Features aus dem Wizard
         TCNFeatures cnFeatures = tnmg.getCNFeatures();
-        cnFeatures.setDLLCNPResChaining(wizardConfigurationPage1.isResponseChaining());
-        cnFeatures.setNMTCNSoC2PReq(wizardConfigurationPage1.getNMTCNSoC2PReq());
+        cnFeatures.setDLLCNPResChaining(wizardConfigurationPage.isResponseChaining());
+        cnFeatures.setNMTCNSoC2PReq(wizardConfigurationPage.getNMTCNSoC2PReq());
 
-        cnFeatures.setDLLCNFeatureMultiplex(wizardConfigurationPage1.isCnMultiplexFeature());
-        if (wizardConfigurationPage1.isCnMultiplexFeature())
+        cnFeatures.setDLLCNFeatureMultiplex(wizardConfigurationPage.isCnMultiplexFeature());
+        if (wizardConfigurationPage.isCnMultiplexFeature()) {
             ModelLoader.setMultiplexFeatureObjects(true, root);
-        if (wizardConfigurationPage1.isNWLIPSupport())
+        }
+        if (wizardConfigurationPage.isNWLIPSupport()) {
             ModelLoader.setIPSupportObjects(true, root);
-        if (wizardConfigurationPage1.isResponseChaining())
+            generalFeatures.setNWLForward(true);
+        }
+        if (wizardConfigurationPage.isResponseChaining()) {
             ModelLoader.setPResChainingObjects(true, root);
-        if (wizardConfigurationPage1.isMultipleASnd())
+        }
+        if (wizardConfigurationPage.isMultipleASnd()) {
             ModelLoader.setPResChainingObjects(true, root);
+        }
         return root;
     }
 
-    /**
-     * @brief Creates empty Standard-Model.
-     * @return An empty model of an XDD-File.
-     */
-    private static DocumentRoot getEmptyModel() {
-        DocumentRoot root = XDDFactory.eINSTANCE.createDocumentRoot();
-        ISO15745ProfileContainerType container = XDDFactory.eINSTANCE
-            .createISO15745ProfileContainerType();
-        ISO15745ProfileType profile = XDDFactory.eINSTANCE.createISO15745ProfileType();
-        root.setISO15745ProfileContainer(container);
-        root.getISO15745ProfileContainer().getISO15745Profile().add(profile);
-        profile.setProfileBody(XDDFactory.eINSTANCE
-            .createProfileBodyCommunicationNetworkPowerlink());
-        profile.setProfileHeader(XDDFactory.eINSTANCE.createProfileHeaderDataType());
-        return root;
-    }
-
-} //InitialModelLoader
+} // InitialModelLoader

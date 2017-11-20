@@ -1,78 +1,279 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<feature
-      id="com.br_automation.buoat.xddeditor.feature"
-      label="Ethernet POWERLINK XDD Editor"
-      version="1.0.0.qualifier"
-      provider-name="Bernecker + Rainer Industrie-Elektronik Ges.m.b.H.">
+<feature id="com.br_automation.buoat.xddeditor.feature" label="Ethernet POWERLINK XDD Editor"
+  version="1.0.0.qualifier"
+  provider-name="Kalycito Infotech Pvt Ltd. and B&amp;R Industrial Automation GmbH"
+  plugin="com.br_automation.buoat.xddeditor">
 
-   <description>
-      Ethernet POWERLINK XDD Editor
-   </description>
+  <description>
+    Ethernet POWERLINK XDD Editor
+  </description>
 
-   <copyright>
-      Copyright (c) 2016 Bernecker + Rainer Industrie-Elektronik Ges.m.b.H.
-   </copyright>
+  <copyright>
+    Copyright (c) 2017 Kalycito Infotech Pvt Ltd.
+    Copyright (c) 2017 B&amp;R Industrial Automation GmbH
+  </copyright>
 
-   <license url="license.html">
-      Copyright (c) 2016 Bernecker + Rainer Industrie-Elektronik Ges.m.b.H.
+  <license url="license.html">
+    Copyright (c) 2017 Kalycito Infotech Pvt Ltd.
+    Copyright (c) 2017 B&amp;R Industrial Automation GmbH
 
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-  * Redistributions of source code must retain the above copyright
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are
+    met:
+    * Redistributions of source code must retain the above copyright
     notice, this list of conditions and the following disclaimer.
-  * Redistributions in binary form must reproduce the above copyright
+    * Redistributions in binary form must reproduce the above copyright
     notice, this list of conditions and the following disclaimer in the
     documentation and/or other materials provided with the distribution.
-  * Neither the name of the copyright holders nor the
+    * Neither the name of the copyright holders nor the
     names of its contributors may be used to endorse or promote products
     derived from this software without specific prior written permission.
 
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS &quot;AS IS&quot; AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDERS BE LIABLE FOR ANY
-DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-   </license>
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    &quot;AS IS&quot; AND
+    ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+    IMPLIED
+    WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+    DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDERS BE LIABLE FOR ANY
+    DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+    DAMAGES
+    (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+    LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED
+    AND
+    ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+    TORT
+    (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  </license>
 
-   <requires>
-      <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.eclipse.emf.ecore"/>
-      <import plugin="org.eclipse.emf.ecore.xmi"/>
-      <import plugin="org.eclipse.emf.edit"/>
-      <import plugin="org.eclipse.emf.eef.runtime" version="1.1.1" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.emf.query" version="1.2.100" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.core.resources"/>
-      <import plugin="org.eclipse.emf.edit.ui"/>
-      <import plugin="org.eclipse.ui.ide"/>
-      <import plugin="org.eclipse.ui.navigator"/>
-      <import plugin="org.eclipse.ui"/>
-      <import plugin="org.eclipse.ui.views.properties.tabbed"/>
-   </requires>
+  <includes id="org.eclipse.emf.common" version="0.0.0" />
 
-   <plugin
-         id="com.br_automation.buoat.xddeditor"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+  <includes id="org.eclipse.emf.ecore" version="0.0.0" />
 
-   <plugin
-         id="com.br_automation.buoat.xddeditor.edit"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+  <requires>
+    <import plugin="org.eclipse.core.runtime" />
+    <import plugin="org.eclipse.emf.ecore" />
+    <import plugin="org.eclipse.emf.ecore.xmi" />
+    <import plugin="org.eclipse.emf.edit" />
+    <import plugin="org.eclipse.emf.eef.runtime" version="1.1.1"
+      match="greaterOrEqual" />
+    <import plugin="org.eclipse.emf.query" version="1.2.100" match="greaterOrEqual" />
+    <import plugin="org.eclipse.core.resources" />
+    <import plugin="org.eclipse.emf.edit.ui" />
+    <import plugin="org.eclipse.ui.ide" />
+    <import plugin="org.eclipse.ui.navigator" />
+    <import plugin="org.eclipse.ui" />
+    <import plugin="org.eclipse.ui.views.properties.tabbed" />
+    <import plugin="org.eclipse.pde" />
+    <import plugin="org.eclipse.pde.core" />
+    <import plugin="org.eclipse.pde.ui" />
+  </requires>
 
-   <plugin
-         id="com.br_automation.buoat.xddeditor.editor"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+  <plugin id="com.br_automation.buoat.xddeditor" download-size="0"
+    install-size="0" version="0.0.0" unpack="false" />
+
+  <plugin id="com.br_automation.buoat.xddeditor.edit"
+    download-size="0" install-size="0" version="0.0.0" unpack="false" />
+
+  <plugin id="com.br_automation.buoat.xddeditor.editor"
+    download-size="0" install-size="0" version="0.0.0" unpack="false" />
+
+  <plugin id="org.eclipse.emf.eef.runtime" download-size="0"
+    install-size="0" version="0.0.0" unpack="false" />
+
+  <plugin id="org.eclipse.eef.edit" download-size="0"
+    install-size="0" version="0.0.0" unpack="false" />
+
+  <plugin id="org.eclipse.emf.databinding.edit" download-size="0"
+    install-size="0" version="0.0.0" unpack="false" />
+
+  <plugin id="org.eclipse.emf.ecore.change.edit" download-size="0"
+    install-size="0" version="0.0.0" unpack="false" />
+
+  <plugin id="org.eclipse.emf.ecore.editor" download-size="0"
+    install-size="0" version="0.0.0" unpack="false" />
+
+  <plugin id="org.eclipse.emf.eef.components.editor"
+    download-size="0" install-size="0" version="0.0.0" unpack="false" />
+
+  <plugin id="org.eclipse.emf.eef.eefgen.editor" download-size="0"
+    install-size="0" version="0.0.0" unpack="false" />
+
+  <plugin id="org.eclipse.emf.eef.views.editor" download-size="0"
+    install-size="0" version="0.0.0" unpack="false" />
+
+  <plugin id="org.eclipse.emf.exporter" download-size="0"
+    install-size="0" version="0.0.0" unpack="false" />
+
+  <plugin id="org.eclipse.emf.importer" download-size="0"
+    install-size="0" version="0.0.0" unpack="false" />
+
+  <plugin id="org.eclipse.emf.mapping.ecore2ecore.editor"
+    download-size="0" install-size="0" version="0.0.0" unpack="false" />
+
+  <plugin id="org.eclipse.emf.mapping.ecore2xml.ui" download-size="0"
+    install-size="0" version="0.0.0" unpack="false" />
+
+  <plugin id="org.eclipse.emf.query.ocl" download-size="0"
+    install-size="0" version="0.0.0" unpack="false" />
+
+  <plugin id="org.eclipse.emf.validation" download-size="0"
+    install-size="0" version="0.0.0" unpack="false" />
+
+  <plugin id="org.eclipse.emf.ecore.xmi" download-size="0"
+    install-size="0" version="0.0.0" unpack="false" />
+
+  <plugin id="org.eclipse.emf.edit.ui" download-size="0"
+    install-size="0" version="0.0.0" unpack="false" />
+
+  <plugin id="org.eclipse.eef" download-size="0" install-size="0"
+    version="0.0.0" unpack="false" />
+
+  <plugin id="org.eclipse.emf.query" download-size="0"
+    install-size="0" version="0.0.0" unpack="false" />
+
+  <plugin id="org.eclipse.emf.ecore" download-size="0"
+    install-size="0" version="0.0.0" unpack="false" />
+
+  <plugin id="org.eclipse.emf.ecore.edit" download-size="0"
+    install-size="0" version="0.0.0" unpack="false" />
+
+  <plugin id="org.eclipse.emf.edit" download-size="0"
+    install-size="0" version="0.0.0" unpack="false" />
+
+  <plugin id="org.eclipse.emf.common" download-size="0"
+    install-size="0" version="0.0.0" unpack="false" />
+
+  <plugin id="org.eclipse.emf.ecore.change" download-size="0"
+    install-size="0" version="0.0.0" unpack="false" />
+
+  <plugin id="org.eclipse.emf" download-size="0" install-size="0"
+    version="0.0.0" unpack="false" />
+
+  <plugin id="com.google.gson" download-size="0" install-size="0"
+    version="0.0.0" unpack="false" />
+
+  <plugin id="org.eclipse.emf.databinding" download-size="0"
+    install-size="0" version="0.0.0" unpack="false" />
+
+  <plugin id="org.eclipse.emf.eef.components" download-size="0"
+    install-size="0" version="0.0.0" unpack="false" />
+
+  <plugin id="org.eclipse.emf.eef.eefgen" download-size="0"
+    install-size="0" version="0.0.0" unpack="false" />
+
+  <plugin id="org.eclipse.emf.mapping" download-size="0"
+    install-size="0" version="0.0.0" unpack="false" />
+
+  <plugin id="org.eclipse.emf.mapping.ecore2ecore" download-size="0"
+    install-size="0" version="0.0.0" unpack="false" />
+
+  <plugin id="org.eclipse.emf.mapping.ecore2xml" download-size="0"
+    install-size="0" version="0.0.0" unpack="false" />
+
+  <plugin id="org.eclipse.emf.common.ui" download-size="0"
+    install-size="0" version="0.0.0" unpack="false" />
+
+  <plugin id="org.eclipse.emf.eef.components.edit" download-size="0"
+    install-size="0" version="0.0.0" unpack="false" />
+
+  <plugin id="org.eclipse.emf.eef.mapping" download-size="0"
+    install-size="0" version="0.0.0" unpack="false" />
+
+  <plugin id="org.eclipse.emf.eef.mapping.edit" download-size="0"
+    install-size="0" version="0.0.0" unpack="false" />
+
+  <plugin id="org.eclipse.emf.eef.views" download-size="0"
+    install-size="0" version="0.0.0" unpack="false" />
+
+  <plugin id="org.eclipse.emf.eef.views.edit" download-size="0"
+    install-size="0" version="0.0.0" unpack="false" />
+
+  <plugin id="org.eclipse.emf.mapping.ecore" download-size="0"
+    install-size="0" version="0.0.0" unpack="false" />
+
+  <plugin id="org.eclipse.emf.validation.ocl" download-size="0"
+    install-size="0" version="0.0.0" unpack="false" />
+
+  <plugin id="org.eclipse.emf.validation.ui" download-size="0"
+    install-size="0" version="0.0.0" unpack="false" />
+
+  <plugin id="org.eclipse.emf.mapping.ui" download-size="0"
+    install-size="0" version="0.0.0" unpack="false" />
+
+  <plugin id="org.eclipse.emf.converter" download-size="0"
+    install-size="0" version="0.0.0" unpack="false" />
+
+  <plugin id="org.eclipse.emf.codegen.ecore" download-size="0"
+    install-size="0" version="0.0.0" unpack="false" />
+
+  <plugin id="org.eclipse.emf.codegen" download-size="0"
+    install-size="0" version="0.0.0" unpack="false" />
+
+  <plugin id="org.eclipse.emf.codegen.ecore.ui" download-size="0"
+    install-size="0" version="0.0.0" unpack="false" />
+
+  <plugin id="org.eclipse.emf.eef.eefgen.edit" download-size="0"
+    install-size="0" version="0.0.0" unpack="false" />
+
+  <plugin id="org.eclipse.emf.eef.codegen" download-size="0"
+    install-size="0" version="0.0.0" unpack="false" />
+
+  <plugin id="org.eclipse.emf.eef.codegen.ecore" download-size="0"
+    install-size="0" version="0.0.0" unpack="false" />
+
+  <plugin id="org.eclipse.emf.eef.codegen.launcher" download-size="0"
+    install-size="0" version="0.0.0" unpack="false" />
+
+  <plugin id="org.eclipse.emf.eef.editor.model" download-size="0"
+    install-size="0" version="0.0.0" unpack="false" />
+
+  <plugin id="org.eclipse.ocl" download-size="0" install-size="0"
+    version="0.0.0" unpack="false" />
+
+  <plugin id="org.eclipse.ocl.ecore" download-size="0"
+    install-size="0" version="0.0.0" unpack="false" />
+
+  <plugin id="org.eclipse.ocl.ecore.edit" download-size="0"
+    install-size="0" version="0.0.0" unpack="false" />
+
+  <plugin id="org.eclipse.acceleo.model" download-size="0"
+    install-size="0" version="0.0.0" unpack="false" />
+
+  <plugin id="org.eclipse.acceleo.annotations" download-size="0"
+    install-size="0" version="0.0.0" unpack="false" />
+
+  <plugin id="org.eclipse.acceleo.common" download-size="0"
+    install-size="0" version="0.0.0" unpack="false" />
+
+  <plugin id="org.eclipse.emf.importer.ecore" download-size="0"
+    install-size="0" version="0.0.0" unpack="false" />
+
+  <plugin id="lpg.runtime.java" download-size="0" install-size="0"
+    version="0.0.0" unpack="false" />
+
+  <plugin id="org.eclipse.ocl.common" download-size="0"
+    install-size="0" version="0.0.0" unpack="false" />
+
+  <plugin id="org.eclipse.ocl.common.ui" download-size="0"
+    install-size="0" version="0.0.0" unpack="false" />
+
+  <plugin id="org.eclipse.acceleo.engine" download-size="0"
+    install-size="0" version="0.0.0" unpack="false" />
+
+  <plugin id="com.google.guava" download-size="0" install-size="0"
+    version="0.0.0" unpack="false" />
+
+  <plugin id="org.eclipse.acceleo.profiler" download-size="0"
+    install-size="0" version="0.0.0" unpack="false" />
+
+  <plugin id="org.eclipse.ocl.edit" download-size="0"
+    install-size="0" version="0.0.0" unpack="false" />
+
+  <plugin id="org.eclipse.uml2.common.edit" download-size="0"
+    install-size="0" version="0.0.0" unpack="false" />
+
+  <plugin id="org.eclipse.uml2.common" download-size="0"
+    install-size="0" version="0.0.0" unpack="false" />
 
 </feature>

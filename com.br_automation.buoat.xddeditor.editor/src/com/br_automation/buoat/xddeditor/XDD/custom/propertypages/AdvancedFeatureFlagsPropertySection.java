@@ -1,7 +1,32 @@
 /**
- * @since 21.3.2013
- * @author Joris Lückenga, Bernecker + Rainer Industrie Elektronik Ges.m.b.H.
- */
+ * @since 19.3.2013
+ * @author Joris Lückenga, B&R Industrial Automation GmbH
+ *
+ *  @copyright (c) 2017, B&R Industrial Automation GmbH
+ *            All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *   * Redistributions of source code must retain the above copyright
+ *     notice, this list of conditions and the following disclaimer.
+ *   * Redistributions in binary form must reproduce the above copyright
+ *     notice, this list of conditions and the following disclaimer in the
+ *     documentation and/or other materials provided with the distribution.
+ *   * Neither the name of the copyright holders nor the
+ *     names of its contributors may be used to endorse or promote products
+ *     derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDERS BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *******************************************************************************/
 
 package com.br_automation.buoat.xddeditor.XDD.custom.propertypages;
 
@@ -38,12 +63,12 @@ import com.br_automation.buoat.xddeditor.XDD.impl.TObjectImpl;
 
 /**
  * @brief FeatureFlags-Section for Object index 0x1F82.
- * 
+ *
  *        Contains different checkbox-buttons for the FeatureFlags object.
  *        Generates default value for the user based on selection.
- * 
+ *
  * @author Joris Lückenga
- * */
+ */
 public class AdvancedFeatureFlagsPropertySection extends AbstractPropertySection {
 
     private AdapterFactory adapterFactory;
@@ -51,24 +76,25 @@ public class AdvancedFeatureFlagsPropertySection extends AbstractPropertySection
     private CLabel lblDefaultValueValue;
     private CLabel lblError;
 
-    //Set the correct Bits if a Button is selected (with MultiplexFeature-Check)
+    // Set the correct Bits if a Button is selected (with
+    // MultiplexFeature-Check)
     private final SelectionListener selectionListener = new SelectionAdapter() {
 
         @Override
         public void widgetSelected(SelectionEvent e) {
             try {
-                long currentValue = Long.decode(AdvancedFeatureFlagsPropertySection.this.tobject
-                    .getDefaultValue());
+                long currentValue = Long.decode(AdvancedFeatureFlagsPropertySection.this.tobject.getDefaultValue());
                 if ((currentValue & (1 << 17)) != 0 || currentValue >= 0x80000)
-                    throw new NumberFormatException(); //Throw format exception if wrong bit is set or too long!
+                    throw new NumberFormatException(); // Throw format exception
+                                                        // if wrong bit is set
+                                                        // or too long!
 
-                //CHECK FOR INVALID BITS!
+                // CHECK FOR INVALID BITS!
             } catch (NumberFormatException e2) {
-                // Generate a valid default-value by using selected checkboxes, 
-                //if user had entered an invalid value but wants to continue...
+                // Generate a valid default-value by using selected checkboxes,
+                // if user had entered an invalid value but wants to continue...
                 AdvancedFeatureFlagsPropertySection.this.tobject.setDefaultValue("0"); //$NON-NLS-1$
-                Set<Entry<Button, Integer>> buttonSet = AdvancedFeatureFlagsPropertySection.this.buttonMap
-                    .entrySet();
+                Set<Entry<Button, Integer>> buttonSet = AdvancedFeatureFlagsPropertySection.this.buttonMap.entrySet();
 
                 long newDefaultValue = 0;
                 for (Entry<Button, Integer> entry : buttonSet) {
@@ -79,40 +105,39 @@ public class AdvancedFeatureFlagsPropertySection extends AbstractPropertySection
                         newDefaultValue = newDefaultValue & ~(1 << bitOffset);
                 }
                 AdvancedFeatureFlagsPropertySection.this.tobject.setDefaultValue("0x" //$NON-NLS-1$
-                    + Long.toHexString(newDefaultValue));
+                        + Long.toHexString(newDefaultValue));
             }
             AdvancedFeatureFlagsPropertySection.this.lblError.setText(""); //$NON-NLS-1$
             Button currentButton = (Button) e.getSource();
             int bitOffset = AdvancedFeatureFlagsPropertySection.this.buttonMap.get(currentButton);
-            XDDUtilities.setFeatureFlag(
-                currentButton.getSelection(), bitOffset, (DocumentRoot) EcoreUtil
-                    .getRootContainer(AdvancedFeatureFlagsPropertySection.this.tobject));
+            XDDUtilities.setFeatureFlag(currentButton.getSelection(), bitOffset,
+                    (DocumentRoot) EcoreUtil.getRootContainer(AdvancedFeatureFlagsPropertySection.this.tobject));
             AdvancedFeatureFlagsPropertySection.this.lblDefaultValueValue
-                .setText(AdvancedFeatureFlagsPropertySection.this.tobject.getDefaultValue());
+                    .setText(AdvancedFeatureFlagsPropertySection.this.tobject.getDefaultValue());
         }
-    }; //SelectionListener
+    }; // SelectionListener
 
     private TObject tobject;
     private TObjectComposite tobjectComposite;
 
-    //Creates the Checkbox-Buttons and Labels as well as selection listeners for each box
+    // Creates the Checkbox-Buttons and Labels as well as selection listeners
+    // for each box
     @Override
     public void createControls(Composite parent, TabbedPropertySheetPage aTabbedPropertySheetPage) {
 
         super.createControls(parent, aTabbedPropertySheetPage);
         Composite composite = super.getWidgetFactory().createFlatFormComposite(parent);
         FormData data;
-        //Standard-Label--------------------------------------
+        // Standard-Label--------------------------------------
 
-        //TobjectComposite
+        // TobjectComposite
         this.tobjectComposite = new TObjectComposite(composite, 0, this.getAdapterFactory());
         data = new FormData();
         data.top = new FormAttachment(0, 0);
         this.tobjectComposite.setLayoutData(data);
 
-        //lblDefaultValue Label
-        this.lblDefaultValueValue = this.getWidgetFactory().createCLabel(
-            composite, "      Not found!     "); //$NON-NLS-1$
+        // lblDefaultValue Label
+        this.lblDefaultValueValue = this.getWidgetFactory().createCLabel(composite, "      Not found!     "); //$NON-NLS-1$
         data = new FormData();
         data.top = new FormAttachment(this.tobjectComposite, -5);
         this.lblDefaultValueValue.setLayoutData(data);
@@ -124,120 +149,106 @@ public class AdvancedFeatureFlagsPropertySection extends AbstractPropertySection
         data.top = new FormAttachment(this.tobjectComposite, -5);
         lblDefaultValue.setLayoutData(data);
 
-        //optionalFlags Label
-        CLabel lbloptionalFlags = this.getWidgetFactory().createCLabel(
-            composite, "Optional Feature Flags:"); //$NON-NLS-1$
+        // optionalFlags Label
+        CLabel lbloptionalFlags = this.getWidgetFactory().createCLabel(composite, "Optional Feature Flags:"); //$NON-NLS-1$
         data = new FormData();
         data.top = new FormAttachment(this.lblDefaultValueValue, 0);
         lbloptionalFlags.setLayoutData(data);
 
-        //Checkbox-Buttons -------------------------------------------
+        // Checkbox-Buttons -------------------------------------------
 
-        //Isonchronus
-        Button btnIsochronous = this.getWidgetFactory().createButton(
-            composite, "Isonchronus Mode", SWT.CHECK); //$NON-NLS-1$
-        btnIsochronous
-            .setToolTipText(Messages.advancedFeatureFlagsPropertySection_btnIsochronous_tooltip);
+        // Isonchronus
+        Button btnIsochronous = this.getWidgetFactory().createButton(composite, "Isonchronus Mode", SWT.CHECK); //$NON-NLS-1$
+        btnIsochronous.setToolTipText(Messages.advancedFeatureFlagsPropertySection_btnIsochronous_tooltip);
         data = new FormData();
         data.top = new FormAttachment(lbloptionalFlags, 0);
         btnIsochronous.setLayoutData(data);
         btnIsochronous.addSelectionListener(this.selectionListener);
         this.buttonMap.put(btnIsochronous, 0);
 
-        //btnSDObyUDPIP
-        Button btnSDObyUDPIP = this.getWidgetFactory().createButton(
-            composite, "SDO by UDP/IP", Integer.valueOf(SWT.CHECK)); //$NON-NLS-1$
-        btnSDObyUDPIP
-            .setToolTipText(Messages.advancedFeatureFlagsPropertySection_btnSDObyUDPIP_tooltip);
+        // btnSDObyUDPIP
+        Button btnSDObyUDPIP = this.getWidgetFactory().createButton(composite, "SDO by UDP/IP", //$NON-NLS-1$
+                Integer.valueOf(SWT.CHECK));
+        btnSDObyUDPIP.setToolTipText(Messages.advancedFeatureFlagsPropertySection_btnSDObyUDPIP_tooltip);
         data = new FormData();
         data.top = new FormAttachment(btnIsochronous, -5);
         btnSDObyUDPIP.setLayoutData(data);
         btnSDObyUDPIP.addSelectionListener(this.selectionListener);
         this.buttonMap.put(btnSDObyUDPIP, Integer.valueOf(1));
 
-        //btnSDObyASnd
-        Button btnSDObyASnd = this.getWidgetFactory().createButton(
-            composite, "SDO by ASnd", Integer.valueOf(SWT.CHECK)); //$NON-NLS-1$
-        btnSDObyASnd
-            .setToolTipText(Messages.advancedFeatureFlagsPropertySection_btnSDObyASnd_tooltip);
+        // btnSDObyASnd
+        Button btnSDObyASnd = this.getWidgetFactory().createButton(composite, "SDO by ASnd", //$NON-NLS-1$
+                Integer.valueOf(SWT.CHECK));
+        btnSDObyASnd.setToolTipText(Messages.advancedFeatureFlagsPropertySection_btnSDObyASnd_tooltip);
         data = new FormData();
         data.top = new FormAttachment(btnSDObyUDPIP, -5);
         btnSDObyASnd.setLayoutData(data);
         btnSDObyASnd.addSelectionListener(this.selectionListener);
         this.buttonMap.put(btnSDObyASnd, Integer.valueOf(2));
 
-        //btnSDObyPDO
-        Button btnSDObyPDO = this.getWidgetFactory().createButton(
-            composite, "SDO by PDO", SWT.CHECK); //$NON-NLS-1$
-        btnSDObyPDO
-            .setToolTipText(Messages.advancedFeatureFlagsPropertySection_btnSDObyPDO_tooltip);
+        // btnSDObyPDO
+        Button btnSDObyPDO = this.getWidgetFactory().createButton(composite, "SDO by PDO", SWT.CHECK); //$NON-NLS-1$
+        btnSDObyPDO.setToolTipText(Messages.advancedFeatureFlagsPropertySection_btnSDObyPDO_tooltip);
         data = new FormData();
         data.top = new FormAttachment(btnSDObyASnd, -5);
         btnSDObyPDO.setLayoutData(data);
         btnSDObyPDO.addSelectionListener(this.selectionListener);
         this.buttonMap.put(btnSDObyPDO, Integer.valueOf(3));
 
-        //btnNMTInfoServices
-        Button btnNMTInfoServices = this.getWidgetFactory().createButton(
-            composite, "NMT Info Services", SWT.CHECK); //$NON-NLS-1$
-        btnNMTInfoServices
-            .setToolTipText(Messages.advancedFeatureFlagsPropertySection_btnNMTInfoServices_tooltip);
+        // btnNMTInfoServices
+        Button btnNMTInfoServices = this.getWidgetFactory().createButton(composite, "NMT Info Services", SWT.CHECK); //$NON-NLS-1$
+        btnNMTInfoServices.setToolTipText(Messages.advancedFeatureFlagsPropertySection_btnNMTInfoServices_tooltip);
         data = new FormData();
         data.top = new FormAttachment(btnSDObyPDO, -5);
         btnNMTInfoServices.setLayoutData(data);
         btnNMTInfoServices.addSelectionListener(this.selectionListener);
         this.buttonMap.put(btnNMTInfoServices, Integer.valueOf(4));
 
-        //btnExtendedNMTStateCommands
-        Button btnExtendedNMTStateCommands = this.getWidgetFactory().createButton(
-            composite, "Extended NMT State Commands", SWT.CHECK); //$NON-NLS-1$
+        // btnExtendedNMTStateCommands
+        Button btnExtendedNMTStateCommands = this.getWidgetFactory().createButton(composite,
+                "Extended NMT State Commands", SWT.CHECK); //$NON-NLS-1$
         btnExtendedNMTStateCommands
-            .setToolTipText(Messages.advancedFeatureFlagsPropertySection_btnExtendedNMTStateCommands_tooltip);
+                .setToolTipText(Messages.advancedFeatureFlagsPropertySection_btnExtendedNMTStateCommands_tooltip);
         data = new FormData();
         data.top = new FormAttachment(btnNMTInfoServices, -5);
         btnExtendedNMTStateCommands.setLayoutData(data);
         btnExtendedNMTStateCommands.addSelectionListener(this.selectionListener);
         this.buttonMap.put(btnExtendedNMTStateCommands, Integer.valueOf(5));
 
-        //btnDynamicPDOMapping
-        Button btnDynamicPDOMapping = this.getWidgetFactory().createButton(
-            composite, "Dynamic PDO mapping", SWT.CHECK); //$NON-NLS-1$
-        btnDynamicPDOMapping
-            .setToolTipText(Messages.advancedFeatureFlagsPropertySection_btnDynamicPDOMapping_tooltip);
+        // btnDynamicPDOMapping
+        Button btnDynamicPDOMapping = this.getWidgetFactory().createButton(composite, "Dynamic PDO mapping", SWT.CHECK); //$NON-NLS-1$
+        btnDynamicPDOMapping.setToolTipText(Messages.advancedFeatureFlagsPropertySection_btnDynamicPDOMapping_tooltip);
         data = new FormData();
         data.top = new FormAttachment(btnExtendedNMTStateCommands, -5);
         btnDynamicPDOMapping.setLayoutData(data);
         btnDynamicPDOMapping.addSelectionListener(this.selectionListener);
         this.buttonMap.put(btnDynamicPDOMapping, Integer.valueOf(6));
 
-        //btnNMTServicebyUDPIP
-        Button btnNMTServicebyUDPIP = this.getWidgetFactory().createButton(
-            composite, "NMT Service by UDP/IP", SWT.CHECK); //$NON-NLS-1$
-        btnNMTServicebyUDPIP
-            .setToolTipText(Messages.advancedFeatureFlagsPropertySection_btnNMTServicebyUDPIP_tooltip);
+        // btnNMTServicebyUDPIP
+        Button btnNMTServicebyUDPIP = this.getWidgetFactory().createButton(composite, "NMT Service by UDP/IP", //$NON-NLS-1$
+                SWT.CHECK);
+        btnNMTServicebyUDPIP.setToolTipText(Messages.advancedFeatureFlagsPropertySection_btnNMTServicebyUDPIP_tooltip);
         data = new FormData();
         data.top = new FormAttachment(btnDynamicPDOMapping, -5);
         btnNMTServicebyUDPIP.setLayoutData(data);
         btnNMTServicebyUDPIP.addSelectionListener(this.selectionListener);
         this.buttonMap.put(btnNMTServicebyUDPIP, Integer.valueOf(7));
 
-        Button btnMultipleASnd = this.getWidgetFactory().createButton(
-            composite, "Multi-ASnd Support", SWT.CHECK); //$NON-NLS-1$
-        btnMultipleASnd
-            .setToolTipText(Messages.advancedFeatureFlagsPropertySection_tooltip_multipleASnd);
+        Button btnMultipleASnd = this.getWidgetFactory().createButton(composite, "Multi-ASnd Support", SWT.CHECK); //$NON-NLS-1$
+        btnMultipleASnd.setToolTipText(Messages.advancedFeatureFlagsPropertySection_tooltip_multipleASnd);
         data = new FormData();
         data.top = new FormAttachment(btnNMTServicebyUDPIP, -5);
         btnMultipleASnd.setLayoutData(data);
         btnMultipleASnd.addSelectionListener(this.selectionListener);
         this.buttonMap.put(btnMultipleASnd, Integer.valueOf(16));
 
-        //--------------------------NEXT SECTION
+        // --------------------------NEXT SECTION
 
-        //btnConfigurationManager
-        Button btnConfigurationManager = this.getWidgetFactory().createButton(
-            composite, "Configuration Manager functions", SWT.CHECK); //$NON-NLS-1$
+        // btnConfigurationManager
+        Button btnConfigurationManager = this.getWidgetFactory().createButton(composite,
+                "Configuration Manager functions", SWT.CHECK); //$NON-NLS-1$
         btnConfigurationManager
-            .setToolTipText(Messages.advancedFeatureFlagsPropertySection_btnConfigurationManager_tooltip);
+                .setToolTipText(Messages.advancedFeatureFlagsPropertySection_btnConfigurationManager_tooltip);
         data = new FormData();
         data.top = new FormAttachment(lbloptionalFlags, 0);
         data.left = new FormAttachment(btnIsochronous, 80);
@@ -245,11 +256,9 @@ public class AdvancedFeatureFlagsPropertySection extends AbstractPropertySection
         btnConfigurationManager.addSelectionListener(this.selectionListener);
         this.buttonMap.put(btnConfigurationManager, Integer.valueOf(8));
 
-        //btnMultiplexedAccess
-        Button btnMultiplexedAccess = this.getWidgetFactory().createButton(
-            composite, "Multiplexed  Access", SWT.CHECK); //$NON-NLS-1$
-        btnMultiplexedAccess
-            .setToolTipText(Messages.advancedFeatureFlagsPropertySection_btnMultiplexedAccess_tooltip);
+        // btnMultiplexedAccess
+        Button btnMultiplexedAccess = this.getWidgetFactory().createButton(composite, "Multiplexed  Access", SWT.CHECK); //$NON-NLS-1$
+        btnMultiplexedAccess.setToolTipText(Messages.advancedFeatureFlagsPropertySection_btnMultiplexedAccess_tooltip);
         data = new FormData();
         data.top = new FormAttachment(btnConfigurationManager, -5);
         data.left = new FormAttachment(btnIsochronous, 80);
@@ -257,11 +266,9 @@ public class AdvancedFeatureFlagsPropertySection extends AbstractPropertySection
         btnMultiplexedAccess.addSelectionListener(this.selectionListener);
         this.buttonMap.put(btnMultiplexedAccess, Integer.valueOf(9));
 
-        //btnNodeIDsetupbySW
-        Button btnNodeIDsetupbySW = this.getWidgetFactory().createButton(
-            composite, "NodeID setup by SW", SWT.CHECK); //$NON-NLS-1$
-        btnNodeIDsetupbySW
-            .setToolTipText(Messages.advancedFeatureFlagsPropertySection_btnNodeIDsetupbySW_tooltip);
+        // btnNodeIDsetupbySW
+        Button btnNodeIDsetupbySW = this.getWidgetFactory().createButton(composite, "NodeID setup by SW", SWT.CHECK); //$NON-NLS-1$
+        btnNodeIDsetupbySW.setToolTipText(Messages.advancedFeatureFlagsPropertySection_btnNodeIDsetupbySW_tooltip);
         data = new FormData();
         data.top = new FormAttachment(btnMultiplexedAccess, -5);
         data.left = new FormAttachment(btnIsochronous, 80);
@@ -269,11 +276,11 @@ public class AdvancedFeatureFlagsPropertySection extends AbstractPropertySection
         btnNodeIDsetupbySW.addSelectionListener(this.selectionListener);
         this.buttonMap.put(btnNodeIDsetupbySW, Integer.valueOf(10));
 
-        //btnMNBasicEthernetMode
-        Button btnMNBasicEthernetMode = this.getWidgetFactory().createButton(
-            composite, "MN Basic Ethernet Mode", SWT.CHECK); //$NON-NLS-1$
+        // btnMNBasicEthernetMode
+        Button btnMNBasicEthernetMode = this.getWidgetFactory().createButton(composite, "MN Basic Ethernet Mode", //$NON-NLS-1$
+                SWT.CHECK);
         btnMNBasicEthernetMode
-            .setToolTipText(Messages.advancedFeatureFlagsPropertySection_btnMNBasicEthernetMode_tooltip);
+                .setToolTipText(Messages.advancedFeatureFlagsPropertySection_btnMNBasicEthernetMode_tooltip);
         data = new FormData();
         data.top = new FormAttachment(btnNodeIDsetupbySW, -5);
         data.left = new FormAttachment(btnIsochronous, 80);
@@ -281,11 +288,11 @@ public class AdvancedFeatureFlagsPropertySection extends AbstractPropertySection
         btnMNBasicEthernetMode.addSelectionListener(this.selectionListener);
         this.buttonMap.put(btnMNBasicEthernetMode, Integer.valueOf(11));
 
-        //btnRoutingType1Support
-        Button btnRoutingType1Support = this.getWidgetFactory().createButton(
-            composite, "Routing Type 1 Support", SWT.CHECK); //$NON-NLS-1$
+        // btnRoutingType1Support
+        Button btnRoutingType1Support = this.getWidgetFactory().createButton(composite, "Routing Type 1 Support", //$NON-NLS-1$
+                SWT.CHECK);
         btnRoutingType1Support
-            .setToolTipText(Messages.advancedFeatureFlagsPropertySection_btnRoutingType1Support_tooltip);
+                .setToolTipText(Messages.advancedFeatureFlagsPropertySection_btnRoutingType1Support_tooltip);
         data = new FormData();
         data.top = new FormAttachment(btnMNBasicEthernetMode, -5);
         data.left = new FormAttachment(btnIsochronous, 80);
@@ -293,11 +300,11 @@ public class AdvancedFeatureFlagsPropertySection extends AbstractPropertySection
         btnRoutingType1Support.addSelectionListener(this.selectionListener);
         this.buttonMap.put(btnRoutingType1Support, Integer.valueOf(12));
 
-        //btnRoutingType2Support
-        Button btnRoutingType2Support = this.getWidgetFactory().createButton(
-            composite, "Routing Type 2 Support", SWT.CHECK); //$NON-NLS-1$
+        // btnRoutingType2Support
+        Button btnRoutingType2Support = this.getWidgetFactory().createButton(composite, "Routing Type 2 Support", //$NON-NLS-1$
+                SWT.CHECK);
         btnRoutingType2Support
-            .setToolTipText(Messages.advancedFeatureFlagsPropertySection_btnRoutingType2Support_tooltip);
+                .setToolTipText(Messages.advancedFeatureFlagsPropertySection_btnRoutingType2Support_tooltip);
         data = new FormData();
         data.top = new FormAttachment(btnRoutingType1Support, -5);
         data.left = new FormAttachment(btnIsochronous, 80);
@@ -305,11 +312,11 @@ public class AdvancedFeatureFlagsPropertySection extends AbstractPropertySection
         btnRoutingType2Support.addSelectionListener(this.selectionListener);
         this.buttonMap.put(btnRoutingType2Support, Integer.valueOf(13));
 
-        //btnSDOReadWriteAllbyIndex
-        Button btnSDOReadWriteAllbyIndex = this.getWidgetFactory().createButton(
-            composite, "SDO Read/Write All by Index", SWT.CHECK); //$NON-NLS-1$
+        // btnSDOReadWriteAllbyIndex
+        Button btnSDOReadWriteAllbyIndex = this.getWidgetFactory().createButton(composite,
+                "SDO Read/Write All by Index", SWT.CHECK); //$NON-NLS-1$
         btnSDOReadWriteAllbyIndex
-            .setToolTipText(Messages.advancedFeatureFlagsPropertySection_btnSDOReadWriteAllbyIndex_tooltip);
+                .setToolTipText(Messages.advancedFeatureFlagsPropertySection_btnSDOReadWriteAllbyIndex_tooltip);
         data = new FormData();
         data.top = new FormAttachment(btnRoutingType2Support, -5);
         data.left = new FormAttachment(btnIsochronous, 80);
@@ -317,11 +324,11 @@ public class AdvancedFeatureFlagsPropertySection extends AbstractPropertySection
         btnSDOReadWriteAllbyIndex.addSelectionListener(this.selectionListener);
         this.buttonMap.put(btnSDOReadWriteAllbyIndex, Integer.valueOf(14));
 
-        //btnSDOSDOReadWriteMultipleParameterbyIndex
-        Button btnSDOSDOReadWriteMultipleParameterbyIndex = this.getWidgetFactory().createButton(
-            composite, "SDO Read/Write Multiple Parameter by Index", SWT.CHECK); //$NON-NLS-1$
-        btnSDOSDOReadWriteMultipleParameterbyIndex
-            .setToolTipText(Messages.advancedFeatureFlagsPropertySection_btnSDOSDOReadWriteMultipleParameterbyIndex_tooltip);
+        // btnSDOSDOReadWriteMultipleParameterbyIndex
+        Button btnSDOSDOReadWriteMultipleParameterbyIndex = this.getWidgetFactory().createButton(composite,
+                "SDO Read/Write Multiple Parameter by Index", SWT.CHECK); //$NON-NLS-1$
+        btnSDOSDOReadWriteMultipleParameterbyIndex.setToolTipText(
+                Messages.advancedFeatureFlagsPropertySection_btnSDOSDOReadWriteMultipleParameterbyIndex_tooltip);
         data = new FormData();
         data.top = new FormAttachment(btnSDOReadWriteAllbyIndex, -5);
         data.left = new FormAttachment(btnIsochronous, 80);
@@ -329,11 +336,10 @@ public class AdvancedFeatureFlagsPropertySection extends AbstractPropertySection
         btnSDOSDOReadWriteMultipleParameterbyIndex.addSelectionListener(this.selectionListener);
         this.buttonMap.put(btnSDOSDOReadWriteMultipleParameterbyIndex, Integer.valueOf(15));
 
-        //btnPResChaining
-        Button btnPResChaining = this.getWidgetFactory().createButton(
-            composite, "PResponse Chaining Support", SWT.CHECK); //$NON-NLS-1$
-        btnPResChaining
-            .setToolTipText(Messages.advancedFeatureFlagsPropertySection_tooltip_presChaining);
+        // btnPResChaining
+        Button btnPResChaining = this.getWidgetFactory().createButton(composite, "PResponse Chaining Support", //$NON-NLS-1$
+                SWT.CHECK);
+        btnPResChaining.setToolTipText(Messages.advancedFeatureFlagsPropertySection_tooltip_presChaining);
         data = new FormData();
         data.top = new FormAttachment(btnSDOSDOReadWriteMultipleParameterbyIndex, -5);
         data.left = new FormAttachment(btnIsochronous, 80);
@@ -345,11 +351,11 @@ public class AdvancedFeatureFlagsPropertySection extends AbstractPropertySection
         data = new FormData();
         data.top = new FormAttachment(btnPResChaining, 0);
         this.lblError.setLayoutData(data);
-    } //createControls
+    } // createControls
 
     /**
      * @return AdapterFactory for ItemProviders.
-     * */
+     */
     public AdapterFactory getAdapterFactory() {
         if (this.adapterFactory == null)
             this.adapterFactory = EEFRuntimePlugin.getDefault().getAdapterFactory();
@@ -362,36 +368,54 @@ public class AdvancedFeatureFlagsPropertySection extends AbstractPropertySection
     @Override
     public void setInput(IWorkbenchPart part, ISelection selection) {
         super.setInput(part, selection);
-        Object input = ((IStructuredSelection) selection).getFirstElement();
-        Assert.isTrue(input instanceof TObjectImpl);
-        this.tobject = (TObject) input;
-        this.tobjectComposite.setObject(this.tobject);
-        this.lblError.setText(""); //$NON-NLS-1$
-        if (this.tobject.getDefaultValue() != null)
-
-            this.lblDefaultValueValue.setText(this.tobject.getDefaultValue());
-
-        if (this.tobject.getIndex() != null && this.tobject.getDefaultValue() != null) {
-            try {
-                long defaultValue = Integer.decode(this.tobject.getDefaultValue());
-                if ((defaultValue & (1 << 17)) != 0 || defaultValue >= 0x80000)
-                    throw new NumberFormatException(); //Also throw this exception when a wrong bit is set or too long value!
-
-                Set<Entry<Button, Integer>> buttonSet = this.buttonMap.entrySet();
-                for (Entry<Button, Integer> entry : buttonSet) {
-                    int bitOffset = entry.getValue().intValue();
-                    if ((defaultValue & (1 << bitOffset)) != 0) //Check if bit of button is set
-                        entry.getKey().setSelection(true); //if yes, set the selection to true
-                    else
-                        entry.getKey().setSelection(false);
-                }
-            } catch (NumberFormatException e) {
-                //Set error-text
-                this.lblError.setText(Messages.general_error_defaultValueInvalid);
-                this.lblError.setForeground(XDDUtilities.getRed(Display.getCurrent()));
+        if (selection instanceof IStructuredSelection) {
+            Object input = ((IStructuredSelection) selection).getFirstElement();
+            Assert.isTrue(input instanceof TObjectImpl);
+            this.tobject = (TObject) input;
+            if (tobjectComposite != null) {
+                this.tobjectComposite.setObject(this.tobject);
             }
+            if (lblError != null) {
+                this.lblError.setText(""); //$NON-NLS-1$
+            }
+            if (this.tobject.getDefaultValue() != null)
+                if (lblDefaultValueValue != null) {
+                    this.lblDefaultValueValue.setText(this.tobject.getDefaultValue());
+                }
 
+            if (this.tobject.getIndex() != null && this.tobject.getDefaultValue() != null) {
+                try {
+                    long defaultValue = Integer.decode(this.tobject.getDefaultValue());
+                    if ((defaultValue & (1 << 17)) != 0 || defaultValue >= 0x80000)
+                        throw new NumberFormatException(); // Also throw this
+                                                            // exception when a
+                                                            // wrong bit is set
+                                                            // or
+                                                            // too long value!
+
+                    Set<Entry<Button, Integer>> buttonSet = this.buttonMap.entrySet();
+                    for (Entry<Button, Integer> entry : buttonSet) {
+                        int bitOffset = entry.getValue().intValue();
+                        if ((defaultValue & (1 << bitOffset)) != 0) // Check if
+                                                                    // bit
+                                                                    // of button
+                                                                    // is
+                                                                    // set
+                            entry.getKey().setSelection(true); // if yes, set
+                                                                // the
+                                                                // selection to
+                                                                // true
+                        else
+                            entry.getKey().setSelection(false);
+                    }
+                } catch (NumberFormatException e) {
+                    // Set error-text
+                    this.lblError.setText(Messages.general_error_defaultValueInvalid);
+                    this.lblError.setForeground(XDDUtilities.getRed(Display.getCurrent()));
+                }
+
+            }
         }
-    } //setInput
+    } // setInput
 
-} //AdvancedTObjectPropertySection
+} // AdvancedTObjectPropertySection

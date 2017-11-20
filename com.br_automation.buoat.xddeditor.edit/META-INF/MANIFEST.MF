@@ -7,8 +7,9 @@ Bundle-ClassPath: .
 Bundle-Activator: com.br_automation.buoat.xddeditor.XDD.provider.XDDEditPlugin$Implementation
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Export-Package: com.br_automation.buoat.xddeditor.XDD.custom,
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Export-Package: FwSchema.provider,
+ com.br_automation.buoat.xddeditor.XDD.custom,
  com.br_automation.buoat.xddeditor.XDD.provider
 Require-Bundle: org.eclipse.core.runtime,
  com.br_automation.buoat.xddeditor;visibility:=reexport,
