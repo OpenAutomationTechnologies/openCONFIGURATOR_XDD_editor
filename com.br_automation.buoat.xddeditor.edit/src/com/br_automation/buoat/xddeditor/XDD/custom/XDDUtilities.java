@@ -269,6 +269,7 @@ public final class XDDUtilities {
             if (currentObjectMap.containsKey(currentObjectToAddIndex)) {
                 // get the subobject-list of the Tobject with matching index,and
                 // put it into a hash-map
+                SubObjectType defaultEntrySubObject = null;
                 EList<SubObjectType> currentSubObjects = currentObjectMap.get(currentObjectToAddIndex).getSubObject();
                 List<SubObjectType> missingSubObjects = new ArrayList<SubObjectType>(); // NOPMD
                                                                                         // by
@@ -282,7 +283,7 @@ public final class XDDUtilities {
                                                                                                          // on
                                                                                                          // 17.05.13
                                                                                                          // 14:57
-                for (SubObjectType currentSubObject : currentSubObjects)
+                for (SubObjectType currentSubObject : currentSubObjects) {
                     currentSubObjectMap.put(new BigInteger(currentSubObject.getSubIndex()).intValue(), // NOPMD
                                                                                                        // by
                                                                                                        // lueckengaj
@@ -290,6 +291,11 @@ public final class XDDUtilities {
                                                                                                        // 17.05.13
                                                                                                        // 14:57
                             currentSubObject);
+                    if (new BigInteger(currentSubObject.getSubIndex()).intValue() == 00) {
+                        defaultEntrySubObject = currentSubObject;
+                    }
+                }
+
                 // get Objects to add
                 List<SubObjectType> addableSubObjects = currentObjectToAdd.getSubObject();
                 // Find objects which do not already exist
@@ -311,9 +317,17 @@ public final class XDDUtilities {
                                                                                  // on
                                                                                  // 18.04.13
                                                                                  // 09:26
+                if (defaultEntrySubObject != null) {
+                    Integer defaultValue = Integer.valueOf(defaultEntrySubObject.getDefaultValue());
+                    if (missingSubObjects.size() > 0) {
+                        Integer newDefaultValue = defaultValue + missingSubObjects.size();
+                        defaultEntrySubObject.setDefaultValue(String.valueOf(newDefaultValue));
+                    }
+                }
             } else { // if not found -> add TObject
                 currentObjectsList.add(currentObjectToAdd);
             }
+
         }
         ECollections.sort(currentObjectsList, new TObjectComparator());
     } // addTObjects

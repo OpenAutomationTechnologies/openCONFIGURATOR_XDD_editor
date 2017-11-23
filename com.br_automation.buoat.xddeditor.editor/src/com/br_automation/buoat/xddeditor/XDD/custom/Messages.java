@@ -119,7 +119,7 @@ public final class Messages extends NLS {
     public static String tObjectComposite_type_not_found;
 
     public static String wizardConfigurationPage_adv_conf_page_title;
-    public static String wizardConfigurationPage_btnMultiASnd_text;
+    public static String wizardConfigurationPage_btnIpSupport_text;
     public static String wizardConfigurationPage_creation_date_lbl;
     public static String wizardConfigurationPage_creation_time_lbl;
     public static String wizardConfigurationPage_creator_lbl;

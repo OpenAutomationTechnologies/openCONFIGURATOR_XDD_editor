@@ -62,8 +62,7 @@ import com.br_automation.buoat.xddeditor.XDD.wizards.DataTypeRange;
 public class WizardConfigurationPage extends WizardPage {
 
     private Button btnCnMultiplexFeature;
-    private Button btnMultipleASnd;
-    private Button btnNWLIPSupport;
+    private Button btnIpSupport;
     private Button btnResponseChaining;
     private CustomXDDWizard mainwizard;
 
@@ -328,15 +327,10 @@ public class WizardConfigurationPage extends WizardPage {
         this.txtNMTErrorEntries.setText("8"); //$NON-NLS-1$
         this.txtNMTErrorEntries.setBounds(179, 80, 92, 21);
 
-        this.btnNWLIPSupport = new Button(grpGeneralFeatures, SWT.CHECK);
-        this.btnNWLIPSupport.setBounds(10, 130, 146, 16);
-        this.btnNWLIPSupport.setToolTipText(Messages.wizardConfigurationPage_EnableDisableIPSupport); // $NON-NLS-1$
-        this.btnNWLIPSupport.setText("Network IP Support");
-
-        this.btnMultipleASnd = new Button(grpGeneralFeatures, SWT.CHECK);
-        this.btnMultipleASnd.setToolTipText(Messages.wizardConfigurationPage_btnMultiASnd_text);
-        this.btnMultipleASnd.setText("IP Support");
-        this.btnMultipleASnd.setBounds(10, 107, 146, 16);
+        this.btnIpSupport = new Button(grpGeneralFeatures, SWT.CHECK);
+        this.btnIpSupport.setToolTipText(Messages.wizardConfigurationPage_EnableDisableIPSupport);
+        this.btnIpSupport.setText("IP Support");
+        this.btnIpSupport.setBounds(10, 107, 146, 16);
 
         addListenersToControls();
     } // createControl
@@ -922,15 +916,8 @@ public class WizardConfigurationPage extends WizardPage {
     /**
      * @return <code>True</code> or <code>False</code> otherwise
      */
-    public boolean isMultipleASnd() {
-        return this.btnMultipleASnd.getSelection();
-    }
-
-    /**
-     * @return <code>True</code> or <code>False</code> otherwise
-     */
-    public boolean isNWLIPSupport() {
-        return this.btnNWLIPSupport.getSelection();
+    public boolean isIpSupport() {
+        return this.btnIpSupport.getSelection();
     }
 
     /**

@@ -200,6 +200,7 @@ public final class ModelLoader {
         multiplexFeatureObjects.add(EPLGeneralConstants.NMT_MULTIPLCYCLEASSIGN_AU8);
         multiplexFeatureObjects.add(EPLGeneralConstants.NMT_CYCLETIMING_REC);
         multiplexFeatureObjects.add(EPLGeneralConstants.NMT_FEATUREFLAGS_U32);
+        multiplexFeatureObjects.add(EPLGeneralConstants.NMT_NODEASSIGNMENT_AU32);
 
         if (status) {
             // Get Needed Objects for Multiplex Support
@@ -370,16 +371,17 @@ public final class ModelLoader {
         if (wizardConfigurationPage.isCnMultiplexFeature()) {
             ModelLoader.setMultiplexFeatureObjects(true, root);
         }
-        if (wizardConfigurationPage.isNWLIPSupport()) {
+        if (wizardConfigurationPage.isIpSupport()) {
             ModelLoader.setIPSupportObjects(true, root);
             generalFeatures.setNWLForward(true);
+        } else {
+            generalFeatures.setNWLIPSupport(false);
+            generalFeatures.setNWLForward(false);
         }
         if (wizardConfigurationPage.isResponseChaining()) {
             ModelLoader.setPResChainingObjects(true, root);
         }
-        if (wizardConfigurationPage.isMultipleASnd()) {
-            ModelLoader.setPResChainingObjects(true, root);
-        }
+
         return root;
     }
 

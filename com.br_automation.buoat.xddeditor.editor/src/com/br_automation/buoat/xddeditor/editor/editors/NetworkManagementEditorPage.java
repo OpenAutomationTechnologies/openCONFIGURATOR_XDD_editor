@@ -96,7 +96,7 @@ public final class NetworkManagementEditorPage extends FormPage {
     private static final String GENERAL_FEATURES_SECTION_HEADING_DESCRIPTION = "Provides information about the general network management features.";
     private static final String CN_FEATURES_SECTION_HEADING_DESCRIPTION = "Provides information about the network management features of node.";
     private static final String TIME_FOR_PREQ_LABEL = "Time for SoC to PReq (ns):";
-    private static final String NETWORK_IP_SUPPORT_LABEL = "Network IP Support:";
+    private static final String IP_SUPPORT_LABEL = "IP Support:";
     private static final String TOTAL_NETWORK_ERROR_ENTRIES_LABEL = "Total Network Error Entries:";
     private static final String MAXIMUM_CYCLE_TIME_LABEL = "Maximum Cycle Time (\u00B5s):";
 
@@ -162,7 +162,7 @@ public final class NetworkManagementEditorPage extends FormPage {
     private Text networkBootTimeText;
     private Text maximumCycleTimeText;
     private Text totalNetworkErrorEntriesText;
-    private Button networkIpButton;
+    private Button ipButton;
     private Button multiplexedCommunicationChkBox;
     private Button pollResponseCommunication;
     private Text timeForPreqText;
@@ -227,18 +227,18 @@ public final class NetworkManagementEditorPage extends FormPage {
         networkBootTimeText.addVerifyListener(nameVerifyListener);
         maximumCycleTimeText.addVerifyListener(nameVerifyListener);
         totalNetworkErrorEntriesText.addVerifyListener(nameVerifyListener);
-        networkIpButton.addSelectionListener(networkIpButtonSelectionListener);
+        ipButton.addSelectionListener(ipButtonSelectionListener);
         multiplexedCommunicationChkBox.addSelectionListener(multiplexedCommunicationChkBoxSelectionListener);
         pollResponseCommunication.addSelectionListener(pollResponseCommunicationSelectionListener);
         timeForPreqText.addModifyListener(timeForPreqModifyListener);
         timeForPreqText.addVerifyListener(nameVerifyListener);
     }
 
-    private SelectionAdapter networkIpButtonSelectionListener = new SelectionAdapter() {
+    private SelectionAdapter ipButtonSelectionListener = new SelectionAdapter() {
 
         @Override
         public void widgetSelected(SelectionEvent e) {
-            if (!networkIpButton.getSelection()) {
+            if (!ipButton.getSelection()) {
                 if (getGeneralFeatures() != null) {
                     getGeneralFeatures().unsetNWLIPSupport();
                 }
@@ -748,13 +748,13 @@ public final class NetworkManagementEditorPage extends FormPage {
 
             Label networkIpSupportLabel = new Label(client, SWT.NONE);
             networkIpSupportLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
-            networkIpSupportLabel.setText(NetworkManagementEditorPage.NETWORK_IP_SUPPORT_LABEL);
+            networkIpSupportLabel.setText(NetworkManagementEditorPage.IP_SUPPORT_LABEL);
             toolkit.adapt(networkIpSupportLabel, true, true);
             networkIpSupportLabel.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
 
-            networkIpButton = new Button(client, SWT.CHECK);
-            networkIpButton.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1));
-            toolkit.adapt(networkIpButton, true, true);
+            ipButton = new Button(client, SWT.CHECK);
+            ipButton.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1));
+            toolkit.adapt(ipButton, true, true);
 
             updateGeneralFeatureFields();
         }
@@ -772,7 +772,7 @@ public final class NetworkManagementEditorPage extends FormPage {
             totalNetworkErrorEntriesText.setText(String.valueOf(getGeneralFeatures().getNMTErrorEntries()));
 
             if (getGeneralFeatures().isNWLIPSupport()) {
-                networkIpButton.setSelection(true);
+                ipButton.setSelection(true);
             }
         }
 
