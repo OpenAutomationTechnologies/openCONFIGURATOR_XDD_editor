@@ -91,8 +91,8 @@ public class WizardConfigurationPage extends WizardPage {
     private NameVerifyListener nameVerifyListener = new NameVerifyListener();
 
     private static final String INVALID_VENDOR_ID = "Invalid vendor ID for the device.";
-    private static final String INVALID_VENDOR_ID_NULL_ERROR = "Vendor ID cannot be empty";
-    private static final String INVALID_PRODUCT_ID_NULL_ERROR = "Product ID cannot be empty";
+    private static final String INVALID_VENDOR_ID_NULL_ERROR = "Vendor ID cannot be empty.";
+    private static final String INVALID_PRODUCT_ID_NULL_ERROR = "Product ID cannot be empty.";
     private static final String INVALID_PRODUCT_NAME_EMPTY_ERROR = "Product name cannot be empty.";
     private static final String INVALID_PRODUCT_ID_VALUE = "Invalid product ID for the device.";
     private static final String INVALID_VENDOR_NAME_EMPTY_ERROR = "Vendor name cannot be empty.";
@@ -111,15 +111,15 @@ public class WizardConfigurationPage extends WizardPage {
     private static final String INVALID_NETWORK_ERROR_ENTRIES_SPACE_ERROR = "Network error entries cannot start with spaces.";
     private static final String INVALID_PREQ_TIME_ERROR = "Invalid SoC to PReq time value.";
 
-    private static final String MAXIMUM_CYCLE_TIME_OUT_OF_RANGE = "Maximum cycle time value {0} does not fit within the range (0 - 4,294,967,295).";
+    private static final String MAXIMUM_CYCLE_TIME_OUT_OF_RANGE = "Maximum cycle time value {0} does not fit into the range (0 - 4,294,967,295).";
     private static final String MAXIMUM_CYCLE_LESS_THAN_MINIMUM_CYCLE_TIME = "Maximum cycle time value {0} cannot be lesser than minimum cycle time value {1}.";
-    private static final String MINIMUM_CYCLE_TIME_OUT_OF_RANGE = "Minimum cycle time value {0} does not fit within the range (0 - 4,294,967,295).";
+    private static final String MINIMUM_CYCLE_TIME_OUT_OF_RANGE = "Minimum cycle time value {0} does not fit into the range (0 - 4,294,967,295).";
     private static final String MINIMUM_CYCLE_GREATER_MAXIMUM_CYCLE_TIME = "Minimum cycle time value {0} cannot be greater than maximum cycle time value {1}.";
-    private static final String NETWORK_BOOT_TIME_OUT_OF_RANGE = "Network boot time value {0} does not fit within the range (0 - 4,294,967,295).";
-    private static final String TIME_FOR_PREQ_OUT_OF_RANGE = "Time for PReq value {0} does not fit within the range (0 - 4,294,967,295).";
-    private static final String TOTAL_NETWORK_ENTRIES_OUT_OF_RANGE = "Total network error entries {0} does not fit within the range (0 - 4,294,967,295).";
-    private static final String VENDOR_ID_OUT_OF_RANGE = "Vendor ID value {0} does not fit within the range (0 - 4,294,967,295).";
-    private static final String PRODUCT_ID_OUT_OF_RANGE = "Product ID value {0} does not fit within the range (0 - 4,294,967,295).";
+    private static final String NETWORK_BOOT_TIME_OUT_OF_RANGE = "Network boot time value {0} does not fit into the range (0 - 4,294,967,295).";
+    private static final String TIME_FOR_PREQ_OUT_OF_RANGE = "Time for PReq value {0} does not fit into the range (0 - 4,294,967,295).";
+    private static final String TOTAL_NETWORK_ENTRIES_OUT_OF_RANGE = "Total network error entries {0} does not fit into the range (0 - 4,294,967,295).";
+    private static final String VENDOR_ID_OUT_OF_RANGE = "Vendor ID value {0} does not fit into the range (0 - 4,294,967,295).";
+    private static final String PRODUCT_ID_OUT_OF_RANGE = "Product ID value {0} does not fit into the range (0 - 4,294,967,295).";
 
     /**
      * @param pageID
@@ -276,7 +276,7 @@ public class WizardConfigurationPage extends WizardPage {
         this.btnResponseChaining = new Button(grpNodeFeatures, SWT.CHECK);
         this.btnResponseChaining.setToolTipText(Messages.wizardConfigurationPage_Response_chaining_tooltip);
         this.btnResponseChaining.setBounds(10, 44, 234, 16);
-        this.btnResponseChaining.setText("Poll Response Chaining Communication"); //$NON-NLS-1$
+        this.btnResponseChaining.setText("PollResponse Chaining Communication"); //$NON-NLS-1$
 
         Label lblSoc = new Label(grpNodeFeatures, SWT.NONE);
         lblSoc.setToolTipText(Messages.wizardConfigurationPage_Time_for_cn_to_process_Soc_tooltip);

@@ -83,7 +83,7 @@ public class AddObjectWizardPage extends WizardPage {
     public static final int MANUFACTURER_PROFILE_END_INDEX = 0x9FFF;
 
     public static final String DIALOG_DESCRIPTION = "Configure the attributes for the new object.";
-    public static final String DIALOG_PAGE_LABEL = "Object";
+    public static final String DIALOG_PAGE_LABEL = "Add Object";
 
     public static final String VALID_OBJECT_INDEX_RANGE = "Enter the object index value within the range (0x1000 to 0x9FFF).";
     public static final String INDEX_OUT_OF_RANGE = "Object index is out of range (0x1000 to 0x9FFF).";

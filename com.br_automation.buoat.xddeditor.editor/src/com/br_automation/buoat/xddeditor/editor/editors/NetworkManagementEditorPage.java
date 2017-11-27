@@ -93,9 +93,9 @@ public final class NetworkManagementEditorPage extends FormPage {
     /** Editor label and error messages */
     private static final String GENERAL_FEATURES_SECTION = "General Features";
     private static final String CN_FEATURES_SECTION = "Node Features";
-    private static final String GENERAL_FEATURES_SECTION_HEADING_DESCRIPTION = "Provides information about the general network management features.";
-    private static final String CN_FEATURES_SECTION_HEADING_DESCRIPTION = "Provides information about the network management features of node.";
-    private static final String TIME_FOR_PREQ_LABEL = "Time for SoC to PReq (ns):";
+    private static final String GENERAL_FEATURES_SECTION_HEADING_DESCRIPTION = "Provides information of general network management features.";
+    private static final String CN_FEATURES_SECTION_HEADING_DESCRIPTION = "Provides information of node specific network management features.";
+    private static final String TIME_FOR_PREQ_LABEL = "Duration SoC to PReq (ns):";
     private static final String IP_SUPPORT_LABEL = "IP Support:";
     private static final String TOTAL_NETWORK_ERROR_ENTRIES_LABEL = "Total Network Error Entries:";
     private static final String MAXIMUM_CYCLE_TIME_LABEL = "Maximum Cycle Time (\u00B5s):";
@@ -103,10 +103,10 @@ public final class NetworkManagementEditorPage extends FormPage {
     private static final String MINIMUM_CYCLE_TIME_LABEL = "Minimum Cycle Time (\u00B5s):";
     private static final String NETWORK_BOOT_TIME_LABEL = "Network Boot Time (\u00B5s):";
 
-    private static final String MULTIPLEXED_COMMUNICATION_LABEL = "Multiplexed Communication:";
-    private static final String POLL_RESPONSE_COMMUNICATION_LABEL = "Poll Response Chaining Communication:";
+    private static final String MULTIPLEXED_COMMUNICATION_LABEL = "Support Multiplexed Communication:";
+    private static final String POLL_RESPONSE_COMMUNICATION_LABEL = "Support PollResponse Chaining Communication:";
 
-    private static final String FORM_EDITOR_PAGE_TITLE = "Device Description File Editor";
+    private static final String FORM_EDITOR_PAGE_TITLE = "POWERLINK Device Description Editor";
 
     public static final String INVALID_PREQ_TIME_VALUE_EMPTY_ERROR = "PReq time cannot be empty.";
     public static final String INVALID_NETWORK_EMPTY_ERROR_ENTRIES = "Network error entries cannot be empty.";
@@ -121,12 +121,12 @@ public final class NetworkManagementEditorPage extends FormPage {
     private static final String INVALID_NETWORK_BOOT_TIME_SPACE_ERROR = "Network boot time cannot start with spaces.";
     private static final String INVALID_NETWORK_ERROR_ENTRIES_SPACE_ERROR = "Network error entries cannot start with spaces.";
 
-    private static final String MAXIMUM_CYCLE_TIME_OUT_OF_RANGE = "Maximum cycle time value {0} does not fit within the range (0 - 4,294,967,295).";
+    private static final String MAXIMUM_CYCLE_TIME_OUT_OF_RANGE = "Maximum cycle time value {0} does not fit into the range (0 - 4,294,967,295).";
     private static final String MAXIMUM_CYCLE_LESS_THAN_MINIMUM_CYCLE_TIME = "Maximum cycle time value {0} cannot be lesser than minimum cycle time value {1}.";
-    private static final String MINIMUM_CYCLE_TIME_OUT_OF_RANGE = "Minimum cycle time value {0} does not fit within the range (0 - 4,294,967,295).";
+    private static final String MINIMUM_CYCLE_TIME_OUT_OF_RANGE = "Minimum cycle time value {0} does not fit into the range (0 - 4,294,967,295).";
     private static final String MINIMUM_CYCLE_GREATER_MAXIMUM_CYCLE_TIME = "Minimum cycle time value {0} cannot be greater than maximum cycle time value {1}.";
-    private static final String NETWORK_BOOT_TIME_OUT_OF_RANGE = "Network boot time value {0} does not fit within the range (0 - 4,294,967,295).";
-    private static final String TIME_FOR_PREQ_OUT_OF_RANGE = "Time for PReq value {0} does not fit within the range (0 - 4,294,967,295).";
+    private static final String NETWORK_BOOT_TIME_OUT_OF_RANGE = "Network boot time value {0} does not fit into the range (0 - 4,294,967,295).";
+    private static final String TIME_FOR_PREQ_OUT_OF_RANGE = "Duration PReq value {0} does not fit into the range (0 - 4,294,967,295).";
 
     /**
      * Form size

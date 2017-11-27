@@ -26,7 +26,7 @@
             extensions="xdd, xdc,XDD,XDC"
             icon="icons/full/obj16/XDDModelFile.gif"
             id="com.br_automation.buoat.xddeditor.editor.XDD"
-            name="XDD Editor">
+            name="POWERLINK Device Description Editor">
       </editor>
    </extension>
 

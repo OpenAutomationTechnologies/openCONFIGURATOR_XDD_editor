@@ -40,7 +40,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
 
 /**
  * @brief Wizard to choose Template and if the ConfigurationWizard should be
@@ -62,8 +61,8 @@ public class WizardTemplatePage extends WizardPage {
      */
     public WizardTemplatePage(String pageName) {
         super(pageName);
-        this.setTitle("XDD Model wizard");
-        this.setDescription("Default Template selection");
+        this.setTitle("POWERLINK Device Description Template");
+        this.setDescription("Choose a device description template");
         this.enableNext = false;
         this.setPageComplete(false);
     }
@@ -86,14 +85,10 @@ public class WizardTemplatePage extends WizardPage {
         composite.setBounds(10, 10, 387, 147);
 
         this.cmbTemplate = new Combo(composite, SWT.READ_ONLY);
-        this.cmbTemplate.setBounds(30, 56, 186, 23);
+        this.cmbTemplate.setBounds(30, 32, 186, 23);
         this.cmbTemplate
-                .setItems(new String[] { "Default device", "Default extended device", "Default static device" });
+                .setItems(new String[] { "Default device template", "Extended device template", "Static mapping device template" });
         this.cmbTemplate.select(0);
-
-        Label lblTemplateType = new Label(composite, SWT.NONE);
-        lblTemplateType.setBounds(30, 32, 85, 15);
-        lblTemplateType.setText("Template type:");
 
         Button rbtnLoadDefaultXDD = new Button(composite, SWT.RADIO);
         rbtnLoadDefaultXDD.addSelectionListener(new SelectionAdapter() {
@@ -115,16 +110,15 @@ public class WizardTemplatePage extends WizardPage {
 
                 if (WizardTemplatePage.this.cbtnUseConfigurationWizard.getSelection()) {
                     WizardTemplatePage.this.enableNext = true;
-                    WizardTemplatePage.this.setPageComplete(true);
+					WizardTemplatePage.this.setPageComplete(false);
                 } else {
                     WizardTemplatePage.this.enableNext = false;
-                    WizardTemplatePage.this.setPageComplete(false);
                     WizardTemplatePage.this.setPageComplete(true);
                 }
 
             }
         });
-        this.cbtnUseConfigurationWizard.setBounds(30, 85, 304, 16);
+        this.cbtnUseConfigurationWizard.setBounds(30, 61, 304, 16);
         this.cbtnUseConfigurationWizard.setText("Use the configuration wizard to modify the template");
     } // createControl
 

@@ -85,9 +85,9 @@ public final class ModelLoader {
         String resourceName;
 
         String choice = wizardTemplatePage.getTemplateCombo().getText();
-        if (choice.contentEquals("Default device")) //$NON-NLS-1$
+        if (choice.contentEquals("Default device template")) //$NON-NLS-1$
             resourceName = Messages.modelLoader_resourceTemplate_XDDdefault;
-        else if (choice.contentEquals("Default extended device")) //$NON-NLS-1$
+        else if (choice.contentEquals("Extended device template")) //$NON-NLS-1$
             resourceName = Messages.modelLoader_resourceTemplate_XDDextended;
         else
             resourceName = Messages.modelLoader_resourceTemplate_XDDstatic;

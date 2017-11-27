@@ -60,12 +60,12 @@ public interface IPowerlinkConstants {
     public static final String MANDATORY_DATA_GROUP = "Mandatory Data";
     public static final String OBJECT_NAME = "Name:";
     public static final String OBJECT_TYPE = "Object Type:";
-    public static final String OBJECT_INDEX = "Index:";
+    public static final String OBJECT_INDEX = "Object ID:";
     public static final String OPTIONAL_GROUP = "Optional Data";
     public static final String DEFAULT_VALUE = "Default Value:";
     public static final String PROFILE_TYPE_LABEL = "Profile Type:";
     public static final String ADDITIONAL_INFO_LABEL = "Additional Info:";
-    public static final String SUB_OBJECT_INDEX = "Sub Index:";
+    public static final String SUB_OBJECT_INDEX = "Sub-Object ID:";
 
     public static final String[] OBJECT_TYPES = new String[] { "7 - VAR", "8 - ARRAY", "9 - RECORD" };
     public static final String ISOCHRONOUS_MODE_LABEL = "Isonchronus Mode";

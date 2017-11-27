@@ -139,11 +139,11 @@ public class ObjectDictionaryEditorPage extends FormPage implements IPropertyLis
     public static final String OBJECT_DICTIONARY_DETAILS_HEADING = "Object Details";
     public static final String SUB_OBJECT_DICTIONARY_DETAILS_HEADING = "Sub-Object Details";
 
-    private static final String ADD_OBJECT_BUTTON_LABEL = "Add object...";
-    private static final String ADD_SUB_OBJECT_BUTTON_LABEL = "Add sub-object...";
+    private static final String ADD_OBJECT_BUTTON_LABEL = "Add Object...";
+    private static final String ADD_SUB_OBJECT_BUTTON_LABEL = "Add Sub-Object...";
     private static final String REMOVE_BUTTON_LABEL = "Remove";
 
-    private static final String FORM_EDITOR_PAGE_TITLE = "Device Description File Editor";
+    private static final String FORM_EDITOR_PAGE_TITLE = "POWERLINK Device Description Editor";
 
     /**
      * Form size

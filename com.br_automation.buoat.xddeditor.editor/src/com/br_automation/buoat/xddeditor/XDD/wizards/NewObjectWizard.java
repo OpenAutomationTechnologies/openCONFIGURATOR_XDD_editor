@@ -65,7 +65,7 @@ import com.br_automation.buoat.xddeditor.editor.editors.DeviceDescriptionFileEdi
  */
 public class NewObjectWizard extends Wizard {
 
-    private static final String WINDOW_TITLE = "Add object";
+    private static final String WINDOW_TITLE = "Add Object";
 
     /**
      * AddObjectWizardPage

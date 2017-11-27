@@ -122,7 +122,7 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
     private static final String DEVICE_IMAGE_SECTION_HEADING_DESCRIPTION = "Provides the image and connector information of device.";
 
     private static final String GENERAL_INFORMATION_SECTION = "General Information";
-    private static final String GENERAL_SECTION_HEADING_DESCRIPTION = "Provides general information about device description file.";
+    private static final String GENERAL_SECTION_HEADING_DESCRIPTION = "Provides general information about the device.";
     private static final String PRODUCT_ID_LABEL = "Product ID:";
     private static final String PRODUCT_NAME_LABEL = "Product Name:";
     private static final String FIRMWARE_VERSION_LABEL = "F/W Version:";
@@ -143,12 +143,12 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
     private static final String PROJECT_INFORMATION_TOOL_NAME = "Ethernet POWERLINK XDD Editor";
     private static final String PROJECT_INFORMATION_VERSION_NUMBER = "1.0";
 
-    private static final String DEVICE_COMMUNICATION_INFORMATION_SECTION = "Communication";
-    private static final String DEVICE_COMMUNICATION_INFORMATION_SECTION_DESCRIPTION = "Provides links to the editor and communication sections.";
+    private static final String DEVICE_COMMUNICATION_INFORMATION_SECTION = "POWERLINK Communication";
+    private static final String DEVICE_COMMUNICATION_INFORMATION_SECTION_DESCRIPTION = "Provides links to the network management and object dictionary sections.";
     private static final String OBJECT_DICTIONARY_HYPERLINK_SECTION = "Object Dictionary";
     private static final String NETWORK_MANAGEMENT_HYPERLINK_SECTION = "Network Management";
 
-    private static final String FORM_EDITOR_PAGE_TITLE = "Device Description File Editor";
+    private static final String FORM_EDITOR_PAGE_TITLE = "POWERLINK Device Description Editor";
 
     private static final String INVALID_VENDOR_ID = "Invalid vendor ID for the device.";
     private static final String INVALID_VENDOR_ID_NULL_ERROR = "Vendor ID cannot be empty.";
@@ -165,12 +165,12 @@ public final class DeviceDescriptionFileEditorPage extends FormPage {
     private static final String INVALID_PRODUCT_ID_VALUE = "Invalid product ID for the device.";
     private static final String INVALID_VENDOR_NAME_EMPTY_ERROR = "Vendor name cannot be empty.";
     private static final String OBJECT_DICTIONARY_HYPERLINK_DESCRIPTION = ": Edit the POWERLINK object dictionary of the device.";
-    private static final String NETWORK_MANAGEMENT_HYPERLINK_DESCRIPTION = ": Configure network management properties.";
-    private static final String VENDOR_ID_VAL_DOES_NOT_FIT_IN_RANGE = "Vendor ID value {0} does not fit within the range (0 - 4,294,967,295) of data type 'Unsigned32'.";
-    private static final String PRODUCT_ID_VAL_DOES_NOT_FIT_IN_RANGE = "Product ID value {0} does not fit within the range (0 - 4,294,967,295) of data type 'Unsigned32'.";
+    private static final String NETWORK_MANAGEMENT_HYPERLINK_DESCRIPTION = ": Configure network management properties of the device.";
+    private static final String VENDOR_ID_VAL_DOES_NOT_FIT_IN_RANGE = "Vendor ID value {0} does not fit into the range (0 - 4,294,967,295) of data type 'Unsigned32'.";
+    private static final String PRODUCT_ID_VAL_DOES_NOT_FIT_IN_RANGE = "Product ID value {0} does not fit into the range (0 - 4,294,967,295) of data type 'Unsigned32'.";
 
     private static final String PROJECT_INFORMATION_SECTION_HEADING = "File Information";
-    private static final String PROJECT_INFORMATION_SECTION_HEADING_DESCRIPTION = "Provides the device description file information.";
+    private static final String PROJECT_INFORMATION_SECTION_HEADING_DESCRIPTION = "Provides XDD file specific information.";
     private static final String GENERATOR_SECTION_MODIFIED_BY_LABEL = "Modified By:";
     private static final String GENERATOR_SECTION_CREATED_BY_LABEL = "Created By:";
     private static final String GENERATOR_SECTION_MODIFIED_ON_LABEL = "Modified On:";
