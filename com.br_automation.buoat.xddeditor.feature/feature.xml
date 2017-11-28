@@ -2,7 +2,7 @@
 <feature
       id="com.br_automation.buoat.xddeditor.feature"
       label="Ethernet POWERLINK XDD Editor"
-      version="1.0.0.qualifier"
+      version="1.0.3.qualifier"
       provider-name="Kalycito Infotech Pvt Ltd. and B&amp;R Industrial Automation GmbH"
       plugin="com.br_automation.buoat.xddeditor">
 
