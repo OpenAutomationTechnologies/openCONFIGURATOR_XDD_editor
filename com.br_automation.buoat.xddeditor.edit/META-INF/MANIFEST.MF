@@ -11,9 +11,10 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: FwSchema.provider,
  com.br_automation.buoat.xddeditor.XDD.custom,
  com.br_automation.buoat.xddeditor.XDD.provider
-Require-Bundle: org.eclipse.core.runtime,
- com.br_automation.buoat.xddeditor;visibility:=reexport,
- org.eclipse.emf.edit;visibility:=reexport,
- org.eclipse.emf.eef.runtime;visibility:=reexport,
- org.eclipse.emf.query
+Require-Bundle: com.br_automation.buoat.xddeditor;visibility:=reexport,
+ org.eclipse.core.runtime,
+ org.eclipse.emf.edit,
+ org.eclipse.emf.eef.runtime,
+ org.eclipse.emf.query,
+ org.eclipse.emf.eef.mapping
 Bundle-ActivationPolicy: lazy
