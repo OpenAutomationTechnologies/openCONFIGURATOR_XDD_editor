@@ -363,7 +363,8 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
                 propertyList.add(editNameDescriptor);
                 propertyList.add(editObjectTypeDescriptor);
                 propertyList.add(editDataTypeDescriptor);
-                if ((plkObject.getObjectType() != 9) && (plkObject.getDataType() != null)) {
+                if ((plkObject.getObjectType() != OBJECT_TYPE_ARRAY)
+                        && (plkObject.getObjectType() != OBJECT_TYPE_RECORD) && (plkObject.getDataType() != null)) {
                     propertyList.add(editLowLimitDescriptor);
                     propertyList.add(editHighLimitDescriptor);
                     propertyList.add(editDefaultValueDescriptor);
@@ -380,7 +381,8 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
                 propertyList.add(nameDescriptor);
                 propertyList.add(objectTypeDescriptor);
                 propertyList.add(dataTypeDescriptor);
-                if ((plkObject.getObjectType() != 9) && (plkObject.getDataType() != null)) {
+                if ((plkObject.getObjectType() != OBJECT_TYPE_ARRAY)
+                        && (plkObject.getObjectType() != OBJECT_TYPE_RECORD) && (plkObject.getDataType() != null)) {
                     propertyList.add(lowLimitDescriptor);
                     propertyList.add(highLimitDescriptor);
                     propertyList.add(defaultValueDescriptor);
@@ -409,8 +411,7 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
     /*
      * (non-Javadoc)
      *
-     * @see
-     * org.eclipse.ui.views.properties.IPropertySource#getPropertyDescriptors()
+     * @see org.eclipse.ui.views.properties.IPropertySource#getPropertyDescriptors()
      */
     @Override
     public IPropertyDescriptor[] getPropertyDescriptors() {
@@ -427,9 +428,9 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
      *
      * @param value
      *            The value to be set.
-     * @return Returns a string indicating whether the given value is valid;
-     *         null means valid, and non-null means invalid, with the result
-     *         being the error message to display to the end user.
+     * @return Returns a string indicating whether the given value is valid; null
+     *         means valid, and non-null means invalid, with the result being the
+     *         error message to display to the end user.
      */
     protected String handleLowLimitValue(Object value) {
         String lowLimit = (String) value;
@@ -441,7 +442,7 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
                 dataType = getDataType(dataTypeVal);
             }
 
-            if (!plkObject.getDefaultValue().isEmpty()) {
+            if (plkObject.getDefaultValue() != null && !plkObject.getDefaultValue().isEmpty()) {
                 String defaultValue = plkObject.getDefaultValue();
                 Long defaultVal = getValue(defaultValue);
                 if (!lowLimit.isEmpty()) {
@@ -466,11 +467,12 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
                     }
                 }
             }
-        } catch (NumberFormatException ex) {
+        } catch (Exception ex) {
+            ex.printStackTrace();
             return MessageFormat.format(INVALID_VALUE, lowLimit);
         }
 
-        return AbstractObjectPropertySource.isValidVal(lowLimit, "Low limit", dataType);
+        return AbstractObjectPropertySource.isValidVal(lowLimit, OBJ_LOW_LIMIT_LABEL, dataType);
     }
 
     private boolean isObjectIndexAvailable(String objIndex) {
@@ -519,9 +521,9 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
      *
      * @param value
      *            The value to be set.
-     * @return Returns a string indicating whether the given value is valid;
-     *         null means valid, and non-null means invalid, with the result
-     *         being the error message to display to the end user.
+     * @return Returns a string indicating whether the given value is valid; null
+     *         means valid, and non-null means invalid, with the result being the
+     *         error message to display to the end user.
      */
     protected String handleObjectIndexValue(Object value) {
         String index = (String) value;
@@ -549,9 +551,9 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
      *
      * @param value
      *            The value to be set.
-     * @return Returns a string indicating whether the given value is valid;
-     *         null means valid, and non-null means invalid, with the result
-     *         being the error message to display to the end user.
+     * @return Returns a string indicating whether the given value is valid; null
+     *         means valid, and non-null means invalid, with the result being the
+     *         error message to display to the end user.
      */
     protected String handleHighLimitValue(Object value) {
         String highLimit = (String) value;
@@ -563,7 +565,7 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
         }
         try {
 
-            if (!plkObject.getDefaultValue().isEmpty()) {
+            if (plkObject.getDefaultValue() != null && !plkObject.getDefaultValue().isEmpty()) {
                 String defaultValue = plkObject.getDefaultValue();
                 Long defaultVal = getValue(defaultValue);
                 if (!highLimit.isEmpty()) {
@@ -589,12 +591,12 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
                 }
             }
 
-        } catch (NumberFormatException ex) {
-
+        } catch (Exception ex) {
+            ex.printStackTrace();
             return MessageFormat.format(INVALID_VALUE, highLimit);
         }
 
-        return isValidVal(highLimit, "High limit", dataType);
+        return isValidVal(highLimit, OBJ_HIGH_LIMIT_LABEL, dataType);
 
     }
 
@@ -631,9 +633,9 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
      *
      * @param value
      *            The value to be set.
-     * @return Returns a string indicating whether the given value is valid;
-     *         null means valid, and non-null means invalid, with the result
-     *         being the error message to display to the end user.
+     * @return Returns a string indicating whether the given value is valid; null
+     *         means valid, and non-null means invalid, with the result being the
+     *         error message to display to the end user.
      */
     protected String handleDefaultValue(Object value) {
 
@@ -674,10 +676,11 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
                     }
                 }
             }
-        } catch (NumberFormatException ex) {
+        } catch (Exception ex) {
+            ex.printStackTrace();
             return MessageFormat.format(INVALID_VALUE, defaultVal);
         }
-        return isValidVal(defaultVal, "Default value", dataType);
+        return isValidVal(defaultVal, OBJ_DEFAULT_VALUE_LABEL, dataType);
     }
 
     /**
@@ -685,9 +688,9 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
      *
      * @param value
      *            The value to be set.
-     * @return Returns a string indicating whether the given value is valid;
-     *         null means valid, and non-null means invalid, with the result
-     *         being the error message to display to the end user.
+     * @return Returns a string indicating whether the given value is valid; null
+     *         means valid, and non-null means invalid, with the result being the
+     *         error message to display to the end user.
      */
     protected String handlePdoMappingValue(Object value) {
         if (value instanceof Integer) {
@@ -735,8 +738,7 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
     /*
      * (non-Javadoc)
      *
-     * @see
-     * org.eclipse.ui.views.properties.IPropertySource#getPropertyValue(java.
+     * @see org.eclipse.ui.views.properties.IPropertySource#getPropertyValue(java.
      * lang.Object)
      */
     @Override
@@ -919,8 +921,7 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
     /**
      * Verifies the object belonging to module.
      *
-     * @return <true> if it is a module object, <false> if it is a object of
-     *         node.
+     * @return <true> if it is a module object, <false> if it is a object of node.
      */
     public boolean isModuleObject() {
         return false;
@@ -929,8 +930,7 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
     /*
      * (non-Javadoc)
      *
-     * @see
-     * org.eclipse.ui.views.properties.IPropertySource#isPropertySet(java.lang.
+     * @see org.eclipse.ui.views.properties.IPropertySource#isPropertySet(java.lang.
      * Object)
      */
     @Override
@@ -1013,8 +1013,7 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
     /*
      * (non-Javadoc)
      *
-     * @see
-     * org.eclipse.ui.views.properties.IPropertySource#resetPropertyValue(java.
+     * @see org.eclipse.ui.views.properties.IPropertySource#resetPropertyValue(java.
      * lang.Object)
      */
     @Override
@@ -1179,8 +1178,8 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
     }
 
     /**
-     * Get the TObject PDO mapping value based on selected PDO mapping in
-     * property page
+     * Get the TObject PDO mapping value based on selected PDO mapping in property
+     * page
      *
      * @param pdoMapping
      *            Value of PDO
@@ -1244,22 +1243,26 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
                         String val = DATA_TYPE_LIST[(int) value];
                         if (!val.isEmpty()) {
                             byte[] dataType = DatatypeConverter.parseHexBinary(getDataTypeVal(val));
-
                             plkObject.setDataType(dataType);
-                            plkObject.setDefaultValue(StringUtils.EMPTY);
-                            plkObject.setLowLimit(StringUtils.EMPTY);
-                            plkObject.setHighLimit(StringUtils.EMPTY);
-
                         } else {
                             plkObject.setDataType(null);
                         }
+                        plkObject.setLowLimit(null);
+                        plkObject.setHighLimit(null);
+                        plkObject.setDefaultValue(null);
                     }
                     break;
                 case OBJ_LOW_LIMIT_EDITABLE_ID:
                     plkObject.setLowLimit((String) value);
+                    if (!isValueNullOrEmpty(plkObject.getLowLimit())) {
+                        plkObject.setLowLimit(null);
+                    }
                     break;
                 case OBJ_HIGH_LIMIT_EDITABLE_ID:
                     plkObject.setHighLimit((String) value);
+                    if (!isValueNullOrEmpty(plkObject.getHighLimit())) {
+                        plkObject.setHighLimit(null);
+                    }
                     break;
                 case OBJ_ACCESS_TYPE_EDITABLE_ID:
                     if (value instanceof Integer) {
@@ -1270,6 +1273,9 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
                     break;
                 case OBJ_DEFAULT_VALUE_EDITABLE_ID:
                     plkObject.setDefaultValue((String) value);
+                    if (!isValueNullOrEmpty(plkObject.getDefaultValue())) {
+                        plkObject.setDefaultValue(null);
+                    }
                     break;
                 case OBJ_DENOTATION_EDITABLE_ID:
                     plkObject.setDenotation((String) value);

@@ -72,6 +72,9 @@ public class AbstractObjectPropertySource {
     public static final String OBJ_OBJFLAGS_ID = "Obj.objFlags"; //$NON-NLS-1$
     public static final String OBJ_UNIQUEIDREF_ID = "Obj.uniqueIDRef"; //$NON-NLS-1$
     public static final String OBJ_ERROR_ID = "Obj.error"; //$NON-NLS-1$
+    public static final short OBJECT_TYPE_VAR = 7; // $NON-NLS-1$
+    public static final short OBJECT_TYPE_ARRAY = 8; // $NON-NLS-1$
+    public static final short OBJECT_TYPE_RECORD = 9; // $NON-NLS-1$
 
     public static final String OBJ_INDEX_EDITABLE_ID = "Obj.IndexIdEditable"; //$NON-NLS-1$
     public static final String OBJ_NAME_EDITABLE_ID = "Obj.nameEditable"; //$NON-NLS-1$
@@ -85,21 +88,28 @@ public class AbstractObjectPropertySource {
     public static final String OBJ_PDO_MAPPING_EDITABLE_ID = "Obj.PDOmappingEditable"; //$NON-NLS-1$
     public static final String OBJ_OBJFLAGS_EDITABLE_ID = "Obj.objFlagsEditable"; //$NON-NLS-1$
 
+    public static final String SUB_OBJ_DATATYPE_EDITABLE_ID = "SubObj.dataTypeEditable"; //$NON-NLS-1$
+    public static final String SUB_OBJ_ACCESS_TYPE_EDITABLE_ID = "SubObj.accessTypeEditable"; //$NON-NLS-1$
+    public static final String SUB_OBJ_PDO_MAPPING_EDITABLE_ID = "SubObj.PDOmappingEditable"; //$NON-NLS-1$
+    public static final String SUB_OBJ_LOW_LIMIT_EDITABLE_ID = "SubObj.lowLimitEditable"; //$NON-NLS-1$
+    public static final String SUB_OBJ_HIGH_LIMIT_EDITABLE_ID = "SubObj.highLimitEditable"; //$NON-NLS-1$
+    public static final String SUB_OBJ_DEFAULT_VALUE_EDITABLE_ID = "SubObj.defaultValueEditable"; //$NON-NLS-1$
+
     // Common labels
-    private static final String OBJ_INDEX_LABEL = "Object ID"; //$NON-NLS-1$
-    private static final String OBJ_NAME_LABEL = "Name";
-    private static final String OBJ_TYPE_LABEL = "Object Type";
-    private static final String OBJ_DATATYPE_LABEL = "Data Type";
-    private static final String OBJ_LOW_LIMIT_LABEL = "Low Limit";
-    private static final String OBJ_HIGH_LIMIT_LABEL = "High Limit";
-    private static final String OBJ_ACCESS_TYPE_LABEL = "Access Type";
-    private static final String OBJ_DEFAULT_VALUE_LABEL = "Default Value";
-    private static final String OBJ_ACTUAL_VALUE_LABEL = "Actual Value";
-    private static final String OBJ_FORCE_ACTUAL_VALUE_LABEL = "Force Actual Value";
-    private static final String OBJ_DENOTATION_LABEL = "Denotation";
-    private static final String OBJ_PDO_MAPPING_LABEL = "PDO Mapping";
-    private static final String OBJ_OBJFLAGS_LABEL = "Object Flags";
-    private static final String OBJ_UNIQUEIDREF_LABEL = "UniqueIDRef";
+    public static final String OBJ_INDEX_LABEL = "Object ID"; //$NON-NLS-1$
+    public static final String OBJ_NAME_LABEL = "Name";
+    public static final String OBJ_TYPE_LABEL = "Object Type";
+    public static final String OBJ_DATATYPE_LABEL = "Data Type";
+    public static final String OBJ_LOW_LIMIT_LABEL = "Low Limit";
+    public static final String OBJ_HIGH_LIMIT_LABEL = "High Limit";
+    public static final String OBJ_ACCESS_TYPE_LABEL = "Access Type";
+    public static final String OBJ_DEFAULT_VALUE_LABEL = "Default Value";
+    public static final String OBJ_ACTUAL_VALUE_LABEL = "Actual Value";
+    public static final String OBJ_FORCE_ACTUAL_VALUE_LABEL = "Force Actual Value";
+    public static final String OBJ_DENOTATION_LABEL = "Denotation";
+    public static final String OBJ_PDO_MAPPING_LABEL = "PDO Mapping";
+    public static final String OBJ_OBJFLAGS_LABEL = "Object Flags";
+    public static final String OBJ_UNIQUEIDREF_LABEL = "UniqueIDRef";
 
     public static final int MANUFACTURER_PROFILE_SUB_OBJ_START_INDEX = 0x01;
     public static final int MANUFACTURER_PROFILE_SUB_OBJ_END_INDEX = 0xFE;
@@ -188,6 +198,19 @@ public class AbstractObjectPropertySource {
     protected static final TextPropertyDescriptor editbjFlagsDescriptor = new TextPropertyDescriptor(
             OBJ_OBJFLAGS_EDITABLE_ID, OBJ_OBJFLAGS_LABEL);
 
+    protected static final ComboBoxPropertyDescriptor editSubObjDataTypeDescriptor = new ComboBoxPropertyDescriptor(
+            SUB_OBJ_DATATYPE_EDITABLE_ID, OBJ_DATATYPE_LABEL, DATA_TYPE_LIST);
+    protected static final TextPropertyDescriptor editSubObjLowLimitDescriptor = new TextPropertyDescriptor(
+            SUB_OBJ_LOW_LIMIT_EDITABLE_ID, OBJ_LOW_LIMIT_LABEL);
+    protected static final TextPropertyDescriptor editSubObjHighLimitDescriptor = new TextPropertyDescriptor(
+            SUB_OBJ_HIGH_LIMIT_EDITABLE_ID, OBJ_HIGH_LIMIT_LABEL);
+    protected static final TextPropertyDescriptor editSubObjDefaultValueDescriptor = new TextPropertyDescriptor(
+            SUB_OBJ_DEFAULT_VALUE_EDITABLE_ID, OBJ_DEFAULT_VALUE_LABEL);
+    protected static final ComboBoxPropertyDescriptor editSubObjPdoMappingDescriptor = new ComboBoxPropertyDescriptor(
+            SUB_OBJ_PDO_MAPPING_EDITABLE_ID, OBJ_PDO_MAPPING_LABEL, PDO_MAPPING_TYPES);
+    protected static final ComboBoxPropertyDescriptor editSubObjAccessTypeDescriptor = new ComboBoxPropertyDescriptor(
+            SUB_OBJ_ACCESS_TYPE_EDITABLE_ID, OBJ_ACCESS_TYPE_LABEL, ACCESS_TYPE_LIST);
+
     public static final String BOOLEAN_OUT_OF_RANGE = "{0} is out of range (0 to 1).";
     public static final String INTEGER8_OUT_OF_RANGE = "{0} is out of range (-128 to 127).";
     public static final String INTEGER16_OUT_OF_RANGE = "{0} is out of range (-32768 to 32767).";
@@ -230,6 +253,21 @@ public class AbstractObjectPropertySource {
             defaultVal = Long.parseLong(value);
         }
         return defaultVal;
+    }
+
+    /**
+     * Null and empty check for the String
+     *
+     * @param value
+     *
+     * @return True - When the String is null or not empty
+     *         false - otherwise.
+     */
+    public boolean isValueNullOrEmpty(String value) {
+        if (value != null && value.isEmpty()) {
+            return false;
+        }
+        return true;
     }
 
     /**

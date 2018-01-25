@@ -100,6 +100,7 @@ public class AddObjectWizardPage extends WizardPage {
 
     public static final String INVALID_PDO_MAPPING_ERROR_MESSAGE = "Object with access type {0} does not allow {1}.";
     public static final String LOW_LIMIT_GREATER_HIGH_LIMIT = "Low limit cannot be greater than high limit.";
+    public static final String INVALID_DATA_VALUE = "Low limit, High limit, Default value should be empty.";
 
     /**
      * Name verify listener
@@ -317,6 +318,16 @@ public class AddObjectWizardPage extends WizardPage {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 objectTypeText = comboObjectType.getText();
+                if (objectTypeText.equalsIgnoreCase(OBJECT_TYPES[1])
+                        || objectTypeText.equalsIgnoreCase(OBJECT_TYPES[2])) {
+                    txtDefaultValue.setEnabled(false);
+                    txtHighLimit.setEnabled(false);
+                    txtLowLimit.setEnabled(false);
+                } else {
+                    txtDefaultValue.setEnabled(true);
+                    txtHighLimit.setEnabled(true);
+                    txtLowLimit.setEnabled(true);
+                }
             }
         });
 
@@ -350,6 +361,8 @@ public class AddObjectWizardPage extends WizardPage {
             txtHighLimit.addModifyListener(txthighLimitModifyListener);
 
             txtLowLimit.addModifyListener(txtLowLimitModifyListener);
+
+            comboObjectType.addModifyListener(comboObject);
 
             String defaultVal = getTxtDefaultValue();
             if (!defaultVal.isEmpty()) {
@@ -477,6 +490,22 @@ public class AddObjectWizardPage extends WizardPage {
         }
     };
 
+    private ModifyListener comboObject = new ModifyListener() {
+
+        @Override
+        public void modifyText(ModifyEvent e) {
+            setErrorMessage(null);
+            setPageComplete(true);
+            String objType = comboObjectType.getText();
+            if (!(objType.equalsIgnoreCase(OBJECT_TYPES[0]))
+                    && !(highLimit.isEmpty() && lowLimit.isEmpty() && defaultValue.isEmpty())) {
+                setErrorMessage(INVALID_DATA_VALUE);
+                setPageComplete(false);
+            }
+            getWizard().getContainer().updateButtons();
+        }
+    };
+
     private boolean isObjectIndexValid(String text) {
         if (!text.isEmpty()) {
             try {
@@ -564,6 +593,7 @@ public class AddObjectWizardPage extends WizardPage {
             String pdoMappingVal = comboPdoMapping.getText();
             String accessTypeVal = comboAccessType.getText();
             String dataType = comboDataType.getText();
+            String objectType = comboObjectType.getText();
 
             setErrorMessage(null);
             if (index.isEmpty()) {
@@ -609,11 +639,23 @@ public class AddObjectWizardPage extends WizardPage {
                 return false;
             }
 
-            txtDefaultValue.setEnabled(true);
-            txtHighLimit.setEnabled(true);
-            txtLowLimit.setEnabled(true);
+            if (objectType.equalsIgnoreCase(OBJECT_TYPES[0])) {
+                txtDefaultValue.setEnabled(true);
+                txtHighLimit.setEnabled(true);
+                txtLowLimit.setEnabled(true);
+            } else {
+                txtDefaultValue.setEnabled(false);
+                txtHighLimit.setEnabled(false);
+                txtLowLimit.setEnabled(false);
+            }
 
             String defaultVal = getTxtDefaultValue();
+
+            if (!(objectType.equalsIgnoreCase(OBJECT_TYPES[0]))
+                    && !(defaultVal.isEmpty() && lowLimit.isEmpty() && highLimit.isEmpty())) {
+                setErrorMessage(INVALID_DATA_VALUE);
+                return false;
+            }
 
             if (!defaultVal.isEmpty()) {
                 String errorMessage = AbstractObjectPropertySource.isValidVal(defaultVal, "Default value", dataType);
@@ -925,8 +967,8 @@ public class AddObjectWizardPage extends WizardPage {
      *
      * @param pdoMappingValue
      *            value to be verified.
-     * @return Returns <code>true</code> if the value is valid,
-     *         <code>false</code> otherwise.
+     * @return Returns <code>true</code> if the value is valid, <code>false</code>
+     *         otherwise.
      */
     protected boolean isPdoMappingValueValid(String pdoMappingValue) {
         TObjectAccessType accessType = getAccessType();

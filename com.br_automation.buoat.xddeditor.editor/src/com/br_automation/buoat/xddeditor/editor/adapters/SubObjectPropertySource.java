@@ -109,8 +109,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
     private TObjectImpl plkObject;
 
     /**
-     * Constructor that describes the property descriptors of POWERLINK
-     * sub-object.
+     * Constructor that describes the property descriptors of POWERLINK sub-object.
      *
      * @param plkSubObject
      *            Instance of PowerlinkSubobject
@@ -142,8 +141,8 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
         editObjectTypeDescriptor.setCategory(IPropertySourceSupport.OBJECT_ATTRIBUTES_CATEGORY);
 
         dataTypeDescriptor.setCategory(IPropertySourceSupport.INITIAL_VALUE_CATEGORY);
-        editDataTypeDescriptor.setCategory(IPropertySourceSupport.INITIAL_VALUE_CATEGORY);
-        editDataTypeDescriptor.setValidator(new ICellEditorValidator() {
+        editSubObjDataTypeDescriptor.setCategory(IPropertySourceSupport.INITIAL_VALUE_CATEGORY);
+        editSubObjDataTypeDescriptor.setValidator(new ICellEditorValidator() {
 
             @Override
             public String isValid(Object value) {
@@ -153,8 +152,8 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
         });
 
         lowLimitDescriptor.setCategory(IPropertySourceSupport.OBJECT_ATTRIBUTES_CATEGORY);
-        editLowLimitDescriptor.setCategory(IPropertySourceSupport.OBJECT_ATTRIBUTES_CATEGORY);
-        editLowLimitDescriptor.setValidator(new ICellEditorValidator() {
+        editSubObjLowLimitDescriptor.setCategory(IPropertySourceSupport.OBJECT_ATTRIBUTES_CATEGORY);
+        editSubObjLowLimitDescriptor.setValidator(new ICellEditorValidator() {
 
             @Override
             public String isValid(Object value) {
@@ -164,8 +163,8 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
         });
 
         highLimitDescriptor.setCategory(IPropertySourceSupport.OBJECT_ATTRIBUTES_CATEGORY);
-        editHighLimitDescriptor.setCategory(IPropertySourceSupport.OBJECT_ATTRIBUTES_CATEGORY);
-        editHighLimitDescriptor.setValidator(new ICellEditorValidator() {
+        editSubObjHighLimitDescriptor.setCategory(IPropertySourceSupport.OBJECT_ATTRIBUTES_CATEGORY);
+        editSubObjHighLimitDescriptor.setValidator(new ICellEditorValidator() {
 
             @Override
             public String isValid(Object value) {
@@ -175,8 +174,8 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
         });
 
         accessTypeDescriptor.setCategory(IPropertySourceSupport.OBJECT_ATTRIBUTES_CATEGORY);
-        editAccessTypeDescriptor.setCategory(IPropertySourceSupport.OBJECT_ATTRIBUTES_CATEGORY);
-        editAccessTypeDescriptor.setValidator(new ICellEditorValidator() {
+        editSubObjAccessTypeDescriptor.setCategory(IPropertySourceSupport.OBJECT_ATTRIBUTES_CATEGORY);
+        editSubObjAccessTypeDescriptor.setValidator(new ICellEditorValidator() {
 
             @Override
             public String isValid(Object value) {
@@ -186,9 +185,9 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
 
         });
 
-        defaultValueDescriptor.setCategory(IPropertySourceSupport.INITIAL_VALUE_CATEGORY);
-        editDefaultValueDescriptor.setCategory(IPropertySourceSupport.INITIAL_VALUE_CATEGORY);
-        editDefaultValueDescriptor.setValidator(new ICellEditorValidator() {
+        defaultValueDescriptor.setCategory(IPropertySourceSupport.OBJECT_ATTRIBUTES_CATEGORY);
+        editSubObjDefaultValueDescriptor.setCategory(IPropertySourceSupport.OBJECT_ATTRIBUTES_CATEGORY);
+        editSubObjDefaultValueDescriptor.setValidator(new ICellEditorValidator() {
 
             @Override
             public String isValid(Object value) {
@@ -204,8 +203,8 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
         editDenotationDescriptor.setCategory(IPropertySourceSupport.OBJECT_ATTRIBUTES_CATEGORY);
 
         pdoMappingDescriptor.setCategory(IPropertySourceSupport.OBJECT_ATTRIBUTES_CATEGORY);
-        editPdoMappingDescriptor.setCategory(IPropertySourceSupport.OBJECT_ATTRIBUTES_CATEGORY);
-        editPdoMappingDescriptor.setValidator(new ICellEditorValidator() {
+        editSubObjPdoMappingDescriptor.setCategory(IPropertySourceSupport.OBJECT_ATTRIBUTES_CATEGORY);
+        editSubObjPdoMappingDescriptor.setValidator(new ICellEditorValidator() {
 
             @Override
             public String isValid(Object value) {
@@ -307,17 +306,17 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
                     if (plkObject.getObjectType() == 8) {
                         propertyList.add(dataTypeDescriptor);
                     } else {
-                        propertyList.add(editDataTypeDescriptor);
+                        propertyList.add(editSubObjDataTypeDescriptor);
                     }
                 } else {
-                    propertyList.add(editDataTypeDescriptor);
+                    propertyList.add(editSubObjDataTypeDescriptor);
                 }
 
-                propertyList.add(editLowLimitDescriptor);
-                propertyList.add(editHighLimitDescriptor);
-                propertyList.add(editAccessTypeDescriptor);
-                propertyList.add(editDefaultValueDescriptor);
-                propertyList.add(editPdoMappingDescriptor);
+                propertyList.add(editSubObjLowLimitDescriptor);
+                propertyList.add(editSubObjHighLimitDescriptor);
+                propertyList.add(editSubObjAccessTypeDescriptor);
+                propertyList.add(editSubObjDefaultValueDescriptor);
+                propertyList.add(editSubObjPdoMappingDescriptor);
 
             } else {
                 propertyList.add(nameDescriptor);
@@ -346,8 +345,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
     /*
      * (non-Javadoc)
      *
-     * @see
-     * org.eclipse.ui.views.properties.IPropertySource#getPropertyDescriptors()
+     * @see org.eclipse.ui.views.properties.IPropertySource#getPropertyDescriptors()
      */
     @Override
     public IPropertyDescriptor[] getPropertyDescriptors() {
@@ -362,8 +360,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
     /*
      * (non-Javadoc)
      *
-     * @see
-     * org.eclipse.ui.views.properties.IPropertySource#getPropertyValue(java.
+     * @see org.eclipse.ui.views.properties.IPropertySource#getPropertyValue(java.
      * lang.Object)
      */
     @Override
@@ -449,7 +446,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
                 }
                 break;
             case OBJ_LOW_LIMIT_ID:
-            case OBJ_LOW_LIMIT_EDITABLE_ID:
+            case SUB_OBJ_LOW_LIMIT_EDITABLE_ID:
                 if (plkSubObject.getLowLimit() != null) {
                     String lowLimit = plkSubObject.getLowLimit();
                     retObj = lowLimit;
@@ -458,7 +455,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
                 }
                 break;
             case OBJ_HIGH_LIMIT_ID:
-            case OBJ_HIGH_LIMIT_EDITABLE_ID:
+            case SUB_OBJ_HIGH_LIMIT_EDITABLE_ID:
                 if (plkSubObject.getHighLimit() != null) {
                     String highLimit = plkSubObject.getHighLimit();
                     retObj = highLimit;
@@ -473,7 +470,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
                     retObj = StringUtils.EMPTY;
                 }
                 break;
-            case OBJ_ACCESS_TYPE_EDITABLE_ID:
+            case SUB_OBJ_ACCESS_TYPE_EDITABLE_ID:
                 if (plkSubObject.getAccessType() != null) {
                     String accessType = plkSubObject.getAccessType().getName();
                     if (accessType.equalsIgnoreCase("Const")) {
@@ -493,7 +490,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
                 }
                 break;
             case OBJ_DEFAULT_VALUE_ID:
-            case OBJ_DEFAULT_VALUE_EDITABLE_ID:
+            case SUB_OBJ_DEFAULT_VALUE_EDITABLE_ID:
                 if (plkSubObject.getDefaultValue() != null) {
                     String defaultValue = plkSubObject.getDefaultValue();
                     retObj = defaultValue;
@@ -516,7 +513,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
                     retObj = StringUtils.EMPTY;
                 }
                 break;
-            case OBJ_PDO_MAPPING_EDITABLE_ID:
+            case SUB_OBJ_PDO_MAPPING_EDITABLE_ID:
                 if (plkSubObject.getPDOmapping() != null) {
                     String pdoMapping = plkSubObject.getPDOmapping().getName();
                     if (pdoMapping.equalsIgnoreCase("no")) {
@@ -655,9 +652,9 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
      *
      * @param value
      *            The value to be set.
-     * @return Returns a string indicating whether the given value is valid;
-     *         null means valid, and non-null means invalid, with the result
-     *         being the error message to display to the end user.
+     * @return Returns a string indicating whether the given value is valid; null
+     *         means valid, and non-null means invalid, with the result being the
+     *         error message to display to the end user.
      */
     protected String handleLowLimitValue(Object value) {
         String lowLimit = (String) value;
@@ -666,7 +663,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
         String dataType = getDataType(dataTypeVal);
         try {
 
-            if (!plkSubObject.getDefaultValue().isEmpty()) {
+            if (plkSubObject.getDefaultValue() != null && !plkSubObject.getDefaultValue().isEmpty()) {
                 String defaultValue = plkSubObject.getDefaultValue();
                 Long defaultVal = getValue(defaultValue);
                 if (!lowLimit.isEmpty()) {
@@ -690,11 +687,12 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
                     }
                 }
             }
-        } catch (NumberFormatException ex) {
+        } catch (Exception ex) {
+            ex.printStackTrace();
             return MessageFormat.format(INVALID_VALUE, lowLimit);
         }
 
-        return isValidVal(lowLimit, "Low limit", dataType);
+        return isValidVal(lowLimit, OBJ_LOW_LIMIT_LABEL, dataType);
     }
 
     /**
@@ -702,9 +700,9 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
      *
      * @param value
      *            The value to be set.
-     * @return Returns a string indicating whether the given value is valid;
-     *         null means valid, and non-null means invalid, with the result
-     *         being the error message to display to the end user.
+     * @return Returns a string indicating whether the given value is valid; null
+     *         means valid, and non-null means invalid, with the result being the
+     *         error message to display to the end user.
      */
     protected String handlePdoMappingValue(Object value) {
         if (value instanceof Integer) {
@@ -783,9 +781,9 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
      *
      * @param value
      *            The value to be set.
-     * @return Returns a string indicating whether the given value is valid;
-     *         null means valid, and non-null means invalid, with the result
-     *         being the error message to display to the end user.
+     * @return Returns a string indicating whether the given value is valid; null
+     *         means valid, and non-null means invalid, with the result being the
+     *         error message to display to the end user.
      */
     protected String handleHighLimitValue(Object value) {
         String highLimit = (String) value;
@@ -794,7 +792,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
         String dataType = getDataType(dataTypeVal);
         try {
 
-            if (!plkSubObject.getDefaultValue().isEmpty()) {
+            if (plkSubObject.getDefaultValue() != null && !plkSubObject.getDefaultValue().isEmpty()) {
                 String defaultValue = plkSubObject.getDefaultValue();
                 Long defaultVal = getValue(defaultValue);
                 if (!highLimit.isEmpty()) {
@@ -819,18 +817,18 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
                     }
                 }
             }
-        } catch (NumberFormatException ex) {
+        } catch (Exception ex) {
+            ex.printStackTrace();
             return MessageFormat.format(INVALID_VALUE, highLimit);
         }
 
-        return isValidVal(highLimit, "High limit", dataType);
+        return isValidVal(highLimit, OBJ_HIGH_LIMIT_LABEL, dataType);
 
     }
 
     private boolean isValueValid(String value) {
         if (!value.isEmpty()) {
             try {
-
                 if (value.contains("0x")) {
                     value = value.substring(2);
                     Long val = Long.valueOf(value, 16);
@@ -838,13 +836,14 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
                         return false;
                     }
                 } else {
-                    if (value.equalsIgnoreCase("-")) {
 
+                    if (value.equalsIgnoreCase("-")) {
                         return false;
                     }
                     if (value.equalsIgnoreCase(" ")) {
                         return false;
                     }
+
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -860,62 +859,59 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
      *
      * @param value
      *            The value to be set.
-     * @return Returns a string indicating whether the given value is valid;
-     *         null means valid, and non-null means invalid, with the result
-     *         being the error message to display to the end user.
+     * @return Returns a string indicating whether the given value is valid; null
+     *         means valid, and non-null means invalid, with the result being the
+     *         error message to display to the end user.
      */
     protected String handleDefaultValue(Object value) {
         String defaultVal = StringUtils.EMPTY;
-        String dataTypeVal = DatatypeConverter.printHexBinary(plkSubObject.getDataType());
-        String dataType = getDataType(dataTypeVal);
+        String dataType = StringUtils.EMPTY;
+        if (plkSubObject.getDataType() != null) {
+            String dataTypeVal = DatatypeConverter.printHexBinary(plkSubObject.getDataType());
+            dataType = getDataType(dataTypeVal);
+        }
         try {
             defaultVal = (String) value;
-            if (!isValueValid(defaultVal)) {
-                return MessageFormat.format(INVALID_VALUE, defaultVal);
-            }
+            if (!defaultVal.isEmpty()) {
+                if (!isValueValid(defaultVal)) {
+                    return MessageFormat.format(INVALID_VALUE, defaultVal);
+                }
 
-            if (!getStringDataTypeList().contains(dataType)) {
-                Long defaultValue = getValue(defaultVal);
+                if (!getStringDataTypeList().contains(dataType)) {
+                    Long defaultValue = getValue(defaultVal);
 
-                if (plkSubObject.getHighLimit() != null) {
-                    if (!plkSubObject.getHighLimit().isEmpty()) {
-                        Long highlimitVal = getValue(plkSubObject.getHighLimit());
-                        if (defaultValue > highlimitVal) {
-                            return MessageFormat.format(DEFAULT_VALUE_EXCEEDS_HIGH_LIMIT, defaultValue, highlimitVal);
+                    if (plkSubObject.getHighLimit() != null) {
+                        if (!plkSubObject.getHighLimit().isEmpty()) {
+                            Long highlimitVal = getValue(plkSubObject.getHighLimit());
+                            if (defaultValue > highlimitVal) {
+                                return MessageFormat.format(DEFAULT_VALUE_EXCEEDS_HIGH_LIMIT, defaultValue,
+                                        highlimitVal);
+                            }
+                        }
+                    }
+
+                    if (plkSubObject.getLowLimit() != null) {
+                        if (!plkSubObject.getLowLimit().isEmpty()) {
+                            Long lowLimitVal = getValue(plkSubObject.getLowLimit());
+                            if (defaultValue < lowLimitVal) {
+                                return MessageFormat.format(DEFAULT_VALUE_LESS_THAN_LOW_LIMIT, defaultValue,
+                                        lowLimitVal);
+                            }
                         }
                     }
                 }
-
-                if (plkSubObject.getLowLimit() != null) {
-                    if (!plkSubObject.getLowLimit().isEmpty()) {
-                        Long lowLimitVal = getValue(plkSubObject.getLowLimit());
-                        if (defaultValue < lowLimitVal) {
-                            return MessageFormat.format(DEFAULT_VALUE_LESS_THAN_LOW_LIMIT, defaultValue, lowLimitVal);
-                        }
-                    }
-                }
             }
-
-        } catch (NumberFormatException ex) {
+        } catch (Exception ex) {
+            ex.printStackTrace();
             return MessageFormat.format(INVALID_VALUE, defaultVal);
         }
-        return isValidVal(defaultVal, "Default value", dataType);
-    }
-
-    /**
-     * Verifies the subObject with respect to module and controlled node.
-     *
-     * @return <true> if module sub-object, <false> if sub-object of node.
-     */
-    public boolean isModuleSubObject() {
-        return false;
+        return isValidVal(defaultVal, OBJ_DEFAULT_VALUE_LABEL, dataType);
     }
 
     /*
      * (non-Javadoc)
      *
-     * @see
-     * org.eclipse.ui.views.properties.IPropertySource#isPropertySet(java.lang.
+     * @see org.eclipse.ui.views.properties.IPropertySource#isPropertySet(java.lang.
      * Object)
      */
     @Override
@@ -926,8 +922,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
     /*
      * (non-Javadoc)
      *
-     * @see
-     * org.eclipse.ui.views.properties.IPropertySource#resetPropertyValue(java.
+     * @see org.eclipse.ui.views.properties.IPropertySource#resetPropertyValue(java.
      * lang.Object)
      */
     @Override
@@ -1133,9 +1128,9 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
      *
      * @param value
      *            The value to be set.
-     * @return Returns a string indicating whether the given value is valid;
-     *         null means valid, and non-null means invalid, with the result
-     *         being the error message to display to the end user.
+     * @return Returns a string indicating whether the given value is valid; null
+     *         means valid, and non-null means invalid, with the result being the
+     *         error message to display to the end user.
      */
     protected String handleSubObjectIndexValue(Object value) {
         String index = (String) value;
@@ -1203,35 +1198,44 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
                             byte[] dataType = DatatypeConverter.parseHexBinary(getDataTypeVal(val));
 
                             plkSubObject.setDataType(dataType);
-                            plkSubObject.setDefaultValue(StringUtils.EMPTY);
-                            plkSubObject.setLowLimit(StringUtils.EMPTY);
-                            plkSubObject.setHighLimit(StringUtils.EMPTY);
 
                         } else {
                             plkSubObject.setDataType(null);
                         }
+                        plkSubObject.setLowLimit(null);
+                        plkSubObject.setHighLimit(null);
+                        plkSubObject.setDefaultValue(null);
                     }
                     break;
-                case OBJ_LOW_LIMIT_EDITABLE_ID:
+                case SUB_OBJ_LOW_LIMIT_EDITABLE_ID:
                     plkSubObject.setLowLimit((String) value);
+                    if (!isValueNullOrEmpty(plkSubObject.getLowLimit())) {
+                        plkSubObject.setLowLimit(null);
+                    }
                     break;
-                case OBJ_HIGH_LIMIT_EDITABLE_ID:
+                case SUB_OBJ_HIGH_LIMIT_EDITABLE_ID:
                     plkSubObject.setHighLimit((String) value);
+                    if (!isValueNullOrEmpty(plkSubObject.getHighLimit())) {
+                        plkSubObject.setHighLimit(null);
+                    }
                     break;
-                case OBJ_ACCESS_TYPE_EDITABLE_ID:
+                case SUB_OBJ_ACCESS_TYPE_EDITABLE_ID:
                     if (value instanceof Integer) {
                         String val = ACCESS_TYPE_LIST[(int) value];
                         TObjectAccessType accessType = getAccessType(val);
                         plkSubObject.setAccessType(accessType);
                     }
                     break;
-                case OBJ_DEFAULT_VALUE_EDITABLE_ID:
+                case SUB_OBJ_DEFAULT_VALUE_EDITABLE_ID:
                     plkSubObject.setDefaultValue((String) value);
+                    if (!isValueNullOrEmpty(plkSubObject.getDefaultValue())) {
+                        plkSubObject.setDefaultValue(null);
+                    }
                     break;
                 case OBJ_DENOTATION_EDITABLE_ID:
                     plkSubObject.setDenotation((String) value);
                     break;
-                case OBJ_PDO_MAPPING_EDITABLE_ID:
+                case SUB_OBJ_PDO_MAPPING_EDITABLE_ID:
                     if (value instanceof Integer) {
                         String val = PDO_MAPPING_TYPES[(int) value];
                         TObjectPDOMapping pdoMapping = getPdoMapping(val);
@@ -1299,8 +1303,8 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
      *
      * @param documentRoot
      *            Instance of XDD file
-     * @return <code>True</code> If value is updated in document,
-     *         <code>False</code> otherwise.
+     * @return <code>True</code> If value is updated in document, <code>False</code>
+     *         otherwise.
      */
     public boolean updateDocument(DocumentRoot documentRoot) {
 
