@@ -363,7 +363,8 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
                 propertyList.add(editNameDescriptor);
                 propertyList.add(editObjectTypeDescriptor);
                 propertyList.add(editDataTypeDescriptor);
-                if ((plkObject.getObjectType() != 9) && (plkObject.getDataType() != null)) {
+                if ((plkObject.getObjectType() != OBJECT_TYPE_ARRAY)
+                        && (plkObject.getObjectType() != OBJECT_TYPE_RECORD) && (plkObject.getDataType() != null)) {
                     propertyList.add(editLowLimitDescriptor);
                     propertyList.add(editHighLimitDescriptor);
                     propertyList.add(editDefaultValueDescriptor);
@@ -380,7 +381,8 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
                 propertyList.add(nameDescriptor);
                 propertyList.add(objectTypeDescriptor);
                 propertyList.add(dataTypeDescriptor);
-                if ((plkObject.getObjectType() != 9) && (plkObject.getDataType() != null)) {
+                if ((plkObject.getObjectType() != OBJECT_TYPE_ARRAY)
+                        && (plkObject.getObjectType() != OBJECT_TYPE_RECORD) && (plkObject.getDataType() != null)) {
                     propertyList.add(lowLimitDescriptor);
                     propertyList.add(highLimitDescriptor);
                     propertyList.add(defaultValueDescriptor);
@@ -1244,15 +1246,13 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
                         String val = DATA_TYPE_LIST[(int) value];
                         if (!val.isEmpty()) {
                             byte[] dataType = DatatypeConverter.parseHexBinary(getDataTypeVal(val));
-
                             plkObject.setDataType(dataType);
-                            plkObject.setDefaultValue(StringUtils.EMPTY);
-                            plkObject.setLowLimit(StringUtils.EMPTY);
-                            plkObject.setHighLimit(StringUtils.EMPTY);
-
                         } else {
                             plkObject.setDataType(null);
                         }
+                        plkObject.setLowLimit(null);
+                        plkObject.setHighLimit(null);
+                        plkObject.setDefaultValue(null);
                     }
                     break;
                 case OBJ_LOW_LIMIT_EDITABLE_ID:
