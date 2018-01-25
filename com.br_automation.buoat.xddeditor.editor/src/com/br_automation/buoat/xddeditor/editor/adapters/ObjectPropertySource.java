@@ -1206,6 +1206,38 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
     }
 
     /**
+     * Reset the datatype of all the sub-Objects with the new modified datatype
+     *
+     * @param dataType
+     */
+    private void resetDataType(byte[] dataType) {
+        if (plkObject != null && plkObject.getSubObject().size() > INITIAL_SUB_INDEX_VALUE) {
+            for (SubObjectType subObj : plkObject.getSubObject()) {
+                int subObjindex = Integer.parseInt(DatatypeConverter.printHexBinary(subObj.getSubIndex()), 16);
+                if (subObjindex != NUMBER_OF_ENTRIES_SUBINDEX_VALUE) {
+                    subObj.setDataType(dataType);
+                }
+            }
+        }
+    }
+
+    /**
+     * Reset the High limit, Low limit, and Default value of all the sub-Objects
+     */
+    private void resetSubObjValue() {
+        if (plkObject != null && plkObject.getSubObject().size() > INITIAL_SUB_INDEX_VALUE) {
+            for (SubObjectType subObj : plkObject.getSubObject()) {
+                int subObjindex = Integer.parseInt(DatatypeConverter.printHexBinary(subObj.getSubIndex()), 16);
+                if (subObjindex != NUMBER_OF_ENTRIES_SUBINDEX_VALUE) {
+                    subObj.setDefaultValue(null);
+                    subObj.setLowLimit(null);
+                    subObj.setHighLimit(null);
+                }
+            }
+        }
+    }
+
+    /**
      * Sets the value to the Object Properties
      */
     @Override
@@ -1241,12 +1273,20 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
                 case OBJ_DATATYPE_EDITABLE_ID:
                     if (value instanceof Integer) {
                         String val = DATA_TYPE_LIST[(int) value];
+                        short objectType = plkObject.getObjectType();
                         if (!val.isEmpty()) {
                             byte[] dataType = DatatypeConverter.parseHexBinary(getDataTypeVal(val));
                             plkObject.setDataType(dataType);
+                            if (objectType == OBJECT_TYPE_ARRAY) {
+                                resetDataType(dataType);
+                                resetSubObjValue();
+                            }
                         } else {
                             plkObject.setDataType(null);
                         }
+                        /**
+                         * To remove the Lowlimit, Highlimit, Default attribute in the XDD file
+                         */
                         plkObject.setLowLimit(null);
                         plkObject.setHighLimit(null);
                         plkObject.setDefaultValue(null);

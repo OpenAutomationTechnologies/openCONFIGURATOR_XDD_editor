@@ -75,6 +75,8 @@ public class AbstractObjectPropertySource {
     public static final short OBJECT_TYPE_VAR = 7; // $NON-NLS-1$
     public static final short OBJECT_TYPE_ARRAY = 8; // $NON-NLS-1$
     public static final short OBJECT_TYPE_RECORD = 9; // $NON-NLS-1$
+    public static final short INITIAL_SUB_INDEX_VALUE = 1; // $NON-NLS-1$
+    public static final short NUMBER_OF_ENTRIES_SUBINDEX_VALUE = 0; // $NON-NLS-1$
 
     public static final String OBJ_INDEX_EDITABLE_ID = "Obj.IndexIdEditable"; //$NON-NLS-1$
     public static final String OBJ_NAME_EDITABLE_ID = "Obj.nameEditable"; //$NON-NLS-1$

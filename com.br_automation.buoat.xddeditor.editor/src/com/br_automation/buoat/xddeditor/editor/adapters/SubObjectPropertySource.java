@@ -95,6 +95,8 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
     public static final String INVALID_WO_TPDO_MAPPING = "Sub-object with access type 'wo' does not allow TPDO mapping";
     public static final String INVALID_RO_RPDO_MAPPING = "Sub-object with access type 'ro' does not allow RPDO mapping";
     public static final String NO_CHANGE_IN_DATA_TYPE = "No change in data type.";
+    public static final String WARNING_ARRAY = "Changing the data type will remove the current values in 'Default value', 'Low limit' and 'High Limit' of all sub-Objects in the array.\n\nAre you sure you want to change?";
+    public static final String WARNING_NON_ARRAY = "Changing the data type will remove the current values in 'Default value', 'Low limit' and 'High Limit'.\n\nAre you sure you want to change?";
 
     private static final PropertyDescriptor subObjectIdDescriptor = new PropertyDescriptor(OBJ_SUB_INDEX_ID,
             OBJ_SUB_INDEX_LABEL);
@@ -240,11 +242,14 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
                 if (!val.isEmpty()) {
 
                     if (!dataTypeVal.equalsIgnoreCase(val)) {
-
-                        MessageDialog dialog = new MessageDialog(null, "Change Data Type?", null,
-                                "Changing the data type will remove the current values in 'Default value' , 'Low lmit' and 'High Limit'. \n\nAre you sure you want to change?",
+                        String warning = StringUtils.EMPTY;
+                        if (plkObject.getObjectType() == OBJECT_TYPE_ARRAY) {
+                            warning = WARNING_ARRAY;
+                        } else {
+                            warning = WARNING_NON_ARRAY;
+                        }
+                        MessageDialog dialog = new MessageDialog(null, "Change Data Type?", null, warning,
                                 MessageDialog.WARNING, new String[] { "Yes", "No" }, 1);
-
                         int result = dialog.open();
                         if (result == 0) {
 
@@ -1159,6 +1164,38 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
     }
 
     /**
+     * Reset the datatype of all the sub-Objects with the new modified datatype
+     *
+     * @param dataType
+     */
+    private void resetDataType(byte[] dataType) {
+        if (plkObject != null && plkObject.getSubObject().size() > INITIAL_SUB_INDEX_VALUE) {
+            for (SubObjectType subObj : plkObject.getSubObject()) {
+                int subObjindex = Integer.parseInt(DatatypeConverter.printHexBinary(subObj.getSubIndex()), 16);
+                if (subObjindex != NUMBER_OF_ENTRIES_SUBINDEX_VALUE) {
+                    subObj.setDataType(dataType);
+                }
+            }
+        }
+    }
+
+    /**
+     * Reset the High limit, Low limit, and Default value of all the sub-Objects
+     */
+    private void resetSubObjValue() {
+        if (plkObject != null && plkObject.getSubObject().size() > INITIAL_SUB_INDEX_VALUE) {
+            for (SubObjectType subObj : plkObject.getSubObject()) {
+                int subObjindex = Integer.parseInt(DatatypeConverter.printHexBinary(subObj.getSubIndex()), 16);
+                if (subObjindex != NUMBER_OF_ENTRIES_SUBINDEX_VALUE) {
+                    subObj.setDefaultValue(null);
+                    subObj.setLowLimit(null);
+                    subObj.setHighLimit(null);
+                }
+            }
+        }
+    }
+
+    /**
      * sets the value to the Sub-Object Properties
      */
     @Override
@@ -1193,14 +1230,21 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
                     break;
                 case OBJ_DATATYPE_EDITABLE_ID:
                     if (value instanceof Integer) {
+                        byte[] oldDataType = plkSubObject.getDataType();
                         String val = DATA_TYPE_LIST[(int) value];
+                        short objectType = plkObject.getObjectType();
                         if (!val.isEmpty()) {
                             byte[] dataType = DatatypeConverter.parseHexBinary(getDataTypeVal(val));
-
                             plkSubObject.setDataType(dataType);
-
+                            if (objectType == OBJECT_TYPE_ARRAY) {
+                                resetDataType(dataType);
+                                resetSubObjValue();
+                            }
                         } else {
                             plkSubObject.setDataType(null);
+                            if (objectType == OBJECT_TYPE_ARRAY) {
+                                plkSubObject.setDataType(oldDataType);
+                            }
                         }
                         plkSubObject.setLowLimit(null);
                         plkSubObject.setHighLimit(null);
