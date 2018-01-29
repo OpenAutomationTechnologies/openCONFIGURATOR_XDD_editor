@@ -47,8 +47,6 @@ import org.eclipse.emf.ecore.xmi.XMLResource;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.FocusAdapter;
-import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
@@ -105,6 +103,9 @@ public class Index1000DetailsPage implements IDetailsPage {
     private long maskLSB;
     private long maskMSB;
     private long additionalInfoValue;
+
+    public static final int SHIFT_16_BITS = 16;
+    public static final int VALUE_ZERO = 0;
 
     /**
      * Constructor to initialize the details page
@@ -220,6 +221,8 @@ public class Index1000DetailsPage implements IDetailsPage {
             lblError.setText(""); //$NON-NLS-1$
             if (!cmbDeviceProfileNr.getText().isEmpty())
                 profileValue = Long.parseLong(cmbDeviceProfileNr.getText().substring(4, 7));
+            additionalInfoValue = (Long.decode("0x" //$NON-NLS-1$
+                    + txtAdditionalInfo.getText())) << SHIFT_16_BITS;
             setDefaultValue();
         }
     };
@@ -229,8 +232,8 @@ public class Index1000DetailsPage implements IDetailsPage {
      *
      * @param documentRoot
      *            Instance of XDD file
-     * @return <code>True</code> If value is updated in document,
-     *         <code>False</code> otherwise.
+     * @return <code>True</code> If value is updated in document, <code>False</code>
+     *         otherwise.
      */
     public boolean updateDocument(DocumentRoot documentRoot) {
         // Create a resource set
@@ -264,17 +267,24 @@ public class Index1000DetailsPage implements IDetailsPage {
      * @brief Sets the new Defaultvalue to the Object based on made selections.
      */
     private void setDefaultValue() {
-        Long newDefaultValue = (this.additionalInfoValue) + this.profileValue;
+        Long newDefaultValue;
+        if (this.profileValue == VALUE_ZERO) {
+            newDefaultValue = this.profileValue;
+            txtAdditionalInfo.setEnabled(false);
+        } else {
+            txtAdditionalInfo.setEnabled(true);
+            newDefaultValue = (this.additionalInfoValue) + this.profileValue;
+        }
         String defaultHexValue = Long.toHexString(newDefaultValue);
         index1000Object.setDefaultValue("0x" + defaultHexValue.toUpperCase());
         updateDocument(docRoot);
         this.lblDefaultValueValue.setText(index1000Object.getDefaultValue());
     }
 
-    private final FocusAdapter additionalInfoFocuslistener = new FocusAdapter() {
+    private final ModifyListener additionalInfoModifyListener = new ModifyListener() {
 
         @Override
-        public void focusLost(FocusEvent arg0) {
+        public void modifyText(ModifyEvent arg0) {
             additionalInfoValue = (Long.decode("0x" //$NON-NLS-1$
                     + txtAdditionalInfo.getText())) << 16;
             setDefaultValue();
@@ -477,7 +487,7 @@ public class Index1000DetailsPage implements IDetailsPage {
 
         this.txtAdditionalInfo = managedForm.getToolkit().createText(grpOptionalData, "");
         this.txtAdditionalInfo.setTextLimit(4);
-        this.txtAdditionalInfo.addFocusListener(this.additionalInfoFocuslistener);
+        this.txtAdditionalInfo.addModifyListener(this.additionalInfoModifyListener);
 
         this.lblError = managedForm.getToolkit().createLabel(grpOptionalData,
                 "                                                  ");

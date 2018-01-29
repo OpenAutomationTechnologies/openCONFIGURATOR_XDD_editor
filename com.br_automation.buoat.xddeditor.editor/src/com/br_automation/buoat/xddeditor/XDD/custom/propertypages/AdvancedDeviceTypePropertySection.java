@@ -134,6 +134,7 @@ public class AdvancedDeviceTypePropertySection extends AbstractPropertySection {
         data = new FormData();
         data.top = new FormAttachment(this.tObjectComposite, 0);
         data.left = new FormAttachment(0, 7);
+        data.width = 150;
         lblDefaultValue.setLayoutData(data);
 
         CLabel lblProfileType = this.getWidgetFactory().createCLabel(composite, "Profile Type:"); //$NON-NLS-1$
@@ -172,7 +173,7 @@ public class AdvancedDeviceTypePropertySection extends AbstractPropertySection {
         this.txtAdditionalInfo = this.getWidgetFactory().createText(composite, ""); //$NON-NLS-1$
         data = new FormData();
         data.top = new FormAttachment(this.cmbDeviceProfileNr, 5);
-        data.left = new FormAttachment(0, AbstractPropertySection.STANDARD_LABEL_WIDTH + 10);
+        data.left = new FormAttachment(0, AbstractPropertySection.STANDARD_LABEL_WIDTH + 50);
         data.right = new FormAttachment(15, 0);
         this.txtAdditionalInfo.setLayoutData(data);
         this.txtAdditionalInfo.setTextLimit(4);
