@@ -98,6 +98,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
     public static final String WARNING_ARRAY = "Changing the data type will remove the current values in 'Default value', 'Low limit' and 'High Limit' of all sub-Objects in the array.\n\nAre you sure you want to change?";
     public static final String WARNING_NON_ARRAY = "Changing the data type will remove the current values in 'Default value', 'Low limit' and 'High Limit'.\n\nAre you sure you want to change?";
 
+    public static final int DEFAULT_VALUE = 0;
     private static final PropertyDescriptor subObjectIdDescriptor = new PropertyDescriptor(OBJ_SUB_INDEX_ID,
             OBJ_SUB_INDEX_LABEL);
     private static final TextPropertyDescriptor subObjectIdEditableDescriptor = new TextPropertyDescriptor(
@@ -306,9 +307,9 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
             if ((objectId >= IPowerlinkConstants.COMMUNICATION_PROFILE_START_INDEX)
                     && (objectId <= IPowerlinkConstants.STANDARDISED_DEVICE_PROFILE_END_INDEX)) {
                 propertyList.add(editNameDescriptor);
-
-                if (plkObject.getDataType() != null) {
-                    if (plkObject.getObjectType() == 8) {
+                int subObjIndex = Integer.parseInt(DatatypeConverter.printHexBinary(plkSubObject.getSubIndex()), 16);
+                if (plkObject.getDataType() != null || subObjIndex == DEFAULT_VALUE) {
+                    if (plkObject.getObjectType() != OBJECT_TYPE_VAR) {
                         propertyList.add(dataTypeDescriptor);
                     } else {
                         propertyList.add(editDataTypeDescriptor);
