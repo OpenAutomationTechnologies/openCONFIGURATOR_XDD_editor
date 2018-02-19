@@ -98,7 +98,6 @@ public class MappingObjectDetailsPage extends EEFAdvancedPropertySection impleme
     private Text subIndexText;
 
     private SubObjectTypeImpl subObject;
-    private SubObjectType tsubObject;
 
     private Map<Integer, SubObjectType> validSubObjectTypes;
     private Set<TObjectPDOMapping> validTObjectMapping;
@@ -138,8 +137,8 @@ public class MappingObjectDetailsPage extends EEFAdvancedPropertySection impleme
      *
      * @param documentRoot
      *            Instance of XDD file
-     * @return <code>True</code> If value is updated in document,
-     *         <code>False</code> otherwise.
+     * @return <code>True</code> If value is updated in document, <code>False</code>
+     *         otherwise.
      */
     public boolean updateDocument(DocumentRoot documentRoot) {
         // Create a resource set
@@ -258,6 +257,9 @@ public class MappingObjectDetailsPage extends EEFAdvancedPropertySection impleme
         case 9:
             this.lblError.setText(Messages.general_error_defaultValueInvalid);
             break;
+        case 10:
+            this.lblError.setText(Messages.advancedMappingObjectPropertySection_err_mappingObject_without_datatype);
+            break;
         default:
             break;
         } // switchcase
@@ -327,11 +329,10 @@ public class MappingObjectDetailsPage extends EEFAdvancedPropertySection impleme
                 this.setError(2);
             }
 
-            if (selectedObject != null && tObjectset && !this.validSubObjectTypes.isEmpty()) { // If
-                                                                                                // there
-                                                                                                // are
-                                                                                                // valid
-                                                                                                // Subobjects
+            /**
+             * If there are valid Subobjects
+             */
+            if (selectedObject != null && tObjectset && !this.validSubObjectTypes.isEmpty()) {
                 for (Entry<Integer, SubObjectType> entry : this.validSubObjectTypes.entrySet()) {
                     this.cmbSubindex.add(entry.getValue().getName());
                     this.cmbSubindex.setData(entry.getValue().getName(), entry.getValue());
@@ -379,7 +380,7 @@ public class MappingObjectDetailsPage extends EEFAdvancedPropertySection impleme
             }
         } else
             this.setError(4); // If IndexValue is 0, even if other Values are
-                                // set!
+                              // set!
 
     } // getDefaultParameter
 
@@ -422,7 +423,7 @@ public class MappingObjectDetailsPage extends EEFAdvancedPropertySection impleme
                 subindexValue = new BigInteger(1, subobject.getSubIndex()).intValue();
                 setNewDefaultValue();
 
-                lblDefaultValueValue.setText(tsubObject.getDefaultValue());
+                lblDefaultValueValue.setText(subObject.getDefaultValue());
             }
         } // widgetSelected
     }; // SelectionAdapter
@@ -441,46 +442,54 @@ public class MappingObjectDetailsPage extends EEFAdvancedPropertySection impleme
             if (!indexSelection.isEmpty()) {
                 // choose the object selected
                 object = (TObject) cmbSelected.getData(indexSelection);
-
-                // If Subobjects NOT empty...modify the Subindex-Combobox
-                if (!object.getSubObject().isEmpty()) {
-                    // Get Subobjects & Enable Combobox
-                    validSubObjectTypes = XDDUtilities.getMappingSubObjects(object, validTObjectMapping);
-                    cmbSubindex.setEnabled(true);
-                    cmbSubindex.setBackground(XDDUtilities.getWhite(device));
-
-                    // Fill Comobobox
-                    for (Entry<Integer, SubObjectType> entry : validSubObjectTypes.entrySet()) {
-                        cmbSubindex.add(entry.getValue().getName());
-                        cmbSubindex.setData(entry.getValue().getName(), entry.getValue());
-                    }
-
-                    // Set Text-Instructions
-                    txtLength.setText(Messages.advancedMappingObjectPropertySection_Set_Subindex);
-                    txtLength.setEnabled(false);
-                    // Add Listener to subObjectCombobox
-                    cmbSubindex.addSelectionListener(subIndexListener);
+                if (object.getDataType() == null && object.getSubObject().size() == 0) {
+                    setError(10);
                 } else {
-                    cmbSubindex.setEnabled(false);
-                    cmbSubindex.setBackground(XDDUtilities.getGrey(device));
-                    subindexValue = 0;
-                    // Find Bitlength of DataType
-                    dataTypeSize = Integer.toString(XDDUtilities.getDataType(object.getDataType()).getBitSize());
-                    if (!dataTypeSize.contentEquals("0")) { //$NON-NLS-1$
-                        dataTypeSize = Long.toString((Long.parseLong(dataTypeSize)) / 8);
-                        txtLength.setText(dataTypeSize);
-                        lengthValue = Long.parseLong(dataTypeSize) * 8;
+                    // If Subobjects NOT empty...modify the Subindex-Combobox
+                    if (!object.getSubObject().isEmpty()) {
+                        // Get Subobjects & Enable Combobox
+                        validSubObjectTypes = XDDUtilities.getMappingSubObjects(object, validTObjectMapping);
+                        cmbSubindex.setEnabled(true);
+                        cmbSubindex.setBackground(XDDUtilities.getWhite(device));
+
+                        // Fill Comobobox
+                        for (Entry<Integer, SubObjectType> entry : validSubObjectTypes.entrySet()) {
+                            cmbSubindex.add(entry.getValue().getName());
+                            cmbSubindex.setData(entry.getValue().getName(), entry.getValue());
+                        }
+
+                        // Set Text-Instructions
+                        txtLength.setText(Messages.advancedMappingObjectPropertySection_Set_Subindex);
                         txtLength.setEnabled(false);
+                        // Add Listener to subObjectCombobox
+                        cmbSubindex.addSelectionListener(subIndexListener);
                     } else {
-                        txtLength.setText(Messages.advancedMappingObjectPropertySection_Set_Length);
-                        txtLength.setEnabled(true);
-                        txtLength.setFocus();
-                        txtLength.selectAll();
+                        cmbSubindex.setEnabled(false);
+                        cmbSubindex.setBackground(XDDUtilities.getGrey(device));
+                        subindexValue = 0;
+                        try {
+                            dataTypeSize = Integer
+                                    .toString(XDDUtilities.getDataType(object.getDataType()).getBitSize());
+                            if (!dataTypeSize.contentEquals("0")) { //$NON-NLS-1$
+                                dataTypeSize = Long.toString((Long.parseLong(dataTypeSize)) / 8);
+                                txtLength.setText(dataTypeSize);
+                                lengthValue = Long.parseLong(dataTypeSize) * 8;
+                                txtLength.setEnabled(false);
+                            } else {
+                                txtLength.setText(Messages.advancedMappingObjectPropertySection_Set_Length);
+                                txtLength.setEnabled(true);
+                                txtLength.setFocus();
+                                txtLength.selectAll();
+                            }
+                        } catch (NullPointerException ex) {
+                            setError(10);
+                            ex.printStackTrace();
+                        }
                     }
+                    indexValue = new BigInteger(1, object.getIndex()).intValue();
+                    setNewDefaultValue();
+                    lblDefaultValueValue.setText(subObject.getDefaultValue());
                 }
-                indexValue = new BigInteger(1, object.getIndex()).intValue();
-                setNewDefaultValue();
-                lblDefaultValueValue.setText(subObject.getDefaultValue());
             } // If selection is not empty!
         } // widgetSelected
     }; // SelectionAdapter
@@ -492,8 +501,8 @@ public class MappingObjectDetailsPage extends EEFAdvancedPropertySection impleme
 
             SubObjectTypeImpl obj = (SubObjectTypeImpl) sel.getFirstElement();
 
-            this.tsubObject = (SubObjectType) obj;
-            TObject tobject = (TObject) this.tsubObject.eContainer();
+            subObject = (SubObjectTypeImpl) obj;
+            TObject tobject = (TObject) this.subObject.eContainer();
 
             this.indexValue = 0;
             this.subindexValue = 0;
@@ -521,13 +530,14 @@ public class MappingObjectDetailsPage extends EEFAdvancedPropertySection impleme
                 this.cmbIndex.add(entry.getValue().getName());
             }
 
-            if (this.cmbIndex.getItemCount() > 0)
+            if (this.cmbIndex.getItemCount() > 0) {
                 this.cmbIndex.addSelectionListener(this.indexListener);
+            }
 
-            if (this.tsubObject.getDefaultValue() != null)
+            if (subObject.getDefaultValue() != null)
                 try {
-                    this.lblDefaultValueValue.setText(this.tsubObject.getDefaultValue());
-                    this.defaultValue = Long.decode(this.tsubObject.getDefaultValue());
+                    this.lblDefaultValueValue.setText(subObject.getDefaultValue());
+                    this.defaultValue = Long.decode(subObject.getDefaultValue());
                     if (this.defaultValue != 0)
                         this.parseDefaultParameter(this.defaultValue);
                 } catch (NumberFormatException e) {
