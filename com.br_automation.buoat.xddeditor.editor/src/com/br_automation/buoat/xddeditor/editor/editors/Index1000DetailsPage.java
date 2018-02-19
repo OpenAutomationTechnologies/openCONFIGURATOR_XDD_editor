@@ -220,8 +220,13 @@ public class Index1000DetailsPage implements IDetailsPage {
             lblError.setText(""); //$NON-NLS-1$
             if (!cmbDeviceProfileNr.getText().isEmpty())
                 profileValue = Long.parseLong(cmbDeviceProfileNr.getText().substring(4, 7));
-            additionalInfoValue = (Long.decode("0x" //$NON-NLS-1$
-                    + txtAdditionalInfo.getText())) << SHIFT_16_BITS;
+            try {
+                additionalInfoValue = (Long.decode("0x" //$NON-NLS-1$
+                        + txtAdditionalInfo.getText())) << SHIFT_16_BITS;
+            } catch (Exception ex) {
+                additionalInfoValue = 0;
+                ex.printStackTrace();
+            }
             setDefaultValue();
         }
     };
@@ -284,8 +289,13 @@ public class Index1000DetailsPage implements IDetailsPage {
 
         @Override
         public void modifyText(ModifyEvent arg0) {
-            additionalInfoValue = (Long.decode("0x" //$NON-NLS-1$
-                    + txtAdditionalInfo.getText())) << 16;
+            try {
+                additionalInfoValue = (Long.decode("0x" //$NON-NLS-1$
+                        + txtAdditionalInfo.getText())) << SHIFT_16_BITS;
+            } catch (Exception exc) {
+                additionalInfoValue = 0;
+                exc.printStackTrace();
+            }
             setDefaultValue();
         }
     };

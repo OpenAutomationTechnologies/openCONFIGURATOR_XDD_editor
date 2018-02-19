@@ -258,7 +258,13 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
 
             switch (objectType) {
             case "7 - VAR":
-                if (!plkObject.getSubObject().isEmpty()) {
+                if ((plkObject != null) && !plkObject.getSubObject().isEmpty()) {
+                    MessageDialog dialog = new MessageDialog(null, "Warning", null,
+                            "Object type cannot be changed to VAR.\n" + plkObject.getName()
+                                    + " Object contains sub-indices. "
+                                    + "It shall be changed only after deleting the sub-indices.",
+                            MessageDialog.WARNING, new String[] { "Close" }, 1);
+                    dialog.open();
                     return MessageFormat.format(INVALID_OBJECT_TYPE, plkObject.getName());
                 }
                 break;
