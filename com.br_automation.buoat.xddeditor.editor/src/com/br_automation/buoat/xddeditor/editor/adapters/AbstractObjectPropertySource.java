@@ -72,6 +72,7 @@ public class AbstractObjectPropertySource {
     public static final String OBJ_OBJFLAGS_ID = "Obj.objFlags"; //$NON-NLS-1$
     public static final String OBJ_UNIQUEIDREF_ID = "Obj.uniqueIDRef"; //$NON-NLS-1$
     public static final String OBJ_ERROR_ID = "Obj.error"; //$NON-NLS-1$
+    public static final String NUMBER_OF_ENTRIES = "NumberOfEntries"; //$NON-NLS-1$
     public static final short OBJECT_TYPE_VAR = 7; // $NON-NLS-1$
     public static final short OBJECT_TYPE_ARRAY = 8; // $NON-NLS-1$
     public static final short OBJECT_TYPE_RECORD = 9; // $NON-NLS-1$

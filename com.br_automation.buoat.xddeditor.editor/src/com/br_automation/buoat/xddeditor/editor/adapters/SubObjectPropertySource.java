@@ -306,9 +306,15 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
             if ((objectId >= IPowerlinkConstants.COMMUNICATION_PROFILE_START_INDEX)
                     && (objectId <= IPowerlinkConstants.STANDARDISED_DEVICE_PROFILE_END_INDEX)) {
                 propertyList.add(editNameDescriptor);
-
-                if (plkObject.getDataType() != null) {
-                    if (plkObject.getObjectType() == 8) {
+                if (plkSubObject.getName().equalsIgnoreCase(NUMBER_OF_ENTRIES)) {
+                    propertyList.remove(editNameDescriptor);
+                    propertyList.add(nameDescriptor);
+                }
+                int subObjIndex = Integer.parseInt(DatatypeConverter.printHexBinary(plkSubObject.getSubIndex()), 16);
+                if (plkObject.getDataType() != null || subObjIndex == 0) {
+                    if (plkObject.getObjectType() == OBJECT_TYPE_ARRAY
+                            || (plkObject.getObjectType() == OBJECT_TYPE_RECORD
+                                    && plkSubObject.getName().equalsIgnoreCase(NUMBER_OF_ENTRIES))) {
                         propertyList.add(dataTypeDescriptor);
                     } else {
                         propertyList.add(editSubObjDataTypeDescriptor);
