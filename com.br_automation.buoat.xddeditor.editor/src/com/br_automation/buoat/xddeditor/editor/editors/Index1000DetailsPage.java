@@ -105,7 +105,7 @@ public class Index1000DetailsPage implements IDetailsPage {
     private long additionalInfoValue;
 
     public static final int SHIFT_16_BITS = 16;
-    public static final int VALUE_ZERO = 0;
+    public static final int DEFAULT_VALUE = 0;
 
     /**
      * Constructor to initialize the details page
@@ -221,8 +221,13 @@ public class Index1000DetailsPage implements IDetailsPage {
             lblError.setText(""); //$NON-NLS-1$
             if (!cmbDeviceProfileNr.getText().isEmpty())
                 profileValue = Long.parseLong(cmbDeviceProfileNr.getText().substring(4, 7));
-            additionalInfoValue = (Long.decode("0x" //$NON-NLS-1$
-                    + txtAdditionalInfo.getText())) << SHIFT_16_BITS;
+            try {
+                additionalInfoValue = (Long.decode("0x" //$NON-NLS-1$
+                        + txtAdditionalInfo.getText())) << SHIFT_16_BITS;
+            } catch (Exception ex) {
+                additionalInfoValue = DEFAULT_VALUE;
+                ex.printStackTrace();
+            }
             setDefaultValue();
         }
     };
@@ -268,7 +273,7 @@ public class Index1000DetailsPage implements IDetailsPage {
      */
     private void setDefaultValue() {
         Long newDefaultValue;
-        if (this.profileValue == VALUE_ZERO) {
+        if (this.profileValue == DEFAULT_VALUE) {
             newDefaultValue = this.profileValue;
             txtAdditionalInfo.setEnabled(false);
         } else {
@@ -285,8 +290,13 @@ public class Index1000DetailsPage implements IDetailsPage {
 
         @Override
         public void modifyText(ModifyEvent arg0) {
-            additionalInfoValue = (Long.decode("0x" //$NON-NLS-1$
-                    + txtAdditionalInfo.getText())) << 16;
+            try {
+                additionalInfoValue = (Long.decode("0x" //$NON-NLS-1$
+                        + txtAdditionalInfo.getText())) << SHIFT_16_BITS;
+            } catch (Exception exc) {
+                additionalInfoValue = DEFAULT_VALUE;
+                exc.printStackTrace();
+            }
             setDefaultValue();
         }
     };
