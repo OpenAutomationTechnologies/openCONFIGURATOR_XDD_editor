@@ -137,8 +137,8 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
 
         });
 
-        dataTypeDescriptor.setCategory(IPropertySourceSupport.INITIAL_VALUE_CATEGORY);
-        editDataTypeDescriptor.setCategory(IPropertySourceSupport.INITIAL_VALUE_CATEGORY);
+        dataTypeDescriptor.setCategory(IPropertySourceSupport.OBJECT_ATTRIBUTES_CATEGORY);
+        editDataTypeDescriptor.setCategory(IPropertySourceSupport.OBJECT_ATTRIBUTES_CATEGORY);
         editDataTypeDescriptor.setValidator(new ICellEditorValidator() {
 
             @Override
@@ -182,8 +182,8 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
 
         });
 
-        defaultValueDescriptor.setCategory(IPropertySourceSupport.INITIAL_VALUE_CATEGORY);
-        editDefaultValueDescriptor.setCategory(IPropertySourceSupport.INITIAL_VALUE_CATEGORY);
+        defaultValueDescriptor.setCategory(IPropertySourceSupport.OBJECT_ATTRIBUTES_CATEGORY);
+        editDefaultValueDescriptor.setCategory(IPropertySourceSupport.OBJECT_ATTRIBUTES_CATEGORY);
         editDefaultValueDescriptor.setValidator(new ICellEditorValidator() {
 
             @Override

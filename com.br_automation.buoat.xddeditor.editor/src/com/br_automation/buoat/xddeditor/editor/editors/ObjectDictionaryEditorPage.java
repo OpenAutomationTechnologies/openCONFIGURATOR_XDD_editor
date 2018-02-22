@@ -391,8 +391,7 @@ public class ObjectDictionaryEditorPage extends FormPage implements IPropertyLis
     }
 
     /**
-     * PatternFilter class to always show sub-objects after filtering of
-     * objects.
+     * PatternFilter class to always show sub-objects after filtering of objects.
      *
      * @author Sree Hari Vignesh
      */
@@ -858,7 +857,7 @@ public class ObjectDictionaryEditorPage extends FormPage implements IPropertyLis
         if (!text.isEmpty()) {
             Integer indexvalue = Integer.parseInt(text, 16);
             if ((indexvalue < IPowerlinkConstants.COMMUNICATION_PROFILE_START_INDEX)
-                    || (indexvalue > IPowerlinkConstants.STANDARDISED_DEVICE_PROFILE_END_INDEX)) {
+                    || (indexvalue > IPowerlinkConstants.MAX_PROFILE_INDEX)) {
                 return false;
             } else
                 return true;
@@ -1043,8 +1042,8 @@ public class ObjectDictionaryEditorPage extends FormPage implements IPropertyLis
      *
      * @param documentRoot
      *            Instance of XDD file
-     * @return <code>True</code> If value is updated in document,
-     *         <code>False</code> otherwise.
+     * @return <code>True</code> If value is updated in document, <code>False</code>
+     *         otherwise.
      */
     public boolean updateDocument(DocumentRoot documentRoot) {
         // Create a resource set
@@ -1115,8 +1114,8 @@ public class ObjectDictionaryEditorPage extends FormPage implements IPropertyLis
     }
 
     /**
-     * Returns true, since the project editor is an editor. otherwise it will be
-     * a form.
+     * Returns true, since the project editor is an editor. otherwise it will be a
+     * form.
      */
     @Override
     public boolean isEditor() {

@@ -48,6 +48,7 @@ public interface IPowerlinkConstants {
     public static final int STANDARDISED_DEVICE_PROFILE_END_INDEX = 0x9FFF;
     public static final int STANDARDISED_INTERFACE_PROFILE_START_INDEX = 0xA000;
     public static final int STANDARDISED_INTERFACE_PROFILE_END_INDEX = 0xBFFF;
+    public static final int MAX_PROFILE_INDEX = 0xFFFF;
 
     // Modified date and time format.
     public static final String DATE_FORMAT = "yyyy-MM-dd";

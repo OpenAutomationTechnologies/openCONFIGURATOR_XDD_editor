@@ -30,8 +30,8 @@
 package com.br_automation.buoat.xddeditor.XDD.custom;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.util.Comparator;
+import javax.xml.bind.DatatypeConverter;
 
 import com.br_automation.buoat.xddeditor.XDD.TObject;
 
@@ -55,7 +55,8 @@ public class TObjectComparator implements Comparator<TObject>, Serializable {
      */
     @Override
     public int compare(TObject o1, TObject o2) {
-        return (new BigInteger(o1.getIndex()).intValue()) - (new BigInteger(o2.getIndex()).intValue());
+        return ((int) Long.parseLong(DatatypeConverter.printHexBinary(o1.getIndex()), 16)
+                - (int) Long.parseLong(DatatypeConverter.printHexBinary(o2.getIndex()), 16));
     }
 
 }
