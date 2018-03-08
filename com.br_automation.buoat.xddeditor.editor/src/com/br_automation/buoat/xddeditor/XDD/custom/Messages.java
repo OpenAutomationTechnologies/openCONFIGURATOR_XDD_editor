@@ -66,6 +66,7 @@ public final class Messages extends NLS {
     public static String advancedMappingObjectPropertySection_err_length_not_dividable;
     public static String advancedMappingObjectPropertySection_err_mappingObject_not_found;
     public static String advancedMappingObjectPropertySection_err_offset;
+    public static String advancedMappingObjectPropertySection_err_mappingObject_without_datatype;
     public static String advancedMappingObjectPropertySection_err_offset_not_dividable;
     public static String advancedMappingObjectPropertySection_err_subobject_not_found;
     public static String advancedMappingObjectPropertySection_help_Index_combobox;

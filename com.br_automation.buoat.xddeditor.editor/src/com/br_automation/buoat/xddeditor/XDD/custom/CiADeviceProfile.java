@@ -56,7 +56,8 @@ public enum CiADeviceProfile {
     CIA423(423, "CiA 423", "Railway Diesel Control Systems"),
     CIA424(424, "CiA 424", "Rail Vehicle Door Control Systems"),
     CIA425(425, "CiA 425", "Medical Diagnostic Add-on Modules"),
-    CIA445(445, "CiA 445", "RFID Devices");
+    CIA445(445, "CiA 445", "RFID Devices"),
+    CIA000(000, "CiA 000", "Reset Device Type");
 
     private String profileDescription;
     private String profileName;

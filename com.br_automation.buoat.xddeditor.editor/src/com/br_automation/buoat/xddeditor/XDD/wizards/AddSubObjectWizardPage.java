@@ -144,6 +144,11 @@ public class AddSubObjectWizardPage extends WizardPage {
     public static final String DEFAULT_VALUE_LESSER_THAN_HIGH_LIMIT = "Default value {0} cannot be lesser than low limit value {1}.";
     public static final String INVALID_PDO_MAPPING_ERROR_MESSAGE = "Sub-object with access type {0} does not allow {1}.";
     public static final String LOW_LIMIT_GREATER_HIGH_LIMIT = "Low limit cannot be greater than high limit.";
+    public static final short NUMBER_OF_ENTRIES_SUBINDEX_VALUE = 0;
+    public static final short OBJECT_TYPE_VAR = 7;
+    public static final short OBJECT_TYPE_ARRAY = 8;
+    public static final short OBJECT_TYPE_RECORD = 9;
+    public static final short INITIAL_SUB_INDEX_VALUE = 1;
 
     /**
      * Constructor to initialize the document instance.
@@ -900,6 +905,25 @@ public class AddSubObjectWizardPage extends WizardPage {
         return pageComplete;
     }
 
+    /**
+     * Get the dataype for subobject when data type of object is empty
+     *
+     * @return datatype of corresponding sub object
+     */
+    private String getSubObjectDataType() {
+        String dataType = StringUtils.EMPTY;
+        if (selObj != null) {
+            for (SubObjectType subObj : selObj.getSubObject()) {
+                int subIndex = Integer.parseInt(DatatypeConverter.printHexBinary(subObj.getSubIndex()), 16);
+                dataType = DatatypeConverter.printHexBinary(subObj.getDataType());
+                if (!(subIndex == NUMBER_OF_ENTRIES_SUBINDEX_VALUE)) {
+                    break;
+                }
+            }
+        }
+        return dataType;
+    }
+
     private boolean validateObjectModel() {
 
         String index = getTxtSubObjIndex();
@@ -951,6 +975,31 @@ public class AddSubObjectWizardPage extends WizardPage {
                         }
                     }
                 }
+            }
+
+            if (selObj.getObjectType() == OBJECT_TYPE_ARRAY
+                    && (selObj.getSubObject().size() > INITIAL_SUB_INDEX_VALUE || selObj.getDataType() != null)) {
+                String objDataType = StringUtils.EMPTY;
+                if (selObj.getDataType() == null) {
+                    /**
+                     * Get the sub object's datatype when object's datatype is null
+                     */
+                    objDataType = getSubObjectDataType();
+                } else {
+                    /**
+                     * Get object's datatype
+                     */
+                    objDataType = DatatypeConverter.printHexBinary(selObj.getDataType());
+                }
+                String dataTypeValue = getDataType(objDataType);
+                int typeIndex = comboDataType.indexOf(dataTypeValue);
+                comboDataType.select(typeIndex);
+                comboDataType.setEnabled(false);
+            }
+
+            if (selObj.getObjectType() == OBJECT_TYPE_ARRAY && selObj.getDataType() == null
+                    && selObj.getSubObject().size() == INITIAL_SUB_INDEX_VALUE) {
+                comboDataType.setEnabled(true);
             }
 
             setErrorMessage(null);
@@ -1104,9 +1153,9 @@ public class AddSubObjectWizardPage extends WizardPage {
      *
      * @param value
      *            The value to be set.
-     * @return Returns a string indicating whether the given value is valid;
-     *         null means valid, and non-null means invalid, with the result
-     *         being the error message to display to the end user.
+     * @return Returns a string indicating whether the given value is valid; null
+     *         means valid, and non-null means invalid, with the result being the
+     *         error message to display to the end user.
      */
     protected boolean isPdoMappingValueValid(String pdoMappingValue) {
 

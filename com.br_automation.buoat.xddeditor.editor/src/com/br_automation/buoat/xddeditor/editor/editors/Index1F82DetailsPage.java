@@ -207,7 +207,7 @@ public class Index1F82DetailsPage implements IDetailsPage {
             if (this.tobject.getDefaultValue() != null)
 
                 if (valueOfLblDefaultValue != null) {
-                    this.valueOfLblDefaultValue.setText(this.tobject.getDefaultValue().toUpperCase());
+                    this.valueOfLblDefaultValue.setText(this.tobject.getDefaultValue());
                 }
 
             if (this.tobject.getIndex() != null && this.tobject.getDefaultValue() != null) {

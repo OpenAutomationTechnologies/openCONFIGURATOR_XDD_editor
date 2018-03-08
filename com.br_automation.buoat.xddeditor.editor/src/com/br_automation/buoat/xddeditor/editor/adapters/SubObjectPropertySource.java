@@ -95,7 +95,10 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
     public static final String INVALID_WO_TPDO_MAPPING = "Sub-object with access type 'wo' does not allow TPDO mapping";
     public static final String INVALID_RO_RPDO_MAPPING = "Sub-object with access type 'ro' does not allow RPDO mapping";
     public static final String NO_CHANGE_IN_DATA_TYPE = "No change in data type.";
+    public static final String WARNING_ARRAY = "Changing the data type will remove the current values in 'Default value', 'Low limit' and 'High Limit' of all sub-Objects in the array.\n\nAre you sure you want to change?";
+    public static final String WARNING_NON_ARRAY = "Changing the data type will remove the current values in 'Default value', 'Low limit' and 'High Limit'.\n\nAre you sure you want to change?";
 
+    public static final int DEFAULT_VALUE = 0;
     private static final PropertyDescriptor subObjectIdDescriptor = new PropertyDescriptor(OBJ_SUB_INDEX_ID,
             OBJ_SUB_INDEX_LABEL);
     private static final TextPropertyDescriptor subObjectIdEditableDescriptor = new TextPropertyDescriptor(
@@ -109,8 +112,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
     private TObjectImpl plkObject;
 
     /**
-     * Constructor that describes the property descriptors of POWERLINK
-     * sub-object.
+     * Constructor that describes the property descriptors of POWERLINK sub-object.
      *
      * @param plkSubObject
      *            Instance of PowerlinkSubobject
@@ -241,11 +243,14 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
                 if (!val.isEmpty()) {
 
                     if (!dataTypeVal.equalsIgnoreCase(val)) {
-
-                        MessageDialog dialog = new MessageDialog(null, "Change Data Type?", null,
-                                "Changing the data type will remove the current values in 'Default value' , 'Low lmit' and 'High Limit'. \n\nAre you sure you want to change?",
+                        String warning = StringUtils.EMPTY;
+                        if (plkObject.getObjectType() == OBJECT_TYPE_ARRAY) {
+                            warning = WARNING_ARRAY;
+                        } else {
+                            warning = WARNING_NON_ARRAY;
+                        }
+                        MessageDialog dialog = new MessageDialog(null, "Change Data Type?", null, warning,
                                 MessageDialog.WARNING, new String[] { "Yes", "No" }, 1);
-
                         int result = dialog.open();
                         if (result == 0) {
 
@@ -302,9 +307,9 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
             if ((objectId >= IPowerlinkConstants.COMMUNICATION_PROFILE_START_INDEX)
                     && (objectId <= IPowerlinkConstants.STANDARDISED_DEVICE_PROFILE_END_INDEX)) {
                 propertyList.add(editNameDescriptor);
-
-                if (plkObject.getDataType() != null) {
-                    if (plkObject.getObjectType() == 8) {
+                int subObjIndex = Integer.parseInt(DatatypeConverter.printHexBinary(plkSubObject.getSubIndex()), 16);
+                if (plkObject.getDataType() != null || subObjIndex == DEFAULT_VALUE) {
+                    if (plkObject.getObjectType() != OBJECT_TYPE_VAR) {
                         propertyList.add(dataTypeDescriptor);
                     } else {
                         propertyList.add(editDataTypeDescriptor);
@@ -346,8 +351,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
     /*
      * (non-Javadoc)
      *
-     * @see
-     * org.eclipse.ui.views.properties.IPropertySource#getPropertyDescriptors()
+     * @see org.eclipse.ui.views.properties.IPropertySource#getPropertyDescriptors()
      */
     @Override
     public IPropertyDescriptor[] getPropertyDescriptors() {
@@ -362,8 +366,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
     /*
      * (non-Javadoc)
      *
-     * @see
-     * org.eclipse.ui.views.properties.IPropertySource#getPropertyValue(java.
+     * @see org.eclipse.ui.views.properties.IPropertySource#getPropertyValue(java.
      * lang.Object)
      */
     @Override
@@ -655,9 +658,9 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
      *
      * @param value
      *            The value to be set.
-     * @return Returns a string indicating whether the given value is valid;
-     *         null means valid, and non-null means invalid, with the result
-     *         being the error message to display to the end user.
+     * @return Returns a string indicating whether the given value is valid; null
+     *         means valid, and non-null means invalid, with the result being the
+     *         error message to display to the end user.
      */
     protected String handleLowLimitValue(Object value) {
         String lowLimit = (String) value;
@@ -702,9 +705,9 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
      *
      * @param value
      *            The value to be set.
-     * @return Returns a string indicating whether the given value is valid;
-     *         null means valid, and non-null means invalid, with the result
-     *         being the error message to display to the end user.
+     * @return Returns a string indicating whether the given value is valid; null
+     *         means valid, and non-null means invalid, with the result being the
+     *         error message to display to the end user.
      */
     protected String handlePdoMappingValue(Object value) {
         if (value instanceof Integer) {
@@ -783,9 +786,9 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
      *
      * @param value
      *            The value to be set.
-     * @return Returns a string indicating whether the given value is valid;
-     *         null means valid, and non-null means invalid, with the result
-     *         being the error message to display to the end user.
+     * @return Returns a string indicating whether the given value is valid; null
+     *         means valid, and non-null means invalid, with the result being the
+     *         error message to display to the end user.
      */
     protected String handleHighLimitValue(Object value) {
         String highLimit = (String) value;
@@ -860,9 +863,9 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
      *
      * @param value
      *            The value to be set.
-     * @return Returns a string indicating whether the given value is valid;
-     *         null means valid, and non-null means invalid, with the result
-     *         being the error message to display to the end user.
+     * @return Returns a string indicating whether the given value is valid; null
+     *         means valid, and non-null means invalid, with the result being the
+     *         error message to display to the end user.
      */
     protected String handleDefaultValue(Object value) {
         String defaultVal = StringUtils.EMPTY;
@@ -914,8 +917,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
     /*
      * (non-Javadoc)
      *
-     * @see
-     * org.eclipse.ui.views.properties.IPropertySource#isPropertySet(java.lang.
+     * @see org.eclipse.ui.views.properties.IPropertySource#isPropertySet(java.lang.
      * Object)
      */
     @Override
@@ -926,8 +928,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
     /*
      * (non-Javadoc)
      *
-     * @see
-     * org.eclipse.ui.views.properties.IPropertySource#resetPropertyValue(java.
+     * @see org.eclipse.ui.views.properties.IPropertySource#resetPropertyValue(java.
      * lang.Object)
      */
     @Override
@@ -1133,9 +1134,9 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
      *
      * @param value
      *            The value to be set.
-     * @return Returns a string indicating whether the given value is valid;
-     *         null means valid, and non-null means invalid, with the result
-     *         being the error message to display to the end user.
+     * @return Returns a string indicating whether the given value is valid; null
+     *         means valid, and non-null means invalid, with the result being the
+     *         error message to display to the end user.
      */
     protected String handleSubObjectIndexValue(Object value) {
         String index = (String) value;
@@ -1161,6 +1162,38 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
         }
 
         return StringUtils.EMPTY;
+    }
+
+    /**
+     * Reset the datatype of all the sub-Objects with the new modified datatype
+     *
+     * @param dataType
+     */
+    private void resetDataType(byte[] dataType) {
+        if (plkObject != null && plkObject.getSubObject().size() > INITIAL_SUB_INDEX_VALUE) {
+            for (SubObjectType subObj : plkObject.getSubObject()) {
+                int subObjindex = Integer.parseInt(DatatypeConverter.printHexBinary(subObj.getSubIndex()), 16);
+                if (subObjindex != NUMBER_OF_ENTRIES_SUBINDEX_VALUE) {
+                    subObj.setDataType(dataType);
+                }
+            }
+        }
+    }
+
+    /**
+     * Reset the High limit, Low limit, and Default value of all the sub-Objects
+     */
+    private void resetSubObjValue() {
+        if (plkObject != null && plkObject.getSubObject().size() > INITIAL_SUB_INDEX_VALUE) {
+            for (SubObjectType subObj : plkObject.getSubObject()) {
+                int subObjindex = Integer.parseInt(DatatypeConverter.printHexBinary(subObj.getSubIndex()), 16);
+                if (subObjindex != NUMBER_OF_ENTRIES_SUBINDEX_VALUE) {
+                    subObj.setDefaultValue(null);
+                    subObj.setLowLimit(null);
+                    subObj.setHighLimit(null);
+                }
+            }
+        }
     }
 
     /**
@@ -1198,17 +1231,21 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
                     break;
                 case OBJ_DATATYPE_EDITABLE_ID:
                     if (value instanceof Integer) {
+                        byte[] oldDataType = plkSubObject.getDataType();
                         String val = DATA_TYPE_LIST[(int) value];
+                        short objectType = plkObject.getObjectType();
                         if (!val.isEmpty()) {
                             byte[] dataType = DatatypeConverter.parseHexBinary(getDataTypeVal(val));
-
                             plkSubObject.setDataType(dataType);
-                            plkSubObject.setDefaultValue(StringUtils.EMPTY);
-                            plkSubObject.setLowLimit(StringUtils.EMPTY);
-                            plkSubObject.setHighLimit(StringUtils.EMPTY);
-
+                            if (objectType == OBJECT_TYPE_ARRAY) {
+                                resetDataType(dataType);
+                                resetSubObjValue();
+                            }
                         } else {
                             plkSubObject.setDataType(null);
+                            if (objectType == OBJECT_TYPE_ARRAY) {
+                                plkSubObject.setDataType(oldDataType);
+                            }
                         }
                     }
                     break;
@@ -1299,8 +1336,8 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
      *
      * @param documentRoot
      *            Instance of XDD file
-     * @return <code>True</code> If value is updated in document,
-     *         <code>False</code> otherwise.
+     * @return <code>True</code> If value is updated in document, <code>False</code>
+     *         otherwise.
      */
     public boolean updateDocument(DocumentRoot documentRoot) {
 
