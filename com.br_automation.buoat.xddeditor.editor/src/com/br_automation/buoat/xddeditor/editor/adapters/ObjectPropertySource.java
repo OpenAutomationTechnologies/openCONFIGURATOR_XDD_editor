@@ -92,6 +92,8 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
     public static final String INVALID_WO_TPDO_MAPPING = "Object with access type 'wo' does not allow TPDO mapping.";
     public static final String INVALID_RO_RPDO_MAPPING = "Object with access type 'ro' does not allow RPDO mapping.";
     public static final String NO_CHANGE_IN_DATA_TYPE = "No change in data type.";
+    public boolean OBJECT_DATATYPE_CHANGE_WARNING = false;
+    public boolean OBJECT_TYPE_CHANGE_WARNING = false;
 
     /**
      * Constructor to initialize the property descriptors for object
@@ -258,13 +260,15 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
 
             switch (objectType) {
             case "7 - VAR":
-                if ((plkObject != null) && !plkObject.getSubObject().isEmpty()) {
+                if ((plkObject != null) && !plkObject.getSubObject().isEmpty() && !OBJECT_TYPE_CHANGE_WARNING) {
+                    OBJECT_TYPE_CHANGE_WARNING = true;
                     MessageDialog dialog = new MessageDialog(null, "Warning", null,
                             "Object type cannot be changed to VAR.\n" + plkObject.getName()
                                     + " Object contains sub-indices. "
                                     + "It shall be changed only after deleting the sub-indices.",
                             MessageDialog.WARNING, new String[] { "Close" }, 1);
                     dialog.open();
+                    OBJECT_TYPE_CHANGE_WARNING = false;
                     return MessageFormat.format(INVALID_OBJECT_TYPE, plkObject.getName());
                 }
                 break;
@@ -316,17 +320,19 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
                 }
                 if (!val.isEmpty()) {
 
-                    if (!dataTypeVal.equalsIgnoreCase(val)) {
+                    if (!dataTypeVal.equalsIgnoreCase(val) && !OBJECT_DATATYPE_CHANGE_WARNING) {
 
                         MessageDialog dialog = new MessageDialog(null, "Change Data Type?", null,
                                 "Changing the data type will remove the current values in 'Default value' , 'Low lmit' and 'High Limit'. \n\nAre you sure you want to change?",
                                 MessageDialog.WARNING, new String[] { "Yes", "No" }, 1);
+                        OBJECT_DATATYPE_CHANGE_WARNING = true;
 
                         int result = dialog.open();
                         if (result == 0) {
-
+                            OBJECT_DATATYPE_CHANGE_WARNING = false;
                             return null;
                         } else {
+                            OBJECT_DATATYPE_CHANGE_WARNING = false;
                             return NO_CHANGE_IN_DATA_TYPE;
                         }
                     }
@@ -1270,14 +1276,14 @@ public class ObjectPropertySource extends AbstractObjectPropertySource implement
                     plkObject.setName(objValue);
                     break;
                 case OBJ_TYPE_EDITABLE_ID:
-                    if (value instanceof Integer) {
+                    if (value instanceof Integer && !OBJECT_TYPE_CHANGE_WARNING) {
                         String val = IPowerlinkConstants.OBJECT_TYPES[(int) value];
                         short objectType = getObjectType(val);
                         plkObject.setObjectType(objectType);
                     }
                     break;
                 case OBJ_DATATYPE_EDITABLE_ID:
-                    if (value instanceof Integer) {
+                    if (value instanceof Integer && !OBJECT_DATATYPE_CHANGE_WARNING) {
                         String val = DATA_TYPE_LIST[(int) value];
                         short objectType = plkObject.getObjectType();
                         if (!val.isEmpty()) {

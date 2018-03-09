@@ -95,13 +95,15 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
     public static final String INVALID_WO_TPDO_MAPPING = "Sub-object with access type 'wo' does not allow TPDO mapping";
     public static final String INVALID_RO_RPDO_MAPPING = "Sub-object with access type 'ro' does not allow RPDO mapping";
     public static final String NO_CHANGE_IN_DATA_TYPE = "No change in data type.";
-    public static final String WARNING_ARRAY = "Changing the data type will remove the current values in 'Default value', 'Low limit' and 'High Limit' of all sub-Objects in the array.\n\nAre you sure you want to change?";
+    public static final String WARNING_ARRAY = "Changing the data type will remove the current values in 'Default value', 'Low limit' and 'High Limit' of all sub-objects in the array.\n\nAre you sure you want to change?";
     public static final String WARNING_NON_ARRAY = "Changing the data type will remove the current values in 'Default value', 'Low limit' and 'High Limit'.\n\nAre you sure you want to change?";
+    public boolean SUBOBJECT_DATATYPE_CHANGE_WARNING = false;
 
     private static final PropertyDescriptor subObjectIdDescriptor = new PropertyDescriptor(OBJ_SUB_INDEX_ID,
             OBJ_SUB_INDEX_LABEL);
     private static final TextPropertyDescriptor subObjectIdEditableDescriptor = new TextPropertyDescriptor(
             OBJ_EDITABLE_SUB_INDEX_ID, OBJ_SUB_INDEX_LABEL);
+
     static {
         subObjectIdDescriptor.setCategory(IPropertySourceSupport.INITIAL_VALUE_CATEGORY);
         subObjectIdEditableDescriptor.setCategory(IPropertySourceSupport.INITIAL_VALUE_CATEGORY);
@@ -142,8 +144,8 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
         objectTypeDescriptor.setCategory(IPropertySourceSupport.OBJECT_ATTRIBUTES_CATEGORY);
         editObjectTypeDescriptor.setCategory(IPropertySourceSupport.OBJECT_ATTRIBUTES_CATEGORY);
 
-        dataTypeDescriptor.setCategory(IPropertySourceSupport.INITIAL_VALUE_CATEGORY);
-        editSubObjDataTypeDescriptor.setCategory(IPropertySourceSupport.INITIAL_VALUE_CATEGORY);
+        dataTypeDescriptor.setCategory(IPropertySourceSupport.OBJECT_ATTRIBUTES_CATEGORY);
+        editSubObjDataTypeDescriptor.setCategory(IPropertySourceSupport.OBJECT_ATTRIBUTES_CATEGORY);
         editSubObjDataTypeDescriptor.setValidator(new ICellEditorValidator() {
 
             @Override
@@ -241,20 +243,22 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
                 }
                 if (!val.isEmpty()) {
 
-                    if (!dataTypeVal.equalsIgnoreCase(val)) {
+                    if (!dataTypeVal.equalsIgnoreCase(val) && !SUBOBJECT_DATATYPE_CHANGE_WARNING) {
                         String warning = StringUtils.EMPTY;
                         if (plkObject.getObjectType() == OBJECT_TYPE_ARRAY) {
                             warning = WARNING_ARRAY;
                         } else {
                             warning = WARNING_NON_ARRAY;
                         }
+                        SUBOBJECT_DATATYPE_CHANGE_WARNING = true;
                         MessageDialog dialog = new MessageDialog(null, "Change Data Type?", null, warning,
                                 MessageDialog.WARNING, new String[] { "Yes", "No" }, 1);
                         int result = dialog.open();
                         if (result == 0) {
-
+                            SUBOBJECT_DATATYPE_CHANGE_WARNING = false;
                             return null;
                         } else {
+                            SUBOBJECT_DATATYPE_CHANGE_WARNING = false;
                             return NO_CHANGE_IN_DATA_TYPE;
                         }
                     }
@@ -440,7 +444,7 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
                     retObj = StringUtils.EMPTY;
                 }
                 break;
-            case OBJ_DATATYPE_EDITABLE_ID:
+            case SUB_OBJ_DATATYPE_EDITABLE_ID:
                 if (plkSubObject.getDataType() != null) {
                     String dataType = DatatypeConverter.printHexBinary(plkSubObject.getDataType());
                     String dataTypeVal = getDataType(dataType);
@@ -1234,8 +1238,8 @@ public class SubObjectPropertySource extends AbstractObjectPropertySource implem
                         plkSubObject.setObjectType(objectType);
                     }
                     break;
-                case OBJ_DATATYPE_EDITABLE_ID:
-                    if (value instanceof Integer) {
+                case SUB_OBJ_DATATYPE_EDITABLE_ID:
+                    if (value instanceof Integer && !SUBOBJECT_DATATYPE_CHANGE_WARNING) {
                         byte[] oldDataType = plkSubObject.getDataType();
                         String val = DATA_TYPE_LIST[(int) value];
                         short objectType = plkObject.getObjectType();
