@@ -380,6 +380,7 @@ public class Index1000DetailsPage implements IDetailsPage {
     public void createContents(Composite parent) {
 
         GridLayout layout = new GridLayout(1, true);
+        layout.marginHeight = 0;
 
         parent.setLayout(layout);
 
@@ -390,13 +391,13 @@ public class Index1000DetailsPage implements IDetailsPage {
         Section index1000ObjectSection = managedForm.getToolkit().createSection(parent, ExpandableComposite.EXPANDED
                 | Section.DESCRIPTION | ExpandableComposite.TWISTIE | ExpandableComposite.TITLE_BAR);
         GridData gd_index1000ObjectSection = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
-        gd_index1000ObjectSection.widthHint = 595;
+        gd_index1000ObjectSection.widthHint = 475;
         index1000ObjectSection.setLayoutData(gd_index1000ObjectSection);
         managedForm.getToolkit().paintBordersFor(index1000ObjectSection);
         index1000ObjectSection.setText(ObjectDictionaryEditorPage.OBJECT_DICTIONARY_DETAILS_HEADING);
 
         GridData gd_index1000Section = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
-        gd_index1000Section.widthHint = 595;
+        gd_index1000Section.widthHint = 475;
         Composite clientComposite = managedForm.getToolkit().createComposite(index1000ObjectSection, SWT.WRAP);
         GridLayout layouts = new GridLayout(1, false);
         layouts.marginWidth = 2;
@@ -407,11 +408,11 @@ public class Index1000DetailsPage implements IDetailsPage {
         index1000ObjectSection.setClient(clientComposite);
 
         GridData gd_grpConfigurationFile = new GridData(SWT.FILL, SWT.FILL, false, false, 2, 1);
-        gd_grpConfigurationFile.widthHint = 547;
+        gd_grpConfigurationFile.widthHint = 450;
 
         Composite groupComposite = new Composite(clientComposite, SWT.NONE);
         GridData gd_groupComposite = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
-        gd_groupComposite.widthHint = 574;
+        gd_groupComposite.widthHint = 500;
         groupComposite.setLayoutData(gd_groupComposite);
         groupComposite.setLayout(new GridLayout(2, false));
 
@@ -426,7 +427,7 @@ public class Index1000DetailsPage implements IDetailsPage {
 
         nameText = new Text(grpMandatoryData, SWT.BORDER | SWT.WRAP);
         GridData gd_nameText = new GridData(SWT.LEFT, SWT.CENTER, true, false, 5, 1);
-        gd_nameText.widthHint = 450;
+        gd_nameText.widthHint = 350;
         nameText.setLayoutData(gd_nameText);
         managedForm.getToolkit().adapt(nameText, true, true);
         nameText.setEditable(false);
@@ -438,7 +439,7 @@ public class Index1000DetailsPage implements IDetailsPage {
 
         objTypeText = new Text(grpMandatoryData, SWT.BORDER | SWT.WRAP);
         GridData gd_objTypeText = new GridData(SWT.LEFT, SWT.CENTER, true, false, 5, 1);
-        gd_objTypeText.widthHint = 450;
+        gd_objTypeText.widthHint = 350;
         objTypeText.setLayoutData(gd_objTypeText);
         managedForm.getToolkit().adapt(objTypeText, true, true);
         objTypeText.setEditable(false);
@@ -450,7 +451,7 @@ public class Index1000DetailsPage implements IDetailsPage {
 
         indexText = new Text(grpMandatoryData, SWT.BORDER | SWT.WRAP);
         GridData gd_indexText = new GridData(SWT.LEFT, SWT.CENTER, true, false, 5, 1);
-        gd_indexText.widthHint = 450;
+        gd_indexText.widthHint = 350;
         indexText.setLayoutData(gd_indexText);
         managedForm.getToolkit().adapt(indexText, true, true);
         indexText.setEditable(false);
@@ -458,13 +459,13 @@ public class Index1000DetailsPage implements IDetailsPage {
 
         Composite groupComposite2 = new Composite(clientComposite, SWT.NONE);
         GridData gd_groupComposite2 = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
-        gd_groupComposite2.widthHint = 574;
+        gd_groupComposite2.widthHint = 500;
         groupComposite2.setLayoutData(gd_groupComposite2);
         groupComposite2.setLayout(new GridLayout(2, false));
 
         Group grpOptionalData = new Group(groupComposite2, SWT.NONE);
         GridData gridData = new GridData(SWT.LEFT, SWT.FILL, true, false, 2, 1);
-        gridData.widthHint = 569;
+        gridData.widthHint = 450;
         grpOptionalData.setLayoutData(gridData);
         grpOptionalData.setText(IPowerlinkConstants.OPTIONAL_GROUP);
         grpOptionalData.setLayout(new GridLayout(2, false));
@@ -473,11 +474,12 @@ public class Index1000DetailsPage implements IDetailsPage {
                 IPowerlinkConstants.DEFAULT_VALUE);
         lblDefaultValue.setToolTipText(IPowerlinkConstants.DEFAULT_VALUE);
 
-        // lblDefaultValueValue Label
-        this.lblDefaultValueValue = managedForm.getToolkit().createLabel(grpOptionalData, ""); //$NON-NLS-1$
+        this.lblDefaultValueValue = new Label(grpOptionalData, SWT.WRAP);
+        lblDefaultValueValue.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+        managedForm.getToolkit().adapt(lblDefaultValueValue, true, true);
 
         Label lblProfileType = managedForm.getToolkit().createLabel(grpOptionalData,
-                IPowerlinkConstants.PROFILE_TYPE_LABEL);
+                 IPowerlinkConstants.PROFILE_TYPE_LABEL);
         lblProfileType.setToolTipText(IPowerlinkConstants.PROFILE_TYPE_LABEL);
 
         this.cmbDeviceProfileNr = new Combo(grpOptionalData, SWT.READ_ONLY);
@@ -494,14 +496,17 @@ public class Index1000DetailsPage implements IDetailsPage {
                 IPowerlinkConstants.ADDITIONAL_INFO_LABEL);
         lblAdditionalInfo.setToolTipText(IPowerlinkConstants.ADDITIONAL_INFO_LABEL);
 
-        this.txtAdditionalInfo = managedForm.getToolkit().createText(grpOptionalData, "");
+        this.txtAdditionalInfo = new Text(grpOptionalData, SWT.BORDER);
+        GridData gd_txtAdditionalInfo = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+        gd_txtAdditionalInfo.widthHint = 33;
+        txtAdditionalInfo.setLayoutData(gd_txtAdditionalInfo);
         this.txtAdditionalInfo.setTextLimit(4);
         this.txtAdditionalInfo.addModifyListener(this.additionalInfoModifyListener);
 
-        this.lblError = managedForm.getToolkit().createLabel(grpOptionalData,
-                "                                                  ");
         new Label(grpOptionalData, SWT.NONE);
 
-    }
+        this.lblError = managedForm.getToolkit().createLabel(grpOptionalData,
+                "                                                  ");
 
+    }
 }

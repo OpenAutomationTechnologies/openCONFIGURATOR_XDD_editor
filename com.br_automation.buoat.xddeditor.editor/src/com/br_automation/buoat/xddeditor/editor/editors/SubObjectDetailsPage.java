@@ -154,6 +154,7 @@ public class SubObjectDetailsPage extends EEFAdvancedPropertySection implements 
     public void createContents(Composite parent) {
 
         GridLayout layout = new GridLayout(2, false);
+        layout.marginHeight = 0;
         parent.setLayout(layout);
         layout.marginWidth = 20;
         Section subObjectDetailSection = managedForm.getToolkit().createSection(parent,

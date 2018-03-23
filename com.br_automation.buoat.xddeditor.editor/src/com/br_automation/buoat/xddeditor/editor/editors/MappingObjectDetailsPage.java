@@ -564,6 +564,7 @@ public class MappingObjectDetailsPage extends EEFAdvancedPropertySection impleme
     public void createContents(Composite parent) {
 
         GridLayout layout = new GridLayout(1, true);
+        layout.marginHeight = 0;
 
         parent.setLayout(layout);
         layout.marginWidth = 20;
@@ -586,7 +587,7 @@ public class MappingObjectDetailsPage extends EEFAdvancedPropertySection impleme
 
         Group grpMandatoryData = new Group(groupComposite, SWT.NONE);
         GridData gd_grpConfigurationFile = new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1);
-        gd_grpConfigurationFile.widthHint = 558;
+        gd_grpConfigurationFile.widthHint = 450;
         grpMandatoryData.setLayoutData(gd_grpConfigurationFile);
         grpMandatoryData.setText(IPowerlinkConstants.MANDATORY_DATA_GROUP);
         grpMandatoryData.setLayout(new GridLayout(6, false));
@@ -625,11 +626,15 @@ public class MappingObjectDetailsPage extends EEFAdvancedPropertySection impleme
         subIndexText.setEnabled(false);
 
         Composite groupComposite2 = new Composite(clientComposite, SWT.NONE);
+        GridData gd_groupComposite2 = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+        gd_groupComposite2.widthHint = 470;
+        groupComposite2.setLayoutData(gd_groupComposite2);
         groupComposite2.setLayout(new GridLayout(2, false));
 
         Group grpOptionalData = new Group(groupComposite2, SWT.NONE);
         GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1);
-        gridData.widthHint = 558;
+        gridData.widthHint = 450;
+        gridData.heightHint = 180;
         grpOptionalData.setLayoutData(gridData);
         grpOptionalData.setText(IPowerlinkConstants.OPTIONAL_GROUP);
         grpOptionalData.setLayout(new GridLayout(2, false));
@@ -662,6 +667,9 @@ public class MappingObjectDetailsPage extends EEFAdvancedPropertySection impleme
         lblSubindex.setToolTipText(Messages.advancedMappingObjectPropertySection_lbl_MO_Subindex); // $NON-NLS-1$
 
         this.cmbSubindex = new Combo(grpOptionalData, SWT.READ_ONLY);
+        GridData cmbSubindex = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+        cmbSubindex.widthHint = 100;
+        this.cmbSubindex.setLayoutData(cmbSubindex);
         this.cmbSubindex.setToolTipText(Messages.advancedMappingObjectPropertySection_help_subindex_combobox);
 
         this.cmbSubindex.removeAll();
@@ -674,18 +682,26 @@ public class MappingObjectDetailsPage extends EEFAdvancedPropertySection impleme
         lbloffset.setToolTipText(Messages.advancedMappingObjectPropertySection_lbl_Offset);
 
         this.txtOffset = new Text(grpOptionalData, SWT.BORDER);
+        GridData gd_txtOffset = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+        gd_txtOffset.widthHint = 50;
+        this.txtOffset.setLayoutData(gd_txtOffset);
+        this.txtOffset.setVisible(true);
 
         this.txtOffset.addFocusListener(this.offsetListener);
 
         // Lengthlabel
-        Label lbllength = managedForm.getToolkit().createLabel(grpOptionalData,
+        Label lblLength = managedForm.getToolkit().createLabel(grpOptionalData,
                 Messages.advancedMappingObjectPropertySection_lbl_Length);
-        lbllength.setToolTipText(Messages.advancedMappingObjectPropertySection_lbl_Length);
-
-        // Combobox / Textboxen
+        GridData gd_lbllength = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+        gd_lbllength.widthHint = 84;
+        lblLength.setLayoutData(gd_lbllength);
+        lblLength.setToolTipText(Messages.advancedMappingObjectPropertySection_lbl_Length);
 
         // Textbox Length
         this.txtLength = new Text(grpOptionalData, SWT.BORDER);
+        GridData gd_txtLength = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+        gd_txtLength.widthHint = 128;
+        txtLength.setLayoutData(gd_txtLength);
 
         this.txtLength.addFocusListener(this.lengthListener);
 
@@ -695,8 +711,17 @@ public class MappingObjectDetailsPage extends EEFAdvancedPropertySection impleme
                         + "\n for further use and implementation of errors. Must not be translated."); //$NON-NLS-1$
 
         this.lblError.setForeground(XDDUtilities.getRed(this.device));
-        this.lblError.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+        GridData gd_lblError = new GridData(SWT.LEFT, SWT.FILL, false, false, 2, 1);
+        gd_lblError.heightHint = 36;
+        gd_lblError.widthHint = 420;
+        lblError.setLayoutData(gd_lblError);
         this.lblError.setVisible(false);
+        new Label(grpOptionalData, SWT.NONE);
+        new Label(grpOptionalData, SWT.NONE);
+        new Label(grpOptionalData, SWT.NONE);
+        new Label(grpOptionalData, SWT.NONE);
+        new Label(groupComposite2, SWT.NONE);
+        new Label(groupComposite2, SWT.NONE);
 
     }
 

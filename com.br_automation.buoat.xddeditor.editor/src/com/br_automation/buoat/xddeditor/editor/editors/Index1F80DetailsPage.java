@@ -324,6 +324,7 @@ public class Index1F80DetailsPage implements IDetailsPage {
     public void createContents(Composite parent) {
 
         GridLayout layout = new GridLayout(1, true);
+        layout.marginHeight = 0;
 
         parent.setLayout(layout);
         layout.marginWidth = 20;

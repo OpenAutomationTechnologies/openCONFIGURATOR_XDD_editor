@@ -159,6 +159,7 @@ public class ObjectDetailsPage implements IDetailsPage {
 
         if (managedForm != null) {
             GridLayout layout = new GridLayout(2, false);
+            layout.marginHeight = 0;
             parent.setLayout(layout);
             layout.marginWidth = 20;
             Section objectDetailsSection = managedForm.getToolkit().createSection(parent,

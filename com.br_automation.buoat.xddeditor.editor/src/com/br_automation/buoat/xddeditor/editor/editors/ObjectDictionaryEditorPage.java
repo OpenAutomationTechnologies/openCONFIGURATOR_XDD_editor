@@ -840,7 +840,6 @@ public class ObjectDictionaryEditorPage extends FormPage implements IPropertyLis
         toolBarManager.add(hideUserDefinedObjects);
         toolBarManager.update(true);
         objectDictionarySection.setTextClient(toolbar);
-
     }
 
     /**

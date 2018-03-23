@@ -322,6 +322,7 @@ public class StoreParamSubObjectDetailsPage extends EEFAdvancedPropertySection i
     public void createContents(Composite parent) {
 
         GridLayout layout = new GridLayout(1, true);
+        layout.marginHeight = 0;
         parent.setLayout(layout);
         layout.marginWidth = 20;
         Section storeParamSection = managedForm.getToolkit().createSection(parent, ExpandableComposite.EXPANDED
