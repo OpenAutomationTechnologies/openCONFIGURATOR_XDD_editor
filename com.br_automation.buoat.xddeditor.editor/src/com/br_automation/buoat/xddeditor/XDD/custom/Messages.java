@@ -2,9 +2,9 @@
  * @since 19.3.2013
  * @author Joris Lückenga, B&R Industrial Automation GmbH
  *
- * @copyright (c) 2017, B&R Industrial Automation GmbH
+ * @copyright (c) 2018, B&R Industrial Automation GmbH
  *
- * @copyright (c) 2017, Kalycito Infotech Private Limited
+ * @copyright (c) 2018, Kalycito Infotech Private Limited
  *             All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

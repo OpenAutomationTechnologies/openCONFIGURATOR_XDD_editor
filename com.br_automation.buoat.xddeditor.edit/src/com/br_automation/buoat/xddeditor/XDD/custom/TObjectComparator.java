@@ -2,7 +2,7 @@
  * @since 16.4.2013
  * @author Joris Lückenga, B&R Industrial Automation GmbH
  *
- * @copyright (c) 2017, B&R Industrial Automation GmbH
+ * @copyright (c) 2018, B&R Industrial Automation GmbH
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
